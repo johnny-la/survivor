@@ -34,6 +34,8 @@ public class TerrainLayer
 	
 	/** Stores the maximum slope a linear layer can have */
 	public static final float MAX_SLOPE = 0.33f;
+	/** Stores the minimum slope a linear layer can have */
+	public static final float MIN_SLOPE = 0.1f;
 	/** Stores the maximum amplitude a cosine layer can have. (Note that amplitude = half-height of cosine function) */
 	public static final float MAX_AMPLITUDE = 1;
 	/** Stores the minimum amplitude a cosine layer can have. (Note that amplitude = half-height of cosine function) */
@@ -139,15 +141,15 @@ public class TerrainLayer
 	public void resetTerrain()
 	{
 		//Stores the seed used for the terrain's geometry. Only the column and the worldSeed are used so that layers in the same column will have the same geometry.
-		int terrainSeed = col + worldSeed;
+		int terrainSeed = col * worldSeed;
 		//Sets the seed of the terrainRand instance to the new seed. Numbers will be generated to define the geometry of the layer.
 		terrainRand.setSeed(terrainSeed);
 		
 		//Gets a random float from [0,1] to define the type of the terrain.
 		float randType = terrainRand.nextFloat();
-		
+		System.out.println(randType);
 		//If the random number is above this value
-		if(randType > 0.0f)
+		if(randType > 0.7f)
 		{
 			//Make the terrain layer have a COSINE geometry by setting its type to COSINE.
 			terrainType = TerrainType.COSINE;
@@ -185,7 +187,7 @@ public class TerrainLayer
 			terrainType = TerrainType.LINEAR;
 			
 			//Generate a random slope for the layer.
-			slope = terrainRand.nextFloat()*MAX_SLOPE;
+			slope = MIN_SLOPE + (terrainRand.nextFloat() * (MAX_SLOPE-MIN_SLOPE));
 			
 			//if(terrainRand.nextFloat() > 0.5f)
 				//slope *= -1;

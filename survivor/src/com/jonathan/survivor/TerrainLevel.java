@@ -172,6 +172,9 @@ public class TerrainLevel implements Level
 		{
 			//Stores the left-most layer in the row, stored in the first column of the matrix.
 			TerrainLayer leftLayer = layers[i][0];
+			//Finds the new left-most y-position of the left layer to be the right-most layer's right-most y-position, for the new layer to start at the end of the old one.
+			float newYPos = layers[i][NUM_LAYER_COLS-1].getRightPoint().y;
+			
 			//Shifts all of the layers to the left, leaving an empty column at the end.
 			for(int j = 0; j < layers[i].length-1; j++)
 			{
@@ -181,9 +184,9 @@ public class TerrainLevel implements Level
 			
 			//Sets the layer to its new, pre-calculated column.
 			leftLayer.setCol(newCol);
-			//Sets the start position of the layer to its new y-position, and its old x-position, as it has not changed. The start position we set is the bottom-left (x,y)
-			//coordinate of the layer. Since the left point is given, we set the last argument to RIGHT to tell the method that the layer is going from left to right.
-			leftLayer.setStartPosition(newXPos, leftLayer.getLeftPoint().y, TerrainDirection.RIGHT);
+			//Sets the start position of the layer to its new x-position and y-position. The start position we set is the bottom-left (x,y) coordinate of the layer. Since the
+			//left point is given, we set the last argument to RIGHT to tell the method that the layer is going from left to right.
+			leftLayer.setStartPosition(newXPos, newYPos, TerrainDirection.RIGHT);
 			//Frees the GameObjects belonging to the layer back into their respective pools so that they can be reused after.
 			leftLayer.freeGameObjects();
 			//Resets the layer so that its geometry and GameObjects match its new column.
@@ -210,6 +213,9 @@ public class TerrainLevel implements Level
 		{
 			//Stores the right-most layer in the row, stored in the last column of the matrix.
 			TerrainLayer rightLayer = layers[i][NUM_LAYER_COLS-1];
+			//Finds the new right-most y-position of the right layer as the left-most layer's left-most y-position, so that the new layer starts at the end of the old one.
+			float newYPos = layers[i][0].getLeftPoint().y;
+			
 			//Shifts all of the layers to the right, leaving an empty column at the end.
 			for(int j = layers[i].length-1; j > 0; j--)
 			{
@@ -219,9 +225,9 @@ public class TerrainLevel implements Level
 			
 			//Sets the layer to its new, pre-calculated column.
 			rightLayer.setCol(newCol);
-			//Sets the start position of the layer to its new y-position, and its old x-position, as it has not changed. The start position we set is the bottom-right (x,y)
-			//coordinate of the layer. Since the layer's right point is given, we set the last argument to LEFT to tell the method that the layer is going from right to left.
-			rightLayer.setStartPosition(newXPos, rightLayer.getLeftPoint().y, TerrainDirection.LEFT);
+			//Sets the start position of the layer to its new x-position and y-position. The start position we set is the bottom-right (x,y) coordinate of the layer.
+			//Since the layer's right point is given, we set the last argument to LEFT to tell the method that the layer is going from right to left.
+			rightLayer.setStartPosition(newXPos, newYPos, TerrainDirection.LEFT);
 			//Frees the GameObjects belonging to the layer back into their respective pools so that they can be reused after.
 			rightLayer.freeGameObjects();
 			//Resets the layer so that its geometry and GameObjects match its new column.

@@ -7,8 +7,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.jonathan.survivor.TerrainLayer;
-import com.jonathan.survivor.TerrainLevel;
 import com.jonathan.survivor.TerrainLayer.TerrainType;
+import com.jonathan.survivor.TerrainLevel;
+import com.jonathan.survivor.math.Rectangle;
 import com.jonathan.survivor.math.Vector2;
 
 public class TerrainRenderer 
@@ -18,6 +19,8 @@ public class TerrainRenderer
 	private static final float DEFAULT_LINE_WIDTH = 0.05f;
 	/** Stores the amount of segments used to draw a cosine function for a TerrainLayer. */
 	private static final int COSINE_SEGMENTS = 75;
+	
+	private Rectangle lineBounds;
 	
 	/** Stores the camera where the terrain is drawn. In this case, the world camera. */
 	private OrthographicCamera worldCamera;
@@ -33,6 +36,8 @@ public class TerrainRenderer
 		
 		//Creates the ShapeRenderer instance used to draw the level geometry with lines.
 		shapeRenderer = new ShapeRenderer();
+		
+		lineBounds = new Rectangle();
 		
 		//Enables OpenGL ES to draw smooth lines to ensure level geometry looks anti-aliased.
 		Gdx.gl.glEnable(GL10.GL_LINE_SMOOTH);
@@ -62,6 +67,12 @@ public class TerrainRenderer
 				Vector2 leftEndPoint = layers[i][j].getLeftPoint();
 				Vector2 rightEndPoint = layers[i][j].getRightPoint();
 				
+				//If the line is not inside the camera's viewable region, don't draw it. The two-end points of the line are accepted as arguments.
+				if(!isInCamera(leftEndPoint.x, leftEndPoint.y, rightEndPoint.x, rightEndPoint.y))
+				{
+					continue;
+				}
+				
 				//If the TerrainType of the layer is not COSINE, the layer type is either CONSTANT or LINEAR. That means that the layer's geometry can be modeled 
 				//using a straight line. Thus, draw a straight line.
 				if(layers[i][j].getTerrainType() != TerrainType.COSINE)
@@ -87,15 +98,26 @@ public class TerrainRenderer
 					{
 						//Stores the x-position of left-end of the segment. Found by taking the left end point of the layer, plus a segment width for each segment.
 						float x1 = leftEndPoint.x + segmentWidth*segment;
+						//Stores the y-position of the left-end of the segment. Found by finding the height of the bottom of the layer at the point's x-position.
+						float y1 = layers[i][j].getBottomLayerHeight(x1);
+						
 						//Finds the x-position of the right-end of the segment simply by adding a segment width to the left-end's x-position.
 						float x2 = x1 + segmentWidth;
+						//Stores the y-position of the right-end of the segment. Found by finding the height of the bottom of the layer at the point's x-position.
+						float y2 = layers[i][j].getBottomLayerHeight(x2);
+						
+						//If the line is not inside the camera's viewable region, don't draw it. The two-end points of the line are accepted as arguments.
+						if(!isInCamera(x1, y1, x2, y2))
+						{
+							continue;
+						}
 						
 						//Cap the segment's right-end x-position to the x-position of the right end-point of the layer. Ensure we don't draw too much.
-						x2 = (x2 > rightEndPoint.x)? rightEndPoint.x : x2;
+						//x2 = (x2 > rightEndPoint.x)? rightEndPoint.x : x2;
 		
 						//Draws a segment of the bottom of the cosine function. Renders a line going from the left-end segment to the right-end. Note that the y-value
 						//of the segment is found using 'TerrainLayer.getBottomLayerHeight()'. We take the bottom height since we are drawing the bottom layer portion.
-						shapeRenderer.line(x1, layers[i][j].getBottomLayerHeight(x1), x2, layers[i][j].getBottomLayerHeight(x2));
+						shapeRenderer.line(x1, y1, x2, y2);
 						
 						//If we are cycling through the last row of the layers array, we have reached the top-most layer. Thus, draw the top portion of cosine function.
 						//It wasn't necessary to do so before because the top-portion of the previous layers were drawn by the bottom portions of the next layers.
@@ -111,6 +133,22 @@ public class TerrainRenderer
 		
 		//Commits the lines to the ShapeRenderer and draws them to the screen.
 		shapeRenderer.end();
+	}
+	
+	/** Returns true if the given line is inside the viewable region of the camera. Note: The order of the points does not matter. */
+	public boolean isInCamera(float x1, float y1, float x2, float y2)
+	{
+		//Sets the bottom left-point of the rectangle to the bottom-left point of the line.
+		lineBounds.setPosition(Math.min(x1, x2), Math.min(y1, y2));
+		//Finds the size the line would encapsulate as a rectangle. We denote the points as the diagonal intersector of the rectangle.
+		lineBounds.setSize(Math.abs(x2 - x1), Math.abs(y2 - y1));
+		
+		//If the bounds of the line are inside the viewable region of the camera, return true
+		if(lineBounds.insideCamera(worldCamera))
+			return true;
+		
+		//Returns false if the line denoted as the diagonal intersector of a rectangle does not fall inside the camera.
+		return false;
 	}
 	
 	/** Called whenever the screen is resized. The argument contains the factor by which the screen had to be scaled to fit the device's screen

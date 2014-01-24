@@ -77,8 +77,6 @@ public class GameObjectRenderer
 			//If the GameObject in the array is null, skip this iteration to avoid NullPointerExceptions.
 			if(go == null || !go.getCollider().insideCamera(worldCamera))
 			{
-				System.out.println(go.getCollider().toString());
-				//System.out.println("GameObject within camera? " + go.getCollider().insideCamera(worldCamera));
 				continue;
 			}
 			
