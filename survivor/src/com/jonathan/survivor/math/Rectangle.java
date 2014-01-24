@@ -1,5 +1,7 @@
 package com.jonathan.survivor.math;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
+
 public class Rectangle extends Collider
 {
 	/** Stores the width and height of the rectangle */
@@ -48,6 +50,22 @@ public class Rectangle extends Collider
 		//Returns false if they don't intersect
 		return false;
 	}
+	
+	/** Returns true if this rectangle collider is inside the bounds of the camera. Used for culling. */
+	public boolean insideCamera(OrthographicCamera camera)
+	{
+		//Returns true if the rectangle collider intersects with the camera or is inside the camera.
+		if( position.x < camera.position.x + camera.viewportWidth/2 &&
+			position.x + width > camera.position.x - camera.viewportWidth/2 &&
+			position.y < camera.position.y + camera.viewportHeight/2 &&
+			position.y + height > camera.position.y - camera.viewportHeight/2 )
+		{
+			return true;
+		}
+		
+		//Returns false if they don't intersect
+		return false;
+	}
 
 	/** Sets the width and height of the rectangle from its bottom-left position. */
 	public void setSize(float width, float height)
@@ -74,5 +92,10 @@ public class Rectangle extends Collider
 	/** Sets the height of the rectangle */
 	public void setHeight(float height) {
 		this.height = height;
+	}
+	
+	public String toString()
+	{
+		return "Position: " + getPosition() + " Width: " + getWidth() + " Height: " + getHeight();
 	}
 }

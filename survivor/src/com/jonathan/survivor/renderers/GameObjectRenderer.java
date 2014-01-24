@@ -3,7 +3,6 @@ package com.jonathan.survivor.renderers;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
-import com.esotericsoftware.spine.Animation;
 import com.esotericsoftware.spine.Event;
 import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Assets;
@@ -11,6 +10,7 @@ import com.jonathan.survivor.World;
 import com.jonathan.survivor.entity.GameObject;
 import com.jonathan.survivor.entity.Tree;
 import com.jonathan.survivor.entity.Tree.TreeState;
+import com.jonathan.survivor.math.Rectangle;
 
 public class GameObjectRenderer 
 {
@@ -47,7 +47,7 @@ public class GameObjectRenderer
 	}
 	
 	public void render()
-	{
+	{				
 		//Sets the projection matrix of the SpriteBatch to the camera's combined matrix. Ensure everything is drawn with the camera's coordinate system.
 		batcher.setProjectionMatrix(worldCamera.combined);
 		//Starts batching sprites to be drawn to the camera.
@@ -75,8 +75,13 @@ public class GameObjectRenderer
 			GameObject go = gameObjects.get(i);
 			
 			//If the GameObject in the array is null, skip this iteration to avoid NullPointerExceptions.
-			if(go == null)
+			if(go == null || !go.getCollider().insideCamera(worldCamera))
+			{
+				System.out.println(go.getCollider().toString());
+				//System.out.println("GameObject within camera? " + go.getCollider().insideCamera(worldCamera));
 				continue;
+			}
+			
 			
 			//If the GameObject is a tree
 			if(go instanceof Tree)

@@ -52,7 +52,6 @@ public class GameObjectManager
 	 * @return A GameObject of the given class */
 	public <T> T getGameObject(Class<T> goClass)
 	{
-		System.out.println("Amount of free objects in the pool: " + poolMap.get(goClass).getFree());
 		//Either returns a tree inside the pool that is free, or creates a new tree and returns it if no free ones are available.
 		return (T) poolMap.get(goClass).obtain();
 		
