@@ -1,0 +1,7 @@
+package com.jonathan.math;
+
+public abstract class Collider {
+	private Vector2 position;
+	
+	public abstract boolean intersects(Rectangle r);
+}

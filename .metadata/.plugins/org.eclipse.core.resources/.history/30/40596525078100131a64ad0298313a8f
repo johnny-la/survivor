@@ -1,0 +1,8 @@
+package com.jonathan.survivor;
+
+public class TerrainRenderer 
+{
+
+	/** Stores the Assets singleton which stores all of the visual assets needed to draw the GameObjects. */
+	private Assets assets = Assets.instance;
+}

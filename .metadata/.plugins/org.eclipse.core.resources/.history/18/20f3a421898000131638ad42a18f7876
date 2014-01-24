@@ -1,0 +1,50 @@
+package com.jonathan.entity;
+
+public class Human extends GameObject 
+{
+	public enum Mode {
+		EXPLORING, FIGHTING
+	}
+	
+	protected Mode mode;
+	
+	public enum State {
+		IDLE, WALK, JUMP, FALL, MELEE, CHARGE, FIRE, HIT, DEAD
+	}
+	
+	protected State state;
+	
+	public enum Direction {
+		LEFT, RIGHT
+	}
+	
+	protected Direction direction;
+
+	/** Gets the mode (EXPLORING or FIGHTING) of the GameObject */
+	public Mode getMode() {
+		return mode;
+	}
+
+	/** Sets the mode (EXPLORING or FIGHTING) of the GameObject */
+	public void setMode(Mode mode) {
+		this.mode = mode;
+	}
+
+	/** Gets the state (IDLE, JUMP, etc) of the GameObject */
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		this.state = state;
+	}
+
+	public Direction getDirection() {
+		return direction;
+	}
+
+	public void setDirection(Direction direction) {
+		this.direction = direction;
+	}
+	
+}

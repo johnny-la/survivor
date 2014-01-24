@@ -1,0 +1,10 @@
+package com.jonathan.survivor.managers;
+
+public class PineTreePool extends Pool<Tree>
+{
+	@Override
+	public void newObject()
+	{
+		return new Tree();
+	}
+}

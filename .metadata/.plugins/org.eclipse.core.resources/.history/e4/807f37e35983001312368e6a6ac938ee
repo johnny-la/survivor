@@ -1,0 +1,23 @@
+package com.jonathan.survivor.renderers;
+
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.jonathan.survivor.Assets;
+import com.jonathan.survivor.World;
+
+public class HudRenderer 
+{
+	protected Stage stage;
+	
+	protected Assets assets = Assets.instance;
+	
+	protected World world;
+	
+	public HudRenderer(Stage stage, World world)
+	{
+		this.stage = stage;
+		this.world = world;
+	}
+	
+	public abstract void draw();
+	
+}

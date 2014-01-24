@@ -1,0 +1,73 @@
+package com.jonathan.math;
+
+import com.badlogic.gdx.math.MathUtils;
+
+public class Vector2 
+{
+	public static float TO_RADIANS = (float) Math.PI / 180.0f;
+	public static float TO_DEGREES = 180.0f / (float) Math.PI;
+	
+	private float x, y;
+	
+	public Vector2()
+	{
+	}
+	
+	public Vector2(float x, float y)
+	{
+		this.x = x;
+		this.y = y;
+	}
+	
+	public Vector2(Vector2 other)
+	{
+		this.x = other.x;
+		this.y = other.y;
+	}
+	
+	public Vector2 set(float x, float y)
+	{
+		this.x = x;
+		this.y = y;
+		
+		return this;
+	}
+	
+	public float angle()
+	{
+		float angle = MathUtils.atan2(y, x);
+		angle *= TO_DEGREES;
+		
+		if(angle < 0)
+			angle += 360;
+		
+		return angle;
+	}
+	
+	public float magnitude()
+	{
+		return (float)Math.sqrt(this.x*this.x + this.y*this.y);
+	}
+	
+	public float sqrMagnitude()
+	{
+		return x*x + y*y;
+	}
+	
+	public Vector2 normalize()
+	{
+		float magnitude = magnitude();
+		
+		this.x /= magnitude;
+		this.y /= magnitude;
+		
+		return this;
+	}
+	
+	public float getX()
+	{
+		
+	}
+	
+	
+}

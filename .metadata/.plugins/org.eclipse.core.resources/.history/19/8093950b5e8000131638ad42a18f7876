@@ -1,0 +1,16 @@
+package com.jonathan.survivor;
+
+/**
+ * Common interface for all level types.
+ */
+
+public interface Level 
+{
+	/** Returns the x position where the player should spawn when the level is first created. */
+	float getPlayerStartX();
+	
+	/** Returns the y position where the player should spawn when the level is first created. */
+	float getPlayerStartY();
+	
+	Vector2 getGroundHeight(float xPos);
+}

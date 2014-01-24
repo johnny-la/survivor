@@ -1,0 +1,15 @@
+package com.jonathan.survivor;
+
+import com.badlogic.gdx.graphics.OrthographicCamera;
+
+public abstract class LevelRenderer 
+{	
+	
+	/** Stores the camera where the terrain is drawn. In this case, the world camera. */
+	private OrthographicCamera worldCamera;
+	
+	/** Stores the Assets singleton which stores all of the visual assets needed to draw the GameObjects. */
+	private Assets assets = Assets.instance;
+	
+	private TerrainRenderer terrainRenderer;
+}

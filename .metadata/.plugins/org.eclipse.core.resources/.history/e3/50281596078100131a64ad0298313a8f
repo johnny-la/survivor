@@ -1,0 +1,36 @@
+package com.jonathan.survivor;
+
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
+public class TerrainRenderer 
+{
+	
+	/** Stores the default width of a line used to draw the geometry for the terrain. This is the width on the target resolution of the game. */
+	private static final float DEFAULT_LINE_WIDTH = 0.1f;
+	/** Stores the amount of segments used to draw a cosine function for a TerrainLayer. */
+	private static final int COSINE_SEGMENTS = 75;
+	
+	/** Stores the camera where the terrain is drawn. In this case, the world camera. */
+	private OrthographicCamera worldCamera;
+	/** Stores the ShapeRenderer instance used to draw the level geometry. */
+	private ShapeRenderer shapeRenderer;
+	
+	/** Stores the Assets singleton which stores all of the visual assets needed to draw the GameObjects. */
+	private Assets assets = Assets.instance;
+	
+	public TerrainRenderer(OrthographicCamera camera)
+	{
+		worldCamera = camera;
+		
+		//Creates the ShapeRenderer instance used to draw the level geometry with lines.
+		shapeRenderer = new ShapeRenderer();
+	}
+	
+	public void render(TerrainLevel level)
+	{
+		
+	}
+	
+	
+}

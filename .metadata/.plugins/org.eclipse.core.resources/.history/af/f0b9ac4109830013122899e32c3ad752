@@ -1,0 +1,46 @@
+tree_atlas@4x.png
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+CircleButton
+  rotate: false
+  xy: 468, 8
+  size: 304, 300
+  orig: 304, 300
+  offset: 0, 0
+  index: -1
+Middle_Layer
+  rotate: false
+  xy: 8, 348
+  size: 268, 300
+  orig: 268, 300
+  offset: 0, 0
+  index: -1
+Arrow
+  rotate: false
+  xy: 8, 8
+  size: 148, 128
+  orig: 148, 128
+  offset: 0, 0
+  index: -1
+Trunk
+  rotate: false
+  xy: 440, 348
+  size: 112, 204
+  orig: 112, 204
+  offset: 0, 0
+  index: -1
+Top_Layer
+  rotate: false
+  xy: 284, 348
+  size: 148, 140
+  orig: 148, 140
+  offset: 0, 0
+  index: -1
+Bottom_Layer
+  rotate: false
+  xy: 164, 8
+  size: 296, 332
+  orig: 296, 332
+  offset: 0, 0
+  index: -1

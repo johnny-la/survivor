@@ -1,0 +1,29 @@
+package com.jonathan.survivor;
+
+import com.badlogic.gdx.graphics.OrthographicCamera;
+
+public abstract class LevelRenderer 
+{	
+	/** Stores the camera where the terrain is drawn. In this case, the world camera. */
+	private OrthographicCamera worldCamera;
+	
+	/** Stores the renderer used to draw terrain. */
+	private TerrainRenderer terrainRenderer;
+	
+	public LevelRenderer(OrthographicCamera worldCamera)
+	{
+		//Stores the camera where the level should be drawn.
+		this.worldCamera = worldCamera;
+		
+		//Creates a TerrainRenderer to draw terrain geometry. Passes the camera where the lines should be drawn.
+		terrainRenderer = new TerrainRenderer(worldCamera);
+	}
+	
+	/** Renders a level's geometry. This method is a helper method which delegates the level to a more specific renderer. */
+	public void render(Level level)
+	{
+		//If the level we want to draw is a TerrainLevel
+		if(level instanceof TerrainLevel)
+			terrainRenderer.render((TerrainLevel)level);
+	}
+}

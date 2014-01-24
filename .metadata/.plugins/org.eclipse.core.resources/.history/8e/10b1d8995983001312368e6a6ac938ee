@@ -1,0 +1,6 @@
+package com.jonathan.survivor.renderers;
+
+public class HUDRenderer 
+{
+	//Stage sta
+}

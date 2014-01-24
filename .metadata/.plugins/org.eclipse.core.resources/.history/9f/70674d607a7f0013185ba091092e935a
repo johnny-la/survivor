@@ -1,0 +1,25 @@
+package com.jonathan.math;
+
+public abstract class Collider 
+{
+	/** Stores the position of the collider. If a rectangle collider is used, this position specifies the lower-left position of the rectangle. */
+	private final Vector2 position;
+	
+	/** Creates a collider placed at (0,0).
+	public Collider()
+	{
+		this(0, 0);
+	}
+	
+	public Collider(float x, float y)
+	{
+		position = new Vector2(x, y);
+	}
+	
+	public Vector2 getPosition()
+	{
+		return position;
+	}
+	
+	public abstract boolean intersects(Rectangle r);
+}

@@ -1,0 +1,15 @@
+1390130488944	Delete element
+1390132422099	Encapsulate field 'playerSkeleton'
+1390136071941	Rename local variable 'camera'
+1390137566351	Rename package 'com.jonathan.math'
+1390137574711	Rename package 'com.jonathan.entity'
+1390137585320	Rename package 'com.jonathan.components'
+1390137592324	Rename package 'com.jonathan.survivorcomponents'
+1390137601633	Move compilation units
+1390160142120	Rename compilation unit 'PineTree.java'
+1390160370197	Delete element
+1390160452054	Encapsulate field 'health'
+1390166797174	Encapsulate field 'skeleton'
+1390167871311	Encapsulate field 'state'
+1390169602474	Rename field 'state'
+1390390764579	Rename type 'HUDRenderer'

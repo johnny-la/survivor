@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move 2 elements to &apos;survivor/src/com.jonathan.survivor.screens&apos;&#x0D;&#x0A;- Original project: &apos;survivor&apos;&#x0D;&#x0A;- Destination element: &apos;survivor/src/com.jonathan.survivor.screens&apos;&#x0D;&#x0A;- Original elements:&#x0D;&#x0A;     com.jonathan.survivor.Screen.java&#x0D;&#x0A;     com.jonathan.survivor.CompanySplashScreen.java&#x0D;&#x0A;- Update references to refactored element" description="Move compilation units" destination="/src&lt;com.jonathan.survivor.screens" element1="/src&lt;com.jonathan.survivor{Screen.java" element2="/src&lt;com.jonathan.survivor{CompanySplashScreen.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" patterns="*" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1389480963192" units="2" version="1.0"/>
+</session>

@@ -1,0 +1,39 @@
+tree_atlas@2x.png
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+Middle_Layer
+  rotate: false
+  xy: 312, 4
+  size: 134, 150
+  orig: 134, 150
+  offset: 0, 0
+  index: -1
+CircleButton.png
+  rotate: false
+  xy: 156, 4
+  size: 152, 150
+  orig: 152, 150
+  offset: 0, 0
+  index: -1
+Trunk
+  rotate: false
+  xy: 82, 174
+  size: 56, 102
+  orig: 56, 102
+  offset: 0, 0
+  index: -1
+Top_Layer
+  rotate: false
+  xy: 4, 174
+  size: 74, 70
+  orig: 74, 70
+  offset: 0, 0
+  index: -1
+Bottom_Layer
+  rotate: false
+  xy: 4, 4
+  size: 148, 166
+  orig: 148, 166
+  offset: 0, 0
+  index: -1

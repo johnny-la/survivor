@@ -1,0 +1,16 @@
+package com.jonathan.survivor.managers;
+
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
+import com.esotericsoftware.spine.Skeleton;
+import com.jonathan.survivor.entity.GameObject;
+
+public abstract class GameObjectPool extends Pool<GameObject>
+{
+	public abstract GameObject newObject();
+	
+	public Array<Skeleton> getSkeletons()
+	{
+		return skeletons;
+	}
+}

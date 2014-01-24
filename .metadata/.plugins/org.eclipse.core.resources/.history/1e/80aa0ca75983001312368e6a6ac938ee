@@ -1,0 +1,12 @@
+package com.jonathan.survivor.renderers;
+
+import com.jonathan.survivor.Assets;
+
+public class HUDRenderer 
+{
+	protected Stage stage;
+	
+	protected Assets assets = Assets.instance;
+	
+	
+}

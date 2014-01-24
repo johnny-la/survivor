@@ -1,0 +1,63 @@
+package com.jonathan.math;
+
+public class Cell 
+{
+	/** Stores the row and column of the cell. */
+	private int row, col;
+	
+	/** Creates a cell at (0,0) */
+	public Cell()
+	{
+	}
+	
+	/** Creates a cell with the specified row and column */
+	public Cell(int row, int col)
+	{
+		this.row = row;
+		this.col = col;
+	}
+	
+	/** Moves the cell left by decrementing the column */
+	public void moveLeft()
+	{
+		col--;
+	}
+	
+	/** Moves the cell right by incrementing the column */
+	public void moveRight()
+	{
+		col++;
+	}
+	
+	/** Moves the cell up by incrementing the row */
+	public void moveUp()
+	{
+		row++;
+	}
+	
+	/** Moves the cell down by decrementing the column */
+	public void moveDown()
+	{
+		row--;
+	}
+	
+	public int getRow()
+	{
+		return row;
+	}
+	
+	public void setRow(int row)
+	{
+		this.row = row;
+	}
+	
+	public int getCol()
+	{
+		return col;
+	}
+	
+	public void setCol(int col)
+	{
+		this.col = col;
+	}
+}

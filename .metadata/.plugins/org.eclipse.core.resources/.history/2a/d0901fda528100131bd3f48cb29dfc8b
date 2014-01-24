@@ -1,0 +1,60 @@
+package com.jonathan.survivor.entity;
+
+import com.badlogic.gdx.utils.Pool.Poolable;
+import com.esotericsoftware.spine.Skeleton;
+import com.jonathan.survivor.Assets;
+
+public class Tree extends GameObject
+{
+	/** Stores the width and height of a tree's rectangle collider in world units. */
+	public static final float COLLIDER_WIDTH = 2.313f, COLLIDER_HEIGHT = 4.063f;
+	
+	/** Stores the tree's health. Once it drops below zero, it is destroyed. */
+	private float health;
+	
+	public enum TreeState {
+		IDLE, HIT, DESTROYED
+	}
+	
+	private TreeState 
+	
+	/** Creates a tree whose bottom-center is at position (0, 0). */
+	public Tree()
+	{
+		this(0,0);
+	}
+	
+	/** Creates a tree whose bottom-center is at position (x, y). */
+	public Tree(float x, float y)
+	{
+		super(x, y, COLLIDER_WIDTH, COLLIDER_HEIGHT);
+		
+		//Creates the skeleton used by the tree to render itself. The TreeSkeletonData is used to load the bone information for the skeleton.
+		setSkeleton(new Skeleton(Assets.instance.treeSkeletonData));
+	}
+	
+	/** Updates the tree every frame. */
+	public void update(float deltaTime)
+	{
+		//Increments the stateTime of the tree to keep track of what point of the tree's animation should be playing.
+		stateTime += deltaTime;
+	}
+
+	/** Deals damage to the tree by removing the given amount from its health. */
+	public void takeDamage(float damage)
+	{
+		//Subtract the tree's health by the damage dealt.
+		health -= damage;
+	}
+	
+	/** Gets the tree's health. */
+	public float getHealth() {
+		return health;
+	}
+
+	/** Sets the tree's health. */
+	public void setHealth(float health) {
+		this.health = health;
+	}
+
+}
