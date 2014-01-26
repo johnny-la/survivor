@@ -1,0 +1,13 @@
+package com.jonathan.survivor;
+
+import com.jonathan.survivor.managers.ProfileManager;
+
+public class Settings 
+{
+	private ProfileManager profileManager;
+	
+	public void save()
+	{
+		profileManager.saveCurrentProfile()
+	}
+}

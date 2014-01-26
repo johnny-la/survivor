@@ -1,16 +1,18 @@
 package com.jonathan.survivor.renderers;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.spine.Event;
 import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Assets;
+import com.jonathan.survivor.TerrainLevel;
 import com.jonathan.survivor.World;
 import com.jonathan.survivor.entity.GameObject;
+import com.jonathan.survivor.entity.InteractiveObject;
+import com.jonathan.survivor.entity.InteractiveObject.InteractiveState;
 import com.jonathan.survivor.entity.Tree;
-import com.jonathan.survivor.entity.Tree.TreeState;
-import com.jonathan.survivor.math.Rectangle;
 
 public class GameObjectRenderer 
 {
@@ -26,9 +28,8 @@ public class GameObjectRenderer
 	private OrthographicCamera worldCamera;
 	/** Stores the PlayerRenderer instance used to render the Player GameObject. */
 	private PlayerRenderer playerRenderer;
-	
-	//Helper Array that's passed to the Animation.set() method.
-	private Array<Event> events = new Array<Event>();
+	/** Stores the InteractiveObjectRenderer instance used to render any InteractiveObjects contained in the world's current level. */
+	private InteractiveObjectRenderer interactiveObjectRenderer;
 	
 	/** Accepts the world from which we find the GameObjects to draw, the SpriteBatch used to draw the GameObjects, and the world camera
 	 *  where the GameObjects are drawn. */
@@ -43,6 +44,9 @@ public class GameObjectRenderer
 		
 		//Creates a playerRenderer from the player GameObject, the SpriteBatch instance to draw the player, and the worldCamera, where the Player will be drawn.
 		playerRenderer = new PlayerRenderer(world.getPlayer(), batcher, worldCamera);
+		//Creates an InteractiveObjectRenderer, passing the SpriteBatch it will use to draw the InteractiveObjects.
+		interactiveObjectRenderer = new InteractiveObjectRenderer(batcher);
+		
 		
 	}
 	
@@ -80,49 +84,28 @@ public class GameObjectRenderer
 				continue;
 			}
 			
+			//Stores whether or not to draw the GameObject with transparency.
+			boolean drawTransparent = false;
 			
-			//If the GameObject is a tree
-			if(go instanceof Tree)
-				//Render the tree, casting it into its appropriate type.
-				renderTree((Tree)go);
+			//If the world's level is a TerrainLevel
+			if(world.getLevel() instanceof TerrainLevel)
+			{
+				//If the GameObject is not in the center row, it is not in the Player's current row. Thus, draw the object with transparency.
+				if(go.getTerrainCell().getRow() != ((TerrainLevel)world.getLevel()).getCenterRow())
+				{
+					//Draw the GameObject transparently.
+					drawTransparent = true;
+				}
+			}
+			
+			//If the GameObject is an InteractiveObject
+			if(go instanceof InteractiveObject)
+				//Pass the drawing call to the InteractiveObjectRenderer, specifying whether or not it should be drawn transparent.
+				interactiveObjectRenderer.draw((InteractiveObject) go, drawTransparent);
 		}
 		
 	}
 	
-	/** Renders a Tree GameObject, which contains a Spine Skeleton instance which can be drawn to the screen. */
-	private void renderTree(Tree tree)
-	{
-		//Stores the Spine skeleton of the tree which controls its appearance.
-		Skeleton skeleton = tree.getSkeleton();
-		
-		//Sets the bottom-center position of the skeleton to the tree's bottom-center position. Note that Skeleton/GameObject.position hold the bottom-center of the tree.
-		skeleton.setX(tree.getX());
-		skeleton.setY(tree.getY());
-		
-		//If the tree has jump spawned
-		if(tree.getTreeState() == TreeState.SPAWN)
-		{
-			//Reset the tree's skeleton to its setup pose to undo any changes previously done to the skeleton's bones.
-			skeleton.setToSetupPose();
-			
-			//Sets the state time of the tree to a random time so that the idle animation starts playing at a random place for every tree.
-			tree.setStateTime((float)Math.random() * 10);
-			//Sets the tree's state to IDLE, indicating that the renderer has received the message that the tree has spawned.
-			tree.setTreeState(TreeState.IDLE);
-		}
-		//Else, if the tree is in IDLE state
-		else if(tree.getTreeState() == TreeState.IDLE)
-		{
-			//Apply the 'treeIdle' animation to the tree's skeleton. Second and third arguments specify how much time the tree has been idle, third indicates we want to 
-			//loop the animation, and last is an array where any possible animation events are delegated.
-			assets.treeIdle.apply(skeleton, tree.getStateTime(), tree.getStateTime(), true, events);
-		}
-		
-		//Updates the Skeleton in the world.
-		skeleton.updateWorldTransform();
-		
-		//Draws the tree's skeleton using the universal SkeletonRenderer instance, along with the GameScreen's SpriteBatch.
-		assets.skeletonRenderer.draw(batcher, skeleton);
-	}
+	
 
 }

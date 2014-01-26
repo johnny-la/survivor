@@ -1,0 +1,16 @@
+package com.jonathan.survivor.inventory;
+
+public class Loadout 
+{
+	/** Stores the MeleeWeapon held in the loadout. */
+	private MeleeWeapon meleeWeapon;
+
+	/** Stores the MeleeWeapon held in the loadout. */
+	public MeleeWeapon getMeleeWeapon() {
+		return meleeWeapon;
+	}
+
+	public void setMeleeWeapon(MeleeWeapon meleeWeapon) {
+		this.meleeWeapon = meleeWeapon;
+	}
+}

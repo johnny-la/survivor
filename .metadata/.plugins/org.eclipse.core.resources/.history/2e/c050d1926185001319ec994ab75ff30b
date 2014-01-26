@@ -1,0 +1,9 @@
+package com.jonathan.survivor;
+
+public class Weapon extends Item
+{
+	public Weapon(String name, String description)
+	{
+		super(Type.WEAPON, name, description);
+	}
+}

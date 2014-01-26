@@ -1,0 +1,9 @@
+package com.jonathan.survivor.entity;
+
+public class InteractiveObject extends GameObject implements Clickable
+{
+
+	@Override
+	public abstract void update(float deltaTime);
+
+}

@@ -1,0 +1,10 @@
+package com.jonathan.survivor;
+
+public class Weapon extends Item
+{
+	/** Creates a weapon with the given name and description. */
+	public Weapon(String name, String description)
+	{
+		super(Type.WEAPON, name, description);
+	}
+}

@@ -103,6 +103,10 @@ public class TerrainRenderer
 						
 						//Finds the x-position of the right-end of the segment simply by adding a segment width to the left-end's x-position.
 						float x2 = x1 + segmentWidth;
+						
+						//Cap the segment's right-end x-position to the x-position of the right end-point of the layer. Ensure we don't draw too much.
+						x2 = (x2 > rightEndPoint.x)? rightEndPoint.x : x2;
+						
 						//Stores the y-position of the right-end of the segment. Found by finding the height of the bottom of the layer at the point's x-position.
 						float y2 = layers[i][j].getBottomLayerHeight(x2);
 						
@@ -111,10 +115,7 @@ public class TerrainRenderer
 						{
 							continue;
 						}
-						
-						//Cap the segment's right-end x-position to the x-position of the right end-point of the layer. Ensure we don't draw too much.
-						//x2 = (x2 > rightEndPoint.x)? rightEndPoint.x : x2;
-		
+
 						//Draws a segment of the bottom of the cosine function. Renders a line going from the left-end segment to the right-end. Note that the y-value
 						//of the segment is found using 'TerrainLayer.getBottomLayerHeight()'. We take the bottom height since we are drawing the bottom layer portion.
 						shapeRenderer.line(x1, y1, x2, y2);
@@ -156,6 +157,6 @@ public class TerrainRenderer
 	public void resize(float screenScale)
 	{
 		//Sets the width of the OpenGL ES lines that will draw the level geometry. We take the default width at target resolution, and multiply it by the screen's scale.
-		Gdx.gl10.glLineWidth(DEFAULT_LINE_WIDTH * screenScale);
+		//Gdx.gl10.glLineWidth(DEFAULT_LINE_WIDTH * screenScale);
 	}
 }

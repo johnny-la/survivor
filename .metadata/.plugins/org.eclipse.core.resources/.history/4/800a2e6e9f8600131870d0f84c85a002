@@ -1,0 +1,10 @@
+package com.jonathan.survivor;
+
+public class MeleeWeapon extends Weapon
+{
+	/** Accepts the name and the description of the melee weapon. */
+	public MeleeWeapon(String name, String description)
+	{
+		super(name, description);
+	}
+}

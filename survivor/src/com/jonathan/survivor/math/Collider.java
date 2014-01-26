@@ -35,6 +35,9 @@ public abstract class Collider
 	/** Returns true if this collider intersects with another collider*/
 	public abstract boolean intersects(Collider r);
 	
+	/** Returns true if this point is within the collider. */
+	public abstract boolean intersects(Vector2 point);
+	
 	/** Returns true if this collider is inside the camera. */
 	public abstract boolean insideCamera(OrthographicCamera cam);
 }

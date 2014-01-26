@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.badlogic.gdx.utils.Pool;
 import com.jonathan.survivor.Assets;
+import com.jonathan.survivor.Profile;
 import com.jonathan.survivor.entity.GameObject;
 import com.jonathan.survivor.entity.Player;
 import com.jonathan.survivor.entity.Tree;
@@ -19,10 +20,11 @@ public class GameObjectManager
 	/** Stores the Assets singleton used to access the visual assets used by the game. */
 	Assets assets = Assets.instance;
 	
-	public GameObjectManager()
+	/** Accepts the player's profile to re-create some GameObjects using save data. */
+	public GameObjectManager(Profile profile)
 	{
-		//Creates the player GameObject to be controlled by the user.
-		createPlayer();
+		//Creates the player GameObject to be controlled by the user. Passes in the player's profile to recreate the player with loaded settings.
+		createPlayer(profile);
 		
 		//Creates a new HashMap of pools where every GameObject class is a key to a pool of its GameObjects. Used for easy management of pools.
 		poolMap = new HashMap<Class, Pool>();
@@ -31,11 +33,14 @@ public class GameObjectManager
 		poolMap.put(Tree.class, new TreePool());
 	}
 	
-	/** Creates the player GameObject, along with his skeleton. */
-	private void createPlayer()
+	/** Creates the player GameObject, along with his skeleton. Accepts profile to re-create the player with his old settings. */
+	private void createPlayer(Profile profile)
 	{
 		//Creates a new Player GameObject instance.
 		player = new Player();
+		
+		//Set the player's loadout to the one saved in the profile.
+		player.setLoadout(profile.getLoadout());
 		
 		//Ensures that the skeleton is in its setup pose by default.
 		player.getSkeleton().setToSetupPose();	

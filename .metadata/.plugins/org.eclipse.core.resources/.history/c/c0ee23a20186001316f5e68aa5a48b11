@@ -1,0 +1,6 @@
+package com.jonathan.survivor.entity;
+
+public class InteractiveObject extends GameObject implements Clickable
+{
+
+}

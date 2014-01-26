@@ -5,8 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.jonathan.survivor.World;
-import com.jonathan.survivor.entity.Human.State;
 
 /*
  * An instance of this class will display the HUD whilst in EXPLORATION mode.
@@ -27,6 +28,7 @@ public class ExplorationRenderer extends HudRenderer
 	/** Stores the listener used to listen for events from the arrow buttons. */
 	private ArrowButtonListener arrowButtonListener;
 	
+	/** Stores the buttons displaying the left and right arrows to move the player. */
 	private boolean leftArrowButtonDown, rightArrowButtonDown;
 	
 	/** Accepts the stage where 2d widgets will be drawn and placed, and the world, which will receive information about
@@ -38,6 +40,10 @@ public class ExplorationRenderer extends HudRenderer
 		//Creates the left and right arrow buttons for movement.
 		leftArrowButton = new ImageButton(assets.leftArrowButtonStyle);
 		rightArrowButton = new ImageButton(assets.rightArrowButtonStyle);
+
+		//Resize the buttons according to the scale factor of the screen so that every atlas size creates the button with the same size in world units.
+		leftArrowButton.setSize(leftArrowButton.getWidth() / assets.scaleFactor, leftArrowButton.getHeight() / assets.scaleFactor);
+		rightArrowButton.setSize(rightArrowButton.getWidth() / assets.scaleFactor, rightArrowButton.getHeight() / assets.scaleFactor);
 		
 		//Sets the colors of the buttons.
 		leftArrowButton.setColor(ARROW_BUTTON_COLOR);
@@ -134,12 +140,11 @@ public class ExplorationRenderer extends HudRenderer
 		//Anchor the left arrow button to the bottom left of the screen using the offset constants.
 		leftArrowButton.setPosition(ARROW_BUTTON_X_OFFSET, ARROW_BUTTON_Y_OFFSET);
 		//Anchor the right arrow button to the bottom right of the screen using the offset constants.
-		rightArrowButton.setPosition(stage.getWidth() - rightArrowButton.getWidth() - ARROW_BUTTON_X_OFFSET, ARROW_BUTTON_Y_OFFSET);
+		rightArrowButton.setPosition(stage.getWidth() - rightArrowButton.getWidth() - ARROW_BUTTON_X_OFFSET, ARROW_BUTTON_Y_OFFSET);	
 		
 		//Add the widgets to the stage.
 		stage.addActor(leftArrowButton);
 		stage.addActor(rightArrowButton);
-		
 	}
 	
 }

@@ -1,0 +1,158 @@
+player_atlas@4x.png
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+LeftShoulder
+  rotate: false
+  xy: 920, 264
+  size: 76, 88
+  orig: 76, 86
+  offset: 0, -2
+  index: -1
+LeftLeg0002
+  rotate: false
+  xy: 920, 8
+  size: 84, 120
+  orig: 81, 120
+  offset: 0, 0
+  index: -1
+Face0004
+  rotate: false
+  xy: 8, 864
+  size: 164, 140
+  orig: 164, 137
+  offset: 0, -3
+  index: -1
+Head0003
+  rotate: false
+  xy: 8, 8
+  size: 304, 436
+  orig: 306, 435
+  offset: 0, -1
+  index: -1
+Body0002
+  rotate: false
+  xy: 464, 716
+  size: 188, 200
+  orig: 186, 200
+  offset: 0, 0
+  index: -1
+RightShoulder
+  rotate: false
+  xy: 548, 336
+  size: 68, 88
+  orig: 66, 86
+  offset: 0, -2
+  index: -1
+RightLeg0002
+  rotate: false
+  xy: 920, 452
+  size: 72, 124
+  orig: 70, 122
+  offset: 0, -2
+  index: -1
+Face0003
+  rotate: false
+  xy: 180, 864
+  size: 164, 140
+  orig: 164, 137
+  offset: 0, -3
+  index: -1
+LeftArm
+  rotate: false
+  xy: 548, 432
+  size: 60, 96
+  orig: 58, 96
+  offset: 0, 0
+  index: -1
+Head0004
+  rotate: false
+  xy: 648, 8
+  size: 264, 300
+  orig: 306, 435
+  offset: 40, -1
+  index: -1
+Body0001
+  rotate: false
+  xy: 660, 596
+  size: 188, 200
+  orig: 186, 200
+  offset: 0, 0
+  index: -1
+RightLeg0001
+  rotate: false
+  xy: 920, 584
+  size: 72, 124
+  orig: 70, 122
+  offset: 0, -2
+  index: -1
+Face0002
+  rotate: false
+  xy: 320, 716
+  size: 136, 128
+  orig: 164, 137
+  offset: 12, -3
+  index: -1
+LeftHand
+  rotate: false
+  xy: 920, 360
+  size: 76, 84
+  orig: 74, 81
+  offset: 0, -3
+  index: -1
+RightArm
+  rotate: false
+  xy: 320, 596
+  size: 64, 112
+  orig: 62, 111
+  offset: 0, -1
+  index: -1
+Head0001
+  rotate: false
+  xy: 648, 316
+  size: 264, 272
+  orig: 306, 435
+  offset: 40, -1
+  index: -1
+Head0005
+  rotate: false
+  xy: 8, 452
+  size: 304, 404
+  orig: 306, 435
+  offset: 4, -1
+  index: -1
+Face0001
+  rotate: false
+  xy: 392, 596
+  size: 148, 96
+  orig: 164, 137
+  offset: 8, 33
+  index: -1
+LeftLeg0001
+  rotate: false
+  xy: 920, 136
+  size: 84, 120
+  orig: 81, 120
+  offset: 0, 0
+  index: -1
+RightHand
+  rotate: false
+  xy: 548, 536
+  size: 60, 68
+  orig: 60, 68
+  offset: 0, 0
+  index: -1
+Head0002
+  rotate: false
+  xy: 352, 8
+  size: 288, 320
+  orig: 306, 435
+  offset: 16, -1
+  index: -1
+Body0003
+  rotate: false
+  xy: 320, 336
+  size: 188, 200
+  orig: 186, 200
+  offset: 0, 0
+  index: -1

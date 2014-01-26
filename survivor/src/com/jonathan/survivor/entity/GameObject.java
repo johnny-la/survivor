@@ -72,7 +72,7 @@ public abstract class GameObject
 		//If the collider used by the GameObject is a rectangle
 		if(collider instanceof Rectangle)
 			//Place the lower left position of the collider at the right point. Note that a rectangle's position is its bottom-left corner.
-			collider.getPosition().set(position.x - ((Rectangle)collider).getWidth()/2, position.y - ((Rectangle)collider).getHeight()/2);
+			collider.getPosition().set(position.x - ((Rectangle)collider).getWidth()/2, position.y);
 	}
 	
 	/** Retrieves the bottom-center position of the gameObject as a Vector2. Operations can be performed on the Vector2 using its 

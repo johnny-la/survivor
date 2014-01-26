@@ -1,0 +1,7 @@
+package com.jonathan.survivor.inventory;
+
+public class Loadout 
+{
+	/** Stores the MeleeWeapon held in the loadout.
+	private MeleeWeapon meleeWeapon;
+}

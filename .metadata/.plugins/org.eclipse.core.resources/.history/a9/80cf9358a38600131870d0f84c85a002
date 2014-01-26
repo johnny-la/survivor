@@ -1,0 +1,11 @@
+package com.jonathan.survivor;
+
+public class Settings 
+{
+	private Profile profile;
+	
+	public void save()
+	{
+		
+	}
+}

@@ -2,6 +2,9 @@ package com.jonathan.survivor.entity;
 
 import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Assets;
+import com.jonathan.survivor.entity.InteractiveObject.InteractiveState;
+import com.jonathan.survivor.inventory.Axe;
+import com.jonathan.survivor.inventory.Loadout;
 
 public class Player extends Human
 {
@@ -10,13 +13,16 @@ public class Player extends Human
 	public static final float COLLIDER_HEIGHT = 2.5f;
 	
 	/** Stores the maximum walk speed of the player in the horizontal direction. */
-	public static final float MAX_WALK_SPEED = 4f;
+	public static final float MAX_WALK_SPEED = 6f;
 	
 	public static final float WALK_ACCELERATION = 1;
 	/** Stores the jump speed of the player in the vertical direction. */
 	public static final float JUMP_SPEED = 10.7f;
 	/** Stores the downwards speed at which the player falls through a TerrainLayer. */
 	public static final float FALL_SPEED = -5;
+	
+	/** Stores the player's loadout, containing the player's active weapons. */
+	private Loadout loadout;
 	
 	/** Creates a player whose bottom-center is at position (0, 0). */
 	public Player()
@@ -35,6 +41,7 @@ public class Player extends Human
 		//The player is always in exploration mode by default and not in fighting mode.
 		setMode(Mode.EXPLORING);
 		
+		//Set the player to SPAWN state once instantiated.
 		setState(State.SPAWN);
 	}
 	
@@ -64,6 +71,9 @@ public class Player extends Human
 			getTerrainCell().moveUp();
 		}
 		
+		//Make the player lose his target so that he stops walking to a specific GameObject after jumping.
+		loseTarget();
+		
 	}
 
 	/** Makes the player fall through one layer. */
@@ -78,36 +88,63 @@ public class Player extends Human
 		//Move the player down a terrain cell.
 		getTerrainCell().moveDown();
 		
+		//Make the player lose his target so that he stops walking to a specific GameObject after falling.
+		loseTarget();
 	}
 
-	/** Moves the player to the right by setting his x-velocity to his walk speed. */
-	public void moveRight() 
+	/** Makes the player start to chop a tree */
+	public void chopTree()
 	{
-		//Set the player's x-velocity to his walk speed.
-		//getVelocity().x = (getVelocity().x > MAX_WALK_SPEED)? MAX_WALK_SPEED:getVelocity().x;
-		
-		getAcceleration().x = WALK_ACCELERATION;
-		//Tell the player he is in walking state.
-		setState(State.WALK);
+		//If the player has a melee weapon equipped
+		if(loadout.getMeleeWeapon() != null)
+		{
+			//Start chopping the tree.
+			setState(State.CHOP_TREE);
+		}
 	}
 	
-	/** Moves the player to the left by setting his x-velocity to the negative of his walk speed. */
-	public void moveLeft() 
-	{
-		//Set the player's x-velocity to the negative of his walk speed.
-	//getVelocity().x = -WALK_SPEED;
+	/** Called when the player has hit the tree stored as his target. */
+	public void hitTree() 
+	{	
+		//Retrieve the hit tree, which is the player's target.
+		Tree tree = (Tree)getTarget();
+		//Tell the tree it was hit so that it plays the correct animation.
+		tree.setInteractiveState(InteractiveState.HIT);
 		
-		//Tell the player he is in walking state.
-		setState(State.WALK);
+		//tree.takeDamage(damage);
 	}
 	
-	public void stopWalking()
+	/** Called when the player loses his target. */
+	@Override
+	public void loseTarget()
 	{
-		//Stop the player from moving in the x-direction.
-		getVelocity().x = 0;
+		//Store the player's old target
+		GameObject oldTarget = getTarget();
 		
-		//Tell the player he is now in IDLE state, since he has stopped walking.
-		setState(State.IDLE);
+		//If it isn't null
+		if(oldTarget != null)
+		{
+			//If it is an Interactive GameObject
+			if(oldTarget instanceof InteractiveObject)
+			{
+				//Untarget the old target.
+				((InteractiveObject) oldTarget).untargetted();
+			}
+		}
+		
+		//Lose the target.
+		super.loseTarget();
+		
+	}
+
+	/** Retrieves the player's loadout containing the player's weapons. */
+	public Loadout getLoadout() {
+		return loadout;
+	}
+
+	/** Sets the player's loadout. */
+	public void setLoadout(Loadout loadout) {
+		this.loadout = loadout;
 	}
 
 }

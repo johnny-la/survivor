@@ -1,0 +1,10 @@
+package com.jonathan.survivor.entity;
+
+/*
+ * Marker interface for 
+ */
+
+public interface Clickable 
+{
+
+}

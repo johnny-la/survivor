@@ -1,0 +1,14 @@
+package com.jonathan.survivor;
+
+public class Settings 
+{
+	/** Stores the profile where data will be saved. */
+	private Profile profile;
+	
+	private ProfileManager profileManager;
+	
+	public void save()
+	{
+		p
+	}
+}

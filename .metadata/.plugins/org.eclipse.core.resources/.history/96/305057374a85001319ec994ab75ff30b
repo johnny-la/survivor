@@ -1,0 +1,10 @@
+package com.jonathan.survivor.entity;
+
+/*
+ * Marker interface for GameObjects that, when clicked, the player move towards it.
+ */
+
+public interface Clickable 
+{
+
+}

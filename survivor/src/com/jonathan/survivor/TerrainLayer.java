@@ -5,11 +5,10 @@ import java.util.Random;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.jonathan.survivor.entity.GameObject;
+import com.jonathan.survivor.entity.InteractiveObject.InteractiveState;
 import com.jonathan.survivor.entity.Tree;
-import com.jonathan.survivor.entity.Tree.TreeState;
 import com.jonathan.survivor.managers.GameObjectManager;
 import com.jonathan.survivor.math.Vector2;
-
 /**
  * Defines the geometry for a layer of terrain. A TerrainLevel contains these layers and manages them.
  * @author Clementine
@@ -147,9 +146,8 @@ public class TerrainLayer
 		
 		//Gets a random float from [0,1] to define the type of the terrain.
 		float randType = terrainRand.nextFloat();
-		System.out.println(randType);
 		//If the random number is above this value
-		if(randType > 0.7f)
+		if(randType > 0.5f)
 		{
 			//Make the terrain layer have a COSINE geometry by setting its type to COSINE.
 			terrainType = TerrainType.COSINE;
@@ -181,7 +179,7 @@ public class TerrainLayer
 			cosineYOffset = leftPoint.y - amplitude;
 		}
 		//Else, if the random float is greater than this value
-		else if(randType > 0.5f)
+		else if(randType > 0.2f)
 		{
 			//Make the terrain a linear terrain, modeled by a linear equation.
 			terrainType = TerrainType.LINEAR;
@@ -251,20 +249,27 @@ public class TerrainLayer
 		//Sets the seed of the objectRand instance to the new seed. Numbers will be generated to define the which objects are on the layer.
 		objectRand.setSeed(objectSeed);
 		
+		//Stores the index of the object being placed on the layer. Starts at 0 for the left-most object, and increments by one for each object.
 		int objectIndex = 0;
 		
+		//Cycles from the left-most x-point of the layer, plus an offset, and increments by the object spacing until the end x-point is reached.
 		for(float x = leftPoint.x + OBJECT_SPACING; x < rightPoint.x; x += OBJECT_SPACING)
 		{
 			if(objectRand.nextFloat() > 0.5f)
 			{
+				//Retrieves a tree GameObject from a pool inside the GameObjectManager.
 				Tree tree = goManager.getGameObject(Tree.class);
-				tree.setTreeState(TreeState.SPAWN);
+				//Tell the tree that it has just spawned
+				tree.setInteractiveState(InteractiveState.SPAWN);
+				//Sets the terrain cell to the layer's row and column so that the tree knows which layer it is in.
 				tree.setTerrainCell(row, col);
+				//Positions the tree at the current x-position, and the correct y-position according to the object height at the given x-position.
 				tree.setPosition(x, getObjectHeight(x));
 				
 				//Add the tree GameObject to the array of trees held by the layer.
 				trees.add(tree);
 				
+				//Increment x by the width of the tree so that the next object doesn't overlap.
 				x += Tree.COLLIDER_WIDTH / 2;
 			}
 		}

@@ -51,6 +51,21 @@ public class Rectangle extends Collider
 		return false;
 	}
 	
+	/** Returns true if this point is within the rectangle. */
+	@Override
+	public boolean intersects(Vector2 point)
+	{
+		//If the point lies within the rectangle, return true.
+		if(point.x >= getPosition().x && point.x <= getPosition().x + this.width && 
+		   point.y >= getPosition().y && point.y <= getPosition().y + this.height )
+		{
+			return true;
+		}
+		
+		//Return false if the point is not inside the rectangle.
+		return false;
+	}
+	
 	/** Returns true if this rectangle collider is inside the bounds of the camera. Used for culling. */
 	public boolean insideCamera(OrthographicCamera camera)
 	{

@@ -1,0 +1,22 @@
+package com.jonathan.survivor.renderers;
+
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.jonathan.survivor.Assets;
+
+public class InteractiveObjectRenderer 
+{
+	/** Stores the SpriteBatcher used to draw the GameObjects. */
+	private SpriteBatch batcher;	
+	
+	/** Stores the Assets singleton which stores all of the visual assets needed to draw the interactive GameObjects. */
+	private Assets assets = Assets.instance;
+	
+	/** Accepts the SpriteBatch instance used to draw the Interactive GameObjects. */
+	public InteractiveObjectRenderer(SpriteBatch batcher)
+	{
+		//Stores the SpriteBatch instance used to draw the Interactive GameObjects.
+		this.batcher = batcher;
+	}
+	
+	public void draw(Interactive)
+}

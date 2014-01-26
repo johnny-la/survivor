@@ -2,10 +2,10 @@ package com.jonathan.survivor.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.jonathan.survivor.Profile;
+import com.jonathan.survivor.Settings;
 import com.jonathan.survivor.Survivor;
 import com.jonathan.survivor.World;
 import com.jonathan.survivor.managers.GestureManager;
@@ -65,7 +65,7 @@ public class GameScreen extends Screen
 		worldRenderer = new WorldRenderer(world, batcher);
 		
 		//Creates a GestureManager with the given world. This manager receieves all gesture events such as swipes and changes the world's GameObjects accordingly.
-		inputManager = new InputManager(world);
+		inputManager = new InputManager(world, worldRenderer.getWorldCamera());
 		//Creates an InputManager with the given world. This manager receives all touch events and reacts by calling appropriate GameObject methods. 
 		gestureManager = new GestureManager(world);
 		
@@ -126,14 +126,6 @@ public class GameScreen extends Screen
 		
 		//Draws the HUD to the screen, depending on game state.
 		hudRenderer.draw(deltaTime);
-	}
-	
-	private void drawExploringUI(float deltaTime)
-	{
-		//Update the stage
-		stage.act(deltaTime);
-		//Draw the 2d widgets on the stage.
-		stage.draw();
 	}
 	
 	/** Sets the GameState. Updates the hudRenderer to draw the correct HUD. */

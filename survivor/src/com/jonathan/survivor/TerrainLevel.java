@@ -228,7 +228,7 @@ public class TerrainLevel implements Level
 			//Sets the start position of the layer to its new x-position and y-position. The start position we set is the bottom-right (x,y) coordinate of the layer.
 			//Since the layer's right point is given, we set the last argument to LEFT to tell the method that the layer is going from right to left.
 			rightLayer.setStartPosition(newXPos, newYPos, TerrainDirection.LEFT);
-			//Frees the GameObjects belonging to the layer back into their respective pools so that they can be reused after.
+			//Frees the GameObjects belonging to the layer back into their respective pools so that they can be reused for other layers.
 			rightLayer.freeGameObjects();
 			//Resets the layer so that its geometry and GameObjects match its new column.
 			rightLayer.resetLayer();
@@ -310,6 +310,13 @@ public class TerrainLevel implements Level
 		return layers[NUM_LAYER_ROWS/2][NUM_LAYER_COLS/2];
 	}
 	
+	/** Returns an array of all the TerrainLayers in the middle of the level, in terms of height. */
+	public TerrainLayer[] getMiddleLayers()
+	{
+		//Returns the TerrainLayers in the middle row of the level.
+		return layers[NUM_LAYER_ROWS/2];
+	}
+	
 	/** Gets the bottom-left-most layer which visible in the level. */
 	public TerrainLayer getBottomLeftLayer()
 	{
@@ -336,6 +343,20 @@ public class TerrainLevel implements Level
 	{
 		//Returns the center layer's column.
 		return getCenterLayer().getCol();
+	}
+	
+	/** Returns the row of the TerrainLayer at the bottom-left of the level. */
+	public int getBottomLeftRow() 
+	{
+		//Return's the bottom-left layer's row.
+		return getBottomLeftLayer().getRow();
+	}
+	
+	/** Returns the column of the TerrainLayer at the bottom-left of the level. */
+	public int getBottomLeftCol() 
+	{
+		//Return's the bottom-left layer's column.
+		return getBottomLeftLayer().getCol();
 	}
 	
 	/** Returns the x-position where the user should spawn when he is first dropped in the level. In this case, the center TerrainLayer of the level. */

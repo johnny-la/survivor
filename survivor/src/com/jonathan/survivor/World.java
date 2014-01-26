@@ -1,11 +1,15 @@
 package com.jonathan.survivor;
 
 import com.badlogic.gdx.utils.Array;
+import com.jonathan.survivor.entity.Clickable;
 import com.jonathan.survivor.entity.GameObject;
 import com.jonathan.survivor.entity.Human;
 import com.jonathan.survivor.entity.Human.Direction;
 import com.jonathan.survivor.entity.Human.State;
+import com.jonathan.survivor.entity.InteractiveObject;
+import com.jonathan.survivor.entity.InteractiveObject.InteractiveState;
 import com.jonathan.survivor.entity.Player;
+import com.jonathan.survivor.entity.Tree;
 import com.jonathan.survivor.managers.GameObjectManager;
 import com.jonathan.survivor.math.Vector2;
 
@@ -38,6 +42,9 @@ public class World
 	
 	/** Holds the Player GameObject that the user is guiding around the world. */
 	private Player player;
+	
+	/** Helper Vector2 used to store the world coordinates of the last known touch. */
+	private Vector2 touchPoint;
 
 	public World(int worldSeed, Profile profile)
 	{
@@ -50,7 +57,7 @@ public class World
 		worldState = WorldState.EXPLORING;
 		
 		//Creates a GameObjectManager which stores and creates and manages all the instances of GameObjects.
-		goManager = new GameObjectManager();
+		goManager = new GameObjectManager(profile);
 		
 		//Creates a new TerrainLevel using the world seed. This level is a container of TerrainLayers that the user can traverse. The terrain row and
 		//column offsets from the profile are specified so that the user begins in the same place he last left off in the terrain. The GameObjectManager
@@ -63,6 +70,9 @@ public class World
 		player = goManager.getPlayer();
 		//Sets up the player's initial values when being dropped into the world.
 		setupPlayer();
+		
+		//Creates a Vector2 instance to hold the coordinates of the latest touch.
+		touchPoint = new Vector2();
 	}
 	
 	/** Called every frame to update the world and its GameObjects. */
@@ -77,6 +87,9 @@ public class World
 	/**Updates the player, his movement, and his game logic. */
 	private void updatePlayer(float deltaTime)
 	{
+		//Check if the player has collided with anything of importance.
+		checkPlayerCollisions();
+		
 		if(player.getState() == State.IDLE)
 		{
 			
@@ -86,6 +99,9 @@ public class World
 		{
 			//Set the player's acceleration to the acceleration gravity.
 			player.setAcceleration(GRAVITY.x, GRAVITY.y);
+			
+			//FAILSAFE. Checks if the player switched layers by either moving to the right or left of his current layer. If so, we move the player over by a cell. 
+			checkForLayerSwitch(player);
 			
 			//If the player has collided with the ground
 			if(checkGroundCollision(player))
@@ -133,9 +149,13 @@ public class World
 		//Retrieves all of the GameObjects stored inside the world's level
 		Array<GameObject> gameObjects = level.getGameObjects();
 		
+		//Cycle through all of the GameObjects contained in the level
 		for(int i = 0; i < gameObjects.size; i++)
 		{
+			//Store the GameObject
 			GameObject go = gameObjects.get(i);
+			
+			//Update the GameObject.
 			go.update(deltaTime);
 		}
 	}
@@ -193,6 +213,9 @@ public class World
 		player.setState(State.WALK);
 		//Makes the player walk in the right direction. This world's update() method knows how to interpret this direction.
 		player.setDirection(Direction.RIGHT);
+		
+		//Make the player lose his target once he has started to walk using the arrow buttons.
+		player.loseTarget();
 	}
 	
 	/** This method is called once to make the player move to the left. */
@@ -206,6 +229,9 @@ public class World
 		player.setState(State.WALK);
 		//Makes the player walk in the left direction.
 		player.setDirection(Direction.LEFT);
+		
+		//Make the player lose his target once he has started to walk using the arrow buttons.
+		player.loseTarget();
 	}
 	
 	/** Stops the given Human GameObject from moving. */
@@ -215,10 +241,86 @@ public class World
 		human.setVelocityX(0);
 		
 		//Only set the human to idle state if he is not jumping or falling. Otherwise, he will be set to IDLE whilst jumping/falling, causing glitches.
-		//Regardless, the human will be set to IDLE once he lands his jump/fall.
+		//Regardless, the human will be set to IDLE once he lands his jump/fall. 
 		if(human.getState() != State.JUMP && human.getState() != State.FALL)
 			//Tells the human instance that it is in idle state so that it stops moving. 
 			human.setState(State.IDLE);
+	}
+	
+	/** Makes the player walk to the specified GameObject. */
+	public void setTarget(Human human, GameObject target)
+	{
+		//If the Human is jumping or falling, don't let him walk to the target.
+		if(human.getState() == State.JUMP || human.getState() == State.FALL)
+			return;
+		
+		//Set the human's target to the given GameObject
+		human.setTarget(target);
+		
+		//Set the human to WALK state
+		human.setState(State.WALK);
+		
+		//If the target is to the right of the human
+		if(target.getX() > human.getX())
+		{
+			//Make the human walk right.
+			human.setDirection(Direction.RIGHT);
+		}
+		//Else, if the target is to the left of the human
+		else
+		{
+			//Make the human walk left.
+			human.setDirection(Direction.LEFT);
+		}
+		
+		//If the clicked GameObject is an Interactive GameObject.
+		if(target instanceof InteractiveObject)
+		{
+			//Tell the GameObject it has been clicked and is being targetted.
+			((InteractiveObject)target).targetted();
+		}
+	}
+	
+	/** Called when a GameObject in the level was touched. */
+	private void gameObjectClicked(GameObject gameObject)
+	{
+		//If the GameObject is clickable
+		if(gameObject instanceof Clickable)
+		{
+			//Make the player walk to the Clickable target
+			setTarget(player, gameObject);
+		}
+	}
+	
+	/** Checks if the player is colliding with any GameObjects. */
+	private void checkPlayerCollisions()
+	{
+		//Checks if the player has collided with his target.
+		checkTargetCollisions();
+		
+	}
+	
+	/** Checks if the player has collided with his target. */
+	private void checkTargetCollisions()
+	{
+		//Stores the target where the player wants to walk to, if it exists
+		GameObject target = player.getTarget();
+		//If the player has a target, and the player has touched his target
+		if(target != null && !player.isTargetReached() && player.getCollider().intersects(target.getCollider()))
+		{
+			//Tell the player he has reached his target.
+			player.setTargetReached(true);
+			
+			//Stops the player from moving.
+			stopMoving(player);
+			
+			//If the player's target was a tree.
+			if(target instanceof Tree)
+			{
+				//Start chopping the tree. The player knows his target is the tree to chop.
+				player.chopTree();
+			}
+		}
 	}
 	
 	/** Returns true if the player is jumping or falling and has fell past the ground. */
@@ -238,6 +340,41 @@ public class World
 		//Return false if the player has not been found to be falling below ground height.
 		return false;
 	}	
+	
+	/** Called when a touch was registered on the screen. Coordinates given in world units. O(n**2) OPTIMIZE THIS. */
+	public void touchUp(float x, float y)
+	{
+		//Store the coordinates of the touch point inside a Vector2.
+		touchPoint.set(x, y);
+		
+		//If the currently-active level is a TerrainLevel
+		if(level instanceof TerrainLevel)
+		{
+			//Store the middle layers, where the player resides, and where objects can be touched.
+			TerrainLayer[] middleLayers = terrainLevel.getMiddleLayers();
+			
+			//Cycle through the middle layers of the level
+			for(int i = 0; i < middleLayers.length; i++)
+			{
+				//Store the GameObjects residing in the middle layer
+				Array<GameObject> gameObjects = middleLayers[i].getGameObjects();
+				
+				//Cycle through the GameObjects of the middle layer
+				for(int j = 0; j < gameObjects.size; j++)
+				{
+					//Store the GameObject
+					GameObject go = gameObjects.get(j);
+					
+					//If the touch point is inside the GameObject's collider, report a touched GameObject.
+					if(go.getCollider().intersects(touchPoint))
+					{
+						//The GameObject has been clicked.
+						gameObjectClicked(go);
+					}
+				}
+			}
+		}
+	}
 	
 	/** Sets up the player's initial variables to ensure that the player is placed at the right location. */
 	public void setupPlayer()
@@ -263,6 +400,20 @@ public class World
 	public void setLevel(Level level)
 	{
 		this.level = level;
+	}
+	
+	/** Gets the TerrainLevel used by the world. */
+	public TerrainLevel getTerrainLevel() 
+	{
+		//Returns the TerrainLevel of the world.
+		return terrainLevel;
+	}
+	
+	/** Sets the TerrainLevel used by the world. */
+	public void setTerrainLevel(TerrainLevel terrainLevel) 
+	{
+		//Updates the TerrainLevel of the world.
+		this.terrainLevel = terrainLevel;
 	}
 	
 	/** Returns the state of the world, used to tell the GameScreen how to render its GUI. */

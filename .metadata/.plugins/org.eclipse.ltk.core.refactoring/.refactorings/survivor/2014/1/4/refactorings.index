@@ -13,3 +13,7 @@
 1390167871311	Encapsulate field 'state'
 1390169602474	Rename field 'state'
 1390390764579	Rename type 'HUDRenderer'
+1390606157645	Rename field 'player'
+1390682776393	Rename type 'TreeState'
+1390682787572	Rename field 'treeState'
+1390692424345	Encapsulate field 'targetReached'

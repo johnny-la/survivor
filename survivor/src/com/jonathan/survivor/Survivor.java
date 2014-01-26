@@ -39,6 +39,9 @@ public class Survivor extends Game
 	/** Stores the universal Profile Manager used by the game which retrieves/saves profiles from/to the hard drive. */
 	private ProfileManager profileManager;
 	
+	/** Stores the Settings instance used to save the user's profile. */
+	private Settings settings;
+	
 	/** Stores whether or not we are in debug mode */
 	public static final boolean DEBUG_MODE = true;
 	/** Logs the framerate to the console */
@@ -52,6 +55,9 @@ public class Survivor extends Game
 		soundManager = new SoundManager();
 		//Creates the profile manager instance, used to manage the profiles used by the user. Parameter specifies how many profiles the manager can hold.
 		profileManager = new ProfileManager(MAX_PROFILES);
+		
+		//Creates a settings instance that will be used to save the player's profile. The passed ProfileManager will be used to save the profile to the hard drive.
+		settings = new Settings(profileManager);
 		
 		//Set the starting screen of the application to the CompanySplashScreen. This is done through the Game.setScreen(Screen) method.
 		setScreen(new CompanySplashScreen(this));

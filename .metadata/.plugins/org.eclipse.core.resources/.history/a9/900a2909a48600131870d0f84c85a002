@@ -1,0 +1,26 @@
+package com.jonathan.survivor;
+
+import com.jonathan.survivor.managers.ProfileManager;
+
+public class Settings 
+{
+	/** Stores the profile where data will be saved. */
+	private Profile profile;
+	/** Used to save the profile held by the Settings instance. */
+	private ProfileManager profileManager;
+	
+	World world;
+	
+	public Settings(Profile profile, ProfileManager profileManager)
+	{
+		//Stores the profile that will be saved.
+		this.profile = profile;
+		//Stores the ProfileManager which will save the profile.
+		this.profileManager = profileManager;
+	}
+	
+	public void save()
+	{
+		profileManager.saveProfile(profile);
+	}
+}

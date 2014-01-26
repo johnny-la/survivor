@@ -1,0 +1,5 @@
+package com.jonathan.survivor.entity;
+
+public class InteractiveObject {
+
+}

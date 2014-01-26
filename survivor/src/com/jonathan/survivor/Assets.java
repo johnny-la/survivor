@@ -11,19 +11,19 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.spine.Animation;
 import com.esotericsoftware.spine.SkeletonData;
 import com.esotericsoftware.spine.SkeletonJson;
 import com.esotericsoftware.spine.SkeletonRenderer;
+import com.esotericsoftware.spine.Slot;
+import com.esotericsoftware.spine.attachments.Attachment;
 
 /** Loads all visual/audio assets needed by the game and stores them in public static variables. An asset is fetched from this class whenever something needs
  *  to be drawn on screen or played to the speakers.
@@ -92,13 +92,21 @@ public class Assets
 	public TextureAtlas playerAtlas;
 	public SkeletonJson playerSkeletonJson;
 	public SkeletonData playerSkeletonData;
+	//public Slot axeSlot;
+	//public Attachment axeAttachment;
+	public Animation playerIdle;
+	public Animation playerWalk;
 	public Animation playerJump;
 	public Animation playerFall;
+	public Animation playerChopTree;
+	public Animation playerChopTree_Start;
 	
 	public TextureAtlas treeAtlas;
 	public SkeletonJson treeSkeletonJson;
 	public SkeletonData treeSkeletonData;
 	public Animation treeIdle;
+	public Animation treeClicked;
+	public Animation treeHit;
 	
 	public SkeletonRenderer skeletonRenderer; //Renderer used to draw spine skeletons with a SpriteBatch.
 	
@@ -323,15 +331,26 @@ public class Assets
 		circleButtonStyle.up = hudSkin.getDrawable("CircleButton");
 		circleButtonStyle.down = circleButtonDownDrawable;
 		
+		//Fetches the arrow sprite from the hud atlas to place on the left arrow button.
+		Sprite leftArrow = hudSkin.getSprite("Arrow");
+		//Scale the arrow down so that, no matter the atlas size used, the arrow takes the same world space.
+		leftArrow.setSize(leftArrow.getWidth()/scaleFactor, leftArrow.getHeight()/scaleFactor);
+		SpriteDrawable leftArrowDrawable = new SpriteDrawable(leftArrow);
+		
 		//Create a style for the left arrow button
 		leftArrowButtonStyle = new ImageButtonStyle(circleButtonStyle);
-		leftArrowButtonStyle.imageUp = hudSkin.getDrawable("Arrow");
-		leftArrowButtonStyle.imageDown = hudSkin.getDrawable("Arrow");
+		//Scale the arrow down so that, no matter the atlas size used, the arrow takes the same world space.
+		leftArrow.setSize(leftArrow.getWidth()/scaleFactor, leftArrow.getHeight()/scaleFactor);
+		leftArrowButtonStyle.imageUp = leftArrowDrawable;
+		leftArrowButtonStyle.imageDown = leftArrowDrawable;
 		
 		//Fetches the arrow sprite from the hud atlas and flips it to point to the right
 		Sprite rightArrow = hudSkin.getSprite("Arrow");
-		rightArrow.setScale(rightArrow.getScaleX() * -1, rightArrow.getScaleY());
-		SpriteDrawable rightArrowDrawable = new SpriteDrawable(rightArrow);
+		rightArrow.setScale(rightArrow.getScaleX() * -1, rightArrow.getScaleY());	//Flips the direction of the arrow.
+		//Scale the arrow down so that, no matter the atlas size used, the arrow takes the same world space.
+		rightArrow.setSize(rightArrow.getWidth()/scaleFactor, rightArrow.getHeight()/scaleFactor);
+		rightArrow.setOrigin(rightArrow.getWidth()/2, 0);	//Centers the arrow's pivot point so that it gets placed at the center of the button. 
+		SpriteDrawable rightArrowDrawable = new SpriteDrawable(rightArrow);	//Creates a drawable to place on the right arrow's ImageButtonStyle.
 		
 		//Creates the style for the right arrow button
 		rightArrowButtonStyle = new ImageButtonStyle(circleButtonStyle);
@@ -344,8 +363,12 @@ public class Assets
 		playerSkeletonJson.setScale(PLAYER_SKELETON_SCALE);	//Re-scale the skeleton to fit world-units. Atlas data is read the same no matter the scale of the SkeletonJson.
 		playerSkeletonData = playerSkeletonJson.readSkeletonData(Gdx.files.internal("game/player/skeleton/player_skeleton.json"));
 		//Gets the animations from the Player's SkeletonData instance.
+		playerIdle = playerSkeletonData.findAnimation("Idle");
+		playerWalk = playerSkeletonData.findAnimation("Walk");
 		playerJump = playerSkeletonData.findAnimation("Jump");
 		playerFall = playerSkeletonData.findAnimation("Fall");
+		playerChopTree = playerSkeletonData.findAnimation("ChopTree");
+		playerChopTree_Start = playerSkeletonData.findAnimation("ChopTree_Start");
 		
 		//Sets up the Spine data used to display and animate the trees.
 		treeSkeletonJson = new SkeletonJson(treeAtlas);
@@ -353,6 +376,8 @@ public class Assets
 		treeSkeletonData = treeSkeletonJson.readSkeletonData(Gdx.files.internal("game/tree/skeleton/tree_skeleton.json"));
 		//Loads the animations used by the trees
 		treeIdle = treeSkeletonData.findAnimation("Idle");
+		treeClicked = treeSkeletonData.findAnimation("Clicked");
+		treeHit = treeSkeletonData.findAnimation("Hit");
 		
 		//Creates a new skeleton renderer to draw Spine skeletons using a SpriteBatch instance.
 		skeletonRenderer = new SkeletonRenderer();

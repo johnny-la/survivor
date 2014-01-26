@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializable;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.jonathan.survivor.inventory.Loadout;
 
 public class Profile implements Serializable
 {
@@ -27,6 +28,9 @@ public class Profile implements Serializable
 	
 	/** Stores the world seed. Each profile has a different seed. The same seed creates the same world. */
 	private int worldSeed;
+	
+	/** Stores the player's loadout so that it stays constants when re-entering the game. */
+	private Loadout loadout;
 	
 	/** Creates a default profile with profileId = 0. This constructor will be called when a Profile object is read from a JSON file. */
 	public Profile()
@@ -52,6 +56,9 @@ public class Profile implements Serializable
 		
 		//Creates a random seed for the world, dictating its terrain and layout.
 		worldSeed = (int)(Math.random() * MAX_WORLD_SEED);
+		
+		//Creates a default, empty loadout for the player.
+		loadout = new Loadout();
 	}
 	
 	/** Sets the profile Id of the profile. */
@@ -135,6 +142,8 @@ public class Profile implements Serializable
 		
 		json.writeValue("terrainRowOffset", terrainRowOffset);
 		json.writeValue("terrainColOffset", terrainColOffset);
+		
+		json.writeValue("loadout", loadout);
 	}
 
 	/** Indicates how a JSON file is read to be converted into a Profile object. Note that the default Profile constructor is called before this method. */
@@ -149,5 +158,17 @@ public class Profile implements Serializable
 		terrainRowOffset = json.readValue("terrainRowOffset", Integer.class, jsonData);
 		terrainColOffset = json.readValue("terrainColOffset", Integer.class, jsonData);
 		
+		loadout = json.readValue("loadout", Loadout.class, jsonData);
+		
+	}
+
+	/** Gets the loadout used by the player. */
+	public Loadout getLoadout() {
+		return loadout;
+	}
+	
+	/** Sets the loadout used by the player. */
+	public void setLoadout(Loadout loadout) {
+		this.loadout = loadout;
 	}
 }

@@ -78,6 +78,16 @@ public class WorldRenderer
 		goRenderer.render();
 	}
 	
+	/** Retrieves the world camera used to render the world. */
+	public OrthographicCamera getWorldCamera() {
+		return worldCamera;
+	}
+	
+	/** Sets the world camera used to render the world. */
+	public void getWorldCamera(OrthographicCamera worldCamera) {
+		this.worldCamera = worldCamera;
+	}
+	
 	/** Called when the screen is resized, or when the world renderer is first created. Resizes the camera to adjust to the new aspect ratio. Note that the parameters
 	 *  specify the new width and height that the camera should have. Third parameter specifies a screen scale. This should be the factor the view frustum had to be
 	 *  stretched to fit the target device. The level's line thickness is multiplied by this factor to compensate for a larger or smaller screen. */
