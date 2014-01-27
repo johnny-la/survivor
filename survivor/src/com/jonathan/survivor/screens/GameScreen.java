@@ -58,11 +58,16 @@ public class GameScreen extends Screen
 		
 		//Stores the profile used to start the game.
 		this.profile = profile;
+		//Sets the given profile to be saved to the hard drive on application quit.
+		settings.setProfile(profile);
 		
 		//Creates a new World instance, which control game logic. The profile is used to load data pertinent to the world and its contained GameObjects.
 		world = new World(profile.getWorldSeed(), profile);
 		//Creates a world renderer, passing in the world to render, and the SpriteBatcher used to draw the sprites.
 		worldRenderer = new WorldRenderer(world, batcher);
+		
+		//Registers the World to the Settings instance. Player information will be retrieved from this world to be saved to the hard drive.
+		settings.setWorld(world);
 		
 		//Creates a GestureManager with the given world. This manager receieves all gesture events such as swipes and changes the world's GameObjects accordingly.
 		inputManager = new InputManager(world, worldRenderer.getWorldCamera());
@@ -151,9 +156,12 @@ public class GameScreen extends Screen
 	{		
 	}
 
+	/** Called when the application is left on Android or when the game is exitted. Saves player information to the hard drive in case of application quit. */
 	@Override
 	public void pause() 
 	{
+		//Updates the profile used by the player according to the world's state, and saves the profile to the hard drive.
+		settings.save();
 	}
 
 	@Override
@@ -168,8 +176,12 @@ public class GameScreen extends Screen
 		//the screen.
 		super.resize(width, height);
 		
+		//Set the viewport of the stage to the guiWidth/Height member variables. This ensures that the viewable area of the stage is the desired width and height
+		//of the GUI. Note that these variables were defined in the superclass to be the desired default width and height of a GUI. However, the smallest dimension
+		//is resized to fit the screen's aspect ratio to avoid uneven stretching. If the device's screen is guiWidth x guiHeight, the GUI is pixel perfect.
 		stage.setViewport(guiWidth, guiHeight);
 		
+		//Resets the HudRenderer currently being used to render the GUI. Re-positions GUI elements to fit screen size.
 		hudRenderer.reset();
 		
 		//Resizes the camera used by the world renderer. We specify the worldWidth and worldHeight. They store the desired size of a camera which displays the world.

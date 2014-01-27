@@ -1,5 +1,6 @@
 package com.jonathan.survivor;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import com.badlogic.gdx.math.MathUtils;
@@ -79,6 +80,9 @@ public class TerrainLayer
 	/** Stores the random object used to define the objects stacked on the layer. */
 	private Random objectRand;
 	
+	/** Stores the profile used to create the TerrainLayer. Specifies the world seed, and the GameObjects already scavenged on each layer. */
+	private Profile profile;
+	
 	/** Stores an array of all the GameObjects that are on this layer. If gameObjectsStored==true, the array is already populated. Helper array to avoid GC. */
 	private Array<GameObject> gameObjects = new Array<GameObject>();
 	/** Stores true if the gameObjects array has already been populated with the correct objects. Prevents having to re-populate the array every frame. */
@@ -96,10 +100,10 @@ public class TerrainLayer
 	 * @param startY 	The starting y-position of the layer, specified as the bottom y-position of either end of the layer.
 	 * @param terrainDirection 	The direction the terrain faces. If TerrainDirection.RIGHT is specified, the (startX,startY) parameters specify the bottom-left
 	 * 							end-point of the layer
-	 * @param worldSeed Stores the seed used to randomly generate the layer's geometry and objects. Should be the same for every world.
+	 * @param profile Profile where the layer retrieves the world seed, along with information on which GameObjects have already been scavenged. 
 	 * @param goManager The GameObjectManager which manages the World's GameObjects. Used to populate the layer with objects.
 	 */
-	public TerrainLayer(int row, int col, float startX, float startY, TerrainDirection terrainDirection, int worldSeed, GameObjectManager goManager)
+	public TerrainLayer(int row, int col, float startX, float startY, TerrainDirection terrainDirection, Profile profile, GameObjectManager goManager)
 	{		
 		//Stores the row and column of the layer
 		this.row = row;
@@ -112,8 +116,11 @@ public class TerrainLayer
 		//Sets the start position of the layer, essentially specifying where in world coordinates the layer should be placed.
 		setStartPosition(startX, startY, terrainDirection);
 		
+		//Stores the profile used to revert the layer back to its save-game state.
+		this.profile = profile;
+		
 		//Stores the world seed in its respective member variable.
-		this.worldSeed = worldSeed;
+		this.worldSeed = profile.getWorldSeed();
 		
 		//Stores the GameObjectManager instance used by the world in order to populate the terrain with GameObjects.
 		this.goManager = goManager;
@@ -249,25 +256,38 @@ public class TerrainLayer
 		//Sets the seed of the objectRand instance to the new seed. Numbers will be generated to define the which objects are on the layer.
 		objectRand.setSeed(objectSeed);
 		
+		//Stores a list of objectIds for the GameObjects that have already been scavenged on this layer. 
+		ArrayList<Integer> scavengedObjects = profile.getScavengedLayerObjects(row, col);
+		System.out.println(scavengedObjects);
 		//Stores the index of the object being placed on the layer. Starts at 0 for the left-most object, and increments by one for each object.
 		int objectIndex = 0;
 		
 		//Cycles from the left-most x-point of the layer, plus an offset, and increments by the object spacing until the end x-point is reached.
 		for(float x = leftPoint.x + OBJECT_SPACING; x < rightPoint.x; x += OBJECT_SPACING)
 		{
-			if(objectRand.nextFloat() > 0.5f)
+			float randObject = objectRand.nextFloat();
+			
+			if(randObject > 0.5f)
 			{
-				//Retrieves a tree GameObject from a pool inside the GameObjectManager.
-				Tree tree = goManager.getGameObject(Tree.class);
-				//Tell the tree that it has just spawned
-				tree.setInteractiveState(InteractiveState.SPAWN);
-				//Sets the terrain cell to the layer's row and column so that the tree knows which layer it is in.
-				tree.setTerrainCell(row, col);
-				//Positions the tree at the current x-position, and the correct y-position according to the object height at the given x-position.
-				tree.setPosition(x, getObjectHeight(x));
+				if(!scavengedObjects.contains(objectIndex))
+				{
+					//Retrieves a tree GameObject from a pool inside the GameObjectManager.
+					Tree tree = goManager.getGameObject(Tree.class);
+					//Tell the tree that it has just spawned
+					tree.setInteractiveState(InteractiveState.SPAWN);
+					//Sets the terrain cell to the layer's row and column so that the tree knows which layer it is in.
+					tree.setTerrainCell(row, col);
+					//Positions the tree at the current x-position, and the correct y-position according to the object height at the given x-position.
+					tree.setPosition(x, getObjectHeight(x));
+					//Set the object id of the tree to the current object index. Used to identify a scavenged GameObject in save data.
+					tree.setObjectId(objectIndex);
+					
+					//Add the tree GameObject to the array of trees held by the layer.
+					trees.add(tree);
+				}
 				
-				//Add the tree GameObject to the array of trees held by the layer.
-				trees.add(tree);
+				//Increment the object index for the next GameObject to be placed on the layer. 
+				objectIndex++;
 				
 				//Increment x by the width of the tree so that the next object doesn't overlap.
 				x += Tree.COLLIDER_WIDTH / 2;

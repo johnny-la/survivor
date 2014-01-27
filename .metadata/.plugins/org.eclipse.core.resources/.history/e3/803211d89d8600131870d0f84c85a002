@@ -1,0 +1,47 @@
+package com.jonathan.survivor.entity;
+
+
+/*
+ * Any environment GameObject that can be clicked and interacted with.
+ */
+
+public abstract class InteractiveObject extends GameObject implements Clickable
+{
+	public enum InteractiveState {
+		SPAWN, IDLE, CLICKED, HIT, DESTROYED
+	}
+	
+	/** Stores the current state of the interactive object for logic and rendering purposes. */
+	private InteractiveState interactiveState;
+	
+	/** Creates the Interactive GameObject with the given bottom-center position and the given collider width and height. */
+	public InteractiveObject(float x, float y, float width, float height)
+	{
+		super(x, y, width, height);
+	}
+	
+	/** Gets the current state of the interactive object for logic and rendering purposes. */
+	public InteractiveState getInteractiveState() {
+		return interactiveState;
+	}
+
+	/** Sets the current state of the interactive object for logic and rendering purposes. */
+	public void setInteractiveState(InteractiveState interactiveState) {
+		this.interactiveState = interactiveState;
+		
+		//Reset the state time to zero since the state has just changed.
+		stateTime = 0;
+	}
+	
+	public void untargetted() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	/** Called every frame to update logic. */
+	@Override
+	public abstract void update(float deltaTime);
+
+
+}

@@ -1,0 +1,6 @@
+package com.jonathan.survivor.entity;
+
+public interface Clickable 
+{
+
+}

@@ -36,6 +36,7 @@ public class ProfileManager
 	/** Loads the profiles existing in the hard drive and populates the profiles:Profile[] array. */
 	public void loadProfiles()
 	{
+		//deleteAllProfiles();
 		//Cycles through the profiles:Profile[] array and populates it with any profiles which have already been created on the hard drive.
 		for(int i = 0; i < maxProfiles; i++)
 		{

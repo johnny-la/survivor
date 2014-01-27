@@ -1,6 +1,5 @@
 package com.jonathan.survivor.components;
 
-import com.jonathan.survivor.entity.Component;
 
 public class Position implements Component
 {

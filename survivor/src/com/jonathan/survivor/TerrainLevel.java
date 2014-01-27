@@ -30,22 +30,28 @@ public class TerrainLevel implements Level
 	 *  [NUM_LAYER_ROWS-1][NUM_LAYER_COLS-1] is always the top-right-most layer. */
 	TerrainLayer[][] layers;
 	
-	/** Creates a terrain level given a world seed, which determines the geometry of each terrain layer. Note that the row and column offset
-	 *  allow the user to spawn where he left off. The bottom-left-most terrain layer is set to the cell coordinate of (rowOffset, colOffset).
-	 *  Thus, the game should save the row and column of the bottom-left-most terrain layer. Then, by specifying these as offsets, the level
-	 *  is re-initialized with the desired terrain. Also accepts the GameObjectManager used by the world. This allows each TerrainLayer to 
-	 *  populate itself with GameObjects.*/
-	public TerrainLevel(int worldSeed, int rowOffset, int colOffset, GameObjectManager goManager)
+	/** Creates a terrain level given a profile, which dictates how the terrainLayers should be generated.*/
+	public TerrainLevel(Profile profile, GameObjectManager goManager)
 	{		
-		//Generate the level's terrain layers out of the world seed, the cell offset, and the gameObjectManager.
-		generateLayers(worldSeed, rowOffset, colOffset, goManager);
+		//Generate the level's terrain layers out of the profile, which indicates how the layers should be laid out, along with the gameObjectManager.
+		generateLayers(profile, goManager);
 	}
 	
-	/** Generates the TerrainLayers for the level to display. */
-	public void generateLayers(int worldSeed, int rowOffset, int colOffset, GameObjectManager goManager)
-	{
+	/** Generates the TerrainLayers for the level to display. Accepts the profile to populate generate the layers the way they were before application quit. Also accepts the
+	 *  GameObjectManager used by the world. This allows each TerrainLayer to populate itself with pooled GameObjects. */
+	public void generateLayers(Profile profile, GameObjectManager goManager)
+	{		
 		//Creates the 2d array of TerrainLayers to store the level geometry.
 		layers = new TerrainLayer[NUM_LAYER_ROWS][NUM_LAYER_COLS];
+		
+		//Stores the world seed which determines the geometry of each terrain layer.
+		int worldSeed = profile.getWorldSeed();
+		
+		//Retrieves the row and column offsets for the layers. The row and column offset allow the user to spawn where he left off. The bottom-left-most
+		//terrain layer is set to the cell coordinate of (rowOffset, colOffset). Thus, the game should save the row and column of the bottom-left-most
+		//terrain layer. Then, by specifying these as offsets, the level is re-initialized with the desired terrain
+		int rowOffset = profile.getTerrainRowOffset();
+		int colOffset = profile.getTerrainColOffset();
 		
 		//Cycles through the rows of terrain layers. (Note that 0 is the bottom-most row)
 		for(int i = 0; i < NUM_LAYER_ROWS; i++)
@@ -62,9 +68,10 @@ public class TerrainLevel implements Level
 				//Creates a TerrainLayer for the given column and row. The first two arguments specify the row and column of the layer. We offset them by the given row
 				//and column offset, which shifts the layers where the user left off the last save. The row and column of the layer are the only thing which generates
 				//their appearance. The third and fourth arguments specify the bottom-left position of the layer, stored in x:float and y:float. The fifth argument states
-				//that the layer should go from left to right, since the left position was given. The last argument specifies the world seed, used to randomly generate 
-				//the geometry of the layer. Also, the GameObjectManager used by the world is passed to populate the TerrainLayer with GameObjects.
-				layers[i][j] = new TerrainLayer(i + rowOffset, j + colOffset, x, y, TerrainDirection.RIGHT, worldSeed, goManager);
+				//that the layer should go from left to right, since the left position was given. The last argument specifies the profile used to generate the level, which
+				//lets the layer know which GameObjects have already been scavenged where the game last left off. Allows the layers to be created the way they were when
+				//the profile was last saved.
+				layers[i][j] = new TerrainLayer(i + rowOffset, j + colOffset, x, y, TerrainDirection.RIGHT, profile, goManager);
 				
 				//Updates the y-position for the next layer. We want it to start at the end point of the previous layer, so we specify the y-position of the right end 
 				//point of the previous layer using TerrainLayer.getRightPoint().y

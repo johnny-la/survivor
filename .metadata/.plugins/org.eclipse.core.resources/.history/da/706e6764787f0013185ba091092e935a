@@ -1,9 +1,0 @@
-package com.jonathan.math;
-
-public abstract class Collider {
-	private final Vector2 position;
-	
-	public abstract boolean intersects(Rectangle r);
-	
-	public Vector2
-}

@@ -24,6 +24,9 @@ public class Player extends Human
 	/** Stores the player's loadout, containing the player's active weapons. */
 	private Loadout loadout;
 	
+	/** Stores the PlayerListener instance where methods are delegated upon player events. */
+	private PlayerListener playerListener;
+	
 	/** Creates a player whose bottom-center is at position (0, 0). */
 	public Player()
 	{
@@ -74,6 +77,8 @@ public class Player extends Human
 		//Make the player lose his target so that he stops walking to a specific GameObject after jumping.
 		loseTarget();
 		
+		loadout.setMeleeWeapon(new Axe());
+		
 	}
 
 	/** Makes the player fall through one layer. */
@@ -92,7 +97,7 @@ public class Player extends Human
 		loseTarget();
 	}
 
-	/** Makes the player start to chop a tree */
+	/** Makes the player start chopping a tree */
 	public void chopTree()
 	{
 		//If the player has a melee weapon equipped
@@ -111,7 +116,16 @@ public class Player extends Human
 		//Tell the tree it was hit so that it plays the correct animation.
 		tree.setInteractiveState(InteractiveState.HIT);
 		
-		//tree.takeDamage(damage);
+		loadout.getMeleeWeapon().hit(tree);
+		
+		if(tree.getInteractiveState() == InteractiveState.SCAVENGED)
+		{
+			loseTarget();
+			
+			setState(State.IDLE);
+			
+			playerListener.scavengedObject(tree);
+		}
 	}
 	
 	/** Called when the player loses his target. */
@@ -136,6 +150,14 @@ public class Player extends Human
 		super.loseTarget();
 		
 	}
+	
+	/** Override the canTarget method as always returning false since the Player can never be targetted. */
+	@Override
+	public boolean canTarget()
+	{
+		//The player can never be targetted.
+		return false;
+	}
 
 	/** Retrieves the player's loadout containing the player's weapons. */
 	public Loadout getLoadout() {
@@ -145,6 +167,12 @@ public class Player extends Human
 	/** Sets the player's loadout. */
 	public void setLoadout(Loadout loadout) {
 		this.loadout = loadout;
+	}
+	
+	/** Sets the given listener to have its methods delegated by the player instance. */
+	public void setListener(PlayerListener listener)
+	{
+		playerListener = listener;
 	}
 
 }

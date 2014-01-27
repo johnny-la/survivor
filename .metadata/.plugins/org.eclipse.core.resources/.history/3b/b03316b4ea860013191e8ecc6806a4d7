@@ -1,0 +1,7 @@
+package com.jonathan.survivor.entity;
+
+public class ItemObject extends GameObject
+{
+	/** Stores the Item represented by the GameObject. */
+	private Item item;
+}

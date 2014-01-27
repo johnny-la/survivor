@@ -1,0 +1,23 @@
+package com.jonathan.survivor.inventory;
+
+import com.jonathan.survivor.entity.Tree;
+
+public class Axe extends MeleeWeapon
+{
+	public static String NAME = "Axe";
+	public static String DESCRIPTION = "A weapon for the mightiest of lumberjacks";
+	public static float DAMAGE = 1;
+	public static float RANGE = 1;
+	
+	/** Creates an axe. */
+	public Axe()
+	{
+		super(NAME, DESCRIPTION, DAMAGE, RANGE);
+	}
+	
+	@Override 
+	public void hitTree(Tree tree)
+	{
+		
+	}
+}

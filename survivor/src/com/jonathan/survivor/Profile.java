@@ -1,12 +1,17 @@
 package com.jonathan.survivor;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Scanner;
+import java.util.Set;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializable;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.jonathan.survivor.entity.GameObject;
 import com.jonathan.survivor.inventory.Loadout;
 
 public class Profile implements Serializable
@@ -28,6 +33,10 @@ public class Profile implements Serializable
 	
 	/** Stores the world seed. Each profile has a different seed. The same seed creates the same world. */
 	private int worldSeed;
+	
+	/** Stores a HashMap containing lists of scavenged objects in each TerrainLayer. First key is the layer's row, second is the layer's column. The
+	 *  array stores the list of objectIds for all GameObjects that have been scavenged on that layer. */
+	private HashMap<Integer, HashMap<Integer, ArrayList<Integer>>> scavengedLayerObjects;
 	
 	/** Stores the player's loadout so that it stays constants when re-entering the game. */
 	private Loadout loadout;
@@ -56,6 +65,9 @@ public class Profile implements Serializable
 		
 		//Creates a random seed for the world, dictating its terrain and layout.
 		worldSeed = (int)(Math.random() * MAX_WORLD_SEED);
+		
+		//Creates the empty HashMap needed to store the GameObjects scavenged by the player.
+		scavengedLayerObjects = new HashMap<Integer, HashMap<Integer, ArrayList<Integer>>>();
 		
 		//Creates a default, empty loadout for the player.
 		loadout = new Loadout();
@@ -144,6 +156,7 @@ public class Profile implements Serializable
 		json.writeValue("terrainColOffset", terrainColOffset);
 		
 		json.writeValue("loadout", loadout);
+		writeScavengedLayerObjects(json);
 	}
 
 	/** Indicates how a JSON file is read to be converted into a Profile object. Note that the default Profile constructor is called before this method. */
@@ -159,9 +172,158 @@ public class Profile implements Serializable
 		terrainColOffset = json.readValue("terrainColOffset", Integer.class, jsonData);
 		
 		loadout = json.readValue("loadout", Loadout.class, jsonData);
+		readScavengedLayerObjects(json, jsonData);
+		
 		
 	}
+	
+	/** Converts the scavengedLayerObjects HashMap into a String and writes it to the Profile's JSON file. */
+	private void writeScavengedLayerObjects(Json json)
+	{
+		//Stores the String to write inside the JSON file.
+		String string = "";
+		
+		//Stores all of the keys inside the scavengedLayerObjects Hashmap, which each represent containers for a row.
+		Set<Integer> rows = scavengedLayerObjects.keySet();
+		
+		//Cycle through each row in the HashMap and converts its data into a string.
+		for(int row:rows)
+		{
+			//Stores the row number as the first integer in the line
+			string += row + " ";
+			
+			//Creates a set to cycle through each column key in the HashMap
+			Set<Integer> cols = scavengedLayerObjects.get(row).keySet();
+			
+			//Cycles through the columns of the HashMap, which each contain an Integer array.
+			for(int col:cols)
+			{			
+				//Start the column definition with the column number.
+				string += col + ": ";
+				
+				//Stores the Integer array containing all of the objectIds of scavenged objects in the given (row, col)
+				ArrayList<Integer> array = scavengedLayerObjects.get(row).get(col);
+				
+				//Stores the length of the array.
+				int len = array.size();
+				
+				//Each column number is followed by an open bracket to indicate the beginning of an array
+				string += "[ ";
+				
+				//Cycles through the elements of the array.
+				for(int i = 0; i < len; i++)
+				{
+					//Adds each array element into the string sequentially
+					string += array.get(i) + " ";
+				}
+				
+				//Ends each array definition with a closed bracket.
+				string += "] ";
+			}
+			
+			//Skip a line for each row.
+			string += "\n";
+		}
+		
+		//Write the string in the "scavengedLayerObjects" entry of the profile's JSON file.
+		json.writeValue("scavengedLayerObjects", string);
+	}
+	
+	/** Reads the String stored inside the JSON file and converts it into a HashMap for the scavengedLayerObjects variable. */
+	private void readScavengedLayerObjects(Json json, JsonValue jsonData)
+	{
+		//Creates a new instance for scavengedLayerObjects, which will be populated as the JSON String is read.
+		this.scavengedLayerObjects = new HashMap<Integer, HashMap<Integer, ArrayList<Integer>>>();
+		
+		//Creates a Scanner to read the string with name "scavengedLayerObjects" inside the JSON file.
+		Scanner scanner = new Scanner(json.readValue("scavengedLayerObjects", String.class, jsonData));
+		
+		//While the String isn't empty
+		while(scanner.hasNext())
+		{
+			//Read the next line of the String, which represents the values of the first keys inside the scavengedLayerObjects HashMap.
+			Scanner line = new Scanner(scanner.nextLine());
+			
+			//The first integer in the line is the row number.
+			int row = line.nextInt();
+			
+			//Create a new HashMap for the row.
+			scavengedLayerObjects.put(row, new HashMap<Integer, ArrayList<Integer>>());
+			
+			while(line.hasNext())
+			{
+				//Stores the string containing the next column.
+				String columnString = line.next();
+				
+				//Truncates the colon from the column and converts it into an integer.
+				int col = Integer.parseInt(columnString.substring(0, columnString.length()-1));
+				
+				//Stores the array containing the objectIds of the current row and column.
+				ArrayList<Integer> array = new ArrayList<Integer>();
+			
+				//The next token is an open bracket "[".
+				line.next();
+			
+				//Stores the first element of the array, or a "]", if the array is empty.
+				String token = line.next();
+				
+				//Keep on cycling through the array's elements until the closing bracket is encountered, which indicates the end of the array.
+				while(!token.equals("]"))
+				{
+					//Parse the array element into an integer and add it to the array.
+					array.add(Integer.valueOf(token));
+					//Cycle to the next element in the array
+					token = line.next();
+				}
+				
+				//Place the array inside the correct row and column of the HashMap.
+				scavengedLayerObjects.get(row).put(col, array);
+			}
+			
+		}
+	}
+	
+	/** Returns a list of all of the objectIds that have been scavenged on the given TerrainLayer, denoted by its row and column. */
+	public ArrayList<Integer> getScavengedLayerObjects(int row, int col)
+	{
+		if(scavengedLayerObjects == null)
+			scavengedLayerObjects = new HashMap<Integer, HashMap<Integer, ArrayList<Integer>>>();
 
+		//If no HashMap exists for the given row
+		if(scavengedLayerObjects.get((Integer)row) == null)
+		{
+			//Create a new HashMap for the row, where the key is the column number, and the value is a list of scavenged objectIds.
+			scavengedLayerObjects.put(new Integer(row), new HashMap<Integer, ArrayList<Integer>>());
+		}
+		
+		if(scavengedLayerObjects.get((Integer)row).get((Integer)col) == null)
+		{
+			scavengedLayerObjects.get((Integer)row).put(new Integer(col), new ArrayList<Integer>());
+		}
+		
+		//Returns the Array containing the objectIds of GameObjects scavenged on the TerrainLayer.
+		return scavengedLayerObjects.get((Integer)row).get((Integer)col);
+	}
+	
+	/** Adds the given GameObject as a scavenged GameObject. It is added as a scavenged GameObject at the TerrainLayer where it resides, so that the GameObject
+	 *  is never instantiated there again. */
+	public void addScavengedLayerObject(GameObject gameObject)
+	{
+		//Delegates the GameObject's layer coordinates and objectId to the correct overloaded method.
+		addScavengedLayerObject(gameObject.getTerrainCell().getRow(), gameObject.getTerrainCell().getCol(), gameObject.getObjectId());
+	}
+	
+	/** Adds a scavenged object to the TerrainLayer, specified with the layer's cell coordinates. Accepts the objectId of the scavenged GameObject. 
+	 *  Makes it so that the GameObject won't respawn the next time the layer is displayed. */
+	public void addScavengedLayerObject(int row, int col, int objectId)
+	{
+		//Adds the objectId of the scavenged GameObject to the correct position in the HashMap. The first key of the Hashmap indicates the TerrainLayer row
+		//where the object resides, and the second key holds the column where the same object resides. The value returned is an array of all objectIds that 
+		//have been scavenged in that layer, to which the given objectId is added.
+		scavengedLayerObjects.get(row).get(col).add(objectId);
+		System.out.println(scavengedLayerObjects.get(row).get(col));
+	}
+	
 	/** Gets the loadout used by the player. */
 	public Loadout getLoadout() {
 		return loadout;
@@ -170,5 +332,17 @@ public class Profile implements Serializable
 	/** Sets the loadout used by the player. */
 	public void setLoadout(Loadout loadout) {
 		this.loadout = loadout;
+	}
+
+	/** Returns a HashMap containing an array for each TerrainLayer. This array specifies the objectIds of the GameObjects that have been scavenged on that
+	 *  layer. First key is the TerrainLayer's row, and second is the TerrainLayer's column. */
+	public HashMap<Integer, HashMap<Integer, ArrayList<Integer>>> getScavengedLayerObjects() {
+		return scavengedLayerObjects;
+	}
+
+	/** Sets the HashMap containing objectId arrays for each TerrainLayer. These array specify the objectIds of the GameObjects that have been scavenged on a
+	 *  certain layer. */
+	public void setScavengedLayerObjects(HashMap<Integer, HashMap<Integer, ArrayList<Integer>>> scavengedLayerObjects) {
+		this.scavengedLayerObjects = scavengedLayerObjects;
 	}
 }

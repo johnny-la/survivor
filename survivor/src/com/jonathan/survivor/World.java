@@ -7,13 +7,13 @@ import com.jonathan.survivor.entity.Human;
 import com.jonathan.survivor.entity.Human.Direction;
 import com.jonathan.survivor.entity.Human.State;
 import com.jonathan.survivor.entity.InteractiveObject;
-import com.jonathan.survivor.entity.InteractiveObject.InteractiveState;
 import com.jonathan.survivor.entity.Player;
+import com.jonathan.survivor.entity.PlayerListener;
 import com.jonathan.survivor.entity.Tree;
 import com.jonathan.survivor.managers.GameObjectManager;
 import com.jonathan.survivor.math.Vector2;
 
-public class World 
+public class World
 {
 	/** Stores the acceleration due to gravity in the world in m/s^2 */
 	public static final Vector2 GRAVITY = new Vector2(0, -15f);
@@ -43,6 +43,9 @@ public class World
 	/** Holds the Player GameObject that the user is guiding around the world. */
 	private Player player;
 	
+	/** Listens to events delegated by the player. */
+	private EventListener eventListener;
+	
 	/** Helper Vector2 used to store the world coordinates of the last known touch. */
 	private Vector2 touchPoint;
 
@@ -59,17 +62,22 @@ public class World
 		//Creates a GameObjectManager which stores and creates and manages all the instances of GameObjects.
 		goManager = new GameObjectManager(profile);
 		
-		//Creates a new TerrainLevel using the world seed. This level is a container of TerrainLayers that the user can traverse. The terrain row and
-		//column offsets from the profile are specified so that the user begins in the same place he last left off in the terrain. The GameObjectManager
-		//is passed to populate the TerrainLevel with GameObjects retrieved from pools.
-		terrainLevel = new TerrainLevel(worldSeed, profile.getTerrainRowOffset(), profile.getTerrainColOffset(), goManager);
+		//Creates a new TerrainLevel using the profile, which specifies the world seed of the level. Also permits the level to be created where
+		//the user left off. This level is a container of TerrainLayers that the user can traverse.
+		terrainLevel = new TerrainLevel(profile, goManager);
 		//Sets the terrain level as the currently active level to be displayed by the world.
 		setLevel(terrainLevel);
 		
 		//Stores the player created inside the GameObjectManager inside a member variable.
-		player = goManager.getPlayer();
+		player = goManager.getPlayer();		
 		//Sets up the player's initial values when being dropped into the world.
 		setupPlayer();
+		
+		//Creates a new listener which will have its methods delegated by GameObjects.
+		eventListener = new EventListener();
+		
+		//Sets the eventListener to listen for the player's events.
+		player.setListener(eventListener);
 		
 		//Creates a Vector2 instance to hold the coordinates of the latest touch.
 		touchPoint = new Vector2();
@@ -160,45 +168,14 @@ public class World
 		}
 	}
 	
-	/** Locks the GameObject to the ground when it is moving. Makes it so that the GameObject follows the path of the ground. */
-	public void lockToGround(GameObject gameObject)
+	/** Listens for events delegated by the GameObjects of the world. */
+	class EventListener implements PlayerListener 
 	{
-		//If the currently-active level is a TerrainLevel
-		if(level instanceof TerrainLevel)
+		/** Delegates when the Player scavenges an Interactive GameObject. */
+		@Override
+		public void scavengedObject(InteractiveObject object)
 		{
-			//Find the TerrainLayer where the GameObject resides using a layer lookup based on the GameObject's terrain cell.
-			TerrainLayer terrainLayer = terrainLevel.getTerrainLayer(gameObject.getTerrainCell());
-			//Sets the GameObject's bottom y-position to the y-position of the ground at the given x-position. This effectively sticks the object to the ground.
-			gameObject.setY(terrainLayer.getGroundHeight(gameObject.getX()));
-		}
-	}
-	
-	public void checkForLayerSwitch(GameObject gameObject)
-	{
-		//If the currently-active level is a TerrainLevel
-		if(level instanceof TerrainLevel)
-		{
-			//Find the TerrainLayer where the GameObject resides using a layer lookup based on the GameObject's terrain cell.
-			TerrainLayer terrainLayer = terrainLevel.getTerrainLayer(gameObject.getTerrainCell());
-			
-			//If the the player has moved to the right of his current layer
-			if(gameObject.getX() > terrainLayer.getRightPoint().x)
-			{
-				//Move the GameObject's cell to the right so that the GameObject knows that he has changed cells.
-				gameObject.getTerrainCell().moveRight();
-				
-				//Shift the layers of the level to the right so that the player stays in the center cell.
-				terrainLevel.shiftLayersRight();
-			}
-			//If the the player has moved to the left of his current layer
-			else if(gameObject.getX() < terrainLayer.getLeftPoint().x)
-			{
-				//Move the GameObject's cell to the left so that the GameObject knows that he has changed cells.
-				gameObject.getTerrainCell().moveLeft();
-				
-				//Shift the layers of the level to the left so that the player stays in the center cell.
-				terrainLevel.shiftLayersLeft();
-			}
+			profile.addScavengedLayerObject(object);
 		}
 	}
 	
@@ -250,8 +227,8 @@ public class World
 	/** Makes the player walk to the specified GameObject. */
 	public void setTarget(Human human, GameObject target)
 	{
-		//If the Human is jumping or falling, don't let him walk to the target.
-		if(human.getState() == State.JUMP || human.getState() == State.FALL)
+		//If the Human is jumping or falling, don't let him walk to the target. If the GameObject can't be targetted, return this method.
+		if(human.getState() == State.JUMP || human.getState() == State.FALL || !target.canTarget())
 			return;
 		
 		//Set the human's target to the given GameObject
@@ -319,6 +296,48 @@ public class World
 			{
 				//Start chopping the tree. The player knows his target is the tree to chop.
 				player.chopTree();
+			}
+		}
+	}
+	
+	/** Locks the GameObject to the ground when it is moving. Makes it so that the GameObject follows the path of the ground. */
+	public void lockToGround(GameObject gameObject)
+	{
+		//If the currently-active level is a TerrainLevel
+		if(level instanceof TerrainLevel)
+		{
+			//Find the TerrainLayer where the GameObject resides using a layer lookup based on the GameObject's terrain cell.
+			TerrainLayer terrainLayer = terrainLevel.getTerrainLayer(gameObject.getTerrainCell());
+			//Sets the GameObject's bottom y-position to the y-position of the ground at the given x-position. This effectively sticks the object to the ground.
+			gameObject.setY(terrainLayer.getGroundHeight(gameObject.getX()));
+		}
+	}
+	
+	public void checkForLayerSwitch(GameObject gameObject)
+	{
+		//If the currently-active level is a TerrainLevel
+		if(level instanceof TerrainLevel)
+		{
+			//Find the TerrainLayer where the GameObject resides using a layer lookup based on the GameObject's terrain cell.
+			TerrainLayer terrainLayer = terrainLevel.getTerrainLayer(gameObject.getTerrainCell());
+			
+			//If the the player has moved to the right of his current layer
+			if(gameObject.getX() > terrainLayer.getRightPoint().x)
+			{
+				//Move the GameObject's cell to the right so that the GameObject knows that he has changed cells.
+				gameObject.getTerrainCell().moveRight();
+				
+				//Shift the layers of the level to the right so that the player stays in the center cell.
+				terrainLevel.shiftLayersRight();
+			}
+			//If the the player has moved to the left of his current layer
+			else if(gameObject.getX() < terrainLayer.getLeftPoint().x)
+			{
+				//Move the GameObject's cell to the left so that the GameObject knows that he has changed cells.
+				gameObject.getTerrainCell().moveLeft();
+				
+				//Shift the layers of the level to the left so that the player stays in the center cell.
+				terrainLevel.shiftLayersLeft();
 			}
 		}
 	}

@@ -4,9 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.jonathan.survivor.World;
 
 /*
@@ -25,8 +24,15 @@ public class ExplorationRenderer extends HudRenderer
 	/** Stores the left and right arrow buttons to make the player move left and right. */
 	private ImageButton leftArrowButton, rightArrowButton;
 	
+	/** Stores the offsets of the backpack button. Used to anchor the button to the corner of the screen with a given offset. */
+	public static final float BACKPACK_BUTTON_X_OFFSET = 5;
+	public static final float BACKPACK_BUTTON_Y_OFFSET = 5;
+	
+	/** Stores the Backpack button. */
+	private Button backpackButton;
+	
 	/** Stores the listener used to listen for events from the arrow buttons. */
-	private ArrowButtonListener arrowButtonListener;
+	private ButtonListener buttonListener;
 	
 	/** Stores the buttons displaying the left and right arrows to move the player. */
 	private boolean leftArrowButtonDown, rightArrowButtonDown;
@@ -41,20 +47,27 @@ public class ExplorationRenderer extends HudRenderer
 		leftArrowButton = new ImageButton(assets.leftArrowButtonStyle);
 		rightArrowButton = new ImageButton(assets.rightArrowButtonStyle);
 
+		//Creates the backpack button to transition to the backpack.
+		backpackButton = new Button(assets.backpackButtonStyle);
+
 		//Resize the buttons according to the scale factor of the screen so that every atlas size creates the button with the same size in world units.
 		leftArrowButton.setSize(leftArrowButton.getWidth() / assets.scaleFactor, leftArrowButton.getHeight() / assets.scaleFactor);
 		rightArrowButton.setSize(rightArrowButton.getWidth() / assets.scaleFactor, rightArrowButton.getHeight() / assets.scaleFactor);
+		
+		backpackButton.setSize(backpackButton.getWidth() / assets.scaleFactor, backpackButton.getHeight() / assets.scaleFactor);
 		
 		//Sets the colors of the buttons.
 		leftArrowButton.setColor(ARROW_BUTTON_COLOR);
 		rightArrowButton.setColor(ARROW_BUTTON_COLOR);
 		
-		//Creates a new listener for the arrow buttons
-		arrowButtonListener = new ArrowButtonListener();
+		//Creates a new listener for the buttons
+		buttonListener = new ButtonListener();
 		
 		//Adds the listeners to the buttons to know when they are pressed.
-		leftArrowButton.addListener(arrowButtonListener);
-		rightArrowButton.addListener(arrowButtonListener);
+		leftArrowButton.addListener(buttonListener);
+		rightArrowButton.addListener(buttonListener);
+		
+		backpackButton.addListener(buttonListener);
 
 	}
 	
@@ -80,7 +93,7 @@ public class ExplorationRenderer extends HudRenderer
 		stage.draw();
 	}
 	
-	class ArrowButtonListener extends InputListener
+	class ButtonListener extends InputListener
 	{
 		/** Delegates when a button is pressed. */
 		@Override
@@ -125,6 +138,11 @@ public class ExplorationRenderer extends HudRenderer
 				world.stopMoving(world.getPlayer());
 
 			}
+			//Else, if the backpackButton was released, transition to the backpack inventory page.
+			else if(event.getTarget() == backpackButton)
+			{
+				System.out.println("Transition to Backpack");
+			}
 			
 		}
 	}
@@ -142,9 +160,14 @@ public class ExplorationRenderer extends HudRenderer
 		//Anchor the right arrow button to the bottom right of the screen using the offset constants.
 		rightArrowButton.setPosition(stage.getWidth() - rightArrowButton.getWidth() - ARROW_BUTTON_X_OFFSET, ARROW_BUTTON_Y_OFFSET);	
 		
+		//Anchors the backpack button to the top left of the screen using the offset constants.
+		backpackButton.setPosition(BACKPACK_BUTTON_X_OFFSET, stage.getHeight() - backpackButton.getHeight() - BACKPACK_BUTTON_Y_OFFSET);
+		
 		//Add the widgets to the stage.
 		stage.addActor(leftArrowButton);
 		stage.addActor(rightArrowButton);
+		
+		stage.addActor(backpackButton);
 	}
 	
 }

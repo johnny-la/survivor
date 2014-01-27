@@ -1,6 +1,0 @@
-package com.jonathan.survivor.managers;
-
-import com.badlogic.gdx.utils.Pool;
-import com.jonathan.survivor.entity.Tree;
-
-

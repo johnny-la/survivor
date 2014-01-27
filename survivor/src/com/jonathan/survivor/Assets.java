@@ -84,10 +84,12 @@ public class Assets
 	public ListStyle mainMenuListStyle;	//Defines the look of the world selection list in the main menu.
 	
 	//Stores the assets used by the game.
+	public TextureAtlas hudAtlas;
 	public Skin hudSkin;
 	public ButtonStyle circleButtonStyle;
 	public ImageButtonStyle leftArrowButtonStyle;
 	public ImageButtonStyle rightArrowButtonStyle;
+	public ButtonStyle backpackButtonStyle;
 	
 	public TextureAtlas playerAtlas;
 	public SkeletonJson playerSkeletonJson;
@@ -107,6 +109,7 @@ public class Assets
 	public Animation treeIdle;
 	public Animation treeClicked;
 	public Animation treeHit;
+	public Animation treeScavenged;
 	
 	public SkeletonRenderer skeletonRenderer; //Renderer used to draw spine skeletons with a SpriteBatch.
 	
@@ -219,6 +222,7 @@ public class Assets
 		//Put all assets to queue for loading using the AssetManager.load("fileName", class) method.
 		manager.load("game/player/atlas/player_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		manager.load("game/tree/atlas/tree_atlas" + scaleExtension + ".txt", TextureAtlas.class);
+		manager.load("ui/hud/atlas/hud_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		
 		//Puts music assets to queue inside the AssetManager using AssetManager.load("fileName", class).
 		
@@ -256,6 +260,7 @@ public class Assets
 		//Retrieves the assets for the game.
 		playerAtlas = manager.get("game/player/atlas/player_atlas" + scaleExtension + ".txt");
 		treeAtlas = manager.get("game/tree/atlas/tree_atlas" + scaleExtension + ".txt");
+		hudAtlas = manager.get("ui/hud/atlas/hud_atlas" + scaleExtension + ".txt");
 		
 		//Retrieves the music files.
 		//mainMenuMusic = manager.get("sound/music/Ashton Manor.mp3");
@@ -317,7 +322,7 @@ public class Assets
 	private void loadGameAssets()
 	{		
 		//Loads the assets needed for the HUD
-		hudSkin = new Skin(treeAtlas);
+		hudSkin = new Skin(hudAtlas);
 		
 		//Creates the style for the circle button
 		circleButtonStyle = new ButtonStyle();		
@@ -357,6 +362,12 @@ public class Assets
 		rightArrowButtonStyle.imageUp = rightArrowDrawable;
 		rightArrowButtonStyle.imageDown = rightArrowDrawable;
 		
+		//Creates the style for the backpack button.
+		backpackButtonStyle = new ButtonStyle();
+		backpackButtonStyle.up = hudSkin.getDrawable("Backpack");
+		backpackButtonStyle.down = backpackButtonStyle.up;
+		
+		
 		
 		//Sets up the Spine data used to display and animate the player.
 		playerSkeletonJson = new SkeletonJson(playerAtlas);
@@ -378,6 +389,7 @@ public class Assets
 		treeIdle = treeSkeletonData.findAnimation("Idle");
 		treeClicked = treeSkeletonData.findAnimation("Clicked");
 		treeHit = treeSkeletonData.findAnimation("Hit");
+		treeScavenged = treeSkeletonData.findAnimation("Scavenged");
 		
 		//Creates a new skeleton renderer to draw Spine skeletons using a SpriteBatch instance.
 		skeletonRenderer = new SkeletonRenderer();

@@ -1,6 +1,0 @@
-package com.jonathan.survivor;
-
-public interface Level 
-{
-	float getStartPosition();
-}

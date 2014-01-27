@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.jonathan.survivor.Assets;
+import com.jonathan.survivor.Settings;
 import com.jonathan.survivor.Survivor;
 import com.jonathan.survivor.managers.MusicManager;
 import com.jonathan.survivor.managers.ProfileManager;
@@ -39,6 +40,9 @@ public abstract class Screen implements com.badlogic.gdx.Screen
 	/** Stores the universal Profile Manager used by the game controlling this screen. Used to access profiles and their data. */
 	protected ProfileManager profileManager;
 	
+	/** Stores the Settings instance used to save player information to the hard drive. */
+	protected Settings settings;
+	
 	/** Stores the SpriteBatch instance used to draw sprites to this screen. */
 	protected SpriteBatch batcher;
 	
@@ -52,6 +56,9 @@ public abstract class Screen implements com.badlogic.gdx.Screen
 		soundManager = game.getSoundManager();
 		//Retrieves the profile manager to allow every screen subclass to access the profiles used by the user.
 		profileManager = game.getProfileManager();
+		
+		//Retrieves the Settings instance to allow every screen subclass to save player information to the hard drive.
+		settings = game.getSettings();
 		
 		//Create a new SpriteBatch which can batch one hundred sprites at once. This is a convenience variable, since virtually all screens need a batcher.
 		batcher = new SpriteBatch();

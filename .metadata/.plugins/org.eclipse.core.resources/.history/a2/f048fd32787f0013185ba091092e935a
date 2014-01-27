@@ -1,5 +1,0 @@
-package com.jonathan.math;
-
-public abstract class Collider {
-	public Vector2
-}

@@ -113,6 +113,11 @@ public class Survivor extends Game
 		return profileManager;
 	}
 	
+	/** Returns the universal Settings instance used by the game to save player information to the hard drive. */
+	public Settings getSettings() {
+		return settings;
+	}
+	
 	/** Called when the application quits. */
 	@Override
 	public void dispose()
@@ -124,7 +129,6 @@ public class Survivor extends Game
 		Assets.instance.dispose();
 		//DONOT call. Otherwise, the screen's dispose method will be called twice, since it is called from the Screen.hide() method.
 		//getScreen().dispose();
-	}
-	
+	}	
 	
 }

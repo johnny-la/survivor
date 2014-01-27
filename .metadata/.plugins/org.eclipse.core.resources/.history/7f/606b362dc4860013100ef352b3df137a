@@ -1,0 +1,398 @@
+package com.jonathan.survivor;
+
+import com.badlogic.gdx.utils.Array;
+import com.jonathan.survivor.TerrainLayer.TerrainDirection;
+import com.jonathan.survivor.entity.GameObject;
+import com.jonathan.survivor.managers.GameObjectManager;
+import com.jonathan.survivor.math.Cell;
+
+/** 
+ * A Terrain Level is essentially a container of TerrainLayers. It is composed of a 2d array of TerrainLayers, which makes up the geometry of the level.
+ * @author Jonathan
+ *
+ */
+
+public class TerrainLevel implements Level
+{
+	/** Stores the number of rows and columns of terrain layers that are displayed at once in a level. */
+	public static final int NUM_LAYER_ROWS = 3, NUM_LAYER_COLS = 3;
+	
+	/** Stores the bottom-left (x,y) position of the first terrain layer. Only relevant when layers first created. */
+	public static final float START_X_POS = 0;//(-TerrainLayer.LAYER_WIDTH * (NUM_LAYER_COLS / 2)) - (TerrainLayer.LAYER_WIDTH/2);
+	public static final float START_Y_POS = 0;//(-TerrainLayer.LAYER_HEIGHT * (NUM_LAYER_ROWS / 2)) - (TerrainLayer.LAYER_HEIGHT/2);
+	
+	/** Helper array used to store all the GameObjects in the level. Avoids activating the garbage collector. */
+	private Array<GameObject> gameObjects = new Array<GameObject>();
+	/** Stores true if the gameObjects array has already been populated with the GameObjects contained in the level. Prevents having to re-populate the array every frame. */
+	private boolean gameObjectsStored = false;
+	
+	/** Stores the 2d array of TerrainLayers which make up the level's geometry. Note that [0][0] is the bottom-left layer and that
+	 *  [NUM_LAYER_ROWS-1][NUM_LAYER_COLS-1] is always the top-right-most layer. */
+	TerrainLayer[][] layers;
+	
+	/** Creates a terrain level given a profile, which dictates how the terrainLayers should be generated.*/
+	public TerrainLevel(Profile profile, GameObjectManager goManager)
+	{		
+		//Generate the level's terrain layers out of the profile, which indicates how the layers should be laid out, along with the gameObjectManager.
+		generateLayers(profile, goManager);
+	}
+	
+	/** Generates the TerrainLayers for the level to display. Accepts the profile to populate generate the layers the way they were before application quit. Also accepts the
+	 *  GameObjectManager used by the world. This allows each TerrainLayer to populate itself with pooled GameObjects. */
+	public void generateLayers(, GameObjectManager goManager)
+	{		
+		//Creates the 2d array of TerrainLayers to store the level geometry.
+		layers = new TerrainLayer[NUM_LAYER_ROWS][NUM_LAYER_COLS];
+		
+		//Stores the world seed which determines the geometry of each terrain layer.
+		int worldSeed = profile.getWorldSeed();
+		
+		//Retrieves the row and column offsets for the layers. The row and column offset allow the user to spawn where he left off. The bottom-left-most
+		//terrain layer is set to the cell coordinate of (rowOffset, colOffset). Thus, the game should save the row and column of the bottom-left-most terrain layer. Then, by specifying 
+		 *  these as offsets, the level is re-initialized with the desired terrain
+		int rowOffset = profile.getTerrainRowOffset();
+		int colOffset = profile.getTerrainRowOffset();
+		
+		//Cycles through the rows of terrain layers. (Note that 0 is the bottom-most row)
+		for(int i = 0; i < NUM_LAYER_ROWS; i++)
+		{
+			//Stores the x-position of the next layer to define. Initialized to x-position of the first, left-most layer in the row.
+			float x = START_X_POS;
+			//Stores the y-position of the next layer to define. Initialized to y-position of the first, left-most layer in the row, plus the layerHeight times the row,
+			//off-setting the layers depending on the row number.
+			float y = START_Y_POS + TerrainLayer.LAYER_HEIGHT * i;
+			
+			//Cycles through the columns of the row
+			for(int j = 0; j < NUM_LAYER_COLS; j++)
+			{
+				//Creates a TerrainLayer for the given column and row. The first two arguments specify the row and column of the layer. We offset them by the given row
+				//and column offset, which shifts the layers where the user left off the last save. The row and column of the layer are the only thing which generates
+				//their appearance. The third and fourth arguments specify the bottom-left position of the layer, stored in x:float and y:float. The fifth argument states
+				//that the layer should go from left to right, since the left position was given. The last argument specifies the world seed, used to randomly generate 
+				//the geometry of the layer. Also, the GameObjectManager used by the world is passed to populate the TerrainLayer with GameObjects.
+				layers[i][j] = new TerrainLayer(i + rowOffset, j + colOffset, x, y, TerrainDirection.RIGHT, worldSeed, goManager);
+				
+				//Updates the y-position for the next layer. We want it to start at the end point of the previous layer, so we specify the y-position of the right end 
+				//point of the previous layer using TerrainLayer.getRightPoint().y
+				y = layers[i][j].getRightPoint().y;
+					
+				//Increments the x-position for the next layer. We shift by one layer width so that the next layer starts at the end of the previous layer.
+				x += TerrainLayer.LAYER_WIDTH;
+				
+			}
+		}		
+	}
+	
+	/** Shifts the bottom TerrainLayers to the top. Called when the user moves up a layer. */
+	public void shiftLayersUp()
+	{
+		//Stores the bottom TerrainLayers, stored in the first row of the layers:TerrainLayer[][] array.
+		TerrainLayer[] bottomLayers = layers[0];
+		//Computes the new row for the bottom layers. We choose the row of the top layers, plus one.
+		int newRow = layers[layers.length-1][0].getRow()+1;
+		//Finds the new y position for the left-most layer. We choose the top-left layer's bottom-left y-position, plus the height of a layer, to offset the bottom layers
+		//above the old ones.
+		float newYPos = layers[layers.length-1][0].getLeftPoint().y + TerrainLayer.LAYER_HEIGHT;
+		
+		//Shifts the layers down a row in the array to make way for the bottom layers.
+		for(int i = 0; i < layers.length-1; i++)
+			layers[i] = layers[i+1];
+		
+		//Update the last row of the layers:TerrainLayer[][] array to hold the bottom layers.
+		layers[layers.length-1] = bottomLayers;
+		
+		//Cycles through the TerrainLayers we just shifted to the top of the level
+		for(int i = 0; i < bottomLayers.length; i++)
+		{
+			//Stores the layer
+			TerrainLayer layer = bottomLayers[i];
+			//Sets the row of the layer to its new row.
+			layer.setRow(newRow);
+			//Sets the start position of the layer to its old x-position, as it has not changed, and the new y-position. This specifies the bottom-left (x,y) coordinate
+			//of the layer. Therefore, we set the last argument to RIGHT to tell the method that the layer is going from left to right.
+			layer.setStartPosition(layer.getLeftPoint().x, newYPos, TerrainDirection.RIGHT);
+			//Frees the GameObjects belonging to the layer back into their respective pools so that they can be reused after.
+			layer.freeGameObjects();
+			//Resets the layer so that its geometry and GameObjects match its new row.
+			layer.resetLayer();
+			
+			//Update the y-position of the next layer to start at the right end-point of the old layer.
+			newYPos = layer.getRightPoint().y;
+		}
+		
+		//Tells the level that its gameObjects:Array<GameObject> has to be re-populated since the top layers have different GameObjects now.
+		gameObjectsStored = false;
+	}
+	
+	/** Shifts the top TerrainLayers to the bottom. Called when the user moves up a layer. */
+	public void shiftLayersDown()
+	{
+		//Stores the top TerrainLayers of the level, stored in the last row of the layers:TerrainLayer[][] array.
+		TerrainLayer[] topLayers = layers[layers.length-1];
+		//Computes the new row for the top layers. We choose the row of the bottom layers, minus one.
+		int newRow = layers[0][0].getRow()-1;
+		//Finds the new y position for the left-most layer. We choose the bottom-left layer's bottom-left y-position, minus the height of a layer, to offset the top layers
+		//below the old ones.
+		float newYPos = layers[0][0].getLeftPoint().y - TerrainLayer.LAYER_HEIGHT;
+		
+		//Shifts the layers up a row in the array to make way for the new bottom layers.
+		for(int i = layers.length-1; i > 0; i--)
+			layers[i] = layers[i-1];
+		
+		//Update the first row of the layers:TerrainLayer[][] array to hold the bottom layers.
+		layers[0] = topLayers;
+		
+		//Cycles through the TerrainLayers we just shifted to the bottom of the level
+		for(int i = 0; i < topLayers.length; i++)
+		{
+			//Stores the layer
+			TerrainLayer layer = topLayers[i];
+			//Sets the layer to its new, pre-calculated row.
+			layer.setRow(newRow);
+			//Sets the start position of the layer to its old x-position, as it has not changed, and its new y-position. The start position we set is the bottom-left (x,y)
+			//coordinate of the layer. Therefore, we set the last argument to RIGHT to tell the method that the layer is going from left to right.
+			layer.setStartPosition(layer.getLeftPoint().x, newYPos, TerrainDirection.RIGHT);
+			//Frees the GameObjects belonging to the layer back into their respective pools so that they can be reused after.
+			layer.freeGameObjects();
+			//Resets the layer so that its geometry and GameObjects match its new row.
+			layer.resetLayer();
+			
+			//Update the y-position of the next layer to start at the right end-point of the old layer.
+			newYPos = layer.getRightPoint().y;
+		}
+		
+		//Tells the level that its gameObjects:Array<GameObject> has to be re-populated since the bottom layers have different GameObjects now.
+		gameObjectsStored = false;
+	}
+	
+	/** Shifts the left TerrainLayers to the right. Called when the user moves to the right of the center layer. */
+	public void shiftLayersRight()
+	{
+		//Computes the new column for the left layers. We choose the column of the right layers, plus one.
+		int newCol = layers[0][NUM_LAYER_COLS-1].getCol()+1;
+		//Finds the new x position for the left layers. We choose the bottom-right layer's right-most x-position to offset the top layers to the right the old ones.
+		float newXPos = layers[0][NUM_LAYER_COLS-1].getRightPoint().x;
+		
+		//Shifts the layers to the left and inserts the new layers to the right.
+		for(int i = 0; i < layers.length; i++)
+		{
+			//Stores the left-most layer in the row, stored in the first column of the matrix.
+			TerrainLayer leftLayer = layers[i][0];
+			//Finds the new left-most y-position of the left layer to be the right-most layer's right-most y-position, for the new layer to start at the end of the old one.
+			float newYPos = layers[i][NUM_LAYER_COLS-1].getRightPoint().y;
+			
+			//Shifts all of the layers to the left, leaving an empty column at the end.
+			for(int j = 0; j < layers[i].length-1; j++)
+			{
+				//Shifts the layers to the right
+				layers[i][j] = layers[i][j+1];
+			}
+			
+			//Sets the layer to its new, pre-calculated column.
+			leftLayer.setCol(newCol);
+			//Sets the start position of the layer to its new x-position and y-position. The start position we set is the bottom-left (x,y) coordinate of the layer. Since the
+			//left point is given, we set the last argument to RIGHT to tell the method that the layer is going from left to right.
+			leftLayer.setStartPosition(newXPos, newYPos, TerrainDirection.RIGHT);
+			//Frees the GameObjects belonging to the layer back into their respective pools so that they can be reused after.
+			leftLayer.freeGameObjects();
+			//Resets the layer so that its geometry and GameObjects match its new column.
+			leftLayer.resetLayer();
+			
+			//Insert the left-most column to the right-most column, effectively rotating the columns to the left.
+			layers[i][NUM_LAYER_COLS-1] = leftLayer;
+		}
+		
+		//Tells the level that its gameObjects:Array<GameObject> has to be re-populated since the bottom layers have different GameObjects now.
+		gameObjectsStored = false;
+	}
+	
+	/** Shifts the right-most TerrainLayers to the left. Called when the user moves to the left of the center layer. */
+	public void shiftLayersLeft()
+	{
+		//Computes the new column for the right layers. We choose the column of the left-most layers, minus one.
+		int newCol = layers[0][0].getCol()-1;
+		//Finds the new x position for the right layers. We choose the bottom-left layer's left-most x-position to offset the top layers to the left of the old ones.
+		float newXPos = layers[0][0].getLeftPoint().x;
+		
+		//Shifts the layers to the right and inserts the new layers to the left.
+		for(int i = 0; i < layers.length; i++)
+		{
+			//Stores the right-most layer in the row, stored in the last column of the matrix.
+			TerrainLayer rightLayer = layers[i][NUM_LAYER_COLS-1];
+			//Finds the new right-most y-position of the right layer as the left-most layer's left-most y-position, so that the new layer starts at the end of the old one.
+			float newYPos = layers[i][0].getLeftPoint().y;
+			
+			//Shifts all of the layers to the right, leaving an empty column at the end.
+			for(int j = layers[i].length-1; j > 0; j--)
+			{
+				//Shifts the layers to the right
+				layers[i][j] = layers[i][j-1];
+			}
+			
+			//Sets the layer to its new, pre-calculated column.
+			rightLayer.setCol(newCol);
+			//Sets the start position of the layer to its new x-position and y-position. The start position we set is the bottom-right (x,y) coordinate of the layer.
+			//Since the layer's right point is given, we set the last argument to LEFT to tell the method that the layer is going from right to left.
+			rightLayer.setStartPosition(newXPos, newYPos, TerrainDirection.LEFT);
+			//Frees the GameObjects belonging to the layer back into their respective pools so that they can be reused for other layers.
+			rightLayer.freeGameObjects();
+			//Resets the layer so that its geometry and GameObjects match its new column.
+			rightLayer.resetLayer();
+			
+			//Insert the left-most column to the right-most column, effectively rotating the columns to the left.
+			layers[i][0] = rightLayer;
+		}
+		
+		//Tells the level that its gameObjects:Array<GameObject> has to be re-populated since the bottom layers have different GameObjects now.
+		gameObjectsStored = false;
+	}
+	
+	/** Returns an array of all the GameObjects contained in the level. */
+	public Array<GameObject> getGameObjects()
+	{
+		//If the gameObjects:Array<GameObject> has not yet been populated with the correct GameObjects contained in the level's layers
+		if(!gameObjectsStored)
+		{
+			//Clears the current GameObject list.
+			gameObjects.clear();
+			
+			//Cycle through the rows of TerrainLayers.
+			for(int i = layers.length-1; i >= 0; i--)
+			{
+				//Cycle through the columns of the row
+				for(int j = 0; j < layers[i].length; j++)
+				{
+					//Add all the GameObjects from the layer into the gameObjects array which will be returned by this method.
+					gameObjects.addAll(layers[i][j].getGameObjects());
+				}
+			}
+			
+			//Tells the level that its gameObjects array has been populated with the correct GameObjects. The array will not be re-populated until invalidated.
+			gameObjectsStored = true;
+		}
+		
+		//Return the Array of all the GameObjects on the level.
+		return gameObjects;
+	}
+	
+	/** Returns the terrain layer with the given cell coordinates. Note that the layer must exist in the current level's layer matrix. */
+	public TerrainLayer getTerrainLayer(int row, int col)
+	{
+		//Stores the bottom-most layer row existing in the level's layer matrix.
+		int bottomRow = layers[0][0].getRow();
+		//Stores the left-most layer row existing in the level's layer matrix.
+		int leftCol = layers[0][0].getCol();
+		
+		//Stores the row of the top-most layer in the layers:TerrainLayer[][] array. Note that we subtract by one since cell coordinates are zero-based.
+		int topRow = bottomRow + NUM_LAYER_ROWS - 1;
+		//Stores the column of the right-most layer in the layers:TerrainLayer[][] array. Note that we subtract by one since cell coordinates are zero-based.
+		int rightCol = leftCol + NUM_LAYER_COLS - 1;
+		
+		//If the cell coordinates are out of bounds of the layers currently contained by the level, throw an exception.
+		if(row < bottomRow || row > topRow || col < leftCol || col > rightCol)
+			throw new IllegalArgumentException("The cell " + row + ", " + col + " does not exist in the current layers matrix for the TerrainLevel.");
+		
+		//Finds the (i,j) index corresponding to the TerrainLayer with the given row and column by normalizing the row from 0 to NUM_LAYER_ROWS-1, and the 
+		//same for the column.
+		int i = row - bottomRow;
+		int j = col - leftCol;
+		
+		//Returns the TerrainLayer stored in the given indices of the layers matrix.
+		return layers[i][j];
+	}
+	
+	/** Returns the terrain layer with the given cell coordinates. Note that the layer must exist in the current level's layer matrix. */
+	public TerrainLayer getTerrainLayer(Cell cell)
+	{
+		//Returns the TerrainLayer through the overloaded method which accepts the column and row of the layer individually.
+		return getTerrainLayer(cell.getRow(), cell.getCol());
+	}
+	
+	/** Returns the TerrainLayer at the center of the level. This is the layer where the player resides. */
+	public TerrainLayer getCenterLayer()
+	{
+		//The center layer will always be in the middle row and column. This is because layers[0][0] is the bottom-left-most layer, and layers[NUM_LAYER_ROWS-1][NUM_LAYER_COLS-1]
+		//is the right-most layer visible in the level.
+		return layers[NUM_LAYER_ROWS/2][NUM_LAYER_COLS/2];
+	}
+	
+	/** Returns an array of all the TerrainLayers in the middle of the level, in terms of height. */
+	public TerrainLayer[] getMiddleLayers()
+	{
+		//Returns the TerrainLayers in the middle row of the level.
+		return layers[NUM_LAYER_ROWS/2];
+	}
+	
+	/** Gets the bottom-left-most layer which visible in the level. */
+	public TerrainLayer getBottomLeftLayer()
+	{
+		//The bottom-left layer will always be at the zero indices of the layers:TerrainLayer[][] array.
+		return layers[0][0];
+	}
+	
+	/** Returns the height of the ground at a given x-position. We retrieve the height of the ground for the center layer, since none are specified. */
+	public float getGroundHeight(float xPos)
+	{
+		//Returns the height of the ground at the center layer, since no layers were given.
+		return getCenterLayer().getGroundHeight(xPos);
+	}
+	
+	/** Returns the row of the TerrainLayer contained in the center of the level. */
+	public int getCenterRow()
+	{
+		//Returns the center layer's row.
+		return getCenterLayer().getRow();
+	}
+	
+	/** Returns the column of the TerrainLayer at the center of the level. */
+	public int getCenterCol()
+	{
+		//Returns the center layer's column.
+		return getCenterLayer().getCol();
+	}
+	
+	/** Returns the row of the TerrainLayer at the bottom-left of the level. */
+	public int getBottomLeftRow() 
+	{
+		//Return's the bottom-left layer's row.
+		return getBottomLeftLayer().getRow();
+	}
+	
+	/** Returns the column of the TerrainLayer at the bottom-left of the level. */
+	public int getBottomLeftCol() 
+	{
+		//Return's the bottom-left layer's column.
+		return getBottomLeftLayer().getCol();
+	}
+	
+	/** Returns the x-position where the user should spawn when he is first dropped in the level. In this case, the center TerrainLayer of the level. */
+	@Override
+	public float getPlayerStartX()
+	{
+		//The player should spawn at center layer of the TerrainLevel. We want him to spawn in the middle x-position of this layer, found using TerrainLayer.getCenterX().
+		return getCenterLayer().getCenterX();
+	}
+	
+	/** Returns the y-position where the user should spawn when he is first dropped in the level. In this case, the center layer of the level. */
+	@Override
+	public float getPlayerStartY()
+	{
+		//Returns the ground height at the center layer of the level. We want him to spawn at ground height. Thus, we get the ground height at the starting x-position of
+		//the player.
+		return getCenterLayer().getGroundHeight(getPlayerStartX());
+	}
+	
+	/** Returns the 2d array which stores the TerrainLayers which dictate the TerrainLevel's geometry. */
+	public TerrainLayer[][] getTerrainLayers()
+	{
+		//Returns the 2d array of TerrainLayers.
+		return layers;
+	}
+	
+	/** Sets the TerrainLayer array used by the TerrainLevel. Calling this method is not recommended, as it may cause unforeseen consequences. */
+	public void setLevelLayers(TerrainLayer[][] layers)
+	{
+		//Sets the 2d array of TerrainLayers.
+		this.layers = layers;
+	}
+}
