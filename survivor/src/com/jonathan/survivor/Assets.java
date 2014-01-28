@@ -224,7 +224,7 @@ public class Assets
 		//Put all assets to queue for loading using the AssetManager.load("fileName", class) method.
 		manager.load("game/player/atlas/player_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		manager.load("game/tree/atlas/tree_atlas" + scaleExtension + ".txt", TextureAtlas.class);
-		manager.load("ui/hud/atlas/hud_atlas" + scaleExtension + ".txt", TextureAtlas.class);
+		manager.load("ui/hud/general/atlas/hud_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		
 		//Puts music assets to queue inside the AssetManager using AssetManager.load("fileName", class).
 		
@@ -262,7 +262,7 @@ public class Assets
 		//Retrieves the assets for the game.
 		playerAtlas = manager.get("game/player/atlas/player_atlas" + scaleExtension + ".txt");
 		treeAtlas = manager.get("game/tree/atlas/tree_atlas" + scaleExtension + ".txt");
-		hudAtlas = manager.get("ui/hud/atlas/hud_atlas" + scaleExtension + ".txt");
+		hudAtlas = manager.get("ui/hud/general/atlas/hud_atlas" + scaleExtension + ".txt");
 		
 		//Retrieves the music files.
 		//mainMenuMusic = manager.get("sound/music/Ashton Manor.mp3");
