@@ -1,0 +1,8 @@
+package com.jonathan.survivor.renderers;
+
+public interface HudListener 
+{
+	void onBack();
+	
+	void 
+}

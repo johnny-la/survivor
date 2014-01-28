@@ -22,8 +22,6 @@ import com.esotericsoftware.spine.Animation;
 import com.esotericsoftware.spine.SkeletonData;
 import com.esotericsoftware.spine.SkeletonJson;
 import com.esotericsoftware.spine.SkeletonRenderer;
-import com.esotericsoftware.spine.Slot;
-import com.esotericsoftware.spine.attachments.Attachment;
 
 /** Loads all visual/audio assets needed by the game and stores them in public static variables. An asset is fetched from this class whenever something needs
  *  to be drawn on screen or played to the speakers.
@@ -90,6 +88,10 @@ public class Assets
 	public ImageButtonStyle leftArrowButtonStyle;
 	public ImageButtonStyle rightArrowButtonStyle;
 	public ButtonStyle backpackButtonStyle;
+	
+	public ButtonStyle survivalGuideButtonStyle;
+	public ButtonStyle craftingButtonStyle;
+	public LabelStyle hudLabelStyle;
 	
 	public TextureAtlas playerAtlas;
 	public SkeletonJson playerSkeletonJson;
@@ -367,7 +369,20 @@ public class Assets
 		backpackButtonStyle.up = hudSkin.getDrawable("Backpack");
 		backpackButtonStyle.down = backpackButtonStyle.up;
 		
+		//Creates the style for the Survival Guide button
+		survivalGuideButtonStyle = new ButtonStyle();
+		survivalGuideButtonStyle.up = hudSkin.getDrawable("SurvivalGuideButton");
+		survivalGuideButtonStyle.down = hudSkin.getDrawable("SurvivalGuideButton");
 		
+		//Creates the style for the Crafting button
+		craftingButtonStyle = new ButtonStyle(survivalGuideButtonStyle);
+		craftingButtonStyle.up = hudSkin.getDrawable("CraftingButton");
+		craftingButtonStyle.down = hudSkin.getDrawable("CraftingButton");
+		
+		//Creates the style for the labels in the HUD displays.
+		hudLabelStyle = new LabelStyle();
+		hudLabelStyle.font = moonFlowerBold_38;
+		hudLabelStyle.fontColor = Color.BLACK;
 		
 		//Sets up the Spine data used to display and animate the player.
 		playerSkeletonJson = new SkeletonJson(playerAtlas);

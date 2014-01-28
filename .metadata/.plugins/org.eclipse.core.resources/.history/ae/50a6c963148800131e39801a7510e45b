@@ -1,0 +1,25 @@
+hud_atlas@2x.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+CircleButton
+  rotate: false
+  xy: 4, 4
+  size: 152, 150
+  orig: 151, 150
+  offset: 0, 0
+  index: -1
+Arrow
+  rotate: false
+  xy: 4, 158
+  size: 112, 120
+  orig: 111, 119
+  offset: 0, -1
+  index: -1
+Backpack
+  rotate: false
+  xy: 160, 4
+  size: 56, 82
+  orig: 55, 81
+  offset: 0, -1
+  index: -1

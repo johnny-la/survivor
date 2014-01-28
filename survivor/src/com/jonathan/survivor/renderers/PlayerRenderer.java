@@ -75,6 +75,7 @@ public class PlayerRenderer
 		animStateData.setMix(assets.playerIdle, assets.playerIdle, 0);
 		animStateData.setMix(assets.playerWalk, assets.playerIdle, 0.1f);
 		animStateData.setMix(assets.playerIdle, assets.playerWalk, 0.1f);
+		animStateData.setMix(assets.playerWalk, assets.playerChopTree_Start, 0.2f);
 		animStateData.setMix(assets.playerChopTree, assets.playerIdle, 0.35f);
 		animStateData.setMix(assets.playerChopTree, assets.playerWalk, 0.27f);
 		

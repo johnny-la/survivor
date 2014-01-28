@@ -237,3 +237,16 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.e
 
 !ENTRY com.android.ide.eclipse.adt 1 0 2014-01-26 14:19:23.139
 !MESSAGE com.android.ide.eclipse.adt
+!SESSION 2014-01-28 06:57:47.835 -----------------------------------------------
+eclipse.buildId=M20120208-0800
+java.version=1.7.0_45
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=fr_FR
+Framework arguments:  -product org.eclipse.epp.package.java.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.java.product
+
+!ENTRY com.android.ide.eclipse.adt 1 0 2014-01-28 07:06:05.134
+!MESSAGE com.android.ide.eclipse.adt
+
+!ENTRY com.android.ide.eclipse.adt 1 0 2014-01-28 07:06:19.034
+!MESSAGE com.android.ide.eclipse.adt

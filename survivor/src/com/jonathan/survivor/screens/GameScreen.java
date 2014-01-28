@@ -5,13 +5,13 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.jonathan.survivor.Profile;
-import com.jonathan.survivor.Settings;
 import com.jonathan.survivor.Survivor;
 import com.jonathan.survivor.World;
 import com.jonathan.survivor.managers.GestureManager;
 import com.jonathan.survivor.managers.InputManager;
-import com.jonathan.survivor.renderers.ExplorationRenderer;
-import com.jonathan.survivor.renderers.HudRenderer;
+import com.jonathan.survivor.renderers.ExplorationHud;
+import com.jonathan.survivor.renderers.Hud;
+import com.jonathan.survivor.renderers.HudListener;
 import com.jonathan.survivor.renderers.WorldRenderer;
 
 /*
@@ -21,7 +21,7 @@ import com.jonathan.survivor.renderers.WorldRenderer;
 public class GameScreen extends Screen
 {
 	public enum GameState {
-		EXPLORING, PAUSED, GAME_OVER
+		EXPLORING, BACKPACK, PAUSED, GAME_OVER
 	};
 	
 	/** Stores the state of the game, used to determine how to update the world, and how to draw the UI. */
@@ -46,10 +46,12 @@ public class GameScreen extends Screen
 	/** Class allowing us to set multiple instance of InputListeners to receive input events. */
 	private InputMultiplexer inputMultiplexer;
 	
-	/** Stores the currently active HudRenderer which draws the UI to the screen. */
-	private HudRenderer hudRenderer;
-	/** Stores the ExplorationRenderer instance which draws the UI when the user is in exploration mode. */
-	private ExplorationRenderer explorationRenderer;
+	/** Stores the currently active Hud which draws the UI to the screen. */
+	private Hud hud;
+	/** Stores the ExplorationHud instance which draws the UI when the user is in exploration mode. */
+	private ExplorationHud explorationHud;
+	/** Stores the BackpackHud which displays the Backpack inventory screen. */
+	private BackpackHud backpackHud;
 	
 	/** Creates a game screen. The profile used to create the screen must be specified to load the user's previous save information and update it. */
 	public GameScreen(Survivor game, Profile profile)
@@ -92,11 +94,33 @@ public class GameScreen extends Screen
 		Gdx.input.setInputProcessor(inputMultiplexer);
 		
 		//Creates an ExplorationRenderer which will display the exploration UI using the stage, and will call methods from the world on button clicks.
-		explorationRenderer = new ExplorationRenderer(stage, world);
+		explorationHud = new ExplorationHud(stage, world);
+		//Creates the BackpackHud instance which displays the backpack UI using the stage.
+		backpackHud = new BackpackHud(stage, world);
+		//Adds the UiListener instance that will receive any events that occur in the Hud of the game. Used to react appropriately to a button press.
+		explorationHud.addHudListener(new UiListener());
 		
 		//The game always starts off in exploration mode. This tells the class to display the exploration UI for the game.
 		setGameState(GameState.EXPLORING);
 		
+	}
+	
+	/** Listens to any event that occurs in the HUD of the game. Allows the GameScreen to have knowledge about HUD button presses. */
+	public class UiListener implements HudListener
+	{
+		/** Called when the back button is pressed on any Hud instance. */
+		@Override 
+		public void onBack()
+		{
+			
+		}
+		
+		/** Called when the Backpack button is pressed on the exploration HUD. */
+		@Override
+		public void onBackpackButton()
+		{
+			setGameState(GameState.BACKPACK);
+		}
 	}
 	
 	@Override 
@@ -130,7 +154,7 @@ public class GameScreen extends Screen
 		worldRenderer.render();
 		
 		//Draws the HUD to the screen, depending on game state.
-		hudRenderer.draw(deltaTime);
+		hud.draw(deltaTime);
 	}
 	
 	/** Sets the GameState. Updates the hudRenderer to draw the correct HUD. */
@@ -143,12 +167,16 @@ public class GameScreen extends Screen
 		switch(gameState)
 		{
 		case EXPLORING:
-			hudRenderer = explorationRenderer;
+			hud = explorationHud;
+			break;
+		case BACKPACK:
+			hud = backpackHud;
 			break;
 		}
 		
 		//Tells the renderer to re-place the widgets onto the stage so that the stage contains the correct widgets for the current renderer.
-		hudRenderer.reset();
+		//Passes the width and height of the gui to ensure that widgets are repositioned and scaled relative to the right resolution.
+		hud.reset(guiWidth, guiHeight);
 	}
 	
 	@Override
@@ -181,8 +209,9 @@ public class GameScreen extends Screen
 		//is resized to fit the screen's aspect ratio to avoid uneven stretching. If the device's screen is guiWidth x guiHeight, the GUI is pixel perfect.
 		stage.setViewport(guiWidth, guiHeight);
 		
-		//Resets the HudRenderer currently being used to render the GUI. Re-positions GUI elements to fit screen size.
-		hudRenderer.reset();
+		//Resets the HudRenderer currently being used to render the GUI. Re-positions GUI elements to fit screen size. Passes the size of the UI so that the Hud knows
+		//how to re-position and resize its widgets accordingly.
+		hud.reset(guiWidth, guiHeight);
 		
 		//Resizes the camera used by the world renderer. We specify the worldWidth and worldHeight. They store the desired size of a camera which displays the world.
 		//These values were resized according to the aspect ratio of the screen so that nothing is stretched, and that the world coordinate system stays the same. The

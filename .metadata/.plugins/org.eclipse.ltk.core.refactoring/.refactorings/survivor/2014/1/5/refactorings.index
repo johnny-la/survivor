@@ -18,3 +18,7 @@
 1390765481838	Rename field 'scavengedObjects'
 1390782843449	Encapsulate field 'item'
 1390824862694	Rename local variable 'layerObjectsString'
+1390910765555	Rename type 'ExplorationRenderer'
+1390910779127	Rename type 'HudRenderer'
+1390910813822	Rename field 'hudRenderer'
+1390910821092	Rename field 'explorationRenderer'
