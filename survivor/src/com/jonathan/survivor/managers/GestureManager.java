@@ -16,6 +16,9 @@ public class GestureManager extends GestureAdapter
 	/** Stores the world that the manager will modify according to user input. */
 	private World world;
 	
+	/** True if the game is paused, so that no gestures should be registered nor handled. */
+	private boolean paused;
+	
 	/** Creates an InputManager with the given world. This manager receives all touch events and reacts by calling the appropriate methods for the World. */
 	public GestureManager(World world)
 	{
@@ -27,6 +30,10 @@ public class GestureManager extends GestureAdapter
 	@Override
 	public boolean fling(float velocityX, float velocityY, int button)
 	{
+		//Return the method if the gesture manager is paused. Disallows swipe events from being registered and handled.
+		if(paused)
+			return false;
+		
 		//If the player is currently in exploration state
 		if(world.getWorldState() == WorldState.EXPLORING)
 		{
@@ -63,5 +70,18 @@ public class GestureManager extends GestureAdapter
 		}
 		
 		return false;
+	}
+	
+	/** Pauses the GestureManager so that it doesn't call any of the world's methods. Effectively pauses gesture handling. */
+	public void pause()
+	{
+		//Set the paused flag to true.
+		paused = true;
+	}
+	
+	/** Resumes the GestureManager so that it can call the world's methods based on touch gestures. Effectively resumes gesture handling. */
+	public void resume()
+	{
+		paused = false;
 	}
 }

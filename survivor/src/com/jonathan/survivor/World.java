@@ -231,6 +231,14 @@ public class World
 		if(human.getState() == State.JUMP || human.getState() == State.FALL || !target.canTarget())
 			return;
 		
+		//If the target is a tree, and the player wants to target the tree
+		if(target instanceof Tree && human instanceof Player)
+		{
+			//If the player does not have a melee weapon, return the method to prevent the user from targetting or chopping the tree.
+			if(!((Player)human).hasMeleeWeapon())
+				return;
+		}
+		
 		//Set the human's target to the given GameObject
 		human.setTarget(target);
 		

@@ -12,19 +12,10 @@ public class ItemObject extends GameObject
 		//super(x, y, , );
 	}
 
-	/** Gets the item contained by the GameObject. */
-	public Item getItem() {
-		return item;
-	}
-
-	/** Sets the item the GameObject represents. */
-	public void setItem(Item item) {
-		this.item = item;
-	}
-
 	@Override
 	public void update(float deltaTime) {
-		// TODO Auto-generated method stub
+		updatePosition(deltaTime);
+		updateCollider();
 		
 	}
 
@@ -33,5 +24,15 @@ public class ItemObject extends GameObject
 	public boolean canTarget() {
 		//Return false as an ItemObject can't be targetted.
 		return false;
+	}
+	
+	/** Gets the item contained by the GameObject. */
+	public Item getItem() {
+		return item;
+	}
+
+	/** Sets the item the GameObject represents. */
+	public void setItem(Item item) {
+		this.item = item;
 	}
 }

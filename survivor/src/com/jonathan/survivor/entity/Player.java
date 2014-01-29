@@ -159,6 +159,13 @@ public class Player extends Human
 		return false;
 	}
 
+	/** Returns true if the player has a melee weapon equipped. */
+	public boolean hasMeleeWeapon()
+	{
+		//Returns true if the melee weapon in the player's loadout is not null.
+		return loadout.getMeleeWeapon() != null;
+	}
+	
 	/** Retrieves the player's loadout containing the player's weapons. */
 	public Loadout getLoadout() {
 		return loadout;

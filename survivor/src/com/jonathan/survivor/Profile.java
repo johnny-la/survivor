@@ -286,9 +286,6 @@ public class Profile implements Serializable
 	/** Returns a list of all of the objectIds that have been scavenged on the given TerrainLayer, denoted by its row and column. */
 	public ArrayList<Integer> getScavengedLayerObjects(int row, int col)
 	{
-		if(scavengedLayerObjects == null)
-			scavengedLayerObjects = new HashMap<Integer, HashMap<Integer, ArrayList<Integer>>>();
-
 		//If no HashMap exists for the given row
 		if(scavengedLayerObjects.get((Integer)row) == null)
 		{
@@ -296,8 +293,10 @@ public class Profile implements Serializable
 			scavengedLayerObjects.put(new Integer(row), new HashMap<Integer, ArrayList<Integer>>());
 		}
 		
+		//If no Array exists for the given column
 		if(scavengedLayerObjects.get((Integer)row).get((Integer)col) == null)
 		{
+			//Populate the row and column's HashMap with an empty array of integers.
 			scavengedLayerObjects.get((Integer)row).put(new Integer(col), new ArrayList<Integer>());
 		}
 		
@@ -321,7 +320,6 @@ public class Profile implements Serializable
 		//where the object resides, and the second key holds the column where the same object resides. The value returned is an array of all objectIds that 
 		//have been scavenged in that layer, to which the given objectId is added.
 		scavengedLayerObjects.get(row).get(col).add(objectId);
-		System.out.println(scavengedLayerObjects.get(row).get(col));
 	}
 	
 	/** Gets the loadout used by the player. */

@@ -4,15 +4,22 @@ import com.jonathan.survivor.entity.Tree;
 
 public class Axe extends MeleeWeapon
 {
-	public static String NAME = "Axe";
-	public static String DESCRIPTION = "A weapon for the mightiest of lumberjacks";
-	public static float DAMAGE = 1;
-	public static float RANGE = 1;
+	/** Stores the properties of the axe. */
+	public static final String NAME = "Axe";
+	public static final String DESCRIPTION = "A weapon for the mightiest of lumberjacks";
+	public static final float DAMAGE = 1;
+	public static final float RANGE = 1;
+	
+	public static final String ATTACHMENT_NAME = "Axe_0002";	//Stores the name of the image on the player which stores the Axe.
 	
 	/** Creates an axe. */
 	public Axe()
 	{
 		super(NAME, DESCRIPTION, DAMAGE, RANGE);
+		
+		//Sets the attachment name of the axe. This is the name of the image on the player used to display the axe.
+		setAttachmentName(ATTACHMENT_NAME);
+		
 	}
 	
 	/** Called when the MeleeWeapon has hit a tree and should deal damage to it. */

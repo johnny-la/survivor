@@ -9,10 +9,16 @@ public abstract class MeleeWeapon extends Weapon
 	/** Stores the range in world units of the melee weapon. */
 	private float range;
 	
+	/** Stores the name of the slot on the player in Spine where melee weapon images are stored. */
+	public static final String SLOT_NAME = "Axe";
+	
 	/** Accepts the name, description, damage, and range of the melee weapon. */
 	public MeleeWeapon(String name, String description, float damage, float range)
 	{
 		super(name, description, damage);
+		
+		//All MeleeWeapons and their images are mapped to the slot named "Axe" on the Player.
+		setSlotName("Axe");
 		
 		//Populates the member variables with the constructor's parameters.
 		this.range = range;

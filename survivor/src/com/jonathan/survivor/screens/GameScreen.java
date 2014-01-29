@@ -165,12 +165,9 @@ public class GameScreen extends Screen
 		Gdx.gl.glClearColor(1,1,1,1);
 		//Clears the screen.
 		super.render(deltaTime);
-		
-		if(gameState == GameState.EXPLORING)
-		{
-			//Renders and draws the world using the worldRenderer.
-			worldRenderer.render();
-		}
+
+		//Renders and draws the world using the worldRenderer.
+		worldRenderer.render();
 		
 		//Draws the HUD to the screen, depending on game state.
 		hud.draw(deltaTime);
@@ -187,15 +184,35 @@ public class GameScreen extends Screen
 		{
 		case EXPLORING:
 			hud = explorationHud;
+			resumeGame();
 			break;
 		case BACKPACK:
 			hud = backpackHud;
+			pauseGame();
 			break;
 		}
 		
 		//Tells the renderer to re-place the widgets onto the stage so that the stage contains the correct widgets for the current renderer.
 		//Passes the width and height of the gui to ensure that widgets are repositioned and scaled relative to the right resolution.
 		hud.reset(guiWidth, guiHeight);
+	}
+	
+	/** Pauses the game by pausing all of the input receiving */
+	public void pauseGame()
+	{
+		//Pauses the input manager so that no more touches are delegated to the world.
+		inputManager.pause();
+		//Pauses the gesture manager so that no more swipes are registered or delegated to the world.
+		gestureManager.pause();
+	}
+	
+	/** Resumes the game by allowing the input managers to delegate method calls to the world. */
+	public void resumeGame()
+	{
+		//Resumes the input manager so that it can delegate touch events to the world.
+		inputManager.resume();
+		//Resumes the gesture manager so that it can delegate events to the world based on swipes.
+		gestureManager.resume();
 	}
 	
 	@Override

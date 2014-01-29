@@ -22,3 +22,5 @@
 1390910779127	Rename type 'HudRenderer'
 1390910813822	Rename field 'hudRenderer'
 1390910821092	Rename field 'explorationRenderer'
+1391022437589	Encapsulate field 'slotName'
+1391022474410	Encapsulate field 'attachmentName'
