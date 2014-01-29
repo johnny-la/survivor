@@ -4,6 +4,8 @@ import com.jonathan.survivor.inventory.Item.Type;
 
 public class Weapon extends Item
 {
+	/** Stores the name of the slot on the player in Spine where melee weapon images are stored. */
+	public static final String MELEE_SLOT = "Axe";
 	
 	/** The amount of damage done by the weapon with one hit. */
 	protected float damage;
