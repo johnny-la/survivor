@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
@@ -64,6 +65,9 @@ public class Assets
 	public static final float PLAYER_SKELETON_SCALE = 0.156f * Survivor.WORLD_SCALE;
 	public static final float TREE_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
 	
+	/** Stores the amount certain buttons are offset when pressed. */
+	public static final float BUTTON_PRESSED_OFFSET = 5;
+	
 	//Stores the assets used by the loading screen and company splash screen.
 	public TextureAtlas loadingScreenAtlas;
 	public Sprite companyLogo;
@@ -87,10 +91,14 @@ public class Assets
 	public ButtonStyle circleButtonStyle;
 	public ImageButtonStyle leftArrowButtonStyle;
 	public ImageButtonStyle rightArrowButtonStyle;
-	public ButtonStyle backpackButtonStyle;
+	public ButtonStyle backpackButtonStyle;	//The button on the top-left corner of the screen to open the backpack.
 	
+	public TextureAtlas backpackBgAtlas;
+	public TextureRegion backpackBgRegion;
 	public ButtonStyle survivalGuideButtonStyle;
 	public ButtonStyle craftingButtonStyle;
+	public ButtonStyle backButtonStyle;
+	public LabelStyle hudHeaderStyle;
 	public LabelStyle hudLabelStyle;
 	
 	public TextureAtlas playerAtlas;
@@ -225,6 +233,7 @@ public class Assets
 		manager.load("game/player/atlas/player_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		manager.load("game/tree/atlas/tree_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		manager.load("ui/hud/general/atlas/hud_atlas" + scaleExtension + ".txt", TextureAtlas.class);
+		manager.load("ui/hud/backpack_bg/atlas/backpack_bg_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		
 		//Puts music assets to queue inside the AssetManager using AssetManager.load("fileName", class).
 		
@@ -263,6 +272,7 @@ public class Assets
 		playerAtlas = manager.get("game/player/atlas/player_atlas" + scaleExtension + ".txt");
 		treeAtlas = manager.get("game/tree/atlas/tree_atlas" + scaleExtension + ".txt");
 		hudAtlas = manager.get("ui/hud/general/atlas/hud_atlas" + scaleExtension + ".txt");
+		backpackBgAtlas = manager.get("ui/hud/backpack_bg/atlas/backpack_bg_atlas" + scaleExtension + ".txt");
 		
 		//Retrieves the music files.
 		//mainMenuMusic = manager.get("sound/music/Ashton Manor.mp3");
@@ -369,15 +379,42 @@ public class Assets
 		backpackButtonStyle.up = hudSkin.getDrawable("Backpack");
 		backpackButtonStyle.down = backpackButtonStyle.up;
 		
+		//Retrieves the TextureRegion for the backpack's background.
+		backpackBgRegion = backpackBgAtlas.findRegion("Backpack_BG");
+		
 		//Creates the style for the Survival Guide button
 		survivalGuideButtonStyle = new ButtonStyle();
 		survivalGuideButtonStyle.up = hudSkin.getDrawable("SurvivalGuideButton");
-		survivalGuideButtonStyle.down = hudSkin.getDrawable("SurvivalGuideButton");
+		//Creates a sprite from the SurvivalGuideButton, tints it gray so that the button in pressed state is a different color.
+		Sprite guideButtonDown = hudSkin.getSprite("SurvivalGuideButton");
+		guideButtonDown.setColor(Color.GRAY);
+		//Sets the 'down' state of the button to a tinted version of the original button.
+		survivalGuideButtonStyle.down = new SpriteDrawable(guideButtonDown);
+		survivalGuideButtonStyle.pressedOffsetX = BUTTON_PRESSED_OFFSET;	//Adds an offset to the button when pressed.
+		survivalGuideButtonStyle.pressedOffsetY = BUTTON_PRESSED_OFFSET;
 		
-		//Creates the style for the Crafting button
+		//Creates the style for the Crafting button, the button with the chemistry bottle.
 		craftingButtonStyle = new ButtonStyle(survivalGuideButtonStyle);
 		craftingButtonStyle.up = hudSkin.getDrawable("CraftingButton");
-		craftingButtonStyle.down = hudSkin.getDrawable("CraftingButton");
+		//Creates a sprite from the CraftingButton, tints it gray so that the button in pressed state is a different color.
+		Sprite craftingButtonDown = hudSkin.getSprite("CraftingButton");
+		craftingButtonDown.setColor(Color.GRAY);
+		//Sets the 'down' state of the button to a tinted version of the original button.
+		craftingButtonStyle.down = new SpriteDrawable(craftingButtonDown);
+		craftingButtonStyle.pressedOffsetX = BUTTON_PRESSED_OFFSET;	//Adds an offset to the button when pressed.
+		craftingButtonStyle.pressedOffsetY = BUTTON_PRESSED_OFFSET;
+		
+		//Creates the Style for the BackButton
+		backButtonStyle = new ButtonStyle();
+		backButtonStyle.up = hudSkin.getDrawable("BackButton");
+		Sprite backButtonDown = hudSkin.getSprite("BackButton"); //Creates a sprite from the backpack button and tints it gray.
+		backButtonDown.setColor(Color.GRAY);
+		backButtonStyle.down = new SpriteDrawable(backButtonDown);	//Registers the tinted sprite as the image drawn when the back button is down.
+		
+		//Creates the LabelStyle for the headers displayed in the HUDs.
+		hudHeaderStyle = new LabelStyle();
+		hudHeaderStyle.font = moonFlowerBold_54;
+		hudHeaderStyle.fontColor = Color.BLACK;
 		
 		//Creates the style for the labels in the HUD displays.
 		hudLabelStyle = new LabelStyle();

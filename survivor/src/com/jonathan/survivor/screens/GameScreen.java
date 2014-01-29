@@ -53,6 +53,9 @@ public class GameScreen extends Screen
 	/** Stores the BackpackHud which displays the Backpack inventory screen. */
 	private BackpackHud backpackHud;
 	
+	/** Stores the UiListener which receives all events related to the UI or the HUD. Used to react appropriately to button presses. */
+	private UiListener uiListener;
+	
 	/** Creates a game screen. The profile used to create the screen must be specified to load the user's previous save information and update it. */
 	public GameScreen(Survivor game, Profile profile)
 	{
@@ -97,8 +100,13 @@ public class GameScreen extends Screen
 		explorationHud = new ExplorationHud(stage, world);
 		//Creates the BackpackHud instance which displays the backpack UI using the stage.
 		backpackHud = new BackpackHud(stage, world);
-		//Adds the UiListener instance that will receive any events that occur in the Hud of the game. Used to react appropriately to a button press.
-		explorationHud.addHudListener(new UiListener());
+		
+		//Creates the UiListener instance which will receive all events related to the UI and its button presses. 
+		uiListener = new UiListener();
+		
+		//Adds the UiListener instance to each Hud instance. Like this, the GameScreen is informed about button touches in the UI. Used to react appropriately to a button press.
+		explorationHud.addHudListener(uiListener);
+		backpackHud.addHudListener(uiListener);
 		
 		//The game always starts off in exploration mode. This tells the class to display the exploration UI for the game.
 		setGameState(GameState.EXPLORING);
@@ -112,13 +120,18 @@ public class GameScreen extends Screen
 		@Override 
 		public void onBack()
 		{
-			
+			//If the back button was pressed in the backpack hud
+			if(gameState == GameState.BACKPACK)
+			{
+				setGameState(GameState.EXPLORING);
+			}
 		}
 		
 		/** Called when the Backpack button is pressed on the exploration HUD. */
 		@Override
 		public void onBackpackButton()
 		{
+			//Set the game state to the BACKPACK state so that the backpack hud is displayed.
 			setGameState(GameState.BACKPACK);
 		}
 	}
@@ -135,11 +148,14 @@ public class GameScreen extends Screen
 	/** Updates the world and the world camera. */
 	private void update(float deltaTime)
 	{
-		//Updates the world and its GameObjects. 
-		world.update(deltaTime);
-		
-		//Updates the camera used to view the world.
-		worldRenderer.updateCamera();
+		if(gameState == GameState.EXPLORING)
+		{
+			//Updates the world and its GameObjects. 
+			world.update(deltaTime);
+			
+			//Updates the camera used to view the world.
+			worldRenderer.updateCamera();
+		}
 	}
 	
 	/** Draws the UI, along with the world and its contained GameObjects. */
@@ -150,8 +166,11 @@ public class GameScreen extends Screen
 		//Clears the screen.
 		super.render(deltaTime);
 		
-		//Renders and draws the world using the worldRenderer.
-		worldRenderer.render();
+		if(gameState == GameState.EXPLORING)
+		{
+			//Renders and draws the world using the worldRenderer.
+			worldRenderer.render();
+		}
 		
 		//Draws the HUD to the screen, depending on game state.
 		hud.draw(deltaTime);
