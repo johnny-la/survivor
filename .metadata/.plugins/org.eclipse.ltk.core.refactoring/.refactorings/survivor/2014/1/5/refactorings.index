@@ -24,3 +24,5 @@
 1390910821092	Rename field 'explorationRenderer'
 1391022437589	Encapsulate field 'slotName'
 1391022474410	Encapsulate field 'attachmentName'
+1391174976114	Move compilation unit
+1391175436700	Rename method 'resumeGame'

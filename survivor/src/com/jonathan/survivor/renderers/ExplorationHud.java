@@ -80,7 +80,9 @@ public class ExplorationHud extends Hud
 		leftArrowButton.addListener(buttonListener);
 		rightArrowButton.addListener(buttonListener);
 		
+		//Add the listeners to the top-most buttons to register button clicks.
 		backpackButton.addListener(buttonListener);
+		pauseButton.addListener(buttonListener);
 
 	}
 	
@@ -154,6 +156,12 @@ public class ExplorationHud extends Hud
 			{
 				//Tell the GameScreen that the BackpackButton was pressed by delegating the appropriate method call to the HudListener.
 				hudListener.onBackpackButton();
+			}
+			//Else, if the pause button was pressed
+			else if(event.getTarget() == pauseButton)
+			{
+				//Tell the GameScreen that the pause button has been pressed. Switches to the pause menu.
+				hudListener.onPauseButton();
 			}
 			
 		}

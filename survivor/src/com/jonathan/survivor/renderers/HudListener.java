@@ -10,4 +10,7 @@ public interface HudListener
 	
 	/** Called when the Pause Button is pressed whilst in-game. */
 	void onPauseButton();
+	
+	/** Called when the main menu button was pressed to transition to the main menu. */
+	void switchToMainMenu();
 }

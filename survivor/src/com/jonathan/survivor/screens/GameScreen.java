@@ -9,6 +9,7 @@ import com.jonathan.survivor.Survivor;
 import com.jonathan.survivor.World;
 import com.jonathan.survivor.managers.GestureManager;
 import com.jonathan.survivor.managers.InputManager;
+import com.jonathan.survivor.renderers.BackpackHud;
 import com.jonathan.survivor.renderers.ExplorationHud;
 import com.jonathan.survivor.renderers.Hud;
 import com.jonathan.survivor.renderers.HudListener;
@@ -27,6 +28,12 @@ public class GameScreen extends Screen
 	
 	/** Stores the state of the game, used to determine how to update the world, and how to draw the UI. */
 	private GameState gameState;
+	
+	/** Stores the game's state before it was paused. Allows the game to resume to its previous game state on resume. */
+	private GameState stateBeforePause;
+	
+	/** Holds true if the game is paused. Prevents the world and the graphics from being updated. */
+	private boolean paused;
 	
 	/** Stores the profile used to create the world. */
 	private Profile profile;
@@ -112,6 +119,7 @@ public class GameScreen extends Screen
 		//Adds the UiListener instance to each Hud instance. Like this, the GameScreen is informed about button touches in the UI. Used to react appropriately to a button press.
 		explorationHud.addHudListener(uiListener);
 		backpackHud.addHudListener(uiListener);
+		pauseMenuHud.addHudListener(uiListener);
 		
 		//The game always starts off in exploration mode. This tells the class to display the exploration UI for the game.
 		setGameState(GameState.EXPLORING);
@@ -125,27 +133,38 @@ public class GameScreen extends Screen
 		@Override 
 		public void onBack()
 		{
-			//If the back button was pressed in the backpack hud
+			//If back button was pressed in the backpack menu
 			if(gameState == GameState.BACKPACK)
-			{
-				setGameState(GameState.EXPLORING);
-			}
+				//Resumes the game at its previous game state before being paused. Handles switching game states.
+				resumeGame();
+			//Else, if the back button was pressed in the pause menu
+			else if(gameState == GameState.PAUSED)
+				//Resumes the game at its previous game state before being paused. Takes care of changing the game state.
+				resumeGame();
 		}
 		
 		/** Called when the Backpack button is pressed on the exploration HUD. */
 		@Override
 		public void onBackpackButton()
 		{
-			//Set the game state to the BACKPACK state so that the backpack hud is displayed.
-			setGameState(GameState.BACKPACK);
+			//Transitions to the BACKPACK menu and pauses the game so that all input handling related to the game is ignored.
+			pauseGame(GameState.BACKPACK);
 		}
 
 		/** Delegated when the pause button is pressed whilst in-game. Transitions to the pause menu. */
 		@Override
 		public void onPauseButton() 
 		{
-			//Sets the game's state to the PAUSED state. This tells the screen to pause the game and display the Pause Menu.
-			setGameState(GameState.PAUSED);
+			//Pauses the game and switches to the PAUSED state to show the pause menu and to ensure no input is managed and passed to the world.
+			pauseGame(GameState.PAUSED);
+		}
+		
+		/** Called when the main menu button was pressed in the pause menu. */
+		@Override
+		public void switchToMainMenu()
+		{
+			//Transitions to the main menu.
+			game.setScreen(new MainMenuScreen(game));
 		}
 	}
 	
@@ -161,12 +180,13 @@ public class GameScreen extends Screen
 	/** Updates the world and the world camera. */
 	private void update(float deltaTime)
 	{
-		if(gameState == GameState.EXPLORING)
+		//If the game is not paused
+		if(!paused)
 		{
-			//Updates the world and its GameObjects. 
+			//Update the world and its GameObjects. 
 			world.update(deltaTime);
 			
-			//Updates the camera used to view the world.
+			//Update the camera used to view the world.
 			worldRenderer.updateCamera();
 		}
 	}
@@ -196,16 +216,13 @@ public class GameScreen extends Screen
 		switch(gameState)
 		{
 		case EXPLORING:
-			hud = explorationHud;	//Switches to the hud in exploration mode
-			resumeGame();	//Resumes the game in case it was paused.
+			hud = explorationHud;	//Switches to the hud for the game's exploration mode
 			break;
 		case BACKPACK:
 			hud = backpackHud;
-			pauseGame();	//Ensures no more input is being registered or sent to the player.
 			break;
 		case PAUSED:
 			hud = pauseMenuHud;	//Switches to the pause menu's UI.
-			pauseGame();	//Ensures no more input is being registered or sent to the player.
 			break;
 		}
 		
@@ -214,8 +231,36 @@ public class GameScreen extends Screen
 		hud.reset(guiWidth, guiHeight);
 	}
 	
-	/** Pauses the game by pausing all of the input receiving */
-	public void pauseGame()
+	/** Pauses the game whilst running. Called when transitioning to a menu. Accepts the game state the user is switching to. */
+	public void pauseGame(GameState newState)
+	{
+		//Tells the game it is paused and prevents the world and graphics from updating.
+		paused = true;
+		
+		//Stores the game state before pausing. Allows the game to be resumed to its game state before being paused.
+		stateBeforePause = gameState;
+		//Pauses input processing.
+		pauseInput();
+		
+		//Sets the game state to the new game state. Effectively transitions to the desired HUD for the specified game state.
+		setGameState(newState);
+	}
+	
+	/** Resumes the game to its previous state before being paused. */
+	public void resumeGame()
+	{
+		//Resumes the game and permits the world and the graphics from being updated.
+		paused = false;
+		
+		//Sets the game state to its previous state before the game was paused.
+		setGameState(stateBeforePause);
+		
+		//Resumes input processing. Allows the input managers to call the world's methods.
+		resumeInput();
+	}
+	
+	/** Pauses the game by pausing all of the input handling. */
+	public void pauseInput()
 	{
 		//Pauses the input manager so that no more touches are delegated to the world.
 		inputManager.pause();
@@ -224,7 +269,7 @@ public class GameScreen extends Screen
 	}
 	
 	/** Resumes the game by allowing the input managers to delegate method calls to the world. */
-	public void resumeGame()
+	public void resumeInput()
 	{
 		//Resumes the input manager so that it can delegate touch events to the world.
 		inputManager.resume();
