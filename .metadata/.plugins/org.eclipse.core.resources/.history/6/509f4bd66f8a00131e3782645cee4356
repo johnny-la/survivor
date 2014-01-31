@@ -1,0 +1,36 @@
+package com.jonathan.survivor.renderers;
+
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.jonathan.survivor.World;
+
+public class PauseMenuHud extends Hud
+{
+	/** Holds the table used to arrange the buttons in a grid-like fashion. */
+	Table table;
+	
+	/** Stores the buttons displayed on the pause menu. */
+	Button resumeButton;
+	Button mainMenuButton;
+	
+	public PauseMenuHud(Stage stage, World world)
+	{
+		super(stage, world);
+		
+		//Creates the table instance used to arrange the buttons in a grid-like fashion.
+		table = new Table();
+		
+		//Creates the text buttons displayed on the pause menu as options.
+		resumeButton = new TextButton("Resume", assets.mainMenuButtonStyle);
+		mainMenuButton = new TextButton("Main Menu", assets.mainMenuButtonStyle);
+		
+	}
+
+	@Override
+	public void reset(float guiWidth, float guiHeight) 
+	{
+		
+		
+	}
+}

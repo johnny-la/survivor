@@ -31,6 +31,13 @@ public class ExplorationHud extends Hud
 	/** Stores the Backpack button. */
 	private Button backpackButton;
 	
+	/** Stores the offset of the pause button. Used to anchor the button to the top-right corner of the screen with a given offset. */
+	public static final float PAUSE_BUTTON_X_OFFSET = 5;
+	public static final float PAUSE_BUTTON_Y_OFFSET = 5;
+	
+	/** Stores the Pause Button, used to pause the game. */
+	private Button pauseButton;
+	
 	/** Stores the listener used to listen for events from the arrow buttons. */
 	private ButtonListener buttonListener;
 	
@@ -47,18 +54,24 @@ public class ExplorationHud extends Hud
 		leftArrowButton = new ImageButton(assets.leftArrowButtonStyle);
 		rightArrowButton = new ImageButton(assets.rightArrowButtonStyle);
 
-		//Creates the backpack button to transition to the backpack.
+		//Creates the backpack button, which transitions to the backpack, and the pause button. which re-directs to the pause menu.
 		backpackButton = new Button(assets.backpackButtonStyle);
+		pauseButton = new Button(assets.pauseButtonStyle);
 
-		//Resize the buttons according to the scale factor of the screen so that every atlas size creates the button with the same size in world units.
+		//Resize the arrow buttons according to the scale factor of the screen so that every atlas size creates the button with the same size in world units.
 		leftArrowButton.setSize(leftArrowButton.getWidth() / assets.scaleFactor, leftArrowButton.getHeight() / assets.scaleFactor);
 		rightArrowButton.setSize(rightArrowButton.getWidth() / assets.scaleFactor, rightArrowButton.getHeight() / assets.scaleFactor);
 		
+		//Scales down the top-most buttons by the scale factor of the assets. Ensures that the sprites are scaled down if larger atlases were chosen.
 		backpackButton.setSize(backpackButton.getWidth() / assets.scaleFactor, backpackButton.getHeight() / assets.scaleFactor);
+		pauseButton.setSize(pauseButton.getWidth() / assets.scaleFactor, pauseButton.getHeight() / assets.scaleFactor);
 		
 		//Sets the colors of the buttons.
 		leftArrowButton.setColor(ARROW_BUTTON_COLOR);
 		rightArrowButton.setColor(ARROW_BUTTON_COLOR);
+		
+		//Adds transparency to the pause button.
+		pauseButton.setColor(new Color(1,1,1,0.7f));
 		
 		//Creates a new listener for the buttons
 		buttonListener = new ButtonListener();
@@ -162,12 +175,18 @@ public class ExplorationHud extends Hud
 		//Anchors the backpack button to the top left of the screen using the offset constants.
 		backpackButton.setPosition(BACKPACK_BUTTON_X_OFFSET, stage.getHeight() - backpackButton.getHeight() - BACKPACK_BUTTON_Y_OFFSET);
 		
+		//Anchors the pause button to the top right of the screen, and offsets it according to the pre-defined constants.
+		pauseButton.setPosition(stage.getWidth() - pauseButton.getWidth() - PAUSE_BUTTON_X_OFFSET, stage.getHeight() - pauseButton.getHeight() - PAUSE_BUTTON_Y_OFFSET);
+		
 		//Add the widgets to the stage.
 		stage.addActor(leftArrowButton);
 		stage.addActor(rightArrowButton);
 		
 		//Adds the backpack button to the stage.
 		stage.addActor(backpackButton);
+		
+		//Adds the pause button to the stage.
+		stage.addActor(pauseButton);
 	}
 	
 }

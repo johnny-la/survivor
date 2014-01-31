@@ -1,0 +1,9 @@
+package com.jonathan.survivor.renderers;
+
+public class PauseMenuHud extends Hud
+{
+	public PauseMenuHud(Stage stage, World world)
+	{
+		
+	}
+}

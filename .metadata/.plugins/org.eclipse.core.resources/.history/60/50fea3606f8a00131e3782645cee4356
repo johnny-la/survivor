@@ -1,0 +1,19 @@
+package com.jonathan.survivor.renderers;
+
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.jonathan.survivor.World;
+
+public class PauseMenuHud extends Hud
+{
+	public PauseMenuHud(Stage stage, World world)
+	{
+		super(stage, world);
+	}
+
+	@Override
+	public void reset(float guiWidth, float guiHeight) 
+	{
+		
+		
+	}
+}

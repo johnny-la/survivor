@@ -1,0 +1,26 @@
+package com.jonathan.survivor.renderers;
+
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.jonathan.survivor.World;
+
+public class PauseMenuHud extends Hud
+{
+	/** Holds the table used to arrange the buttons in a grid-like fashion. */
+	Table table;
+	
+	public PauseMenuHud(Stage stage, World world)
+	{
+		super(stage, world);
+		
+		//Creates the table instance used to arrange the buttons in a grid-like fashion.
+		table = new Table();
+		
+	}
+
+	@Override
+	public void reset(float guiWidth, float guiHeight) 
+	{
+		
+		
+	}
+}

@@ -1,0 +1,46 @@
+hud_atlas@2x.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+CircleButton
+  rotate: false
+  xy: 4, 292
+  size: 152, 150
+  orig: 152, 150
+  offset: 0, 0
+  index: -1
+BackButton
+  rotate: false
+  xy: 418, 4
+  size: 84, 94
+  orig: 84, 94
+  offset: 0, 0
+  index: -1
+CraftingButton
+  rotate: false
+  xy: 4, 4
+  size: 192, 284
+  orig: 192, 284
+  offset: 0, 0
+  index: -1
+SurvivalGuideButton
+  rotate: false
+  xy: 200, 4
+  size: 214, 244
+  orig: 214, 244
+  offset: 0, 0
+  index: -1
+Arrow
+  rotate: false
+  xy: 160, 292
+  size: 112, 120
+  orig: 112, 120
+  offset: 0, 0
+  index: -1
+Backpack
+  rotate: false
+  xy: 418, 102
+  size: 56, 82
+  orig: 56, 82
+  offset: 0, 0
+  index: -1

@@ -92,6 +92,7 @@ public class Assets
 	public ImageButtonStyle leftArrowButtonStyle;
 	public ImageButtonStyle rightArrowButtonStyle;
 	public ButtonStyle backpackButtonStyle;	//The button on the top-left corner of the screen to open the backpack.
+	public ButtonStyle pauseButtonStyle;
 	
 	public TextureAtlas backpackBgAtlas;
 	public TextureRegion backpackBgRegion;
@@ -374,10 +375,18 @@ public class Assets
 		rightArrowButtonStyle.imageUp = rightArrowDrawable;
 		rightArrowButtonStyle.imageDown = rightArrowDrawable;
 		
-		//Creates the style for the backpack button.
+		//Creates the style for the backpack button. This is the button that appears on the top-left corner of the screen in exploration mode.
 		backpackButtonStyle = new ButtonStyle();
 		backpackButtonStyle.up = hudSkin.getDrawable("Backpack");
 		backpackButtonStyle.down = backpackButtonStyle.up;
+		
+		//Creates the pause button's ButtonStyle, to dictate the look of the pause button.
+		pauseButtonStyle = new ButtonStyle();
+		pauseButtonStyle.up = hudSkin.getDrawable("PauseButton");
+		Sprite pauseButtonDown = hudSkin.getSprite("PauseButton");	//Create a sprite out of the pause button
+		pauseButtonDown.setColor(Color.GRAY);	//Tint the sprite gray.
+		pauseButtonStyle.down = new SpriteDrawable(pauseButtonDown); //Wrap the tinted sprite into a SpriteDrawable to set it as the button's 'down' image.
+		
 		
 		//Retrieves the TextureRegion for the backpack's background.
 		backpackBgRegion = backpackBgAtlas.findRegion("Backpack_BG");

@@ -12,6 +12,7 @@ import com.jonathan.survivor.managers.InputManager;
 import com.jonathan.survivor.renderers.ExplorationHud;
 import com.jonathan.survivor.renderers.Hud;
 import com.jonathan.survivor.renderers.HudListener;
+import com.jonathan.survivor.renderers.PauseMenuHud;
 import com.jonathan.survivor.renderers.WorldRenderer;
 
 /*
@@ -52,6 +53,8 @@ public class GameScreen extends Screen
 	private ExplorationHud explorationHud;
 	/** Stores the BackpackHud which displays the Backpack inventory screen. */
 	private BackpackHud backpackHud;
+	/** Holds the HUD which displays the pause menu. */
+	private PauseMenuHud pauseMenuHud;
 	
 	/** Stores the UiListener which receives all events related to the UI or the HUD. Used to react appropriately to button presses. */
 	private UiListener uiListener;
@@ -100,6 +103,8 @@ public class GameScreen extends Screen
 		explorationHud = new ExplorationHud(stage, world);
 		//Creates the BackpackHud instance which displays the backpack UI using the stage.
 		backpackHud = new BackpackHud(stage, world);
+		//Instantiates a pause menu instance by passing the stage, which indicates that all widgets will be drawn to this stage. The world is unused in the HUD.
+		pauseMenuHud = new PauseMenuHud(stage, world);
 		
 		//Creates the UiListener instance which will receive all events related to the UI and its button presses. 
 		uiListener = new UiListener();
@@ -133,6 +138,14 @@ public class GameScreen extends Screen
 		{
 			//Set the game state to the BACKPACK state so that the backpack hud is displayed.
 			setGameState(GameState.BACKPACK);
+		}
+
+		/** Delegated when the pause button is pressed whilst in-game. Transitions to the pause menu. */
+		@Override
+		public void onPauseButton() 
+		{
+			//Sets the game's state to the PAUSED state. This tells the screen to pause the game and display the Pause Menu.
+			setGameState(GameState.PAUSED);
 		}
 	}
 	
@@ -183,12 +196,16 @@ public class GameScreen extends Screen
 		switch(gameState)
 		{
 		case EXPLORING:
-			hud = explorationHud;
-			resumeGame();
+			hud = explorationHud;	//Switches to the hud in exploration mode
+			resumeGame();	//Resumes the game in case it was paused.
 			break;
 		case BACKPACK:
 			hud = backpackHud;
-			pauseGame();
+			pauseGame();	//Ensures no more input is being registered or sent to the player.
+			break;
+		case PAUSED:
+			hud = pauseMenuHud;	//Switches to the pause menu's UI.
+			pauseGame();	//Ensures no more input is being registered or sent to the player.
 			break;
 		}
 		
