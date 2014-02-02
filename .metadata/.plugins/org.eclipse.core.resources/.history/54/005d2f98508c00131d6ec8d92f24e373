@@ -1,0 +1,66 @@
+package com.jonathan.survivor.inventory;
+
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.jonathan.survivor.Assets;
+
+public abstract class Item 
+{
+	/** The different types of possible items. */
+	public enum Type {
+		WEAPON, CRAFTABLE
+	}
+	
+	/** Stores the item's type. */
+	private Type type;
+	
+	/** Holds the universal Assets instance used to access the inventory sprites used to display the items. */
+	protected Assets assets = Assets.instance;
+	
+	/** Stores the name of the item. */
+	private String name;
+	/** Holds the description of the item. */
+	private String description;
+	
+	/** Holds the sprite used to display the item in an inventory. */
+	private Sprite inventorySprite;
+	
+	/** Creates an item with the given name and description. */
+	public Item(Type type, String name, String description, Sprite inventorySprite)
+	{
+		//Populates the member variables with the given arguments.
+		this.type = type;
+		this.name = name;
+		this.description = description;	
+	}
+	
+	/** Gets the item's name. */
+	public String getName() {
+		return name;
+	}
+	
+	/** Sets the item's name. */
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	/** Gets the item's description. */
+	public String getDescription() {
+		return description;
+	}
+	
+	/** Sets the item's description. */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	/** Accesses the sprite used to display the item in an inventory. */
+	public Sprite getInventorySprite() {
+		return inventorySprite;
+	}
+
+	public void setInventorySprite(Sprite sprite) {
+		this.inventorySprite = sprite;
+	}
+	
+	
+}

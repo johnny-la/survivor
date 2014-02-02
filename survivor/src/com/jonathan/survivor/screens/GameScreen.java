@@ -185,10 +185,10 @@ public class GameScreen extends Screen
 		{
 			//Update the world and its GameObjects. 
 			world.update(deltaTime);
-			
-			//Update the camera used to view the world.
-			worldRenderer.updateCamera();
 		}
+		
+		//Update the camera used to view the world.
+		worldRenderer.updateCamera();
 	}
 	
 	/** Draws the UI, along with the world and its contained GameObjects. */
@@ -199,8 +199,15 @@ public class GameScreen extends Screen
 		//Clears the screen.
 		super.render(deltaTime);
 
-		//Renders and draws the world using the worldRenderer.
-		worldRenderer.render();
+		//If the game is not paused
+		if(!paused)
+			//Render and draw the world using the worldRenderer.
+			worldRenderer.render(deltaTime);
+		//Else, if the game is paused
+		else 
+			//Render the world with a deltaTime of zero. Pauses animations to ensure that they don't advance in time.
+			worldRenderer.render(0);
+
 		
 		//Draws the HUD to the screen, depending on game state.
 		hud.draw(deltaTime);

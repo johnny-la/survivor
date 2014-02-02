@@ -1,6 +1,7 @@
 package com.jonathan.survivor.renderers;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -28,12 +29,18 @@ public class ExplorationHud extends Hud
 	public static final float BACKPACK_BUTTON_X_OFFSET = 5;
 	public static final float BACKPACK_BUTTON_Y_OFFSET = 5;
 	
+	/** Holds the scale of the backpack button's hit box. Allows for easier clicking. */
+	public static final float BACKPACK_HIT_BOX_SCALE = 2;
+	
 	/** Stores the Backpack button. */
 	private Button backpackButton;
 	
 	/** Stores the offset of the pause button. Used to anchor the button to the top-right corner of the screen with a given offset. */
 	public static final float PAUSE_BUTTON_X_OFFSET = 5;
 	public static final float PAUSE_BUTTON_Y_OFFSET = 5;
+	
+	/** Holds the scale of the pause button's hit box. Allows for easier clicking. */
+	public static final float PAUSE_HIT_BOX_SCALE = 2;
 	
 	/** Stores the Pause Button, used to pause the game. */
 	private Button pauseButton;
@@ -65,6 +72,10 @@ public class ExplorationHud extends Hud
 		//Scales down the top-most buttons by the scale factor of the assets. Ensures that the sprites are scaled down if larger atlases were chosen.
 		backpackButton.setSize(backpackButton.getWidth() / assets.scaleFactor, backpackButton.getHeight() / assets.scaleFactor);
 		pauseButton.setSize(pauseButton.getWidth() / assets.scaleFactor, pauseButton.getHeight() / assets.scaleFactor);
+		
+		//Scales the hit box of the backpack and pause buttons to give the user more room to click them.
+		scaleHitBox(backpackButton, BACKPACK_HIT_BOX_SCALE);
+		scaleHitBox(pauseButton, PAUSE_HIT_BOX_SCALE);
 		
 		//Sets the colors of the buttons.
 		leftArrowButton.setColor(ARROW_BUTTON_COLOR);
@@ -195,6 +206,22 @@ public class ExplorationHud extends Hud
 		
 		//Adds the pause button to the stage.
 		stage.addActor(pauseButton);
+	}
+	
+	/** Scales the bounds of the actor by the given amount. Allows to re-scale the bounding boxes of a button. Note that the 
+	 *  re-scaled bounds are centered on the actor. */
+	private void scaleHitBox(Actor actor, float scale)
+	{
+		//Retrieves the width and height of the actor
+		float width = actor.getWidth();
+		float height = actor.getHeight();
+		
+		//Sets the origin of the actor at the correct position so that the hit box is scaled relative to the center of the button.
+		actor.setOrigin(((width * scale) - width)/2, ((height * scale) - height)/2);
+		System.out.println(actor.getOriginX() + ", " + actor.getOriginY());
+		
+		//Scales the actor by the given scalar quantity.
+		actor.setScale(actor.getScaleX()*scale);
 	}
 	
 }

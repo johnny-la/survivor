@@ -50,7 +50,7 @@ public class GameObjectRenderer
 		
 	}
 	
-	public void render()
+	public void render(float deltaTime)
 	{				
 		//Sets the projection matrix of the SpriteBatch to the camera's combined matrix. Ensure everything is drawn with the camera's coordinate system.
 		batcher.setProjectionMatrix(worldCamera.combined);
@@ -60,7 +60,7 @@ public class GameObjectRenderer
 		//Renders the GameObjects stored inside the currently active level.
 		renderLevelObjects();
 		//Draws the player to the screen.
-		playerRenderer.render();
+		playerRenderer.render(deltaTime);
 		
 		//Draws the sprites batched inside the SpriteBatcher.
 		batcher.end();

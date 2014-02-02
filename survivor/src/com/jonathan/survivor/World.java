@@ -7,6 +7,7 @@ import com.jonathan.survivor.entity.Human;
 import com.jonathan.survivor.entity.Human.Direction;
 import com.jonathan.survivor.entity.Human.State;
 import com.jonathan.survivor.entity.InteractiveObject;
+import com.jonathan.survivor.entity.ItemObject;
 import com.jonathan.survivor.entity.Player;
 import com.jonathan.survivor.entity.PlayerListener;
 import com.jonathan.survivor.entity.Tree;
@@ -42,6 +43,9 @@ public class World
 	
 	/** Holds the Player GameObject that the user is guiding around the world. */
 	private Player player;
+	
+	/** Stores the Item GameObjects currently dropped on the screen that have yet to be picked up. */
+	private Array<ItemObject> droppedItemObjects;
 	
 	/** Listens to events delegated by the player. */
 	private EventListener eventListener;
@@ -368,6 +372,16 @@ public class World
 		return false;
 	}	
 	
+	/** Makes the user pick up the given Item GameObject, removing the GameObject from the world and adding it to the inventory. */
+	public void collectItemObject(ItemObject itemObject)
+	{
+		//Frees the Item GameObject back into its respective pool to be reused.
+		goManager.freeGameObject(itemObject, ItemObject.class);
+		
+		//Removes the ItemObject from the list of dropped ItemObjects, as it has just been picked up.
+		droppedItemObjects.removeValue(itemObject, true);
+	}
+	
 	/** Called when a touch was registered on the screen. Coordinates given in world units. O(n**2) OPTIMIZE THIS. */
 	public void touchUp(float x, float y)
 	{
@@ -415,6 +429,12 @@ public class World
 			//Sets the terrain cell of the player to the center cell of the level. The player will always spawn in the center of a TerrainLevel.
 			player.setTerrainCell(terrainLevel.getCenterRow(), terrainLevel.getCenterCol());
 		}
+	}
+	
+	/** Returns a list consisting of all the dropped ItemObjects on the ground. */
+	public Array<ItemObject> getDroppedItemObjects()
+	{
+		return droppedItemObjects;
 	}
 	
 	/** Returns the currently active level of the world used to dictate the walkable area the world. */

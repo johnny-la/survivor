@@ -1,0 +1,17 @@
+package com.jonathan.survivor.inventory;
+
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
+public class Wood extends Item
+{
+	private static final Type type = Type.CRAFTABLE;
+	private static final String NAME = "Wood";
+	private static final String DESCRIPTION = "Basic tool of survival";
+	private static final Sprite INVENTORY_SPRITE = Assets.instance.woodSprite;
+	
+	/** Creates a Wood item that can be displayed in an inventory slot. */
+	public Wood()
+	{
+		super(Type.CRAFTABLE, NAME, DESCRIPTION, INVENTORY_SPRITE);
+	}
+}

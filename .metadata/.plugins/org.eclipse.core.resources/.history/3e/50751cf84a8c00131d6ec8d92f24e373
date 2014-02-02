@@ -1,0 +1,13 @@
+package com.jonathan.survivor.managers;
+
+import com.badlogic.gdx.utils.Pool;
+import com.jonathan.survivor.entity.ItemObject;
+
+public class ItemObjectPool extends Pool<ItemObject>
+{
+	@Override
+	public ItemObject newObject()
+	{
+		
+	}
+}

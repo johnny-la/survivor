@@ -23,6 +23,7 @@ import com.esotericsoftware.spine.Animation;
 import com.esotericsoftware.spine.SkeletonData;
 import com.esotericsoftware.spine.SkeletonJson;
 import com.esotericsoftware.spine.SkeletonRenderer;
+import com.jonathan.survivor.inventory.Axe;
 
 /** Loads all visual/audio assets needed by the game and stores them in public static variables. An asset is fetched from this class whenever something needs
  *  to be drawn on screen or played to the speakers.
@@ -64,6 +65,10 @@ public class Assets
 	 * float is the ratio of size of the skeleton using @1x textures compared to the size of the skeleton in Spine. World scale converts the skeleton's size from pixels to meters. */
 	public static final float PLAYER_SKELETON_SCALE = 0.156f * Survivor.WORLD_SCALE;
 	public static final float TREE_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
+	public static final float ITEM_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
+	
+	/** Holds the width and height of an item's sprite in an inventory. Used to resize sprites to the correct scale for inventories. */
+	public static final float INVENTORY_ITEM_WIDTH = 32, INVENTORY_ITEM_HEIGHT = 32;
 	
 	/** Stores the amount certain buttons are offset when pressed. */
 	public static final float BUTTON_PRESSED_OFFSET = 5;
@@ -105,8 +110,8 @@ public class Assets
 	public TextureAtlas playerAtlas;
 	public SkeletonJson playerSkeletonJson;
 	public SkeletonData playerSkeletonData;
-	//public Slot axeSlot;
-	//public Attachment axeAttachment;
+	//public Slot meleeWeaponSlot;	//Stores slot where melee weapon images are placed. Populated in PlayerRenderer.
+	//public Attachment axeAttachment;	//Stores the names of the images in Spine used for each weapon. Set in PlayerRenderer.
 	public Animation playerIdle;
 	public Animation playerWalk;
 	public Animation playerJump;
@@ -121,6 +126,12 @@ public class Assets
 	public Animation treeClicked;
 	public Animation treeHit;
 	public Animation treeScavenged;
+	
+	public SkeletonJson itemSkeletonJson;
+	public SkeletonData itemSkeletonData;
+	
+	public Sprite woodSprite;	//Stores the sprites for the items displayed in the inventories.
+	public Sprite axeSprite;
 	
 	public SkeletonRenderer skeletonRenderer; //Renderer used to draw spine skeletons with a SpriteBatch.
 	
@@ -433,7 +444,7 @@ public class Assets
 		//Sets up the Spine data used to display and animate the player.
 		playerSkeletonJson = new SkeletonJson(playerAtlas);
 		playerSkeletonJson.setScale(PLAYER_SKELETON_SCALE);	//Re-scale the skeleton to fit world-units. Atlas data is read the same no matter the scale of the SkeletonJson.
-		playerSkeletonData = playerSkeletonJson.readSkeletonData(Gdx.files.internal("game/player/skeleton/player_skeleton.json"));
+		playerSkeletonData = playerSkeletonJson.readSkeletonData(Gdx.files.internal("game/player/skeleton/player_skeleton.json"));		
 		//Gets the animations from the Player's SkeletonData instance.
 		playerIdle = playerSkeletonData.findAnimation("Idle");
 		playerWalk = playerSkeletonData.findAnimation("Walk");
@@ -451,6 +462,16 @@ public class Assets
 		treeClicked = treeSkeletonData.findAnimation("Clicked");
 		treeHit = treeSkeletonData.findAnimation("Hit");
 		treeScavenged = treeSkeletonData.findAnimation("Scavenged");
+		
+		//Sets up the skeleton used by the item GameObjects the user collects on the ground. 
+		itemSkeletonJson = new SkeletonJson(treeAtlas);
+		itemSkeletonJson.setScale(ITEM_SKELETON_SCALE);
+		itemSkeletonData = itemSkeletonJson.readSkeletonData(Gdx.files.internal("game/item/skeleton/item_skeleton.json"));
+		
+		//Creates the sprites displayed in the inventory for each item.
+		woodSprite = treeAtlas.createSprite("Wood");
+		axeSprite = playerAtlas.createSprite(Axe.ATTACHMENT_NAME);
+		axeSprite.setSize(INVENTORY_ITEM_WIDTH, INVENTORY_ITEM_HEIGHT);	//Resizes the axe sprite to the default sprite size for an inventory item.
 		
 		//Creates a new skeleton renderer to draw Spine skeletons using a SpriteBatch instance.
 		skeletonRenderer = new SkeletonRenderer();

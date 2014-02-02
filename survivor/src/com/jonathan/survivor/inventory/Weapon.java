@@ -1,6 +1,6 @@
 package com.jonathan.survivor.inventory;
 
-import com.jonathan.survivor.inventory.Item.Type;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Weapon extends Item
 {
@@ -14,9 +14,9 @@ public class Weapon extends Item
 	private String attachmentName;
 	
 	/** Creates a weapon with the given name, description, and damage. */
-	public Weapon(String name, String description, float damage)
+	public Weapon(String name, String description, Sprite inventorySprite, float damage)
 	{
-		super(Type.WEAPON, name, description);
+		super(Type.WEAPON, name, description, inventorySprite);
 		
 		//Populates the member variables with their respective constructor arguments. 
 		this.damage = damage;

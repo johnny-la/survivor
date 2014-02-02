@@ -2,12 +2,15 @@ package com.jonathan.survivor.managers;
 
 import java.util.HashMap;
 
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.jonathan.survivor.Assets;
 import com.jonathan.survivor.Profile;
 import com.jonathan.survivor.entity.GameObject;
+import com.jonathan.survivor.entity.ItemObject;
 import com.jonathan.survivor.entity.Player;
 import com.jonathan.survivor.entity.Tree;
+import com.jonathan.survivor.inventory.Item;
 
 public class GameObjectManager
 {
@@ -29,8 +32,9 @@ public class GameObjectManager
 		//Creates a new HashMap of pools where every GameObject class is a key to a pool of its GameObjects. Used for easy management of pools.
 		poolMap = new HashMap<Class, Pool>();
 		
-		//Inserts a pool into the HashMap for each GameObject type which requires a pool.
+		//Inserts a pool into the HashMap for each GameObject type which has a pool.
 		poolMap.put(Tree.class, new TreePool());
+		poolMap.put(ItemObject.class, new ItemObjectPool());
 	}
 	
 	/** Creates the player GameObject, along with his skeleton. Accepts profile to re-create the player with his old settings. */
@@ -52,6 +56,23 @@ public class GameObjectManager
 		return player;
 	}
 	
+	/** Spawns an ItemObject representing the given Item class. The (x,y) position is the bottom-center of the position where the ItemObject is spawned. */
+	public <T> T spawnItemObject(Class<T> itemClass, float x, float y)
+	{
+		//Retrieves a free ItemObject in the internal pools of the GameObjectManager.
+		ItemObject itemObject = getGameObject(ItemObject.class);
+		
+		Item item = getItem(Item.class);
+		
+		//Shoots the ItemObject into the air at the given (x,y) position. Also sets the object to display the given item.
+		itemObject.spawn(item, x, y);
+		
+		//Returns the ItemObject which was spawned to represent the Item from the given class.
+		return (T) itemObject;
+	}
+	
+	
+	
 	/** Gets a tree GameObject of the given class cached inside one of the Manager's pools. No same GameObject will be returned twice until it is freed using freeGameObject(). 
 	 * @param <T> The type of GameObject that wants to be retrieved. 
 	 * @return A GameObject of the given class */
@@ -62,11 +83,11 @@ public class GameObjectManager
 		
 	}
 	
-	/** Frees a tree back inside the manager's internal TreePool. Tells the manager that the tree is no longer in use, and that the tree can be
-	 *  returned when getTree() is called. */
+	/** Frees a gameObject back inside the manager's internal GameObject pools. Tells the manager that the GameObject is no longer in use, and that the it can be
+	 *  returned when getGameObject() is called. */
 	public <T> void freeGameObject(GameObject gameObject, Class<T> goClass)
 	{
-		//Puts the tree back inside the pool for later use.
+		//Puts the gameObject back inside its respective pool for later use.
 		poolMap.get(goClass).free(gameObject);
 	}
 }

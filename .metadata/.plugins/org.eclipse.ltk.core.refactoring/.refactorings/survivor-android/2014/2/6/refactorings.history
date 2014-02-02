@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;survivor-android/assets/game/items&apos; to &apos;item&apos;" description="Rename resource &apos;items&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="assets/game/items" name="item" stamp="1391374593103" updateReferences="true"/>
+</session>

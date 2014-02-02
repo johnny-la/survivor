@@ -1,0 +1,11 @@
+package com.jonathan.survivor.inventory;
+
+public class Wood extends Item
+{
+	private static final NAME = "Wood";
+	
+	public Wood()
+	{
+		
+	}
+}

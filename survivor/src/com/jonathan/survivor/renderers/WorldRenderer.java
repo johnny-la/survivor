@@ -69,13 +69,13 @@ public class WorldRenderer
 	}
 	
 	/** Called every frame to render the contents of the world and update the camera. */
-	public void render()
+	public void render(float deltaTime)
 	{				
 		//Draws the world's currently active level to the screen using the LevelRenderer.
 		levelRenderer.render(world.getLevel());
 		
 		//Render the gameObjects of the world to the screen.
-		goRenderer.render();
+		goRenderer.render(deltaTime);
 	}
 	
 	/** Retrieves the world camera used to render the world. */

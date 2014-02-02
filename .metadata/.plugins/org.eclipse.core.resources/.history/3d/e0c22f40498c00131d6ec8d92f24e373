@@ -1,0 +1,62 @@
+package com.jonathan.survivor.entity;
+
+import com.jonathan.survivor.Survivor;
+import com.jonathan.survivor.inventory.Item;
+
+public class ItemObject extends GameObject
+{
+	/** Stores the width and height of an item GameObject's collider. All Item GameObjects have the same collider size. */
+	private static final float COLLIDER_WIDTH = 32 * Survivor.WORLD_SCALE;
+	private static final float COLLIDER_HEIGHT = 32 * Survivor.WORLD_SCALE;
+	
+	/** Holds the minimum and maximum y-velocity of the Item GameObject when it is spawned. */
+	private static final float MIN_SPAWN_Y_VELOCITY = 1, MAX_SPAWN_Y_VELOCITY = 0.5f; 
+	
+	/** Holds the minimum and maximum y-velocity of the Item GameObject when it is spawned. */
+	private static final float MIN_SPAWN_X_VELOCITY = 1, MAX_SPAWN_X_VELOCITY = 0.5f; 
+	
+	/** Stores the Item held by the GameObject. */
+	private Item item;
+	
+	public ItemObject(int x, int y)
+	{
+		super(x, y, COLLIDER_WIDTH, COLLIDER_HEIGHT);
+	}
+
+	@Override
+	public void update(float deltaTime) 
+	{
+		//Update the position of the Item GameObject in order to integrate acceleration and velocity.
+		updatePosition(deltaTime);
+		//Update the position of the collider to follow the GameObject's position.
+		updateCollider();
+		
+	}
+	
+	/** Spawns the item at the given position. Gives the item a random upward velocity to simulate confetti. 
+	 *  The position is the bottom-center position of the gameObject. */
+	public void spawn(float x, float y)
+	{
+		//Sets the bottom-center (x,y) position of the item object to the given position.
+		setPosition(x, y);
+		
+		setVelocity(MIN_SPAWN_Y_VELOCITY );
+	}
+
+	/** An ItemObject can never be targetted. */
+	@Override
+	public boolean canTarget() {
+		//Return false as an ItemObject can't be targetted.
+		return false;
+	}
+	
+	/** Gets the item contained by the GameObject. */
+	public Item getItem() {
+		return item;
+	}
+
+	/** Sets the item the GameObject represents. */
+	public void setItem(Item item) {
+		this.item = item;
+	}
+}

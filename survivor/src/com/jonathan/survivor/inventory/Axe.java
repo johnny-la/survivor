@@ -1,5 +1,7 @@
 package com.jonathan.survivor.inventory;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.jonathan.survivor.Assets;
 import com.jonathan.survivor.entity.Tree;
 
 public class Axe extends MeleeWeapon
@@ -7,6 +9,7 @@ public class Axe extends MeleeWeapon
 	/** Stores the properties of the axe. */
 	public static final String NAME = "Axe";
 	public static final String DESCRIPTION = "A weapon for the mightiest of lumberjacks";
+	public static final Sprite INVENTORY_SPRITE = Assets.instance.axeSprite;
 	public static final float DAMAGE = 1;
 	public static final float RANGE = 1;
 	
@@ -15,7 +18,7 @@ public class Axe extends MeleeWeapon
 	/** Creates an axe. */
 	public Axe()
 	{
-		super(NAME, DESCRIPTION, DAMAGE, RANGE);
+		super(NAME, DESCRIPTION, new Sprite(INVENTORY_SPRITE), DAMAGE, RANGE);
 		
 		//Sets the attachment name of the axe. This is the name of the image on the player used to display the axe.
 		setAttachmentName(ATTACHMENT_NAME);

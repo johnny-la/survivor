@@ -1,0 +1,14 @@
+package com.jonathan.survivor.inventory;
+
+public class Wood extends Item
+{
+	private static final String NAME = "Wood";
+	private static final String DESCRIPTION = "Basic tool of survival";
+	
+	public Wood()
+	{
+		super(Type.CRAFTABLE, NAME, DESCRIPTION);
+		
+		setInventorySprite(assets.woodSprite);
+	}
+}

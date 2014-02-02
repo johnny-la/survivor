@@ -101,8 +101,6 @@ public class ProfileManager
 				//Converts the entire profile file into a string.
 				String text = profileFile.readString().trim();
 				
-				System.out.println("Json text: " + text);
-				
 				//Converts the text into a Profile object using Json.fromJson(class, fileText):Profile. Stores the new profile as the current profile.
 				currentProfile = json.fromJson(Profile.class, text);
 				//Stores the profile just created into the correct index (profileId) of the profiles array.

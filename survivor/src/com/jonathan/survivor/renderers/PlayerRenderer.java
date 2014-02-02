@@ -119,7 +119,7 @@ public class PlayerRenderer
 	}
 	
 	/** Draws the player using his Spine skeleton, which stores his animations, sprites, and everything needed to draw the player. */
-	public void render()
+	public void render(float deltaTime)
 	{
 		//If the player is looking left
 		if(player.getDirection() == Direction.LEFT)
@@ -145,7 +145,7 @@ public class PlayerRenderer
 		}
 		
 		//Updates the state of the current player animation.
-		animationState.update(Gdx.graphics.getDeltaTime());
+		animationState.update(deltaTime);
 		//Applies the current animation to the player's skeleton.
 		animationState.apply(playerSkeleton);
 		
@@ -217,7 +217,7 @@ public class PlayerRenderer
 		//If the player has a weapon
 		if(meleeWeapon != null)
 		{
-			//Set the slot on the player's skeleton to display the attachment of the melee weapon. The slot is
+			//Set the melee weapon slot on the player's skeleton to display the image of the correctmelee weapon. The slot is
 			//where the weapon's image is stored, and the attachment is the name of the image for each weapon.
 			playerSkeleton.setAttachment(meleeWeapon.getSlotName(), meleeWeapon.getAttachmentName());
 		}
