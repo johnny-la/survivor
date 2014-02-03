@@ -11,7 +11,7 @@ public abstract class MeleeWeapon extends Weapon
 	private float range;
 	
 	/** Stores the name of the slot on the player in Spine where melee weapon images are stored. */
-	public static final String SLOT_NAME = "Axe";
+	public static final String WEAPON_SLOT_NAME = "Axe";
 	
 	/** Accepts the name, description, inventory sprite, damage, and range of the melee weapon. */
 	public MeleeWeapon(String name, String description, Sprite inventorySprite, float damage, float range)
@@ -19,7 +19,7 @@ public abstract class MeleeWeapon extends Weapon
 		super(name, description, inventorySprite, damage);
 		
 		//All MeleeWeapons and their images are mapped to the slot named SLOT_NAME on the Player.
-		setSlotName(SLOT_NAME);
+		setWeaponSlotName(WEAPON_SLOT_NAME);
 		
 		//Populates the member variables with the constructor's parameters.
 		this.range = range;

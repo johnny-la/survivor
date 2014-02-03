@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.jonathan.survivor.entity.GameObject;
 import com.jonathan.survivor.entity.InteractiveObject.InteractiveState;
+import com.jonathan.survivor.entity.ItemObject;
 import com.jonathan.survivor.entity.Tree;
 import com.jonathan.survivor.managers.GameObjectManager;
 import com.jonathan.survivor.math.Vector2;
@@ -90,6 +91,8 @@ public class TerrainLayer
 	
 	/** Stores an array of trees that the layer contains. */
 	private Array<Tree> trees = new Array<Tree>();
+	/** Stores an array of all the ItemObjects that have been dropped on this TerrainLayer. These items can be picked up. */
+	private Array<ItemObject> itemObjects = new Array<ItemObject>();
 	
 	/** Constructor used to create a terrain layer.
 	 * 
@@ -305,13 +308,31 @@ public class TerrainLayer
 			//Frees the trees back into the pool of the GameObjectManager for later reuse.
 			goManager.freeGameObject(trees.get(i), Tree.class);
 		
-		//Clears the array of trees so that it can be re-populated with new GameObjects when resetLayer() is called.
+		for(int i = 0; i < itemObjects.size; i++)
+			//Frees the ItemObjects back into their respective pool inside the GameObjectManager so that they can be reused once more ItemObjects are dropped.
+			goManager.freeGameObject(itemObjects.get(i), ItemObject.class);
+		
+		//Clears the array of all the GameObjects contained by the TerrainLayer so that they can be re-populated with new GameObjects when resetLayer() is called.
 		trees.clear();
+		itemObjects.clear();
 		
 		//Clears the array which contains a list of all the GameObjects on this layer. Allows us to repopulate the array once the layer is reused.
 		gameObjects.clear();
-		//Tells the getGameObjects() t
+		//Tells the getGameObjects() that it has to re-populate its gameObjects array since there we just cleared it.
 		gameObjectsStored = false;
+	}
+	
+	/** Adds the given GameObjects to the list of GameObjects contained by the TerrainLayer. This way, the GameObjectRenderer will know to render this GameObject. */
+	public void addGameObject(GameObject gameObject) 
+	{
+		//If the GameObject we want to add is an ItemObject, then a collectible has just been dropped on the ground.
+		if(gameObject instanceof ItemObject)
+			//Add the ItemObject to the list of Item GameObjects contained by this TerrainLayer.
+			itemObjects.add((ItemObject)gameObject);
+		
+		//Add the GameObject to the list of all GameObjects contained in the TerrainLayer.
+		gameObjects.add(gameObject);
+		
 	}
 	
 	/** Returns an array of all GameObjects contained in this layer. */
@@ -322,6 +343,9 @@ public class TerrainLayer
 		{
 			//Add all the GameObjects from the layer into the gameObjects array.
 			gameObjects.addAll(trees);
+			gameObjects.addAll(itemObjects);
+			System.out.println(itemObjects);
+			
 			//Tell the layer that all of its GameObjects have been stored inside the array, to avoid doing so every frame.
 			gameObjectsStored = true;
 		}
@@ -332,6 +356,13 @@ public class TerrainLayer
 	
 	/** Returns an array consisting of all the Tree GameObjects that are on this layer. */
 	public Array<Tree> getTrees()
+	{
+		//Returns the trees array, which contains all of the trees held by the layer.
+		return trees;
+	}
+	
+	/** Returns an array consisting of all the Item GameObjects that have been dropped on this layer and have yet to be picked up. */
+	public Array<Tree> getItemObjects()
 	{
 		//Returns the trees array, which contains all of the trees held by the layer.
 		return trees;
@@ -475,4 +506,5 @@ public class TerrainLayer
 	{
 		return "Left Point: " + leftPoint + ", Right Point: " + rightPoint;
 	}
+	
 }

@@ -248,6 +248,16 @@ public class TerrainLevel implements Level
 		gameObjectsStored = false;
 	}
 	
+	/** Adds the given GameObject to the TerrainLayer where it belongs. Allows the GameObject to be added to the list of GameObjects contained by the correct TerrainLayer. */
+	public void addGameObject(GameObject gameObject)
+	{
+		//Add the GameObject to the TerrainLayer where it is contained. Allows the TerrainLayer to be aware of the GameObjects it contains.
+		getTerrainLayer(gameObject.getTerrainCell()).addGameObject(gameObject);
+		
+		//Add the GameObject to the list of GameObjects contained inside the Level. Otherwise, the World won't know it exists.
+		gameObjects.add(gameObject);
+	}
+	
 	/** Returns an array of all the GameObjects contained in the level. */
 	public Array<GameObject> getGameObjects()
 	{

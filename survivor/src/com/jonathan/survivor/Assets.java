@@ -129,6 +129,8 @@ public class Assets
 	
 	public SkeletonJson itemSkeletonJson;
 	public SkeletonData itemSkeletonData;
+	public Animation itemFly;
+	public Animation itemGrounded;
 	
 	public Sprite woodSprite;	//Stores the sprites for the items displayed in the inventories.
 	public Sprite axeSprite;
@@ -467,10 +469,13 @@ public class Assets
 		itemSkeletonJson = new SkeletonJson(treeAtlas);
 		itemSkeletonJson.setScale(ITEM_SKELETON_SCALE);
 		itemSkeletonData = itemSkeletonJson.readSkeletonData(Gdx.files.internal("game/item/skeleton/item_skeleton.json"));
+		//Stores the animations of an item's skeleton.
+		itemFly = itemSkeletonData.findAnimation("Fly");
+		itemGrounded = itemSkeletonData.findAnimation("Grounded");
 		
 		//Creates the sprites displayed in the inventory for each item.
 		woodSprite = treeAtlas.createSprite("Wood");
-		axeSprite = playerAtlas.createSprite(Axe.ATTACHMENT_NAME);
+		axeSprite = playerAtlas.createSprite(Axe.WEAPON_ATTACHMENT_NAME);	//The name of the sprite in the atlas is the same as the name of the axe's attachment.
 		axeSprite.setSize(INVENTORY_ITEM_WIDTH, INVENTORY_ITEM_HEIGHT);	//Resizes the axe sprite to the default sprite size for an inventory item.
 		
 		//Creates a new skeleton renderer to draw Spine skeletons using a SpriteBatch instance.

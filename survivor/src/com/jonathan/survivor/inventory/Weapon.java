@@ -9,9 +9,9 @@ public class Weapon extends Item
 	protected float damage;
 	
 	/** Stores the slot in Spine where the image of the gun is attached. */
-	private String slotName;
+	private String weaponSlotName;
 	/** Stores the name of the attachment image used to display the weapon. */
-	private String attachmentName;
+	private String weaponAttachment;
 	
 	/** Creates a weapon with the given name, description, and damage. */
 	public Weapon(String name, String description, Sprite inventorySprite, float damage)
@@ -34,21 +34,21 @@ public class Weapon extends Item
 
 	/** Returns the slot name on the player in Spine where the weapon's image is attached. */
 	public String getSlotName() {
-		return slotName;
+		return weaponSlotName;
 	}
 
 	/** Sets the slot name on the player in Spine where the weapon's image is attached. */
-	public void setSlotName(String slotName) {
-		this.slotName = slotName;
+	public void setWeaponSlotName(String slotName) {
+		this.weaponSlotName = slotName;
 	}
 
 	/** Gets the name of the image (attachment) in Spine which displays the weapon. */
-	public String getAttachmentName() {
-		return attachmentName;
+	public String getWeaponAttachment() {
+		return weaponAttachment;
 	}
 
 	/** Sets the name of the image (attachment) used in Spine to display the weapon. */
-	public void setAttachmentName(String attachmentName) {
-		this.attachmentName = attachmentName;
+	public void setWeaponAttachment(String attachmentName) {
+		this.weaponAttachment = attachmentName;
 	}
 }

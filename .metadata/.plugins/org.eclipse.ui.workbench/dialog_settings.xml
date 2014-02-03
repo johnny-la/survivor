@@ -8,8 +8,8 @@
 		</list>
 	</section>
 	<section name="WorkbenchPreferenceDialogSettings">
-		<item value="158" key="DIALOG_Y_ORIGIN"/>
-		<item value="609" key="DIALOG_X_ORIGIN"/>
+		<item value="73" key="DIALOG_Y_ORIGIN"/>
+		<item value="564" key="DIALOG_X_ORIGIN"/>
 	</section>
 	<section name="ImportExportAction">
 		<item value="org.eclipse.ui.wizards.import.FileSystem" key="ImportExportPage.STORE_SELECTED_IMPORT_WIZARD_ID"/>

@@ -62,10 +62,8 @@ public class GameObjectManager
 		//Retrieves a free ItemObject in the internal pools of the GameObjectManager.
 		ItemObject itemObject = getGameObject(ItemObject.class);
 		
-		Item item = getItem(Item.class);
-		
 		//Shoots the ItemObject into the air at the given (x,y) position. Also sets the object to display the given item.
-		itemObject.spawn(item, x, y);
+		itemObject.spawn(null, x, y);
 		
 		//Returns the ItemObject which was spawned to represent the Item from the given class.
 		return (T) itemObject;

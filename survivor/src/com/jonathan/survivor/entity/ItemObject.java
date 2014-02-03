@@ -1,21 +1,30 @@
 package com.jonathan.survivor.entity;
 
+import com.badlogic.gdx.utils.Pool.Poolable;
 import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Assets;
 import com.jonathan.survivor.Survivor;
 import com.jonathan.survivor.inventory.Item;
 
-public class ItemObject extends GameObject
+public class ItemObject extends GameObject implements Poolable
 {
 	/** Stores the width and height of an item GameObject's collider. All Item GameObjects have the same collider size. */
 	private static final float COLLIDER_WIDTH = 32 * Survivor.WORLD_SCALE;
 	private static final float COLLIDER_HEIGHT = 32 * Survivor.WORLD_SCALE;
 	
 	/** Holds the minimum and maximum y-velocity of the Item GameObject when it is spawned. */
-	private static final float MIN_Y_SPAWN_VELOCITY = 0.5f, MAX_Y_SPAWN_VELOCITY = 1f; 
+	private static final float MIN_Y_SPAWN_VELOCITY = 1f, MAX_Y_SPAWN_VELOCITY = 2f; 
 	
 	/** Holds the minimum and maximum y-velocity of the Item GameObject when it is spawned. */
-	private static final float MIN_X_SPAWN_VELOCITY = 0.5f, MAX_X_SPAWN_VELOCITY = 1f; 
+	private static final float MIN_X_SPAWN_VELOCITY = 1f, MAX_X_SPAWN_VELOCITY = 2f; 
+	
+	/** Stores the different possible state of an item object that is dropped into the world. */
+	public enum ItemState {
+		SPAWN, GROUNDED, FLY, CLICK
+	}
+	
+	/** Stores the state of the item, which determines the animation it plays. */
+	private ItemState itemState;
 	
 	/** Stores the Item held by the GameObject. */
 	private Item item;
@@ -33,11 +42,17 @@ public class ItemObject extends GameObject
 		
 		//Creates a skeleton for the Item GameObject, which will display the GameObject in the world.
 		setSkeleton(new Skeleton(Assets.instance.itemSkeletonData));
+		
+		//By default, the ItemObject is in SPAWN state, as it has just spawned.
+		setItemState(ItemState.SPAWN);
 	}
 
 	@Override
 	public void update(float deltaTime) 
 	{
+		//Update the amount of time the Item GameObject has been in its current state.
+		stateTime += deltaTime;
+		
 		//Update the position of the Item GameObject in order to integrate acceleration and velocity.
 		updatePosition(deltaTime);
 		//Update the position of the collider to follow the GameObject's position.
@@ -61,7 +76,7 @@ public class ItemObject extends GameObject
 		float yVel = (float) (MIN_Y_SPAWN_VELOCITY + Math.random()*(MAX_Y_SPAWN_VELOCITY-MIN_Y_SPAWN_VELOCITY));
 		
 		//The Item GameObject has a 50% chance of flying to the left.
-		if(Math.random() > 0.5f)
+		if(Math.random() < 0.5)
 			xVel *= -1;
 		
 		//Shoots the ItemObject upwards.
@@ -75,6 +90,16 @@ public class ItemObject extends GameObject
 		return false;
 	}
 	
+	/** Gets the ItemState which determines which animation the object should be playing when dropped into the world. */
+	public ItemState getItemState() {
+		return itemState;
+	}
+
+	/** Sets the ItemState which determines which animation the object should be playing when dropped into the world. */
+	public void setItemState(ItemState itemState) {
+		this.itemState = itemState;
+	}
+	
 	/** Gets the item contained by the GameObject. */
 	public Item getItem() {
 		return item;
@@ -83,5 +108,13 @@ public class ItemObject extends GameObject
 	/** Sets the item the GameObject represents. */
 	public void setItem(Item item) {
 		this.item = item;
+	}
+
+	/** Called when an ItemObject is placed back into a pool. The GameObject must be reset to default configuration. */
+	@Override
+	public void reset() 
+	{
+		//Tell the ItemObject that it has just spawned for the next time it is fetched back from the pool.
+		setItemState(ItemState.SPAWN);
 	}
 }

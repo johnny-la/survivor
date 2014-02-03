@@ -1,7 +1,0 @@
-package com.jonathan.survivor;
-
-public class Item 
-{
-	protected String name;
-	protected String description;
-}

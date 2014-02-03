@@ -219,7 +219,7 @@ public class PlayerRenderer
 		{
 			//Set the melee weapon slot on the player's skeleton to display the image of the correctmelee weapon. The slot is
 			//where the weapon's image is stored, and the attachment is the name of the image for each weapon.
-			playerSkeleton.setAttachment(meleeWeapon.getSlotName(), meleeWeapon.getAttachmentName());
+			playerSkeleton.setAttachment(meleeWeapon.getSlotName(), meleeWeapon.getWeaponAttachment());
 		}
 		//Else, if the player doesn't have a weapon
 		else

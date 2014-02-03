@@ -1,9 +1,11 @@
 package com.jonathan.survivor.entity;
 
+import java.util.HashMap;
+
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Assets;
-import com.jonathan.survivor.entity.InteractiveObject.InteractiveState;
+import com.jonathan.survivor.inventory.Wood;
 
 public class Tree extends InteractiveObject implements Poolable
 {
@@ -26,6 +28,8 @@ public class Tree extends InteractiveObject implements Poolable
 	public Tree(float x, float y)
 	{
 		super(x, y, COLLIDER_WIDTH, COLLIDER_HEIGHT);
+		
+		setupItemProbabilityMap();
 		
 		//Creates the skeleton used by the tree to render itself. The TreeSkeletonData is used to load the bone information for the skeleton.
 		setSkeleton(new Skeleton(Assets.instance.treeSkeletonData));
@@ -53,6 +57,20 @@ public class Tree extends InteractiveObject implements Poolable
 		
 		//Reset the tree to default health.
 		setHealth(DEFAULT_HEALTH);
+	}
+	
+	/** Called on tree creation in order to populate the HashMap which dictates the probability of certain items dropping when the tree is destroyed. */
+	private void setupItemProbabilityMap()
+	{
+		//Creates the item probability map where the key dictates which item can drop once the tree is destroyed, and the float is a number from 0 to 1
+		//dicatating the probability of that item being dropped. Note that 1 means that the item will be dropped every time a tree is destroyed.
+		HashMap<Class, Float> probabilityMap = new HashMap<Class, Float>();
+		
+		//Adds the items which will be dropped from the tree once it is destroyed.
+		probabilityMap.put(Wood.class, 1f);
+		
+		//Sets the itemProbabilityMap of the tree to the probability map created in this method. Tells the tree which items will be dropped once it destroyed.
+		setItemProbabilityMap(probabilityMap);
 	}
 
 	/** Deals damage to the tree by removing the given amount from its health. */

@@ -1,8 +1,0 @@
-package com.jonathan.survivor;
-
-public class Axe extends MeleeWeapon
-{
-	public static float RANGE = 1;
-	
-	public Axe()
-}

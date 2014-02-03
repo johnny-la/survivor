@@ -218,8 +218,7 @@ public class ExplorationHud extends Hud
 		
 		//Sets the origin of the actor at the correct position so that the hit box is scaled relative to the center of the button.
 		actor.setOrigin(((width * scale) - width)/2, ((height * scale) - height)/2);
-		System.out.println(actor.getOriginX() + ", " + actor.getOriginY());
-		
+
 		//Scales the actor by the given scalar quantity.
 		actor.setScale(actor.getScaleX()*scale);
 	}

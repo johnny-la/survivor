@@ -1,5 +1,8 @@
 package com.jonathan.survivor;
 
+import java.util.HashMap;
+import java.util.Set;
+
 import com.badlogic.gdx.utils.Array;
 import com.jonathan.survivor.entity.Clickable;
 import com.jonathan.survivor.entity.GameObject;
@@ -8,6 +11,7 @@ import com.jonathan.survivor.entity.Human.Direction;
 import com.jonathan.survivor.entity.Human.State;
 import com.jonathan.survivor.entity.InteractiveObject;
 import com.jonathan.survivor.entity.ItemObject;
+import com.jonathan.survivor.entity.ItemObject.ItemState;
 import com.jonathan.survivor.entity.Player;
 import com.jonathan.survivor.entity.PlayerListener;
 import com.jonathan.survivor.entity.Tree;
@@ -43,9 +47,6 @@ public class World
 	
 	/** Holds the Player GameObject that the user is guiding around the world. */
 	private Player player;
-	
-	/** Stores the Item GameObjects currently dropped on the screen that have yet to be picked up. */
-	private Array<ItemObject> droppedItemObjects;
 	
 	/** Listens to events delegated by the player. */
 	private EventListener eventListener;
@@ -167,19 +168,58 @@ public class World
 			//Store the GameObject
 			GameObject go = gameObjects.get(i);
 			
-			//Update the GameObject.
-			go.update(deltaTime);
+			//If the GameObject in the level is an ItemObject that is waiting to be picked up
+			if(go instanceof ItemObject)
+			{
+				//Update the ItemObject.
+				updateItemObject((ItemObject) go, deltaTime);
+			}
+			//Else, for any other generic GameObject, simply update the GameObject.
+			else
+			{	
+				//Update the GameObject.
+				go.update(deltaTime);
+			}
 		}
+	}
+	
+	/** Updates the Item Object's game logic. Note that an ItemObject is an item on the ground that can be looted. */
+	private void updateItemObject(ItemObject itemObject, float deltaTime)
+	{
+		//If the ItemObject has spawned and is flying through the air
+		if(itemObject.getItemState() == ItemState.FLY)
+		{
+			//Apply gravity to the Item GameObject so that it falls to the ground.
+			itemObject.setAcceleration(GRAVITY.x, GRAVITY.y);
+			
+			//Check for a ground collision, and abruptly stop the GameObject if it has landed.
+			if(checkGroundCollision(itemObject))
+			{	
+				//Set the Item GameObject's velocity and acceleration to zero to stop it from falling.
+				itemObject.setVelocity(0, 0);
+				itemObject.setAcceleration(0, 0);
+				
+				//Tell the ItemObject that it is on the ground.
+				itemObject.setItemState(ItemState.GROUNDED);
+			}
+		}
+		
+		//Update the ItemObject, along with its collider and its position.
+		itemObject.update(deltaTime);
 	}
 	
 	/** Listens for events delegated by the GameObjects of the world. */
 	class EventListener implements PlayerListener 
 	{
-		/** Delegates when the Player scavenges an Interactive GameObject. */
+		/** Delegates when the Player scavenges an Interactive GameObject. Scavenging means to destroy a target, such as destroying a tree. */
 		@Override
 		public void scavengedObject(InteractiveObject object)
 		{
+			//Adds the scavenged GameObject to the profile. Like this, if, say, a tree was just scavenged, it will never re-appear in the same TerrainLayer.
 			profile.addScavengedLayerObject(object);
+			
+			//Spawn items at the location that the object was destroyed.
+			spawnItems(object);
 		}
 	}
 	
@@ -279,6 +319,12 @@ public class World
 			//Make the player walk to the Clickable target
 			setTarget(player, gameObject);
 		}
+		//Else, if an ItemObject on the ground was clicked
+		else if(gameObject instanceof ItemObject)
+		{
+			//Collect the clicked ItemObject and add it to the player's inventory.
+			collectItemObject((ItemObject) gameObject);
+		}
 	}
 	
 	/** Checks if the player is colliding with any GameObjects. */
@@ -354,32 +400,60 @@ public class World
 		}
 	}
 	
-	/** Returns true if the player is jumping or falling and has fell past the ground. */
-	public boolean checkGroundCollision(Player player)
+	/** Returns true if the GameObject is jumping or falling and has fell past the ground. */
+	public boolean checkGroundCollision(GameObject gameObject)
 	{
-		//If the player is in a TerrainLevel (i.e., a layer level)
+		//If the GameObject is in a TerrainLevel (i.e., a layer level)
 		if(level instanceof TerrainLevel)
 		{
-			//If the player is falling and has fallen below ground height
-			if(player.getVelocity().y < 0 && player.getY() < terrainLevel.getGroundHeight(player.getX()))
+			//If the GameObject is falling and has fallen below ground height
+			if(gameObject.getVelocity().y < 0 && gameObject.getY() < terrainLevel.getTerrainLayer(gameObject.getTerrainCell()).getGroundHeight(gameObject.getX()))
 			{
-				//Return true, as the player has fallen below the ground.
+				//Return true, as the gameObject has fallen below the ground.
 				return true;
 			}
 		}
 		
-		//Return false if the player has not been found to be falling below ground height.
+		//Return false if the GameObject has not been found to be falling below ground height.
 		return false;
 	}	
+	
+	/** Spawns items at the GameObject's location. Called when a tree is chopped down or any other GameObject is scavenged/destroyed. */
+	public void spawnItems(GameObject gameObject)
+	{
+		//Stores the HashMap of the InteractiveGameObject, which indicates which items can be dropped once the object is scavenged.
+		HashMap<Class, Float> itemProbabilityMap = ((InteractiveObject)gameObject).getItemProbabilityMap();
+		
+		//Creates a set out of each key of the probability map. Each key is an Item subclass. Each key is an item that has a probability of being dropped from the 
+		//Interactive GameObject.
+		Set<Class> keys = itemProbabilityMap.keySet();
+		
+		//Cycles through each possible item type that can be dropped from the scavenged GameObject.
+		for(Class key:keys)
+		{			
+			//Check if a random number is less than the probability of the item dropping. The probability of the item to drop is stored in the key of the HashMap,
+			//where the key is the Item subclass that has a probability of being dropped. Note that the value of the key can be between 0 and 1, where 1 means that
+			//the item will be dropped no matter the circumstances.
+			if(Math.random() < itemProbabilityMap.get(key))
+			{
+				//Spawns an ItemObject at the position of the destroyed GameObject. The first argument indicates that an Item of the type 'key' wants to be spawned.
+				ItemObject itemObject = goManager.spawnItemObject(key, gameObject.getPosition().x, gameObject.getPosition().y);
+				
+				//Tells the ItemObject that it is on the same TerrainCell as the GameObject which dropped this item. Allows the object to know which TerrainLayer it 
+				//belongs to.
+				itemObject.setTerrainCell(gameObject.getTerrainCell().getRow(), gameObject.getTerrainCell().getCol());
+				
+				//Adds the spawned ItemObject to the list of ItemObjects inside the level. It is added to the correct TerrainLayer if the user is on a TerrainLevel.
+				level.addGameObject(itemObject);
+			}
+		}
+	}
 	
 	/** Makes the user pick up the given Item GameObject, removing the GameObject from the world and adding it to the inventory. */
 	public void collectItemObject(ItemObject itemObject)
 	{
 		//Frees the Item GameObject back into its respective pool to be reused.
-		goManager.freeGameObject(itemObject, ItemObject.class);
-		
-		//Removes the ItemObject from the list of dropped ItemObjects, as it has just been picked up.
-		droppedItemObjects.removeValue(itemObject, true);
+		//goManager.freeGameObject(itemObject, ItemObject.class);
 	}
 	
 	/** Called when a touch was registered on the screen. Coordinates given in world units. O(n**2) OPTIMIZE THIS. */
@@ -429,12 +503,6 @@ public class World
 			//Sets the terrain cell of the player to the center cell of the level. The player will always spawn in the center of a TerrainLevel.
 			player.setTerrainCell(terrainLevel.getCenterRow(), terrainLevel.getCenterCol());
 		}
-	}
-	
-	/** Returns a list consisting of all the dropped ItemObjects on the ground. */
-	public Array<ItemObject> getDroppedItemObjects()
-	{
-		return droppedItemObjects;
 	}
 	
 	/** Returns the currently active level of the world used to dictate the walkable area the world. */

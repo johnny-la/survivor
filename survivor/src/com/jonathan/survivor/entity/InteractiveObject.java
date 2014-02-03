@@ -1,5 +1,7 @@
 package com.jonathan.survivor.entity;
 
+import java.util.HashMap;
+
 
 /*
  * Any environment GameObject that can be clicked and interacted with.
@@ -13,6 +15,10 @@ public abstract class InteractiveObject extends GameObject implements Clickable
 	
 	/** Stores the current state of the interactive object for logic and rendering purposes. */
 	private InteractiveState interactiveState;
+	
+	/** Holds the HashMap of possible items that can be dropped from scavenging the Interactive GameObject. Key is the type 
+	 *  of item, and Float is the probability of it being dropped from 0 (least probable) to 1 (most probable). */
+	private HashMap<Class, Float> itemProbabilityMap;
 	
 	/** Creates the Interactive GameObject with the given bottom-center position and the given collider width and height. */
 	public InteractiveObject(float x, float y, float width, float height)
@@ -60,6 +66,19 @@ public abstract class InteractiveObject extends GameObject implements Clickable
 		stateTime = 0;
 	}
 	
+	/** Returns the HashMap which holds which items will be dropped when this InteractiveObject is scavenged. The key is the type of the Item 
+	 *  dropped and the float is the probability of it dropping from [0,1]. */
+	public HashMap<Class, Float> getItemProbabilityMap() {
+		return itemProbabilityMap;
+	}
+
+	/** Sets the HashMap which holds which items will be dropped when this InteractiveObject is scavenged. The key is the type of the Item dropped
+	 *  and the float is the probability of it dropping from [0,1]. */
+	public void setItemProbabilityMap(HashMap<Class, Float> itemProbabilityMap) {
+		this.itemProbabilityMap = itemProbabilityMap;
+	}
+
+	
 	
 	/** Called every frame to update logic. */
 	@Override
@@ -67,6 +86,5 @@ public abstract class InteractiveObject extends GameObject implements Clickable
 	
 	/** Called when the Interactive GameObject has been scavenged and can no longer be targetted. */
 	public abstract void scavenged();
-
 
 }
