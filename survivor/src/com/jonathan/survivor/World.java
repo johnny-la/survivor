@@ -192,6 +192,10 @@ public class World
 			//Apply gravity to the Item GameObject so that it falls to the ground.
 			itemObject.setAcceleration(GRAVITY.x, GRAVITY.y);
 			
+			//Modify the ItemObject's cell if the object flies into a different cell. Ensures that the object is on the right cell.
+			//MAY CAUSE ERRORS -- The incorrect TerrainLayer will hold the ItemObject. Could add a case to change the correct TerrainLayer to hold the ItemObject.
+			checkForLayerSwitch(itemObject);
+			
 			//Check for a ground collision, and abruptly stop the GameObject if it has landed.
 			if(checkGroundCollision(itemObject))
 			{	
@@ -385,8 +389,10 @@ public class World
 				//Move the GameObject's cell to the right so that the GameObject knows that he has changed cells.
 				gameObject.getTerrainCell().moveRight();
 				
-				//Shift the layers of the level to the right so that the player stays in the center cell.
-				terrainLevel.shiftLayersRight();
+				//If the GameObject which switched layers is the player
+				if(gameObject instanceof Player)
+					//Shift the layers of the level to the right so that the player stays in the center cell.
+					terrainLevel.shiftLayersRight();
 			}
 			//If the the player has moved to the left of his current layer
 			else if(gameObject.getX() < terrainLayer.getLeftPoint().x)
@@ -394,8 +400,10 @@ public class World
 				//Move the GameObject's cell to the left so that the GameObject knows that he has changed cells.
 				gameObject.getTerrainCell().moveLeft();
 				
-				//Shift the layers of the level to the left so that the player stays in the center cell.
-				terrainLevel.shiftLayersLeft();
+				//If the GameObject which switched layers is the player
+				if(gameObject instanceof Player)
+					//Shift the layers of the level to the left so that the player stays in the center cell.
+					terrainLevel.shiftLayersLeft();
 			}
 		}
 	}
@@ -437,7 +445,8 @@ public class World
 			if(Math.random() < itemProbabilityMap.get(key))
 			{
 				//Spawns an ItemObject at the position of the destroyed GameObject. The first argument indicates that an Item of the type 'key' wants to be spawned.
-				ItemObject itemObject = goManager.spawnItemObject(key, gameObject.getPosition().x, gameObject.getPosition().y);
+				//Last argument specifies that the items should fly the same direction that the player is facing.
+				ItemObject itemObject = goManager.spawnItemObject(key, gameObject.getPosition().x, gameObject.getPosition().y, player.getDirection());
 				
 				//Tells the ItemObject that it is on the same TerrainCell as the GameObject which dropped this item. Allows the object to know which TerrainLayer it 
 				//belongs to.
@@ -452,8 +461,10 @@ public class World
 	/** Makes the user pick up the given Item GameObject, removing the GameObject from the world and adding it to the inventory. */
 	public void collectItemObject(ItemObject itemObject)
 	{
-		//Frees the Item GameObject back into its respective pool to be reused.
-		//goManager.freeGameObject(itemObject, ItemObject.class);
+		//Tells the ItemObject that it has been clicked so that the correct animation plays.
+		itemObject.setItemState(ItemState.CLICKED);
+		//Moves the item to the player's center position in the given amount of seconds, specified by the last parameter.
+		itemObject.moveTo(player.getX(), player.getY() + player.COLLIDER_WIDTH/2, 0.4f);
 	}
 	
 	/** Called when a touch was registered on the screen. Coordinates given in world units. O(n**2) OPTIMIZE THIS. */

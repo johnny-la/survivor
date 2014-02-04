@@ -1,7 +1,6 @@
 package com.jonathan.survivor.entity;
 
 import com.esotericsoftware.spine.Skeleton;
-import com.jonathan.survivor.entity.InteractiveObject.InteractiveState;
 import com.jonathan.survivor.math.Cell;
 import com.jonathan.survivor.math.Collider;
 import com.jonathan.survivor.math.Rectangle;
@@ -156,6 +155,28 @@ public abstract class GameObject
 	public void setAcceleration(float x, float y)
 	{
 		acceleration.set(x, y);
+	}
+	
+	/** Moves the GameObject to the desired (x,y) position in a straight line at the given speed in m/s. */
+	public void moveTo(float x, float y, float time) 
+	{
+		//Finds the (x,y) distance from the GameObject to the target (x,y) position.
+		float xDist = x - position.x;
+		float yDist = y - position.y;
+		
+		//Calculates the distance between the GameObject and the target position.
+		float dist = (float) Math.sqrt(xDist*xDist + yDist*yDist);
+		
+		//Finds the speed the GameObject must go to reach the target in the given amount of time (v = d/t).
+		float speed = dist / time;
+		
+		//Set the GameObject's velocity to the (x,y) distance to the target
+		velocity.set(xDist, yDist);
+		//Normalize the velocity to keep only the direction to the target.
+		velocity.normalize();
+		//Multiply the normalized vector by the speed so that the GameObject moves to the target position at the correct speed.
+		velocity.mul(speed);
+		
 	}
 
 	/** Returns the collider used by the gameObject for collisions. */

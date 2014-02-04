@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Pool;
 import com.jonathan.survivor.Assets;
 import com.jonathan.survivor.Profile;
 import com.jonathan.survivor.entity.GameObject;
+import com.jonathan.survivor.entity.Human.Direction;
 import com.jonathan.survivor.entity.ItemObject;
 import com.jonathan.survivor.entity.Player;
 import com.jonathan.survivor.entity.Tree;
@@ -56,14 +57,16 @@ public class GameObjectManager
 		return player;
 	}
 	
-	/** Spawns an ItemObject representing the given Item class. The (x,y) position is the bottom-center of the position where the ItemObject is spawned. */
-	public <T> T spawnItemObject(Class<T> itemClass, float x, float y)
+	/** Spawns an ItemObject representing the given Item class. The (x,y) position is the bottom-center of the position where the ItemObject is spawned. 
+	 * @param direction Specifies the direction in which the item will fly when spawned.
+	 */
+	public <T> T spawnItemObject(Class<T> itemClass, float x, float y, Direction direction)
 	{
 		//Retrieves a free ItemObject in the internal pools of the GameObjectManager.
 		ItemObject itemObject = getGameObject(ItemObject.class);
 		
-		//Shoots the ItemObject into the air at the given (x,y) position. Also sets the object to display the given item.
-		itemObject.spawn(null, x, y);
+		//Shoots the ItemObject into the air at the given (x,y) position in the given direction. Also sets the object to display the given item. 
+		itemObject.spawn(null, x, y, direction);
 		
 		//Returns the ItemObject which was spawned to represent the Item from the given class.
 		return (T) itemObject;

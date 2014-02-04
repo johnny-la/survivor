@@ -16,3 +16,9 @@
 1391389647785	Encapsulate field 'itemState'
 1391390089838	Rename enum constant 'IDLE'
 1391390221489	Rename field 'itemIdle'
+1391475953761	Delete element
+1391475954956	Delete element
+1391476036646	Delete element
+1391476968400	Delete element
+1391478793774	Rename field 'itemClick'
+1391478801033	Rename enum constant 'CLICK'

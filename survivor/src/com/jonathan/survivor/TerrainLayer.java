@@ -268,10 +268,12 @@ public class TerrainLayer
 		//Cycles from the left-most x-point of the layer, plus an offset, and increments by the object spacing until the end x-point is reached.
 		for(float x = leftPoint.x + OBJECT_SPACING; x < rightPoint.x; x += OBJECT_SPACING)
 		{
+			//Stores a random number between 0 and 1 to determine which object will be placed next on the layer.
 			float randObject = objectRand.nextFloat();
 			
 			if(randObject > 0.5f)
 			{
+				//If the object we want to place has not been scavenged, place it on the TerrainLayer. 
 				if(!scavengedObjects.contains(objectIndex))
 				{
 					//Retrieves a tree GameObject from a pool inside the GameObjectManager.
@@ -307,7 +309,7 @@ public class TerrainLayer
 		for(int i = 0; i < trees.size; i++)
 			//Frees the trees back into the pool of the GameObjectManager for later reuse.
 			goManager.freeGameObject(trees.get(i), Tree.class);
-		
+
 		for(int i = 0; i < itemObjects.size; i++)
 			//Frees the ItemObjects back into their respective pool inside the GameObjectManager so that they can be reused once more ItemObjects are dropped.
 			goManager.freeGameObject(itemObjects.get(i), ItemObject.class);
@@ -344,7 +346,6 @@ public class TerrainLayer
 			//Add all the GameObjects from the layer into the gameObjects array.
 			gameObjects.addAll(trees);
 			gameObjects.addAll(itemObjects);
-			System.out.println(itemObjects);
 			
 			//Tell the layer that all of its GameObjects have been stored inside the array, to avoid doing so every frame.
 			gameObjectsStored = true;

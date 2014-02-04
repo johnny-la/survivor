@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Assets;
 import com.jonathan.survivor.Survivor;
+import com.jonathan.survivor.entity.Human.Direction;
 import com.jonathan.survivor.inventory.Item;
 
 public class ItemObject extends GameObject implements Poolable
@@ -13,14 +14,14 @@ public class ItemObject extends GameObject implements Poolable
 	private static final float COLLIDER_HEIGHT = 32 * Survivor.WORLD_SCALE;
 	
 	/** Holds the minimum and maximum y-velocity of the Item GameObject when it is spawned. */
-	private static final float MIN_Y_SPAWN_VELOCITY = 1f, MAX_Y_SPAWN_VELOCITY = 2f; 
+	private static final float MIN_Y_SPAWN_VELOCITY = 2f, MAX_Y_SPAWN_VELOCITY = 3f; 
 	
 	/** Holds the minimum and maximum y-velocity of the Item GameObject when it is spawned. */
-	private static final float MIN_X_SPAWN_VELOCITY = 1f, MAX_X_SPAWN_VELOCITY = 2f; 
+	private static final float MIN_X_SPAWN_VELOCITY = 2f, MAX_X_SPAWN_VELOCITY = 3f; 
 	
 	/** Stores the different possible state of an item object that is dropped into the world. */
 	public enum ItemState {
-		SPAWN, GROUNDED, FLY, CLICK
+		SPAWN, GROUNDED, FLY, CLICKED
 	}
 	
 	/** Stores the state of the item, which determines the animation it plays. */
@@ -61,8 +62,10 @@ public class ItemObject extends GameObject implements Poolable
 	}
 	
 	/** Spawns the item at the given position. Gives the item a random upward velocity to simulate confetti. 
-	 *  The position is the bottom-center position of the gameObject. */
-	public void spawn(Item item, float x, float y)
+	 *  The position is the bottom-center position of the gameObject. 
+	 * @param direction Specifies the direction in which the items fly when spawned
+	 * */
+	public void spawn(Item item, float x, float y, Direction direction)
 	{
 		//Sets the item of this Item GameObject. This tells the GameObject which item to display and respresent.
 		setItem(item);
@@ -75,8 +78,9 @@ public class ItemObject extends GameObject implements Poolable
 		float xVel = (float) (MIN_X_SPAWN_VELOCITY + Math.random()*(MAX_X_SPAWN_VELOCITY-MIN_X_SPAWN_VELOCITY));
 		float yVel = (float) (MIN_Y_SPAWN_VELOCITY + Math.random()*(MAX_Y_SPAWN_VELOCITY-MIN_Y_SPAWN_VELOCITY));
 		
-		//The Item GameObject has a 50% chance of flying to the left.
-		if(Math.random() < 0.5)
+		//The Item GameObject is supposed to fly to the left
+		if(direction == Direction.LEFT)
+			//Inverse the horizontal velocity of the ItemObject.
 			xVel *= -1;
 		
 		//Shoots the ItemObject upwards.
@@ -98,6 +102,9 @@ public class ItemObject extends GameObject implements Poolable
 	/** Sets the ItemState which determines which animation the object should be playing when dropped into the world. */
 	public void setItemState(ItemState itemState) {
 		this.itemState = itemState;
+		
+		//Reset state time since the ItemObject's state has changed.
+		stateTime = 0;
 	}
 	
 	/** Gets the item contained by the GameObject. */

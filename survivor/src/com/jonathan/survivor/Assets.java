@@ -131,6 +131,7 @@ public class Assets
 	public SkeletonData itemSkeletonData;
 	public Animation itemFly;
 	public Animation itemGrounded;
+	public Animation itemClicked;
 	
 	public Sprite woodSprite;	//Stores the sprites for the items displayed in the inventories.
 	public Sprite axeSprite;
@@ -472,6 +473,7 @@ public class Assets
 		//Stores the animations of an item's skeleton.
 		itemFly = itemSkeletonData.findAnimation("Fly");
 		itemGrounded = itemSkeletonData.findAnimation("Grounded");
+		itemClicked = itemSkeletonData.findAnimation("Clicked");
 		
 		//Creates the sprites displayed in the inventory for each item.
 		woodSprite = treeAtlas.createSprite("Wood");
