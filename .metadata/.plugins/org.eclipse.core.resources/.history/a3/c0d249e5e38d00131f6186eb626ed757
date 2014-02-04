@@ -1,0 +1,22 @@
+package com.jonathan.survivor.inventory;
+
+import java.util.HashMap;
+
+/*
+ * Holds all of the items belonging to the player.
+ */
+
+public class Inventory 
+{
+	private HashMap<Class, Integer> itemMap; 
+	
+	/** Creates an empty inventory. */
+	public Inventory()
+	{
+	}
+	
+	public <T> void addItem(Class<T> itemClass)
+	{
+		itemMap
+	}
+}

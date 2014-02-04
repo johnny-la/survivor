@@ -465,6 +465,11 @@ public class World
 		itemObject.setItemState(ItemState.CLICKED);
 		//Moves the item to the player's center position in the given amount of seconds, specified by the last parameter.
 		itemObject.moveTo(player.getX(), player.getY() + player.COLLIDER_WIDTH/2, 0.4f);
+		
+		System.out.println("The item created was for the class " + itemObject.getItemClass());
+		
+		//Adds the item to the inventory. Note that we add the item class which the object holds to the inventory.
+		player.getInventory().addItem(itemObject.getItemClass(), 1);
 	}
 	
 	/** Called when a touch was registered on the screen. Coordinates given in world units. O(n**2) OPTIMIZE THIS. */

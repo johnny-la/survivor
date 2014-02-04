@@ -46,6 +46,8 @@ public class GameObjectManager
 		
 		//Set the player's loadout to the one saved in the profile.
 		player.setLoadout(profile.getLoadout());
+		//Retrieves the inventory from the profile and gives it to the player.
+		player.setInventory(profile.getInventory());
 		
 		//Ensures that the skeleton is in its setup pose by default.
 		player.getSkeleton().setToSetupPose();	
@@ -60,16 +62,16 @@ public class GameObjectManager
 	/** Spawns an ItemObject representing the given Item class. The (x,y) position is the bottom-center of the position where the ItemObject is spawned. 
 	 * @param direction Specifies the direction in which the item will fly when spawned.
 	 */
-	public <T> T spawnItemObject(Class<T> itemClass, float x, float y, Direction direction)
+	public ItemObject spawnItemObject(Class itemClass, float x, float y, Direction direction)
 	{
 		//Retrieves a free ItemObject in the internal pools of the GameObjectManager.
 		ItemObject itemObject = getGameObject(ItemObject.class);
 		
 		//Shoots the ItemObject into the air at the given (x,y) position in the given direction. Also sets the object to display the given item. 
-		itemObject.spawn(null, x, y, direction);
+		itemObject.spawn(itemClass, x, y, direction);
 		
 		//Returns the ItemObject which was spawned to represent the Item from the given class.
-		return (T) itemObject;
+		return itemObject;
 	}
 	
 	

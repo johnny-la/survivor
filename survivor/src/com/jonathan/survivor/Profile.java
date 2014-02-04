@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Json.Serializable;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.jonathan.survivor.entity.GameObject;
+import com.jonathan.survivor.inventory.Inventory;
 import com.jonathan.survivor.inventory.Loadout;
 
 public class Profile implements Serializable
@@ -40,6 +41,8 @@ public class Profile implements Serializable
 	
 	/** Stores the player's loadout so that it stays constants when re-entering the game. */
 	private Loadout loadout;
+	/** Holds the player's inventory, which contains all of the player's collected items. */
+	private Inventory inventory;
 	
 	/** Creates a default profile with profileId = 0. This constructor will be called when a Profile object is read from a JSON file. */
 	public Profile()
@@ -71,6 +74,9 @@ public class Profile implements Serializable
 		
 		//Creates a default, empty loadout for the player.
 		loadout = new Loadout();
+		
+		//Creates an empty inventory for the player, since the player just created the world.
+		inventory = new Inventory();
 	}
 	
 	/** Sets the profile Id of the profile. */
@@ -156,6 +162,9 @@ public class Profile implements Serializable
 		json.writeValue("terrainColOffset", terrainColOffset);
 		
 		json.writeValue("loadout", loadout);
+		System.out.println("Item map on save " + inventory.getItemMap());
+		json.writeValue("inventory", inventory.getItemMap());
+		
 		writeScavengedLayerObjects(json);
 	}
 
@@ -172,9 +181,13 @@ public class Profile implements Serializable
 		terrainColOffset = json.readValue("terrainColOffset", Integer.class, jsonData);
 		
 		loadout = json.readValue("loadout", Loadout.class, jsonData);
+		
+		//Creates an empty inventory for the player, since the player just created the world.
+		inventory = new Inventory();
+		HashMap<Class, Integer> itemMap = json.readValue("inventory", HashMap.class, Integer.class, jsonData);
+		System.out.println("Item Map: " + itemMap);
+		
 		readScavengedLayerObjects(json, jsonData);
-		
-		
 	}
 	
 	/** Converts the scavengedLayerObjects HashMap into a String and writes it to the Profile's JSON file. */
@@ -331,6 +344,16 @@ public class Profile implements Serializable
 	public void setLoadout(Loadout loadout) {
 		this.loadout = loadout;
 	}
+	
+	/** Retrieves the player's inventory, which contains all of the items collected by the player. */
+	public Inventory getInventory() {
+		return inventory;
+	}
+
+	/** Sets the player's inventory, which contains all of the items collected by the player. */
+	public void setInventory(Inventory inventory) {
+		this.inventory = inventory;
+	}
 
 	/** Returns a HashMap containing an array for each TerrainLayer. This array specifies the objectIds of the GameObjects that have been scavenged on that
 	 *  layer. First key is the TerrainLayer's row, and second is the TerrainLayer's column. */
@@ -343,4 +366,5 @@ public class Profile implements Serializable
 	public void setScavengedLayerObjects(HashMap<Integer, HashMap<Integer, ArrayList<Integer>>> scavengedLayerObjects) {
 		this.scavengedLayerObjects = scavengedLayerObjects;
 	}
+	
 }

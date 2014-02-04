@@ -27,8 +27,8 @@ public class ItemObject extends GameObject implements Poolable
 	/** Stores the state of the item, which determines the animation it plays. */
 	private ItemState itemState;
 	
-	/** Stores the Item held by the GameObject. */
-	private Item item;
+	/** Stores the class of the Item held by the GameObject. */
+	private Class itemClass;
 	
 	/** Creates an ItemObject at bottom-center position (0,0). */
 	public ItemObject()
@@ -65,10 +65,10 @@ public class ItemObject extends GameObject implements Poolable
 	 *  The position is the bottom-center position of the gameObject. 
 	 * @param direction Specifies the direction in which the items fly when spawned
 	 * */
-	public void spawn(Item item, float x, float y, Direction direction)
+	public <T extends Item> void spawn(Class<T> itemClass, float x, float y, Direction direction)
 	{
-		//Sets the item of this Item GameObject. This tells the GameObject which item to display and respresent.
-		setItem(item);
+		//Sets the item class represented by this Item GameObject. This tells the GameObject which item to display and respresent.
+		setItemClass(itemClass);
 		
 		//Sets the bottom-center (x,y) position of the item object to the given position.
 		setPosition(x, y);
@@ -108,13 +108,13 @@ public class ItemObject extends GameObject implements Poolable
 	}
 	
 	/** Gets the item contained by the GameObject. */
-	public Item getItem() {
-		return item;
+	public Class getItemClass() {
+		return itemClass;
 	}
 
 	/** Sets the item the GameObject represents. */
-	public void setItem(Item item) {
-		this.item = item;
+	public void setItemClass(Class itemClass) {
+		this.itemClass = itemClass;
 	}
 
 	/** Called when an ItemObject is placed back into a pool. The GameObject must be reset to default configuration. */

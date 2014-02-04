@@ -4,6 +4,7 @@ import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Assets;
 import com.jonathan.survivor.entity.InteractiveObject.InteractiveState;
 import com.jonathan.survivor.inventory.Axe;
+import com.jonathan.survivor.inventory.Inventory;
 import com.jonathan.survivor.inventory.Loadout;
 
 public class Player extends Human
@@ -23,6 +24,8 @@ public class Player extends Human
 	
 	/** Stores the player's loadout, containing the player's active weapons. */
 	private Loadout loadout;
+	/** Holds the player's inventory, which contains all of the player's collected items. */
+	private Inventory inventory;
 	
 	/** Stores the PlayerListener instance where methods are delegated upon player events. */
 	private PlayerListener playerListener;
@@ -174,6 +177,16 @@ public class Player extends Human
 	/** Sets the player's loadout. */
 	public void setLoadout(Loadout loadout) {
 		this.loadout = loadout;
+	}
+	
+	/** Gets the loadout which stores the items held by the player. */
+	public Inventory getInventory() {
+		return inventory;
+	}
+
+	/** Sets the loadout which stores the items held by the player. */
+	public void setInventory(Inventory inventory) {
+		this.inventory = inventory;
 	}
 	
 	/** Sets the given listener to have its methods delegated by the player instance. */
