@@ -87,6 +87,7 @@ public class Assets
 	
 	public Skin mainMenuSkin;	//We register an atlas to this skin (the main menu atlas). This lets us retrieve sprites from the atlas to use with 2D widgets.
 	public TextButtonStyle mainMenuButtonStyle;	//Defines the look of main menu buttons
+	public ButtonStyle deleteButtonStyle;	//Holds the ButtonStyle used to dictate the look of the delete button in the WorldSelectScreen.
 	public LabelStyle mainMenuHeaderStyle;	//Defines the look of the headers in the main menu.
 	public ListStyle mainMenuListStyle;	//Defines the look of the world selection list in the main menu.
 	
@@ -333,6 +334,11 @@ public class Assets
 		mainMenuButtonStyle.up = mainMenuSkin.getDrawable("ClickButton_Up");	//Sets the sprite for the 'up' state of the main menu buttons
 		mainMenuButtonStyle.down = mainMenuSkin.getDrawable("ClickButton_Down");	//Sets the sprite for the 'down' state of the main menu buttons
 		mainMenuButtonStyle.font = moonFlowerBold_54;
+		
+		//Instantiates the ButtonStyle instance used to display the delete button in the WorldSelectMenu.
+		deleteButtonStyle = new ButtonStyle();
+		deleteButtonStyle.up = mainMenuSkin.getDrawable("DeleteButton");
+		deleteButtonStyle.down = deleteButtonStyle.down;
 		
 		//Creates the LabelStyle used to determine the appearance of headers in the main menu. A gray color is chosen as a second argument.
 		mainMenuHeaderStyle = new LabelStyle(moonFlowerBold_54, new Color(0.2941f, 0.3216f, 0.2316f, 1f));

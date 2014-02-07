@@ -1,0 +1,237 @@
+package com.jonathan.survivor.screens;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.jonathan.survivor.Profile;
+import com.jonathan.survivor.Survivor;
+
+public class WorldSelectScreen extends Screen
+{
+	private Stage stage;	//Stores the stage used as a container for the UI widgets. It is essentially the camera that draws the widgets.
+	private Table table;	//Stores the table actor. This simply arranges the widgets at the center of the screen in a grid fashion.
+	
+	private Label header;	//Stores the label displaying the header.
+	
+	/** Stores the horizontal offset between the delete button and the profile selected in the list. */
+	private static final float DELETE_BUTTON_OFFSET = 10f;
+	
+	private TextButton startButton;	//Holds the "Start" button
+	private TextButton backButton;	//Holds the "Back" button
+	private Button deleteButton;	//Store the button to delete a profile.
+	
+	private String[] listItems;	//Stores the items shown by the world selection list.
+	private List worldSelectList;	//Stores the list for world selection.
+	
+	private final static float WORLD_LIST_WIDTH = 280f;	//Stores the list of the world selection list; the width of the blue bar in pixels for the target resolution (Usually 480x320).
+
+	public WorldSelectScreen(Survivor game)
+	{
+		super(game);
+	}
+	
+	@Override
+	public void show()
+	{
+		//Create a stage used to draw the UI widgets.
+		stage = new Stage();
+		
+		//Sets the stage to handle any touch/mouse input. Tells the widgets that they can receive touch events.
+		Gdx.input.setInputProcessor(stage);
+		
+		//Creates a table using the main menu Skin. This table places widgets in grid-like fashion. Why the skin is passed is unknown.
+		table = new Table(assets.mainMenuSkin);
+		
+		//Creates a label displaying the header. We pass in the mainMenuHeaderStyle as the LabelStyle. This tells the label which font/color to choose.
+		header = new Label("CHOOSE WORLD", assets.mainMenuHeaderStyle);
+		
+		//Create the start button using the main menu button style. This gives the button the desired image.
+		startButton = new TextButton("START", assets.mainMenuButtonStyle);
+		//Make the start button red.
+		startButton.setColor(Color.RED);
+		//Resize the start button according to the scale factor. The scale factor is either 4, 2, or 1, depending on which texture size we are using. If we are
+		//using @2x size textures, we need to shrink the button to half its orginal size. Like this, the buttons are always the same size, no matter which texture
+		//atlas is used. This allows the stage to keep a constant size no matter the texture size.
+		startButton.setSize(startButton.getWidth()/assets.scaleFactor, startButton.getHeight()/assets.scaleFactor);
+		
+		//Create the options button using the main menu button style. This gives the button the desired up/down images.
+		backButton = new TextButton("BACK", assets.mainMenuButtonStyle);
+		//Makes the back button's image dark gray.
+		backButton.setColor(Color.DARK_GRAY);
+		//Resize the back button according to the scale factor. The scale factor is either 4, 2, or 1, depending on which texture size we are using. If we are
+		//using @2x size textures, we need to shrink the button to half its orginal size. Like this, the buttons are always the same size, no matter which texture
+		//atlas is used. This allows the stage to keep a constant size no matter the texture size.
+		backButton.setSize(backButton.getWidth()/assets.scaleFactor, backButton.getHeight()/assets.scaleFactor);
+		
+		//Creates the delete button which prompts the user to delete the currently-selected profile using the pre-defined ButtonStyle.
+		deleteButton = new Button(assets.deleteButtonStyle);
+		//Scales the Delete Button down so that according to the scaleFactor of the assets. This way, no matter the size of the atlases
+		//chosen, the buttons are the same size.
+		deleteButton.setSize(deleteButton.getWidth() / assets.scaleFactor, deleteButton.getHeight() / assets.scaleFactor);
+		
+		//Add a click listener to the start button
+		startButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y)
+			{
+				//Retrieves the profile corresponding to the chosen item in the world list using profileManager.getProfile(id, createNew), where the id of the profile
+				//corresponds to the chosen index of the list, and the second argument specfies to create a new profile if one doesn't already exist.
+				Profile profile = profileManager.getProfile(worldSelectList.getSelectedIndex(), true);
+				
+				//Disposes of the assets used by the loading and company splash screen to free up system resources.
+				assets.disposeInitialAssets();
+				
+				//Switch the GameScreen, passing in the chosen profile as a second argument.
+				game.setScreen(new GameScreen(game, profile));
+			}
+		});
+		
+		//Add a click listener to the back button
+		backButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y)
+			{
+				//Play the "swoosh" sound effect when the "Back" button is pressed.
+				//soundManager.play(assets.swoosh);
+				//Return to the main menu once the "Back" button is pressed.
+				game.setScreen(new MainMenuScreen(game));
+			}
+		});
+		
+		//Creates the world selection list.
+		createWorldList();
+		
+		//Add the header to the top of the table, make it span two columns, skip a row, and pad the edged by 10 units.
+		table.add(header).colspan(2).row().pad(10);
+		//Add the world selection list to the table, and make it span two columns. The width of the list is resized so that the blue box is the same size no matter how
+		//big the largest label on the list is. Then, skip a row. Note that List.getWidth() actually returns the width of the largest string in the list.
+		table.add(worldSelectList).colspan(2).width(WORLD_LIST_WIDTH).row();
+		//Add the play button to the table, and give it a 10 pixel blank space around its edges. We set the width and height of the table's cell to the button's width
+		//and height to ensure that the button is not scaled when added to the table.
+		table.add(startButton).pad(10).width(startButton.getWidth()).height(startButton.getHeight());
+		//Add the back button to the table, and give it a 10 pixel blank space around its edges. We set the width and height of the table's cell to the button's width
+		//and height to ensure that the button is not scaled when added to the table.
+		table.add(backButton).pad(10).width(backButton.getWidth()).height(backButton.getHeight());
+		
+		//Add the table to the stage, telling the stage to draw all of the widgets inside the table when stage.draw() is called.
+		stage.addActor(table);
+		//Adds the delete button to be rendered on the stage at the position set in 'updateDeleteButton()'
+		stage.addActor(deleteButton);
+		
+		//Updates the position of the delete button to be next to the currently-selected item in the world select list.
+		updateDeleteButton();
+		
+	}
+	
+	/** Creates the world selection list, fetching the profiles to figure out what each item in the list should state. */
+	private void createWorldList()
+	{
+		//Stores the maximum amount of profiles the user can have.
+		int len = profileManager.getMaxProfiles();
+		//Creates a new array of strings containing each item in the list. Each item is a string. We need 'len' strings; one for every profile.
+		listItems = new String[len];
+		
+		//Cycles through all the profiles contained by the profile manager.
+		for(int i = 0; i < len; i++)
+		{
+			//Stores the profile with the given index.
+			Profile profile = profileManager.getProfile(i);
+			
+			//If the profile does not exist, it means that no save file exists for the world. So, say you need to create a new world.
+			if(profile == null)
+			{
+				//Makes the item say you need to create a new world. This is because the profile for the given index doesn't exist.
+				listItems[i] = "Create New";
+			}
+			//Else, if the profile exists, populate the list item with a string representation of the profile.
+			else
+			{
+				//Populate the item with a string containing the date last modified of the profile.
+				listItems[i] = profile.toString();
+			}
+		}
+		
+		//Create a list to select a world using the list of items and the list style from the assets class. The style defines the look of the list.
+		worldSelectList = new List(listItems, assets.mainMenuListStyle);
+		//Sets the color of the filled box around the selected item to blue.
+		worldSelectList.setColor(new Color(0, 0.4f, 1, 1));
+		
+		//Adds a ChangeListener on the list to detect when the selected profile is changed.
+		worldSelectList.addListener(new ChangeListener() {
+			//Delegates when the selected item for the world list changed.
+			public void changed(ChangeEvent event, Actor actor)
+			{
+				//Updates the position of the delete button to be next to the currently-selected item in the world select list.
+				updateDeleteButton();
+			}
+		});
+	}
+	
+	/** Updates the position of the delete button to be right next to the currently-selected item of the world list. */
+	private void updateDeleteButton()
+	{
+		//Gets the height of each item/label in the world select list.
+		float labelHeight = worldSelectList.getHeight() / worldSelectList.getItems().length;
+		float topListY = worldSelectList.getY() + worldSelectList.getHeight();
+		deleteButton.setX(stage.getWidth()/2 + WORLD_LIST_WIDTH/2 + DELETE_BUTTON_OFFSET);
+		deleteButton.setY( - deleteButton.getHeight()/2 - labelHeight/2
+							- (worldSelectList.getSelectedIndex() * labelHeight));
+	}
+	
+	@Override
+	public void render(float deltaTime)
+	{
+		//Sets OpenGL to clear the screen with white.
+		Gdx.gl.glClearColor(1,1,1,1);
+		//Clear the screen.
+		super.render(deltaTime);
+		
+		//Prepare the widgets inside the stage to be drawn.
+		stage.act(deltaTime);
+		//Draw the stage, effectively drawing all the 2D widgets to the screen.
+		stage.draw();
+	}
+	
+	@Override
+	public void resize(int width, int height)
+	{
+		//Re-compute the value of the guiWidth and guiHeight superclass variables to ensure that the gui fits the new aspect ratio of the screen.
+		super.resize(width, height);
+		
+		//Set the viewport of the stage to the guiWidth/Height member variables. This ensures that the viewable area of the stage is the desired width and height
+		//of the GUI. Note that these variables were defined in the superclass to be the desired default width and height of a GUI. However, the smallest dimension
+		//is resized to fit the screen's aspect ratio to avoid uneven stretching. If the device's screen is guiWidth x guiHeight, the GUI is pixel perfect.
+		stage.setViewport(guiWidth, guiHeight);
+		//Sets the bounds of the table. This is essentially the largest the table can be. We set it to the full width of the GUI for the table to fill the screen.
+		table.setBounds(0, 0, guiWidth, guiHeight);
+	}
+
+	@Override
+	public void dispose()
+	{
+		//Disposes of the SpriteBatcher in the superclass.
+		super.dispose();
+		
+		//Dispose of any resources used by the MainMenuScreen.
+		stage.dispose();
+	}
+	
+	@Override
+	public void pause() 
+	{
+	}
+
+	@Override
+	public void resume() 
+	{
+	}
+}
