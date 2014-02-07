@@ -162,8 +162,7 @@ public class Profile implements Serializable
 		json.writeValue("terrainColOffset", terrainColOffset);
 		
 		json.writeValue("loadout", loadout);
-		System.out.println("Item map on save " + inventory.getItemMap());
-		json.writeValue("inventory", inventory.getItemMap());
+		json.writeValue("inventory", inventory.getItemMap());	//Store only the inventory's itemMap for easy parsing.
 		
 		writeScavengedLayerObjects(json);
 	}
@@ -182,14 +181,11 @@ public class Profile implements Serializable
 		
 		loadout = json.readValue("loadout", Loadout.class, jsonData);
 		
-		//Creates an empty inventory for the player, since the player just created the world.
-		inventory = new Inventory();
-		HashMap<Class, Integer> itemMap = json.readValue("inventory", HashMap.class, Integer.class, jsonData);
-		System.out.println("Item Map: " + itemMap);
+		readInventory(json, jsonData);	//Loads the inventory from the JSON file.
 		
 		readScavengedLayerObjects(json, jsonData);
 	}
-	
+
 	/** Converts the scavengedLayerObjects HashMap into a String and writes it to the Profile's JSON file. */
 	private void writeScavengedLayerObjects(Json json)
 	{
@@ -240,6 +236,42 @@ public class Profile implements Serializable
 		
 		//Write the string in the "scavengedLayerObjects" entry of the profile's JSON file.
 		json.writeValue("scavengedLayerObjects", string);
+	}
+	
+	/** Reads the inventory from the Profile's JSON file and converts it into an Inventory instance, so that the user can have his saved Inventory back. */
+	private void readInventory(Json json, JsonValue jsonData) 
+	{
+		//Reads the itemMap saved inside the JSON file. The first element is a String representing the Item's class, and the second is the occurence of the
+		//item.
+		HashMap<String, Integer> tempMap = json.readValue("inventory", HashMap.class, Integer.class, jsonData);
+		
+		//Creates an empty inventory for the player. It will be populated in this method with the player's old items.
+		inventory = new Inventory();
+		
+		//Creates a set to cycle through each key in the HashMap from the JSON file.
+		Set<String> classSet = tempMap.keySet();
+		//Creates the itemMap which will contain the information from the JSON HashMap, parsed into the correct data format.
+		HashMap<Class, Integer> itemMap = new HashMap<Class, Integer>();
+		
+		//Cycles through each key in the HashMap.
+		for(String key:classSet)
+		{
+			try 
+			{
+				//First, take the key, which is a string, and convert it into a Class instance, which stores the class of the Item stored in the map.
+				//Then, take the value for the class, and parse it into an integer. This must be done since JSON HashMaps and their keys and values
+				//are converted to strings.
+				itemMap.put(Class.forName(key), Integer.valueOf(tempMap.get(key)));
+			}
+			catch (ClassNotFoundException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+		
+		//Set the inventory's ItemMap to the parsed itemMap read from the JSON file.
+		inventory.setItemMap(itemMap);
+		
 	}
 	
 	/** Reads the String stored inside the JSON file and converts it into a HashMap for the scavengedLayerObjects variable. */

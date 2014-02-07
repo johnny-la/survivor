@@ -1,0 +1,15 @@
+package com.jonathan.survivor.hud;
+
+import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.jonathan.survivor.inventory.Item.Type;
+
+public class InventoryList 
+{
+	/** Stores the list where items are selected. */
+	private List list;
+	
+	public InventoryList(Type itemType)
+	{
+		
+	}
+}

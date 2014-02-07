@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.jonathan.survivor.World;
-import com.jonathan.survivor.renderers.Hud;
+import com.jonathan.survivor.hud.Hud;
 
 public class BackpackHud extends Hud
 {

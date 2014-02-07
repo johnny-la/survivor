@@ -1,0 +1,67 @@
+package com.jonathan.survivor.managers;
+
+import java.util.HashMap;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Constructor;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
+import com.jonathan.survivor.inventory.Item;
+import com.jonathan.survivor.inventory.Wood;
+
+public class ItemPool 
+{
+	private HashMap<Class, Pool<Item>> itemPools;
+	
+	public ItemPool()
+	{
+		itemPools = new HashMap<Class, Pool<Item>>();
+	}
+	
+	public <T extends Item> T obtain(Class itemClass)
+	{
+		if(itemPools.get(itemClass) == null)
+		{
+			itemPools.put(itemClass, new ItemInnerPool());
+		}
+	}
+	
+	class ItemInnerPool extends Pool<Item>
+	{
+		/** Stores the constructor used to create instances of the item in the pool. */
+		private Constructor itemConstructor;
+		
+		/** Creates a pool of items for the given class. */
+		public ItemInnerPool(Class itemClass)
+		{
+			//Grabbing the constructor for the ItemClass may cause exceptions.
+			try 
+			{
+				//Grab the empty contructor of the Item's class using ClassReflection.getConstructor(java.lang.Class, args).
+				itemConstructor = ClassReflection.getConstructor(itemClass, null);
+			} 
+			catch (ReflectionException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+		@Override
+		protected Item newObject() 
+		{
+			try 
+			{
+				//Return a new instance of an Item using the correct constructor for the class provided in the constructor.
+				return (Item) itemConstructor.newInstance();
+			}
+			catch (ReflectionException e) 
+			{
+				Gdx.app.error("Item Pool", "Error creating an item inside the an item pool in class ItemPool.ItemInnerPool.newObject()");
+				e.printStackTrace();
+			}
+			
+			return null;
+		}
+		
+	}
+}

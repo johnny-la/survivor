@@ -3,6 +3,7 @@ package com.jonathan.survivor.managers;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
+import com.jonathan.survivor.Survivor;
 import com.jonathan.survivor.World;
 
 public class InputManager implements InputProcessor
@@ -63,14 +64,18 @@ public class InputManager implements InputProcessor
 	{
 		paused = false;
 	}
-
-	/* ..................UNUSED................................ */
 	
 	@Override
 	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
+		/*if(Survivor.DEBUG_MODE && keycode == Keys.DEL)
+		{
+			profileManager.deleteAllProfiles();
+			System.out.println("Deleted all profiles inside InputManager.keyDown()");
+		}*/
 		return false;
 	}
+	
+	/* ..................UNUSED................................ */
 
 	@Override
 	public boolean keyUp(int keycode) {

@@ -7,13 +7,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.jonathan.survivor.Profile;
 import com.jonathan.survivor.Survivor;
 import com.jonathan.survivor.World;
+import com.jonathan.survivor.hud.BackpackHud;
+import com.jonathan.survivor.hud.ExplorationHud;
+import com.jonathan.survivor.hud.Hud;
+import com.jonathan.survivor.hud.HudListener;
+import com.jonathan.survivor.hud.PauseMenuHud;
 import com.jonathan.survivor.managers.GestureManager;
 import com.jonathan.survivor.managers.InputManager;
-import com.jonathan.survivor.renderers.BackpackHud;
-import com.jonathan.survivor.renderers.ExplorationHud;
-import com.jonathan.survivor.renderers.Hud;
-import com.jonathan.survivor.renderers.HudListener;
-import com.jonathan.survivor.renderers.PauseMenuHud;
+import com.jonathan.survivor.managers.ItemManager;
 import com.jonathan.survivor.renderers.WorldRenderer;
 
 /*
@@ -47,6 +48,9 @@ public class GameScreen extends Screen
 	private InputManager inputManager;
 	/** Manages all gestures input of the game such as "swipes" and calls method of the world's GameObjects to match user input. */
 	private GestureManager gestureManager;
+	
+	/** Holds the ItemManager instance. Its purpose is to give access to Item instances, which give an item's information and sprite. */
+	private ItemManager itemManager;
 	
 	/** Stores the stage instance where all hud elements will be placed and drawn. */
 	private Stage stage;
@@ -88,6 +92,9 @@ public class GameScreen extends Screen
 		inputManager = new InputManager(world, worldRenderer.getWorldCamera());
 		//Creates an InputManager with the given world. This manager receives all touch events and reacts by calling appropriate GameObject methods. 
 		gestureManager = new GestureManager(world);
+		
+		//Instantiates an ItemManager, which is passed to Huds in order to give information about items in the inventory needed to be renderred to the screen.
+		itemManager = new ItemManager();
 		
 		//Creates a new stage where 2d widgets for the ui will be displayed.
 		stage = new Stage();
@@ -163,6 +170,9 @@ public class GameScreen extends Screen
 		@Override
 		public void switchToMainMenu()
 		{
+			//Saves the game
+			settings.save();
+			
 			//Transitions to the main menu.
 			game.setScreen(new MainMenuScreen(game));
 		}

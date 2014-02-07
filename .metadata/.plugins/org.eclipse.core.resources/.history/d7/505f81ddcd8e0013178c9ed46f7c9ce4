@@ -1,0 +1,5 @@
+package com.jonathan.survivor.hud;
+
+public class CraftingHud extends hud{
+
+}

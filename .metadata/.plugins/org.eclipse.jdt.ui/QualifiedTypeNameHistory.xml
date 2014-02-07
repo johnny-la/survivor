@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.graphics.Texture.TextureFilter"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle"/>
-<fullyQualifiedTypeName name="com.jonathan.survivor.Survivor"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.utils.Json"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.utils.Json.Serializable"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.managers.ProfileManager"/>
 <fullyQualifiedTypeName name="java.util.Date"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.Profile"/>
@@ -26,7 +20,6 @@
 <fullyQualifiedTypeName name="com.jonathan.survivor.math.Vector2"/>
 <fullyQualifiedTypeName name="com.esotericsoftware.spine.Animation"/>
 <fullyQualifiedTypeName name="com.esotericsoftware.spine.Event"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.utils.Pool"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.Stage"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.entity.Human.Direction"/>
@@ -45,7 +38,6 @@
 <fullyQualifiedTypeName name="com.jonathan.survivor.entity.InteractiveObject.InteractiveState"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.Assets"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.entity.InteractiveObject"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.Gdx"/>
 <fullyQualifiedTypeName name="com.esotericsoftware.spine.AnimationState.AnimationStateListener"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.inventory.Loadout"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.entity.Tree"/>
@@ -60,4 +52,12 @@
 <fullyQualifiedTypeName name="com.badlogic.gdx.graphics.Color"/>
 <fullyQualifiedTypeName name="java.util.Set"/>
 <fullyQualifiedTypeName name="com.esotericsoftware.spine.Skeleton"/>
+<fullyQualifiedTypeName name="com.jonathan.survivor.Survivor"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.utils.Pool"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.utils.reflect.Constructor"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.utils.reflect.ClassReflection"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.Gdx"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.List"/>
+<fullyQualifiedTypeName name="com.jonathan.survivor.inventory.Item.Type"/>
+<fullyQualifiedTypeName name="java.util.Map"/>
 </qualifiedTypeNameHistroy>

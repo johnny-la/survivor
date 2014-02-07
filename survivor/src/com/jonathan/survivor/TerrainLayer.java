@@ -261,7 +261,7 @@ public class TerrainLayer
 		
 		//Stores a list of objectIds for the GameObjects that have already been scavenged on this layer. 
 		ArrayList<Integer> scavengedObjects = profile.getScavengedLayerObjects(row, col);
-		System.out.println(scavengedObjects);
+		
 		//Stores the index of the object being placed on the layer. Starts at 0 for the left-most object, and increments by one for each object.
 		int objectIndex = 0;
 		

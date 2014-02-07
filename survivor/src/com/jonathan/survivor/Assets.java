@@ -341,7 +341,7 @@ public class Assets
 		mainMenuListStyle = new ListStyle();
 		mainMenuListStyle.font = moonFlowerBold_38;
 		mainMenuListStyle.selection = mainMenuSkin.getDrawable("ListSelection");//new NinePatchDrawable(ninePatch);
-		mainMenuListStyle.fontColorUnselected = new Color(0.803f, 0.803f, 0.803f, 1);	//If unselected, the text for the item in the world selection list will be light gray.
+		mainMenuListStyle.fontColorUnselected = new Color(0.5f, 0.5f, 0.5f, 1);	//If unselected, the text for the item in the world selection list will be light gray.
 		mainMenuListStyle.fontColorSelected = Color.WHITE;
 	}
 	
