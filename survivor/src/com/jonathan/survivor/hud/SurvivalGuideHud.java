@@ -18,7 +18,7 @@ import com.jonathan.survivor.World;
 public class SurvivalGuideHud extends Hud
 {
 	/** Stores the y position of the table nudge the table up, so that the header is at the right position on the backpack. */
-	public static final float TABLE_Y_OFFSET = 32;
+	public static final float TABLE_Y_OFFSET = 55;
 	
 	/** Stores the x-offset of the "Guide" header relative to the center of the screen. */
 	public static final float HEADER_X_OFFSET = 100;
@@ -53,7 +53,7 @@ public class SurvivalGuideHud extends Hud
 	/** Holds the description of every entry in the survival guide. */
 	private final String[] entries = new String[]{"Do something", 
 											"Make Bread. 1 Wheat + 1 Baking Powder", 
-											"Build a rifle\n20 iron\nYou need a bullets, after that\n"};
+											"Build a rifle\n- Crafted using 20 iron"};
 	
 	/** Stores the back button, used to exit out of the backpack hud. */
 	private Button backButton;
@@ -140,6 +140,8 @@ public class SurvivalGuideHud extends Hud
 		table.removeActor(entryLabel);
 		table.add(list).padLeft(LIST_X_OFFSET);
 		
+		setTablePosition();
+		
 		//Tells the survival guide hud it is displaying the list of entry names.
 		displayingEntry = false;
 		
@@ -152,6 +154,8 @@ public class SurvivalGuideHud extends Hud
 		
 		entryLabel.setText(entries[index]);
 		table.add(entryLabel).padLeft(LIST_X_OFFSET);
+		
+		setTablePosition();
 		
 		//Tells the survival guide that it is currently displaying the description for an entry. On back button, the list of entry names will be shown.
 		displayingEntry = true;
@@ -173,8 +177,8 @@ public class SurvivalGuideHud extends Hud
 		//Anchors the back button to the bottom-right of the survival guide background, using the given offsets. Note that button positions are the bottom-left of the buttons.
 		backButton.setPosition(survivalGuideBg.getX() + survivalGuideBg.getWidth() - backButton.getWidth() - BACK_BUTTON_X_OFFSET, survivalGuideBg.getY() + BACK_BUTTON_Y_OFFSET);
 		
-		//Offsets the table's bottom y-position up to place the header at the right position on the backpack.
-		table.setY(TABLE_Y_OFFSET);
+		//Reset the table to the correct position.
+		setTablePosition();
 		
 		//Adds the survival guide background to the center of the stage.
 		stage.addActor(survivalGuideBg);
@@ -184,5 +188,12 @@ public class SurvivalGuideHud extends Hud
 		//Adds the table to the stage so that its widgets are drawn to the screen.
 		stage.addActor(table);
 		
+	}
+
+	/** Sets the position of the table so that the header is at the right position */
+	private void setTablePosition() 
+	{
+		//Offsets the table's bottom y-position up to place the header at the right position on the backpack.
+		table.setY(TABLE_Y_OFFSET);
 	}
 }

@@ -43,7 +43,7 @@ public class Survivor extends Game
 	private Settings settings;
 	
 	/** Stores whether or not we are in debug mode */
-	public static final boolean DEBUG_MODE = true;
+	public static final boolean DEBUG_MODE = false;
 	/** Logs the framerate to the console */
 	private FPSLogger fpsCounter = new FPSLogger();
 	
