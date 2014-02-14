@@ -1,7 +1,0 @@
-package com.jonathan.survivor.managers;
-
-public class ItemObjectPool extends Pool<ItemObject>
-{
-	@Override
-	public 
-}

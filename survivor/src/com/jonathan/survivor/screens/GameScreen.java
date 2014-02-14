@@ -12,6 +12,7 @@ import com.jonathan.survivor.hud.ExplorationHud;
 import com.jonathan.survivor.hud.Hud;
 import com.jonathan.survivor.hud.HudListener;
 import com.jonathan.survivor.hud.PauseMenuHud;
+import com.jonathan.survivor.hud.SurvivalGuideHud;
 import com.jonathan.survivor.managers.GestureManager;
 import com.jonathan.survivor.managers.InputManager;
 import com.jonathan.survivor.managers.ItemManager;
@@ -64,6 +65,8 @@ public class GameScreen extends Screen
 	private ExplorationHud explorationHud;
 	/** Stores the BackpackHud which displays the Backpack inventory screen. */
 	private BackpackHud backpackHud;
+	/** Stores the SurvivalGuideHud which displays the survival guide menu. */
+	private SurvivalGuideHud survivalGuideHud;
 	/** Holds the HUD which displays the pause menu. */
 	private PauseMenuHud pauseMenuHud;
 	
@@ -115,8 +118,10 @@ public class GameScreen extends Screen
 		
 		//Creates an ExplorationRenderer which will display the exploration UI using the stage, and will call methods from the world on button clicks.
 		explorationHud = new ExplorationHud(stage, world);
-		//Creates the BackpackHud instance which displays the backpack UI using the stage.
+		//Instantiates the BackpackHud instance which displays the backpack UI using the stage.
 		backpackHud = new BackpackHud(stage, world);
+		//Creates the SurvivalGuideHud instance which displays the survival guide menu using the universal stage used for each HUD.
+		survivalGuideHud = new SurvivalGuideHud(stage, world);
 		//Instantiates a pause menu instance by passing the stage, which indicates that all widgets will be drawn to this stage. The world is unused in the HUD.
 		pauseMenuHud = new PauseMenuHud(stage, world);
 		
@@ -126,6 +131,7 @@ public class GameScreen extends Screen
 		//Adds the UiListener instance to each Hud instance. Like this, the GameScreen is informed about button touches in the UI. Used to react appropriately to a button press.
 		explorationHud.addHudListener(uiListener);
 		backpackHud.addHudListener(uiListener);
+		survivalGuideHud.addHudListener(uiListener);
 		pauseMenuHud.addHudListener(uiListener);
 		
 		//The game always starts off in exploration mode. This tells the class to display the exploration UI for the game.
@@ -175,6 +181,16 @@ public class GameScreen extends Screen
 			
 			//Transitions to the main menu.
 			game.setScreen(new MainMenuScreen(game));
+		}
+
+		/** Switches to the survival guide HUD when the survival guide button is pressed in the backpack. */
+		@Override
+		public void switchToSurvivalGuide() 
+		{
+			//Switches to displaying the survival guide menu.
+			hud = survivalGuideHud;
+			//Reset the hud so that it displays the survival guide's widgets. Note that the size of the GUI is passed so that widgets are placed according to screen size.
+			hud.reset(guiWidth, guiHeight);
 		}
 	}
 	

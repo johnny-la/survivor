@@ -134,8 +134,10 @@ public class WorldSelectScreen extends Screen
 		//Add the table to the stage, telling the stage to draw all of the widgets inside the table when stage.draw() is called.
 		stage.addActor(table);
 		//Adds the delete button to be rendered on the stage at the position set in 'updateDeleteButton()'
-		//stage.addActor(deleteButton);
-
+		stage.addActor(deleteButton);
+		
+		stage.act(0);
+		updateDeleteButton(0);
 		
 	}
 	

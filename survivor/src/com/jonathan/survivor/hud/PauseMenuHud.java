@@ -1,8 +1,11 @@
 package com.jonathan.survivor.hud;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -13,8 +16,17 @@ public class PauseMenuHud extends Hud
 	/** Holds the table used to arrange the buttons in a grid-like fashion. */
 	Table table;
 	
+	/** Holds the color which overlays the screen below the pause menu. */
+	public static final Color OVERLAY_COLOR = new Color(1f, 1f, 1f, 0.1f);
+	
 	/** Stores the spacing between the buttons displayed in a list. */
 	public static final float BUTTON_SPACING = 10f;
+	
+	/** Stores the amount the table is offset upwards so that the "Paused" label is shown higher up the screen. */
+	public static final float TABLE_OFFSET = 30f;
+	
+	/** Holds the header for the pause menu. */
+	private Label headerLabel;
 	
 	/** Stores the buttons displayed on the pause menu. */
 	private TextButton resumeButton;
@@ -30,13 +42,16 @@ public class PauseMenuHud extends Hud
 		//Creates the table instance used to arrange the buttons in a grid-like fashion.
 		table = new Table();
 		
+		//Creates the header label from the LabelStyle defined in the Assets singleton.
+		headerLabel = new Label("Paused", assets.mainMenuHeaderStyle);
+		
 		//Creates the text buttons displayed on the pause menu.
 		resumeButton = new TextButton("Resume", assets.mainMenuButtonStyle);
-		mainMenuButton = new TextButton("Menu", assets.mainMenuButtonStyle);
+		mainMenuButton = new TextButton("Quit", assets.mainMenuButtonStyle);
 		
 		//Colors the buttons of the pause menu.
-		resumeButton.setColor(new Color(0.4f, 1, 0.2f, 1));
-		mainMenuButton.setColor(Color.RED);
+		resumeButton.setColor(new Color(0.4f, 0.7f, 0.2f, 1));
+		mainMenuButton.setColor(new Color(0.9f, 0.2f, 0.2f, 1));
 		
 		//Resizes the buttons according to the scale factor. This ensures that, if larger atlases were chosen, the buttons are scaled down accordingly.
 		resumeButton.setSize(resumeButton.getWidth() / assets.scaleFactor, resumeButton.getHeight() / assets.scaleFactor);
@@ -48,9 +63,21 @@ public class PauseMenuHud extends Hud
 		resumeButton.addListener(buttonListener);
 		mainMenuButton.addListener(buttonListener);
 		
+		table.add(headerLabel).colspan(2).row();
 		//Adds the buttons to the table
 		table.add(resumeButton).pad(BUTTON_SPACING).row();
-		table.add(mainMenuButton).pad(BUTTON_SPACING);
+		table.add(mainMenuButton);
+	}
+	
+	@Override
+	public void draw(float deltaTime)
+	{
+		//Clears the screen with the overlay color so that the game is hidden behind the pause menu.
+		Gdx.gl.glClearColor(OVERLAY_COLOR.r, OVERLAY_COLOR.g, OVERLAY_COLOR.b, OVERLAY_COLOR.a);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		
+		//Draw the 2d widgets stored in the stage.
+		super.draw(deltaTime);
 	}
 	
 	/** Class receiving all button clicking events. */
@@ -83,7 +110,7 @@ public class PauseMenuHud extends Hud
 		stage.clear();
 		
 		//Resizes the table so that it occupies the entire size of the gui to thus occupy the entire stage.
-		table.setBounds(0, 0, guiWidth, guiHeight);
+		table.setBounds(0, TABLE_OFFSET, guiWidth, guiHeight);
 		
 		//Adds the table to the stage so as to display the buttons of the pause menu.
 		stage.addActor(table);

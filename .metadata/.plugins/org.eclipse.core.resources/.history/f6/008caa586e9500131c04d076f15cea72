@@ -1,0 +1,11 @@
+survivalguide_bg_atlas@2x.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Backpack_BG0002
+  rotate: false
+  xy: 4, 4
+  size: 958, 640
+  orig: 958, 640
+  offset: 0, 0
+  index: -1

@@ -33,11 +33,11 @@ public class InputManager implements InputProcessor
 		touchPoint = new Vector3();
 	}
 	
-	/** Called when the user holds a press anywhere on the screen. */
+	/** Called when the user releases a press anywhere on the screen. */
 	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button)
+	public boolean touchUp(int screenX, int screenY, int pointer, int button)
 	{
-		//Don't handle the touch down event if the game is paused.
+		//Don't handle the touch up event if the game is paused.
 		if(paused)
 			return false;
 		
@@ -90,7 +90,7 @@ public class InputManager implements InputProcessor
 	}
 
 	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		// TODO Auto-generated method stub
 		return false;
 	}

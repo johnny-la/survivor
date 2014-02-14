@@ -47,17 +47,17 @@
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Image"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.World"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.InputEvent"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Label"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Button"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.graphics.Color"/>
 <fullyQualifiedTypeName name="java.util.Set"/>
 <fullyQualifiedTypeName name="com.esotericsoftware.spine.Skeleton"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.Survivor"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.utils.Pool"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.utils.reflect.Constructor"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.utils.reflect.ClassReflection"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.Gdx"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.List"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.inventory.Item.Type"/>
 <fullyQualifiedTypeName name="java.util.Map"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Label"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.List"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.graphics.Color"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.Gdx"/>
 </qualifiedTypeNameHistroy>

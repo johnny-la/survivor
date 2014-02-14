@@ -13,4 +13,7 @@ public interface HudListener
 	
 	/** Called when the main menu button was pressed to transition to the main menu. */
 	void switchToMainMenu();
+
+	/** Called when the survival guide button is pressed in the backpack, in order to transition to the survival guide hud. */
+	void switchToSurvivalGuide();
 }

@@ -1,13 +1,12 @@
 package com.jonathan.survivor.hud;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.jonathan.survivor.World;
 
 public class BackpackHud extends Hud
@@ -50,7 +49,9 @@ public class BackpackHud extends Hud
 	{
 		super(stage, world);
 		
+		//Creates the image displaying the backpack background. Uses the pre-defined TextureRegion displaying the background.
 		backpackBg = new Image(assets.backpackBgRegion);
+		//Re-scales the background so that it takes the same space on the screen no matter the atlas size chosen.
 		backpackBg.setSize(backpackBg.getWidth() / assets.scaleFactor, backpackBg.getHeight() / assets.scaleFactor);
 		
 		//Creates a new header for the backpack using the pre-defined header's label style.
@@ -103,31 +104,28 @@ public class BackpackHud extends Hud
 		
 	}
 
-
 	@Override
 	public void draw(float deltaTime) 
-	{
+	{		
 		//Draws the widgets and the actors to the stage.
 		super.draw(deltaTime);
 	}
 	
 	/** Registers any events called by the buttons of the Backpack Hud. */
-	class ButtonListener extends InputListener
-	{
-		/** Called when a button is pressed in the backpack hud. */
-		@Override
-		public boolean touchDown(InputEvent event, float x, float y, int pointer, int button)
-		{
-			//Override to return false so that the touchUp method is called.
-			return true;
-		}
-		
+	class ButtonListener extends ClickListener
+	{		
 		/** Delegated when the user releases a button click. */
 		@Override
-		public void touchUp(InputEvent event, float x, float y, int pointer, int button)
+		public void clicked(InputEvent event, float x, float y)
 		{
+			//If the Survival Guide Button was pressed.
+			if(event.getTarget() == survivalGuideButton)
+			{
+				//Prompts the GameScreen to switch to the SurvivalGuideHud.
+				hudListener.switchToSurvivalGuide();
+			}
 			//If the back button was pressed
-			if(event.getTarget() == backButton)
+			else if(event.getTarget() == backButton)
 			{
 				//Inform the GameScreen that the back button has been pressed by delegating the onBack() method to the listener. Returns to the game.
 				hudListener.onBack();

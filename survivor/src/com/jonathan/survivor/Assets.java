@@ -102,8 +102,11 @@ public class Assets
 	
 	public TextureAtlas backpackBgAtlas;
 	public TextureRegion backpackBgRegion;
+	public TextureAtlas survivalGuideBgAtlas;
+	public TextureRegion survivalGuideBgRegion;
 	public ButtonStyle survivalGuideButtonStyle;
 	public ButtonStyle craftingButtonStyle;
+	public ListStyle survivalGuideListStyle;
 	public ButtonStyle backButtonStyle;
 	public LabelStyle hudHeaderStyle;
 	public LabelStyle hudLabelStyle;
@@ -250,6 +253,7 @@ public class Assets
 		manager.load("game/tree/atlas/tree_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		manager.load("ui/hud/general/atlas/hud_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		manager.load("ui/hud/backpack_bg/atlas/backpack_bg_atlas" + scaleExtension + ".txt", TextureAtlas.class);
+		manager.load("ui/hud/survivalguide_bg/atlas/survivalguide_bg_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		
 		//Puts music assets to queue inside the AssetManager using AssetManager.load("fileName", class).
 		
@@ -289,6 +293,7 @@ public class Assets
 		treeAtlas = manager.get("game/tree/atlas/tree_atlas" + scaleExtension + ".txt");
 		hudAtlas = manager.get("ui/hud/general/atlas/hud_atlas" + scaleExtension + ".txt");
 		backpackBgAtlas = manager.get("ui/hud/backpack_bg/atlas/backpack_bg_atlas" + scaleExtension + ".txt");
+		survivalGuideBgAtlas = manager.get("ui/hud/survivalguide_bg/atlas/survivalguide_bg_atlas" + scaleExtension + ".txt");
 		
 		//Retrieves the music files.
 		//mainMenuMusic = manager.get("sound/music/Ashton Manor.mp3");
@@ -408,8 +413,9 @@ public class Assets
 		pauseButtonStyle.down = new SpriteDrawable(pauseButtonDown); //Wrap the tinted sprite into a SpriteDrawable to set it as the button's 'down' image.
 		
 		
-		//Retrieves the TextureRegion for the backpack's background.
+		//Retrieves the TextureRegion for the backpack's backgrounds.
 		backpackBgRegion = backpackBgAtlas.findRegion("Backpack_BG");
+		survivalGuideBgRegion = survivalGuideBgAtlas.findRegion("Backpack_BG0002");
 		
 		//Creates the style for the Survival Guide button
 		survivalGuideButtonStyle = new ButtonStyle();
@@ -440,6 +446,13 @@ public class Assets
 		backButtonDown.setColor(Color.GRAY);
 		backButtonStyle.down = new SpriteDrawable(backButtonDown);	//Registers the tinted sprite as the image drawn when the back button is down.
 		
+		//Creates the list style used by the survival guide's entry list.
+		survivalGuideListStyle = new ListStyle();
+		survivalGuideListStyle.font = moonFlowerBold_38;
+		survivalGuideListStyle.selection = mainMenuSkin.getDrawable("ListSelection");
+		survivalGuideListStyle.fontColorUnselected = new Color(0.1f, 0.1f, 0.1f, 1);	//If unselected, the text for the item in the world selection list will be light gray.
+		survivalGuideListStyle.fontColorSelected = new Color(0.2f, 0.2f, 0.2f, 1);
+
 		//Creates the LabelStyle for the headers displayed in the HUDs.
 		hudHeaderStyle = new LabelStyle();
 		hudHeaderStyle.font = moonFlowerBold_54;
