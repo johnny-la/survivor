@@ -1,0 +1,40 @@
+
+main_menu_atlas@2x.png
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+Logo
+  rotate: false
+  xy: 1, 105
+  size: 772, 394
+  orig: 772, 394
+  offset: 0, 0
+  index: -1
+ListSelection
+  rotate: false
+  xy: 1, 22
+  size: 449, 81
+  orig: 449, 81
+  offset: 0, 0
+  index: -1
+ClickButton_Down
+  rotate: false
+  xy: 452, 1
+  size: 271, 102
+  orig: 271, 102
+  offset: 0, 0
+  index: -1
+ClickButton_Up
+  rotate: false
+  xy: 725, 1
+  size: 271, 102
+  orig: 271, 102
+  offset: 0, 0
+  index: -1
+DeleteButton
+  rotate: false
+  xy: 775, 431
+  size: 62, 68
+  orig: 62, 68
+  offset: 0, 0
+  index: -1

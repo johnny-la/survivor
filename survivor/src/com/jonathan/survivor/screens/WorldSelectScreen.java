@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.jonathan.survivor.Profile;
 import com.jonathan.survivor.Survivor;
+import com.jonathan.survivor.hud.ConfirmDialog;
 
 public class WorldSelectScreen extends Screen
 {
@@ -28,6 +29,8 @@ public class WorldSelectScreen extends Screen
 	private TextButton startButton;	//Holds the "Start" button
 	private TextButton backButton;	//Holds the "Back" button
 	private Button deleteButton;	//Store the button to delete a profile.
+	
+	private ConfirmDialog confirmDialog;	//Holds the confirm dialog shown when the user presses the 'delete' button.
 	
 	private String[] listItems;	//Stores the items shown by the world selection list.
 	private List worldSelectList;	//Stores the list for world selection.
@@ -112,7 +115,20 @@ public class WorldSelectScreen extends Screen
 			@Override
 			public void clicked(InputEvent event, float x, float y)
 			{
-				
+				//Displays the confirm dialog for the user to accept deleting the selected profile.
+				confirmDialog.show(stage);
+			}
+		});
+		
+		//Creates the confirmation dialog which opens when the delete button is pressed. Constructor accepts title of dialog, along with ClickListener 
+		//which gets its clicked() method called when the 'Yes' button is pressed.
+		confirmDialog = new ConfirmDialog("Are you sure you want\nto delete this profile?", new ClickListener() {
+			//Called when the "Yes" button is clicked.
+			@Override
+			public void clicked(InputEvent event, float x, float y)
+			{
+				//Deletes the profile from the selected item in the list. Removes the profile from the hard drive.
+				deleteProfile(worldSelectList.getSelectedIndex());
 			}
 		});
 		
@@ -136,13 +152,33 @@ public class WorldSelectScreen extends Screen
 		//Adds the delete button to be rendered on the stage at the position set in 'updateDeleteButton()'
 		stage.addActor(deleteButton);
 		
-		stage.act(0);
-		updateDeleteButton(0);
-		
 	}
 	
 	/** Creates the world selection list, fetching the profiles to figure out what each item in the list should state. */
 	private void createWorldList()
+	{
+		//Populates the 'listItems:String[]' array with the data of every profile saved on the hard drive to be displayed in the list.
+		populateWorldList();
+		
+		//Create a list to select a world using the list of items and the list style from the assets class. The style defines the look of the list.
+		worldSelectList = new List(listItems, assets.mainMenuListStyle);
+		//Sets the color of the filled box around the selected item to blue.
+		worldSelectList.setColor(new Color(0, 0.4f, 1, 1));
+		
+		//Adds a ChangeListener on the list to detect when the selected profile is changed.
+		worldSelectList.addListener(new ChangeListener() {
+			//Delegates when the selected item for the world list changed.
+			public void changed(ChangeEvent event, Actor actor)
+			{
+				//Updates the position of the delete button to be next to the currently-selected item in the world select list.
+				updateDeleteButton(worldSelectList.getSelectedIndex());
+			}
+		});
+
+	}
+	
+	/** Populates the 'listItems:String[]' array with every profile saved in the hard drive. Called when the world list's items must be re-initialized. */
+	private void populateWorldList()
 	{
 		//Stores the maximum amount of profiles the user can have.
 		int len = profileManager.getMaxProfiles();
@@ -168,28 +204,40 @@ public class WorldSelectScreen extends Screen
 				listItems[i] = profile.toString();
 			}
 		}
+	}
+	
+	/** Deletes the profile with the given index. The index corresponds to the item chosen in the world select list. */
+	private void deleteProfile(int index)
+	{
+		//Deletes the profile with the given index from the hard drive.
+		profileManager.deleteProfile(index);
 		
-		//Create a list to select a world using the list of items and the list style from the assets class. The style defines the look of the list.
-		worldSelectList = new List(listItems, assets.mainMenuListStyle);
-		//Sets the color of the filled box around the selected item to blue.
-		worldSelectList.setColor(new Color(0, 0.4f, 1, 1));
+		//Re-populates the 'listItems:String[]' array in order to remove the deleted profile from the world select list. 
+		populateWorldList();
 		
-		//Adds a ChangeListener on the list to detect when the selected profile is changed.
-		worldSelectList.addListener(new ChangeListener() {
-			//Delegates when the selected item for the world list changed.
-			public void changed(ChangeEvent event, Actor actor)
-			{
-				//Updates the position of the delete button to be next to the currently-selected item in the world select list.
-				updateDeleteButton(worldSelectList.getSelectedIndex());
-			}
-		});
-
+		//Update the world select list to display the new list of profiles.
+		worldSelectList.setItems(listItems);
+		
+		//Reset the correct selected index of the list, since the selected item was set to zero when calling worldSelectList.setItems(...)
+		worldSelectList.setSelectedIndex(index);
+		
+		//Hide the delete button since the selected profile no longer exists, and thus cannot be deleted.
+		deleteButton.setVisible(false);
 	}
 	
 	/** Updates the position of the delete button to be right next to the currently-selected item of the world list. The selected
 	 * index is the index chosen in the world select list.*/
 	private void updateDeleteButton(int selectedIndex)
 	{
+		//If the selected profile doesn't already exist on the hard drive
+		if(profileManager.getProfile(selectedIndex) == null)
+			//Hide the deleteButton, since the selected profile is a "Create New" profile, and thus cannot be deleted
+			deleteButton.setVisible(false);
+		//Else, if the selected profile already exists
+		else
+			//Allow the deleteButton to be shown.
+			deleteButton.setVisible(true);
+		
 		//Gets the height of each item/label in the world select list.
 		float labelHeight = worldSelectList.getHeight() / worldSelectList.getItems().length;
 		//Stores the y-position of the top of the list.
@@ -200,6 +248,15 @@ public class WorldSelectScreen extends Screen
 		//Sets the y-position of the delete button to the at the center of the currently selected item in the list.
 		deleteButton.setY(topListY - deleteButton.getHeight()/2 - labelHeight/2
 							- (selectedIndex * labelHeight));
+	}
+	
+	/** Called when the world select screen is created. Called to place the delete button at the position of the first item in the list. */
+	private void initializeDeleteButton() 
+	{
+		//Ensures that all of the stage's widgets have their size and attributes updated
+		stage.draw();
+		//Places the delete button next to the first index in the world selection list.
+		updateDeleteButton(0);
 	}
 	
 	@Override
@@ -228,6 +285,10 @@ public class WorldSelectScreen extends Screen
 		stage.setViewport(guiWidth, guiHeight);
 		//Sets the bounds of the table. This is essentially the largest the table can be. We set it to the full width of the GUI for the table to fill the screen.
 		table.setBounds(0, 0, guiWidth, guiHeight);
+		
+		//Places the delete button at its correct position once the GUI is first shown
+		initializeDeleteButton();
+		
 	}
 
 	@Override

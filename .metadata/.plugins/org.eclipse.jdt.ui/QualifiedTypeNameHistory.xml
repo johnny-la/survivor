@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="com.jonathan.survivor.managers.ProfileManager"/>
-<fullyQualifiedTypeName name="java.util.Date"/>
-<fullyQualifiedTypeName name="com.jonathan.survivor.Profile"/>
 <fullyQualifiedTypeName name="java.util.List"/>
 <fullyQualifiedTypeName name="com.jonathan.math.Collider"/>
 <fullyQualifiedTypeName name="com.jonathan.math.Rectangle"/>
@@ -36,7 +33,6 @@
 <fullyQualifiedTypeName name="com.badlogic.gdx.utils.Scaling"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.TerrainLevel"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.entity.InteractiveObject.InteractiveState"/>
-<fullyQualifiedTypeName name="com.jonathan.survivor.Assets"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.entity.InteractiveObject"/>
 <fullyQualifiedTypeName name="com.esotericsoftware.spine.AnimationState.AnimationStateListener"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.inventory.Loadout"/>
@@ -47,7 +43,6 @@
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Image"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.World"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.InputEvent"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Button"/>
 <fullyQualifiedTypeName name="java.util.Set"/>
 <fullyQualifiedTypeName name="com.esotericsoftware.spine.Skeleton"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.Survivor"/>
@@ -58,6 +53,11 @@
 <fullyQualifiedTypeName name="java.util.Map"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Label"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.List"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.graphics.Color"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.Gdx"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Dialog"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Button"/>
+<fullyQualifiedTypeName name="com.jonathan.survivor.Assets"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.TextButton"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.graphics.Color"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Skin"/>
 </qualifiedTypeNameHistroy>

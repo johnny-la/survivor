@@ -1,6 +1,0 @@
-package com.jonathan.survivor.hud;
-
-public class InventoryList 
-{
-	List list;
-}

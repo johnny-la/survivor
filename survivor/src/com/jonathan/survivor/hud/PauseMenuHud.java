@@ -50,7 +50,7 @@ public class PauseMenuHud extends Hud
 		mainMenuButton = new TextButton("Quit", assets.mainMenuButtonStyle);
 		
 		//Colors the buttons of the pause menu.
-		resumeButton.setColor(new Color(0.4f, 0.7f, 0.2f, 1));
+		resumeButton.setColor(new Color(0.4f, 0.8f, 0.2f, 1));
 		mainMenuButton.setColor(new Color(0.9f, 0.2f, 0.2f, 1));
 		
 		//Resizes the buttons according to the scale factor. This ensures that, if larger atlases were chosen, the buttons are scaled down accordingly.
@@ -65,8 +65,8 @@ public class PauseMenuHud extends Hud
 		
 		table.add(headerLabel).colspan(2).row();
 		//Adds the buttons to the table
-		table.add(resumeButton).pad(BUTTON_SPACING).row();
-		table.add(mainMenuButton);
+		table.add(resumeButton).width(resumeButton.getWidth()).height(resumeButton.getHeight()).pad(BUTTON_SPACING).row();
+		table.add(mainMenuButton).width(mainMenuButton.getWidth()).height(mainMenuButton.getHeight());
 	}
 	
 	@Override
