@@ -51,7 +51,6 @@
 <fullyQualifiedTypeName name="com.badlogic.gdx.utils.reflect.ClassReflection"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.inventory.Item.Type"/>
 <fullyQualifiedTypeName name="java.util.Map"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Label"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.List"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.Gdx"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Dialog"/>
@@ -60,4 +59,5 @@
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.TextButton"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.graphics.Color"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Skin"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Label"/>
 </qualifiedTypeNameHistroy>

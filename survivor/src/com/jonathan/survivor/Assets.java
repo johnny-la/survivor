@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.spine.Animation;
@@ -92,6 +94,7 @@ public class Assets
 	public LabelStyle mainMenuHeaderStyle;	//Defines the look of the headers in the main menu.
 	public ListStyle mainMenuListStyle;	//Defines the look of the world selection list in the main menu.
 	
+	public NinePatch confirmDialogNinePatch;	//Stores the 9-patch used as the background for a confirm dialog.
 	public WindowStyle confirmDialogWindowStyle;	//Needed for the constructor of the Dialog superclass. Does not define the look of the confirmDialog, but is nevertheless required.
 	
 	//Stores the assets used by the game.
@@ -358,8 +361,11 @@ public class Assets
 		mainMenuListStyle.fontColorUnselected = new Color(0.5f, 0.5f, 0.5f, 1);	//If unselected, the text for the item in the world selection list will be light gray.
 		mainMenuListStyle.fontColorSelected = Color.WHITE;
 		
-		//Creates the WindowStyle used to define the look of the confirm dialog. Not actually used. An arbitrary WindowStyle needs to be passed to the Dialog superclass.
-		confirmDialogWindowStyle = new WindowStyle(moonFlowerBold_54, new Color(0.2941f, 0.3216f, 0.2316f, 1f), null);
+		//Retrieves the 9-patch from the main menu atlas used to display the confirm dialog's background
+		confirmDialogNinePatch = mainMenuSkin.getPatch("ConfirmDialog");
+		
+		//Creates the WindowStyle used to define the look of the confirm dialog. The only useful argument is the last, which defines the background of the dialog.
+		confirmDialogWindowStyle = new WindowStyle(moonFlowerBold_54, new Color(0.2941f, 0.3216f, 0.2316f, 1f), new NinePatchDrawable(confirmDialogNinePatch));
 	}
 	
 	/** Loads the assets used in-game which couldn't be loaded by the Asset Manager in the updateLoading() method, such as SkeletonJson files. */
@@ -456,8 +462,8 @@ public class Assets
 		survivalGuideListStyle = new ListStyle();
 		survivalGuideListStyle.font = moonFlowerBold_38;
 		survivalGuideListStyle.selection = mainMenuSkin.getDrawable("ListSelection");
-		survivalGuideListStyle.fontColorUnselected = new Color(0.1f, 0.1f, 0.1f, 1);	//If unselected, the text for the item in the world selection list will be light gray.
-		survivalGuideListStyle.fontColorSelected = new Color(0.2f, 0.2f, 0.2f, 1);
+		survivalGuideListStyle.fontColorUnselected = new Color(0f, 0f, 0f, 1);	//If unselected, the text for the item in the world selection list will be light gray.
+		survivalGuideListStyle.fontColorSelected = new Color(0f, 0f, 0f, 1);
 
 		//Creates the LabelStyle for the headers displayed in the HUDs.
 		hudHeaderStyle = new LabelStyle();

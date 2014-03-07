@@ -28,14 +28,14 @@ public class ConfirmDialog extends Dialog
 		//Creates the 'Yes' button using the pre-defined main menu's button style.
 		yesButton = new TextButton("Yes", assets.mainMenuButtonStyle);
 		//Sets the 'Yes' button's color to green.
-		yesButton.setColor(new Color(0.5f, 1f, 0.2f, 1));
+		yesButton.setColor(new Color(0.5f, .8f, 0.2f, 1));
 		//Re-scales the 'Yes' button to ensure that, no matter the atlas size chosen, the size of the button remains the same.
 		yesButton.setSize(yesButton.getWidth() / assets.scaleFactor, yesButton.getHeight() / assets.scaleFactor);
 		
 		//Creates the 'No' button using the pre-defined main menu's button style.
 		noButton = new TextButton("No", assets.mainMenuButtonStyle);
 		//Sets the color of the 'No' button to red.
-		noButton.setColor(Color.RED);
+		noButton.setColor(new Color(0.9f, 0.2f, 0.1f, 1));
 		//Re-scales the 'No' button by the scaleFactor to ensure that, no matter the atlas size chosen, the size of the button remains the same.
 		noButton.setSize(noButton.getWidth() / assets.scaleFactor, noButton.getHeight() / assets.scaleFactor);
 		
@@ -52,6 +52,8 @@ public class ConfirmDialog extends Dialog
 		//Resizes the cells for each button so that they are the same size as the button. Prevents buttons from scaling up or down unwantingly.
 		getButtonTable().getCell(yesButton).width(yesButton.getWidth()).height(yesButton.getHeight());
 		getButtonTable().getCell(noButton).width(noButton.getWidth()).height(noButton.getHeight());
+		
+		getBackground().setBottomHeight(400);
 	}
 	
 	/** Returns the "Yes" button clicked when the user confirms his choice. */ 
