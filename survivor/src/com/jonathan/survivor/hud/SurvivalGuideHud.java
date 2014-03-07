@@ -90,7 +90,10 @@ public class SurvivalGuideHud extends Hud
 		list.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				showEntryDescription(list.getSelectedIndex());				
+				//Show the entry description for the given entry index that was pressed.
+				showEntryDescription(list.getSelectedIndex());			
+				//Reset the list's index to negative one, so that any item in the list will trigger the changed() method when pressed.
+				list.setSelectedIndex(-1);
 			}
 
 		});
@@ -119,7 +122,7 @@ public class SurvivalGuideHud extends Hud
 		table = new Table();
 		
 		//Adds the list of survival guide entries to the table. Pads it to the left so that it is nudged to the right.
-		table.add(list)/*.left().padLeft(LIST_X_OFFSET)*/;
+		table.add(list);
 		
 	}
 	
@@ -136,7 +139,7 @@ public class SurvivalGuideHud extends Hud
 		//Removes the label displaying the entry's desciption. We want to revert to the list of all entries.
 		table.removeActor(entryLabel);
 		//Replaces the entry description with the entry list. 
-		table.add(list)/*.padLeft(LIST_X_OFFSET).left()*/;
+		table.add(list);
 		
 		//Tells the survival guide HUD it is displaying the list of entry names, and not an entry description
 		displayingDescription = false;
@@ -155,7 +158,7 @@ public class SurvivalGuideHud extends Hud
 		//Set the label to hold the description for the pressed entry
 		entryLabel.setText(entries[index]);
 		//Adds the entry label to the table so that the entry's description is displayed instead of the entry list. Pads the text to shift it to the right.
-		table.add(entryLabel).left()/*.padLeft(LIST_X_OFFSET)*/;
+		table.add(entryLabel).left();
 		
 		//Tells the survival guide that it is currently displaying the description for an entry. On back button, the list of entry names will be shown.
 		displayingDescription = true;
@@ -203,9 +206,9 @@ public class SurvivalGuideHud extends Hud
 		float tableWidth = (displayingDescription)? entryLabel.getWidth() : list.getWidth();
 		float tableHeight = (displayingDescription)? entryLabel.getHeight() : list.getHeight();
 		
+		//Offsets the table so that the text is left aligned at x = LIST_X_OFFSET. 
 		table.setX(tableWidth/2 - LIST_X_OFFSET);
-		//Sets the y-position of the table so that the top of the text inside the guide is always at the same height. Subtracting the table's desired y-position by the 
-		//current y-position gives the amount that the table should be offset to reach its desired y-position.
+		//Sets the y-position of the table so that the top of the text inside the guide is always at the same height relative to screen's center.
 		table.setY(LIST_Y_OFFSET - tableHeight/2);
 	}
 }

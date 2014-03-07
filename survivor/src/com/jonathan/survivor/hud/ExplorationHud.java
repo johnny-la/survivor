@@ -123,6 +123,9 @@ public class ExplorationHud extends Hud
 		@Override
 		public boolean touchDown(InputEvent event, float x, float y, int pointer, int button)
 		{			
+			//Pauses input. Ensures that no gestures or input triggers player movement while a button is pressed.
+			hudListener.toggleInput(false);
+			
 			//If the right arrow button was pressed or its overlaying arrow image was pressed
 			if(event.getTarget() == rightArrowButton || event.getTarget() == rightArrowButton.getImage())
 			{
@@ -145,6 +148,9 @@ public class ExplorationHud extends Hud
 		@Override
 		public void touchUp(InputEvent event, float x, float y, int pointer, int button)
 		{
+			//Resumes input. Ensures that gestures or input can call player movement methods, since a HUD button was released.
+			hudListener.toggleInput(true);
+			
 			//If the right arrow button was released, stop the player from moving. Note that the image on the button can also be a target.
 			if(event.getTarget() == rightArrowButton || event.getTarget() == rightArrowButton.getImage())
 			{
@@ -160,7 +166,6 @@ public class ExplorationHud extends Hud
 				leftArrowButtonDown = false;
 				//Stops the player from moving left once the left directional button is unpressed.
 				world.stopMoving(world.getPlayer());
-
 			}
 			//Else, if the backpackButton was released, transition to the backpack inventory page.
 			else if(event.getTarget() == backpackButton)

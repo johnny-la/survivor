@@ -12,6 +12,13 @@ public class ConfirmDialog extends Dialog
 	/** Holds the Assets singleton used to retrieve pre-defined ui styles. */
 	private Assets assets = Assets.instance;
 	
+	/** Holds the size of the background. Background is scaled up if it is too small for the dialog's widgets. */
+	private static final float BACKGROUND_MIN_WIDTH = 380;
+	private static final float BACKGROUND_MIN_HEIGHT = 230;
+	
+	/** Stores the spacing between the bottom of the buttons and the bottom of the nine-patch background. */
+	private static final float BUTTON_BACKGROUND_SPACING = 10;
+	
 	/** Stores the 'Yes' and the 'No' buttons which prompt the user for confirmation. */
 	private TextButton yesButton, noButton;
 	
@@ -50,10 +57,14 @@ public class ConfirmDialog extends Dialog
 		button(noButton);
 		
 		//Resizes the cells for each button so that they are the same size as the button. Prevents buttons from scaling up or down unwantingly.
-		getButtonTable().getCell(yesButton).width(yesButton.getWidth()).height(yesButton.getHeight());
-		getButtonTable().getCell(noButton).width(noButton.getWidth()).height(noButton.getHeight());
+		//Also pads the bottom of the buttons by the given value, and top-aligns them so that there is a space between the bottom of the background 
+		//and the buttons.
+		getButtonTable().getCell(yesButton).width(yesButton.getWidth()).height(yesButton.getHeight()).padBottom(BUTTON_BACKGROUND_SPACING).top();
+		getButtonTable().getCell(noButton).width(noButton.getWidth()).height(noButton.getHeight()).padBottom(BUTTON_BACKGROUND_SPACING).top();
 		
-		getBackground().setBottomHeight(400);
+		//Sets the minimum width and height of the dialog's background to ensure that it is slightly larger than dialog's contents.
+		getBackground().setMinWidth(BACKGROUND_MIN_WIDTH);
+		getBackground().setMinHeight(BACKGROUND_MIN_HEIGHT);
 	}
 	
 	/** Returns the "Yes" button clicked when the user confirms his choice. */ 

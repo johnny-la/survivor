@@ -11,6 +11,9 @@ public interface HudListener
 	/** Called when the Pause Button is pressed whilst in-game. */
 	void onPauseButton();
 	
+	/** Called when the user presses/releases a button on a HUD. Toggles input handling on/off. Allows/disallows input from changing the player's state. */ 
+	void toggleInput(boolean on);
+	
 	/** Called when the main menu button was pressed to transition to the main menu. */
 	void switchToMainMenu();
 
