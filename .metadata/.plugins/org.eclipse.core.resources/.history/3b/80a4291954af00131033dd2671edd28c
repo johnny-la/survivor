@@ -1,0 +1,142 @@
+package com.varriount.pluzzle.components;
+ 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+ 
+public class ScalableNinePatch extends NinePatch {
+ 
+	private boolean blending = false;
+	private float scaleX = 1f;
+	private float scaleY = 1f;
+ 
+	public ScalableNinePatch(Texture texture) {
+		super(texture);
+		// TODO Auto-generated constructor stub
+	}
+ 
+	public ScalableNinePatch(TextureRegion region) {
+		super(region);
+		// TODO Auto-generated constructor stub
+	}
+ 
+	public ScalableNinePatch(TextureRegion... patches) {
+		super(patches);
+		// TODO Auto-generated constructor stub
+	}
+ 
+	public ScalableNinePatch(NinePatch ninePatch) {
+		super(ninePatch);
+		// TODO Auto-generated constructor stub
+	}
+ 
+	public ScalableNinePatch(Texture texture, Color color) {
+		super(texture, color);
+		// TODO Auto-generated constructor stub
+	}
+ 
+	public ScalableNinePatch(TextureRegion region, Color color) {
+		super(region, color);
+		// TODO Auto-generated constructor stub
+	}
+ 
+	public ScalableNinePatch(NinePatch ninePatch, Color color) {
+		super(ninePatch, color);
+		// TODO Auto-generated constructor stub
+	}
+ 
+	public ScalableNinePatch(Texture texture, int left, int right, int top,
+			int bottom) {
+		super(texture, left, right, top, bottom);
+		// TODO Auto-generated constructor stub
+	}
+ 
+	public ScalableNinePatch(TextureRegion region, int left, int right,
+			int top, int bottom) {
+		super(region, left, right, top, bottom);
+		// TODO Auto-generated constructor stub
+	}
+ 
+	public void setBlending(boolean blending) {
+		this.blending = blending;
+		setBlending(blending);
+	}
+ 
+	public void draw(SpriteBatch batch, float x, float y, float width,
+			float height) {
+		float centerColumnX = x + (getLeftWidth());
+		float rightColumnX = x + width - getRightWidth();
+		float middleRowY = y + getBottomHeight();
+		float topRowY = y + height - getTopHeight();
+ 
+		float centerColumnX2 = x + (getLeftWidth() * scaleX);
+		float rightColumnX2 = x + width - (getRightWidth() * scaleX);
+		float middleRowY2 = y + (getBottomHeight() * scaleY);
+		float topRowY2 = y + height - (getTopHeight() * scaleY);
+ 
+		if (getColor() != null) {
+			Color batchColor = batch.getColor();
+			batch.setColor(getColor().r, getColor().g, getColor().b,
+					batchColor.a * getColor().a);
+		}
+ 
+		if (!blending && batch.getColor().a == 1f && getColor() != null
+				&& getColor().a == 1f)
+			batch.disableBlending();
+ 
+		// Bottom row
+		if (getPatches()[BOTTOM_LEFT] != null)
+			batch.draw(getPatches()[BOTTOM_LEFT], x, y, (centerColumnX - x)
+					* scaleX, (middleRowY - y) * scaleY);
+		if (getPatches()[BOTTOM_CENTER] != null)
+			batch.draw(getPatches()[BOTTOM_CENTER], centerColumnX2, y,
+					(rightColumnX2 - centerColumnX2), (middleRowY - y) * scaleY);
+		if (getPatches()[BOTTOM_RIGHT] != null)
+			batch.draw(getPatches()[BOTTOM_RIGHT], rightColumnX2, y,
+					(x + width - rightColumnX) * scaleX, (middleRowY - y)
+							* scaleY);
+ 
+		// Middle row
+		if (getPatches()[MIDDLE_LEFT] != null)
+			batch.draw(getPatches()[MIDDLE_LEFT], x, middleRowY2,
+					(centerColumnX - x) * scaleX, (topRowY2 - middleRowY2));
+		if (getPatches()[MIDDLE_CENTER] != null)
+			batch.draw(getPatches()[MIDDLE_CENTER], centerColumnX2,
+					middleRowY2, (rightColumnX2 - centerColumnX2),
+					(topRowY2 - middleRowY2));
+		if (getPatches()[MIDDLE_RIGHT] != null)
+			batch.draw(getPatches()[MIDDLE_RIGHT], rightColumnX2, middleRowY2,
+					(x + width - rightColumnX) * scaleX,
+					(topRowY2 - middleRowY2));
+ 
+		// Top row
+		if (getPatches()[TOP_LEFT] != null)
+			batch.draw(getPatches()[TOP_LEFT], x, topRowY2, (centerColumnX - x)
+					* scaleX, (y + height - topRowY) * scaleY);
+		if (getPatches()[TOP_CENTER] != null)
+			batch.draw(getPatches()[TOP_CENTER], centerColumnX2, topRowY2,
+					(rightColumnX2 - centerColumnX2), (y + height - topRowY)
+							* scaleY);
+		if (getPatches()[TOP_RIGHT] != null)
+			batch.draw(getPatches()[TOP_RIGHT], rightColumnX2, topRowY2, (x
+					+ width - rightColumnX)
+					* scaleX, (y + height - topRowY) * scaleY);
+ 
+		if (!blending)
+			batch.enableBlending();
+	}
+ 
+	void setScale(float xScale, float yScale) {
+		scaleX = xScale;
+		scaleY = yScale;
+	}
+	
+	void setScaleX(float xScale) {
+		scaleX = xScale;
+	}
+	void setScaleY(float yScale) {
+		scaleY = yScale;
+	}
+}

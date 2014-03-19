@@ -7,7 +7,7 @@ import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Assets;
 import com.jonathan.survivor.inventory.Wood;
 
-public class Tree extends InteractiveObject implements Poolable
+public class Tree extends InteractiveObject
 {
 	/** Stores the width and height of a tree's rectangle collider in world units. */
 	public static final float COLLIDER_WIDTH = 2.313f, COLLIDER_HEIGHT = 4.063f;
@@ -48,12 +48,12 @@ public class Tree extends InteractiveObject implements Poolable
 		updateCollider();
 	}
 	
-	/** Called whenever this tree GameObject has been pushed back into a pool. In this case, we reset the tree's state back to default. */
+	/** Called whenever this tree GameObject has been pushed back into a pool. In this case, we reset the tree's state and health back to default. */
 	@Override
 	public void reset()
 	{
-		//Tell the tree it has just spawned, in order for its correct animations to play.
-		setInteractiveState(InteractiveState.SPAWN);
+		//Resets the Tree to SPAWN state.
+		super.reset();
 		
 		//Reset the tree to default health.
 		setHealth(DEFAULT_HEALTH);

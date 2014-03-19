@@ -78,6 +78,9 @@ public class SurvivalGuideHud extends Hud
 		//Makes it so that the selection box around the selected item in the list is invisible. No selection box should appear in the entry list.
 		list.setColor(Color.CLEAR);
 		
+		//Reset the list's index to negative one, so that any item in the list will trigger the changed() method when initially pressed.
+		list.setSelectedIndex(-1);
+		
 		//Instantiates the label that will display the description for an entry in the survival guide.
 		entryLabel = new Label("", assets.hudLabelStyle);
 		

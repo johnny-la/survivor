@@ -1,0 +1,102 @@
+interactable_objects_atlas@2x.png
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+Bullet
+  rotate: false
+  xy: 4, 174
+  size: 78, 66
+  orig: 78, 66
+  offset: 0, 0
+  index: -1
+Charcoal
+  rotate: false
+  xy: 86, 174
+  size: 82, 60
+  orig: 82, 60
+  offset: 0, 0
+  index: -1
+Middle_Layer
+  rotate: false
+  xy: 360, 174
+  size: 134, 150
+  orig: 134, 150
+  offset: 0, 0
+  index: -1
+Sulfur
+  rotate: false
+  xy: 96, 328
+  size: 68, 68
+  orig: 68, 68
+  offset: 0, 0
+  index: -1
+Saltpeter
+  rotate: false
+  xy: 4, 328
+  size: 88, 78
+  orig: 88, 78
+  offset: 0, 0
+  index: -1
+Water
+  rotate: false
+  xy: 306, 328
+  size: 62, 70
+  orig: 62, 70
+  offset: 0, 0
+  index: -1
+Trunk
+  rotate: false
+  xy: 246, 328
+  size: 56, 102
+  orig: 56, 102
+  offset: 0, 0
+  index: -1
+Gunpowder
+  rotate: false
+  xy: 172, 174
+  size: 94, 70
+  orig: 94, 70
+  offset: 0, 0
+  index: -1
+Top_Layer
+  rotate: false
+  xy: 168, 328
+  size: 74, 70
+  orig: 74, 70
+  offset: 0, 0
+  index: -1
+Bottom_Layer
+  rotate: false
+  xy: 4, 4
+  size: 148, 166
+  orig: 148, 166
+  offset: 0, 0
+  index: -1
+Box_Base
+  rotate: false
+  xy: 156, 4
+  size: 146, 66
+  orig: 146, 66
+  offset: 0, 0
+  index: -1
+Wood
+  rotate: false
+  xy: 372, 328
+  size: 76, 68
+  orig: 76, 68
+  offset: 0, 0
+  index: -1
+Iron
+  rotate: false
+  xy: 270, 174
+  size: 86, 60
+  orig: 86, 60
+  offset: 0, 0
+  index: -1
+Box_Lid
+  rotate: false
+  xy: 306, 4
+  size: 146, 60
+  orig: 146, 60
+  offset: 0, 0
+  index: -1

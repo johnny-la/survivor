@@ -43,10 +43,6 @@ public class PlayerRenderer
 	/** Stores the integers assigned to each event in Spine. Used to indicate which event was caught in the AnimationStateListener. */
 	private static final int HIT_TREE = 0;
 	
-	/** Stores the previous state of the player. Animations are only changed if the player's state changes. */
-	private State previousPlayerState = null;
-
-	
 	/** Accepts the player GameObject to render, the Spine skeleton used to to play his animations, the SpriteBatch used to draw the player, and the world 
 	 * camera where the player is drawn. */
 	public PlayerRenderer(Player player, SpriteBatch batcher, OrthographicCamera worldCamera)
@@ -138,7 +134,7 @@ public class PlayerRenderer
 		updateAttachments();
 		
 		//Change the animation if the player's state has changed. Re-setting the AnimationState to the same animation twice causes errors.
-		if(player.getState() != previousPlayerState)
+		if(player.getState() != player.getPreviousState())
 		{
 			//Update the player's animation since his state has changed.
 			updateAnimation();
@@ -160,7 +156,7 @@ public class PlayerRenderer
 	private void updateAnimation()
 	{
 		//Stores the previous state of the player to determine if his state changes on the next render() call.
-		previousPlayerState = player.getState();
+		player.setPreviousState(player.getState());
 		
 		//If the player has just spawned
 		if(player.getState() == State.SPAWN)
@@ -224,7 +220,8 @@ public class PlayerRenderer
 		//Else, if the player doesn't have a weapon
 		else
 		{
-			playerSkeleton.setAttachment("Axe", null);
+			//Remove the melee weapon attachment from the player since he has no equipped melee weapon.
+			playerSkeleton.setAttachment(MeleeWeapon.WEAPON_SLOT_NAME, null);
 		}
 	}
 }

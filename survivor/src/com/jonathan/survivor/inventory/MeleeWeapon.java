@@ -13,10 +13,10 @@ public abstract class MeleeWeapon extends Weapon
 	/** Stores the name of the slot on the player in Spine where melee weapon images are stored. */
 	public static final String WEAPON_SLOT_NAME = "Axe";
 	
-	/** Accepts the name, description, inventory sprite, damage, and range of the melee weapon. */
-	public MeleeWeapon(String name, String description, Sprite inventorySprite, float damage, float range)
+	/** Accepts the name, description, damage, and range of the melee weapon. */
+	public MeleeWeapon(String name, String description, float damage, float range)
 	{
-		super(name, description, inventorySprite, damage);
+		super(name, description, damage);
 		
 		//All MeleeWeapons and their images are mapped to the slot named SLOT_NAME on the Player.
 		setWeaponSlotName(WEAPON_SLOT_NAME);

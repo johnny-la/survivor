@@ -51,7 +51,9 @@ public class BackpackHud extends Hud
 	{
 		super(stage, world);
 		
+		//Creates the backpack's background using the TextureRegion stored inside the Assets singleton.
 		backpackBg = new Image(assets.backpackBgRegion);
+		//Resizes the background according to the scaleFactor of the assets. Makes it so that the image takes the same screen space no matter screen size.
 		backpackBg.setSize(backpackBg.getWidth() / assets.scaleFactor, backpackBg.getHeight() / assets.scaleFactor);
 		
 		//Creates a new header for the backpack using the pre-defined header's label style.

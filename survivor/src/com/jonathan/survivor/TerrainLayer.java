@@ -5,10 +5,12 @@ import java.util.Random;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.jonathan.survivor.entity.Box;
 import com.jonathan.survivor.entity.GameObject;
 import com.jonathan.survivor.entity.InteractiveObject.InteractiveState;
 import com.jonathan.survivor.entity.ItemObject;
 import com.jonathan.survivor.entity.Tree;
+import com.jonathan.survivor.entity.Zombie;
 import com.jonathan.survivor.managers.GameObjectManager;
 import com.jonathan.survivor.math.Vector2;
 /**
@@ -43,6 +45,12 @@ public class TerrainLayer
 	public static final float MIN_AMPLITUDE = 0.2f;
 	/** Stores the b-value in a cosine function, the frequency, found by 2pi/period, where the period is the width of the cosine function. */
 	public static final float COSINE_FREQUENCY = 2 * (float) Math.PI / LAYER_WIDTH;
+	
+	/** Holds the distance in meters. Determines how close a GameObject has to be to the layer's edge be considered "near" the edge. Used in closeToEdge(...) */
+	public static final float EDGE_MARGIN = 2;
+	
+	/** Holds the probability rate (0: lowest chance, 1: highest chance) that a zombie gets spawned on the TerrainLayer. */
+	public static final float ZOMBIE_PROBABILITY_RATE = 0.2f;
 	
 	/** Stores the position of the bottom-left and bottom-right ends of the layer. */
 	private final Vector2 leftPoint, rightPoint;
@@ -89,8 +97,10 @@ public class TerrainLayer
 	/** Stores true if the gameObjects array has already been populated with the correct objects. Prevents having to re-populate the array every frame. */
 	private boolean gameObjectsStored = false;
 	
-	/** Stores an array of trees that the layer contains. */
+	/** Holds arrays containing the different types of GameObjects on the layer. */
 	private Array<Tree> trees = new Array<Tree>();
+	private Array<Box> boxes = new Array<Box>();
+	private Array<Zombie> zombies = new Array<Zombie>();
 	/** Stores an array of all the ItemObjects that have been dropped on this TerrainLayer. These items can be picked up. */
 	private Array<ItemObject> itemObjects = new Array<ItemObject>();
 	
@@ -297,6 +307,58 @@ public class TerrainLayer
 				//Increment x by the width of the tree so that the next object doesn't overlap.
 				x += Tree.COLLIDER_WIDTH / 2;
 			}
+			else if(randObject > 0.45f)
+			{
+				//If the object we want to place has not yet been scavenged, place it on the TerrainLayer. 
+				if(!scavengedObjects.contains(objectIndex))
+				{
+					//Retrieves a box GameObject from a pool inside the GameObjectManager.
+					Box box = goManager.getGameObject(Box.class);
+					//Tell the box that it has just spawned
+					box.setInteractiveState(InteractiveState.SPAWN);
+					//Sets the terrain cell to the layer's row and column so that the box knows which layer it is in.
+					box.setTerrainCell(row, col);
+					//Positions the box at the current x-position, and the correct y-position according to the object height at the given x-position.
+					box.setPosition(x, getObjectHeight(x));
+					//Set the object id of the box to the current object index. Used to identify a scavenged GameObject in save data.
+					box.setObjectId(objectIndex);
+					
+					//Add the box GameObject to the array of boxes held by the layer.
+					boxes.add(box);
+				}
+				
+				//Increment the object index for the next GameObject to be placed on the layer. 
+				objectIndex++;
+				
+				//Increment x by the width of the box's collider so that the next object doesn't overlap with this box.
+				x += Box.COLLIDER_WIDTH / 2;
+			}
+		}
+		
+		//Generates a new random number between 0 and 1 which dictates whether or not a zombie will be spawned in the center of the TerrainLayer.
+		float randZombie = objectRand.nextFloat();
+		
+		//If the random number is less than the zombie probability rate, place a zombie on the layer.
+		if(randZombie < ZOMBIE_PROBABILITY_RATE)
+		{
+			//If the zombie has not yet been killed on the TerrainLayer, spawn him there.
+			if(!scavengedObjects.contains(objectIndex))
+			{
+				//Retrieves a Zombie GameObject from the GameObjectManager.
+				Zombie zombie = goManager.getGameObject(Zombie.class);
+				//Sets the zombie's terrain cell to the layer's row and column so that the zombie knows which layer it is in.
+				zombie.setTerrainCell(row, col);
+				//Places the zombie at the center of the TerrainLayer.
+				zombie.setPosition(getCenterX(), getCenterGroundHeight());
+				//Set the object id of the box to the current object index. Used to identify a scavenged GameObject in save data.
+				zombie.setObjectId(objectIndex);
+				
+				//Add the zombie into the list of zombies inside the layer.
+				zombies.add(zombie);
+			}
+				
+			//Increment the object index for the next GameObject that is placed on the layer. 
+			objectIndex++;
 		}
 		
 	}
@@ -309,6 +371,11 @@ public class TerrainLayer
 		for(int i = 0; i < trees.size; i++)
 			//Frees the trees back into the pool of the GameObjectManager for later reuse.
 			goManager.freeGameObject(trees.get(i), Tree.class);
+		
+		//Cycles through the array of box GameObjects belonging to the layer
+		for(int i = 0; i < boxes.size; i++)
+			//Frees the boxes back into the pool of the GameObjectManager for later reuse.
+			goManager.freeGameObject(boxes.get(i), Box.class);
 
 		for(int i = 0; i < itemObjects.size; i++)
 			//Frees the ItemObjects back into their respective pool inside the GameObjectManager so that they can be reused once more ItemObjects are dropped.
@@ -316,6 +383,8 @@ public class TerrainLayer
 		
 		//Clears the array of all the GameObjects contained by the TerrainLayer so that they can be re-populated with new GameObjects when resetLayer() is called.
 		trees.clear();
+		boxes.clear();
+		zombies.clear();
 		itemObjects.clear();
 		
 		//Clears the array which contains a list of all the GameObjects on this layer. Allows us to repopulate the array once the layer is reused.
@@ -345,6 +414,8 @@ public class TerrainLayer
 		{
 			//Add all the GameObjects from the layer into the gameObjects array.
 			gameObjects.addAll(trees);
+			gameObjects.addAll(boxes);
+			gameObjects.addAll(zombies);
 			gameObjects.addAll(itemObjects);
 			
 			//Tell the layer that all of its GameObjects have been stored inside the array, to avoid doing so every frame.
@@ -362,11 +433,42 @@ public class TerrainLayer
 		return trees;
 	}
 	
-	/** Returns an array consisting of all the Item GameObjects that have been dropped on this layer and have yet to be picked up. */
-	public Array<Tree> getItemObjects()
+	/** Returns an array containing all the Box GameObjects that are on this layer. */
+	public Array<Box> getBoxes()
 	{
-		//Returns the trees array, which contains all of the trees held by the layer.
-		return trees;
+		//Returns the boxes array, which contains all of the boxes held by the layer.
+		return boxes;
+	}
+	
+	/** Returns an array containing all the Zombies GameObjects that are on this layer. */
+	public Array<Zombie> getZombies()
+	{
+		//Returns the 'zombies' array, which contains all of the zombies held by the layer.
+		return zombies;
+	}
+	
+	/** Returns an array consisting of all the Item GameObjects that have been dropped on this layer and have yet to be picked up. */
+	public Array<ItemObject> getItemObjects()
+	{
+		//Returns the itemObjects array, which contains all of the itemObjects held by the layer.
+		return itemObjects;
+	}
+	
+	/** Returns true if the given GameObject is close to the edge of this TerrainLayer. */
+	public boolean closeToEdge(GameObject gameObject) 
+	{
+		//Stores the gameObject's x-position. The y-position is irrelevant in check if the GameObject is close to the layer's edge.
+		float xPos = gameObject.getX();
+		
+		//If the GameObject is within 'EDGE_MARGIN' distance from either end point of the layer, it is considered "close to the edge"
+		if(rightPoint.x - xPos < EDGE_MARGIN || xPos - leftPoint.x < EDGE_MARGIN)
+		{
+			//Thus, return true, since the GameObject is close to the edge
+			return true;
+		}
+		
+		//If this statement is reached, the GameObject is not close to the edge of the layer. Thus, return false.
+		return false;
 	}
 	
 	/** Gets the world x-position at the center of the terrain layer */

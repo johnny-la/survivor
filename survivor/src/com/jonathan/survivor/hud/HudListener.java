@@ -19,4 +19,7 @@ public interface HudListener
 
 	/** Called when the survival guide button is pressed in the backpack, in order to transition to the survival guide hud. */
 	void switchToSurvivalGuide();
+
+	/** Called when the crafting button is pressed in the backpack. Transitions to the crafting HUD. */
+	void switchToCraftingMenu();
 }

@@ -9,7 +9,7 @@
 	</section>
 	<section name="WorkbenchPreferenceDialogSettings">
 		<item value="73" key="DIALOG_Y_ORIGIN"/>
-		<item value="564" key="DIALOG_X_ORIGIN"/>
+		<item value="525" key="DIALOG_X_ORIGIN"/>
 	</section>
 	<section name="NewWizardAction">
 		<item value="com.objectaid.uml.new.classdiagram" key="NewWizardSelectionPage.STORE_SELECTED_ID"/>

@@ -8,6 +8,7 @@ import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Assets;
 import com.jonathan.survivor.entity.ItemObject;
 import com.jonathan.survivor.entity.ItemObject.ItemState;
+import com.jonathan.survivor.inventory.Item;
 
 public class ItemObjectRenderer 
 {
@@ -41,6 +42,8 @@ public class ItemObjectRenderer
 	{
 		//Stores the Skeleton instance owned by the ItemObject, which allows the object to be drawn to the screen.
 		Skeleton skeleton = itemObject.getSkeleton();
+		
+		skeleton.setAttachment(Item.SLOT_NAME, itemObject.getItem().getItemAttachment());
 		
 		//Updates the position of the skeleton to that of the Item GameObject. The position for both is denoted by the bottom-center.
 		skeleton.setX(itemObject.getX());

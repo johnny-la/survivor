@@ -14,8 +14,8 @@ import com.jonathan.survivor.math.Cell;
 
 public class TerrainLevel implements Level
 {
-	/** Stores the number of rows and columns of terrain layers that are displayed at once in a level. */
-	public static final int NUM_LAYER_ROWS = 3, NUM_LAYER_COLS = 3;
+	/** Stores the number of rows and columns of terrain layers that are displayed at once in a level. Should be odd numbers so that the center layers are integers. */
+	public static final int NUM_LAYER_ROWS = 5, NUM_LAYER_COLS = 3;
 	
 	/** Stores the bottom-left (x,y) position of the first terrain layer. Only relevant when layers first created. */
 	public static final float START_X_POS = 0;//(-TerrainLayer.LAYER_WIDTH * (NUM_LAYER_COLS / 2)) - (TerrainLayer.LAYER_WIDTH/2);
@@ -317,6 +317,13 @@ public class TerrainLevel implements Level
 	{
 		//Returns the TerrainLayer through the overloaded method which accepts the column and row of the layer individually.
 		return getTerrainLayer(cell.getRow(), cell.getCol());
+	}
+	
+	/** Returns the terrain layer where the GameObject resides. Note that the layer must exist in the current level's layer matrix, or an exception will occur. */
+	public TerrainLayer getTerrainLayer(GameObject gameObject)
+	{
+		//Returns the TerrainLayer through the overloaded method which accepts the column and row of the desired layer individually.
+		return getTerrainLayer(gameObject.getTerrainCell().getRow(), gameObject.getTerrainCell().getCol());
 	}
 	
 	/** Returns the TerrainLayer at the center of the level. This is the layer where the player resides. */

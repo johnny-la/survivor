@@ -2,12 +2,14 @@ package com.jonathan.survivor.entity;
 
 import java.util.HashMap;
 
+import com.badlogic.gdx.utils.Pool.Poolable;
+
 
 /*
  * Any environment GameObject that can be clicked and interacted with.
  */
 
-public abstract class InteractiveObject extends GameObject implements Clickable
+public abstract class InteractiveObject extends GameObject implements Clickable, Poolable
 {
 	public enum InteractiveState {
 		SPAWN, IDLE, CLICKED, HIT, SCAVENGED
@@ -77,8 +79,14 @@ public abstract class InteractiveObject extends GameObject implements Clickable
 	public void setItemProbabilityMap(HashMap<Class, Float> itemProbabilityMap) {
 		this.itemProbabilityMap = itemProbabilityMap;
 	}
-
 	
+	/** Called whenever this GameObject has been pushed back into a pool. In this case, we reset the box's state back to default. */
+	@Override
+	public void reset()
+	{
+		//Tell the box it has just spawned, in order for its renderer to know to reset the box to IDLE state.
+		setInteractiveState(InteractiveState.SPAWN);
+	}
 	
 	/** Called every frame to update logic. */
 	@Override

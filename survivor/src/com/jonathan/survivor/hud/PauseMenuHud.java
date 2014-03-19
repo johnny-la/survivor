@@ -17,7 +17,7 @@ public class PauseMenuHud extends Hud
 	Table table;
 	
 	/** Holds the color which overlays the screen below the pause menu. */
-	public static final Color OVERLAY_COLOR = new Color(1f, 1f, 1f, 0.1f);
+	public static final Color OVERLAY_COLOR = new Color(1f, 1f, 1f, 0.0f);
 	
 	/** Stores the spacing between the buttons displayed in a list. */
 	public static final float BUTTON_SPACING = 10f;

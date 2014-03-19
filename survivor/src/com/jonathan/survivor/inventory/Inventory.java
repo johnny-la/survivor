@@ -33,6 +33,25 @@ public class Inventory
 		
 		//Insert the new quantity into the itemMap.
 		itemMap.put(itemClass, quantity);
+		
+		//If the item has just been removed from the inventory
+		if(quantity == 0)
+			//Remove the reference to the item inside the inventory, so that the item is essentially gone from the inventory.
+			itemMap.remove(itemClass);
+	}
+	
+	/** Returns the quantity of items of the given class inside the inventory. */
+	public int getQuantity(Class itemClass)
+	{
+		//If the entry for the item class is null
+		if(itemMap.get(itemClass) == null)
+			//Insert a new integer value for the item class key.
+			itemMap.put(itemClass, 0);
+		
+		System.out.println("Quantity of " + itemClass);
+		
+		//Returns the value stored inside the itemClass key, which corresponds to the quantity of items for the given class inside the player's inventory.
+		return itemMap.get(itemClass);
 	}
 
 	/** Returns the ItemMap which maps the Item classes to the amount of the item stored inside the inventory. */

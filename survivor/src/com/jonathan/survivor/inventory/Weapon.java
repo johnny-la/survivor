@@ -14,9 +14,9 @@ public class Weapon extends Item
 	private String weaponAttachment;
 	
 	/** Creates a weapon with the given name, description, and damage. */
-	public Weapon(String name, String description, Sprite inventorySprite, float damage)
+	public Weapon(String name, String description, float damage)
 	{
-		super(Type.WEAPON, name, description, inventorySprite);
+		super(name, description);
 		
 		//Populates the member variables with their respective constructor arguments. 
 		this.damage = damage;

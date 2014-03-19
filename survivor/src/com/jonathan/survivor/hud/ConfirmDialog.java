@@ -2,7 +2,7 @@ package com.jonathan.survivor.hud;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.jonathan.survivor.Assets;
@@ -19,6 +19,12 @@ public class ConfirmDialog extends Dialog
 	/** Stores the spacing between the bottom of the buttons and the bottom of the nine-patch background. */
 	private static final float BUTTON_BACKGROUND_SPACING = 10;
 	
+	/** Stores the horizontal spacing between the "Yes" and "No" buttons. */
+	private static final float BUTTON_SPACING = 10;
+	
+	/** Holds the label displaying the confirm dialog's message. */
+	private Label messageLabel;
+	
 	/** Stores the 'Yes' and the 'No' buttons which prompt the user for confirmation. */
 	private TextButton yesButton, noButton;
 	
@@ -29,8 +35,11 @@ public class ConfirmDialog extends Dialog
 		//Must call an explicit super constructor, as no default constructor is defined in the superclass. Sets the title to an empty string.
 		super("", Assets.instance.confirmDialogWindowStyle);
 		
+		//Creates a new label displaying the message contained in the dialog.
+		messageLabel = new Label(message, assets.mainMenuHeaderStyle);
+		
 		//Adds the message as the title of the dialog 
-		text(message, assets.mainMenuHeaderStyle);
+		text(messageLabel);
 		
 		//Creates the 'Yes' button using the pre-defined main menu's button style.
 		yesButton = new TextButton("Yes", assets.mainMenuButtonStyle);
@@ -59,7 +68,7 @@ public class ConfirmDialog extends Dialog
 		//Resizes the cells for each button so that they are the same size as the button. Prevents buttons from scaling up or down unwantingly.
 		//Also pads the bottom of the buttons by the given value, and top-aligns them so that there is a space between the bottom of the background 
 		//and the buttons.
-		getButtonTable().getCell(yesButton).width(yesButton.getWidth()).height(yesButton.getHeight()).padBottom(BUTTON_BACKGROUND_SPACING).top();
+		getButtonTable().getCell(yesButton).width(yesButton.getWidth()).height(yesButton.getHeight()).padBottom(BUTTON_BACKGROUND_SPACING).top().padRight(BUTTON_SPACING);
 		getButtonTable().getCell(noButton).width(noButton.getWidth()).height(noButton.getHeight()).padBottom(BUTTON_BACKGROUND_SPACING).top();
 		
 		//Sets the minimum width and height of the dialog's background to ensure that it is slightly larger than dialog's contents.
@@ -71,5 +80,10 @@ public class ConfirmDialog extends Dialog
 	public TextButton getConfirmButton()
 	{
 		return yesButton;
+	}
+
+	public void setMessage(String message) 
+	{
+		messageLabel.setText(message);
 	}
 }

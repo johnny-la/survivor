@@ -9,6 +9,7 @@ import com.jonathan.survivor.World;
 import com.jonathan.survivor.entity.GameObject;
 import com.jonathan.survivor.entity.InteractiveObject;
 import com.jonathan.survivor.entity.ItemObject;
+import com.jonathan.survivor.entity.Zombie;
 
 public class GameObjectRenderer 
 {
@@ -28,6 +29,8 @@ public class GameObjectRenderer
 	
 	/** Stores the InteractiveObjectRenderer instance used to render any InteractiveObjects contained in the world's current level. */
 	private InteractiveObjectRenderer interactiveObjectRenderer;
+	/** Holds the ZombieRenderer object used to render every Zombie instance. */
+	private ZombieRenderer zombieRenderer;
 	/** Holds the ItemObjectRenderer used to render any ItemObjects that have been dropped in the world by scavenging GameObjects. */
 	private ItemObjectRenderer itemObjectRenderer;
 	
@@ -47,6 +50,8 @@ public class GameObjectRenderer
 		
 		//Creates an InteractiveObjectRenderer, passing the SpriteBatch it will use to draw the InteractiveObjects.
 		interactiveObjectRenderer = new InteractiveObjectRenderer(batcher);
+		//Instantiates the zombieRenderer used to draw all zombies to the screen. The zombies will be drawn using the given SpriteBatch argument.
+		zombieRenderer = new ZombieRenderer(batcher);
 		//Instantiates the ItemObjectRenderer which will be used to draw the dropped ItemObjects. The renderer will draw the objects using the passed SpriteBatch.
 		itemObjectRenderer = new ItemObjectRenderer(batcher);
 		
@@ -60,7 +65,7 @@ public class GameObjectRenderer
 		batcher.begin();
 
 		//Renders the GameObjects stored inside the currently active level.
-		renderLevelObjects();
+		renderLevelObjects(deltaTime);
 		//Draws the player to the screen.
 		playerRenderer.render(deltaTime);
 		
@@ -69,7 +74,7 @@ public class GameObjectRenderer
 	}
 
 	/** Draws the GameObjects that are contained inside the world's level. */
-	private void renderLevelObjects() 
+	private void renderLevelObjects(float deltaTime) 
 	{
 		//Retrieves the currently active level's contained GameObjects.
 		Array<GameObject> gameObjects = world.getLevel().getGameObjects();
@@ -104,6 +109,10 @@ public class GameObjectRenderer
 			if(go instanceof InteractiveObject)
 				//Pass the drawing call to the InteractiveObjectRenderer, specifying whether or not it should be drawn transparent.
 				interactiveObjectRenderer.draw((InteractiveObject) go, drawTransparent);
+			//Else, if the GameObject that is being cycled through is a zombie.
+			else if(go instanceof Zombie)
+				//Pass the rendering call to the ZombieRenderer, which will draw the zombie to the screen.
+				zombieRenderer.draw((Zombie) go, drawTransparent, deltaTime);
 			//Else, if the GameObject is an item that has been dropped in the world
 			else if(go instanceof ItemObject)
 				//Pass the rendering to the ItemObjectRenderer, and tell it whether or not the item should be drawn transparent.

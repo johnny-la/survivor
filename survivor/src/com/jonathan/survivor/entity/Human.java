@@ -1,12 +1,18 @@
 package com.jonathan.survivor.entity;
 
+import com.badlogic.gdx.utils.Pool.Poolable;
+import com.jonathan.survivor.entity.InteractiveObject.InteractiveState;
+
 /**
  * A Human instance is a GameObject that can move around and that either has some form of AI or is controlled by the player. 
+ * 
+ * Implements the Poolable instance. Its reset() method gets called whenever the Human is placed back into a pool.
+ * 
  * @author Jonathan
  *
  */
 
-public abstract class Human extends GameObject 
+public abstract class Human extends GameObject implements Poolable
 {
 	public enum Mode {
 		EXPLORING, FIGHTING
@@ -21,6 +27,9 @@ public abstract class Human extends GameObject
 	
 	/** Stores the state of the Human (IDLE, WALK, etc.), usually used to dictate which animations to play. */
 	protected State state;
+	
+	/** Stores the previous state of the human. Used in humans' renderer. Animations are only changed if the human's state changed from the previous render call. */
+	private State previousState;
 	
 	public enum Direction {
 		LEFT, RIGHT
@@ -71,6 +80,16 @@ public abstract class Human extends GameObject
 			this.stateTime = 0;	
 		}
 	}
+	
+	/** Retrieves the previous state of the Human. Used to determine whether or not a GameObject's state changes from one render call to the next. */
+	public State getPreviousState() {
+		return previousState;
+	}
+
+	/** Sets the previous state of the Human. Used to determine whether or not a GameObject's state changes from one render call to the next. */
+	public void setPreviousState(State previousState) {
+		this.previousState = previousState;
+	}
 
 	/** Gets the direction (LEFT or RIGHT) that the GameObject is facing. */
 	public Direction getDirection() {
@@ -118,4 +137,11 @@ public abstract class Human extends GameObject
 		this.targetReached = targetReached;
 	}
 	
+	/** Called whenever this box GameObject has been pushed back into a pool. In this case, we reset the box's state back to default. */
+	@Override
+	public void reset()
+	{
+		//Tell the Human it has just spawned, in order for its renderer to know to reset the Human back to IDLE state.
+		setState(State.SPAWN);
+	}
 }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.jonathan.survivor.World;
+import com.jonathan.survivor.entity.Human.Direction;
 
 /*
  * An instance of this class will display the HUD whilst in EXPLORATION mode.
@@ -104,13 +105,13 @@ public class ExplorationHud extends Hud
 		if(rightArrowButtonDown)
 		{
 			//Make the player move right.
-			world.movePlayerRight();
+			world.walk(world.getPlayer(), Direction.RIGHT);
 		}
 		//If the left arrow button is being held down
 		else if(leftArrowButtonDown)
 		{
 			//Make the player move left by changing him to his walking state.
-			world.movePlayerLeft();
+			world.walk(world.getPlayer(), Direction.LEFT);
 		}
 		
 		//Draws the widgets to the screen.

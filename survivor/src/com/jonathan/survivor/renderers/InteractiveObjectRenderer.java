@@ -6,9 +6,10 @@ import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.spine.Event;
 import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Assets;
+import com.jonathan.survivor.entity.Box;
 import com.jonathan.survivor.entity.InteractiveObject;
-import com.jonathan.survivor.entity.Tree;
 import com.jonathan.survivor.entity.InteractiveObject.InteractiveState;
+import com.jonathan.survivor.entity.Tree;
 
 public class InteractiveObjectRenderer 
 {
@@ -44,6 +45,11 @@ public class InteractiveObjectRenderer
 		if(gameObject instanceof Tree)
 			//Delegate the drawing to the drawTree() method.
 			drawTree((Tree)gameObject, transparent);
+		//Else, if the GameObject to draw is a box
+		else if(gameObject instanceof Box)
+			//Delegate the rendering call to the drawBox() method.
+			drawBox((Box)gameObject, transparent);
+			
 	}
 	
 	/** Renders a Tree GameObject, which contains a Spine Skeleton instance which can be drawn to the screen. Accepts whether or not it should be drawn transparent. */
@@ -117,4 +123,64 @@ public class InteractiveObjectRenderer
 		//Draws the tree's skeleton using the universal SkeletonRenderer instance, along with the GameScreen's SpriteBatch.
 		assets.skeletonRenderer.draw(batcher, skeleton);
 	}
+	
+	/** Helper method called when a Box instance needs to be rendered. Second parameter accepts whether box should be drawn transparent. */
+	private void drawBox(Box box, boolean drawTransparent)
+	{
+		//Stores the skeleton used to render the box to the screen. Each skeleton is unique to each box, and acts as an actor on-screen.
+		Skeleton skeleton = box.getSkeleton();
+		
+		//Sets the skeleton's position to that of the box. Note that the box's position is the bottom-center, just like the skeleton.
+		skeleton.setX(box.getX());
+		skeleton.setY(box.getY());
+		
+		//Reset the workingColor to a blank WHITE slate. Used to modify the color white accordingly and apply it as the box's final color.
+		workingColor.set(Color.WHITE);
+		
+		//If the box has jump spawned
+		if(box.getInteractiveState() == InteractiveState.SPAWN)
+		{
+			//Reset the box's skeleton to its setup pose to undo any changes previously done to the skeleton's bones.
+			skeleton.setToSetupPose();
+			
+			//Sets the box IDLE state, indicating that the renderer has received the message that the box has spawned.
+			box.setInteractiveState(InteractiveState.IDLE);
+		}
+		//Else, if the box is in IDLE state
+		else if(box.getInteractiveState() == InteractiveState.IDLE)
+		{
+			//Apply the 'boxIdle' animation to the box's skeleton. Second and third arguments specify how much time the box has been idle, third indicates we want to 
+			//loop the animation, and last is an array where any possible animation events are delegated.
+			assets.boxIdle.apply(skeleton, box.getStateTime(), box.getStateTime(), true, events);
+		}
+		//Else, if the box was clicked
+		else if(box.getInteractiveState() == InteractiveState.CLICKED)
+		{
+			//Apply the 'boxIdle' animation to the box's skeleton. Second and third arguments specify how much time the box has been idle, third indicates we want to 
+			//loop the animation, and last is an array where any possible animation events are delegated.
+			assets.boxClicked.apply(skeleton, box.getStateTime(), box.getStateTime(), false, events);
+		}
+		//Else, if the box has been scavenged (i.e., it has been opened by the player)
+		else if(box.getInteractiveState() == InteractiveState.SCAVENGED)
+		{
+			//Apply the 'boxScavenged' animation to the box's skeleton. Second and third arguments specify how much time the box has been idle, third indicates we want to 
+			//play the animation once, and last is an array where any possible animation events are delegated.
+			assets.boxScavenged.apply(skeleton, box.getStateTime(), box.getStateTime(), false, events);
+		}
+		
+		//If the box is supposed to be transparent
+		if(drawTransparent)
+			//Apply transparency to the working color.
+			workingColor.mul(TRANSPARENT_COLOR);
+		
+		//Set the box's color to the working color, which holds the box's final color.
+		skeleton.getColor().set(workingColor);
+		
+		//Updates the Skeleton in the world.
+		skeleton.updateWorldTransform();
+		
+		//Draws the box's skeleton using the universal SkeletonRenderer instance, along with the GameScreen's SpriteBatch.
+		assets.skeletonRenderer.draw(batcher, skeleton);
+	}
+	
 }

@@ -124,6 +124,11 @@ public class BackpackHud extends Hud
 				//Prompts the GameScreen to switch to the SurvivalGuideHud.
 				hudListener.switchToSurvivalGuide();
 			}
+			else if(event.getTarget() == craftingButton)
+			{
+				//Prompt the GameScreen to transition to the Crafting Menu
+				hudListener.switchToCraftingMenu();
+			}
 			//If the back button was pressed
 			else if(event.getTarget() == backButton)
 			{

@@ -2,16 +2,16 @@ package com.jonathan.survivor.managers;
 
 import java.util.HashMap;
 
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.jonathan.survivor.Assets;
 import com.jonathan.survivor.Profile;
+import com.jonathan.survivor.entity.Box;
 import com.jonathan.survivor.entity.GameObject;
 import com.jonathan.survivor.entity.Human.Direction;
 import com.jonathan.survivor.entity.ItemObject;
 import com.jonathan.survivor.entity.Player;
 import com.jonathan.survivor.entity.Tree;
-import com.jonathan.survivor.inventory.Item;
+import com.jonathan.survivor.entity.Zombie;
 
 public class GameObjectManager
 {
@@ -35,6 +35,8 @@ public class GameObjectManager
 		
 		//Inserts a pool into the HashMap for each GameObject type which has a pool.
 		poolMap.put(Tree.class, new TreePool());
+		poolMap.put(Box.class, new BoxPool());
+		poolMap.put(Zombie.class, new ZombiePool());
 		poolMap.put(ItemObject.class, new ItemObjectPool());
 	}
 	
@@ -59,22 +61,21 @@ public class GameObjectManager
 		return player;
 	}
 	
-	/** Spawns an ItemObject representing the given Item class. The (x,y) position is the bottom-center of the position where the ItemObject is spawned. 
+	/** Spawns an ItemObject at the given position. The (x,y) position is the bottom-center of the position where the ItemObject is spawned. 
+	 * @param velocityMultiplier Multiplier which allows certain items to fly further or closer when spawned.
 	 * @param direction Specifies the direction in which the item will fly when spawned.
 	 */
-	public ItemObject spawnItemObject(Class itemClass, float x, float y, Direction direction)
+	public ItemObject spawnItemObject(float x, float y, float velocityMultiplier, Direction direction)
 	{
 		//Retrieves a free ItemObject in the internal pools of the GameObjectManager.
 		ItemObject itemObject = getGameObject(ItemObject.class);
 		
-		//Shoots the ItemObject into the air at the given (x,y) position in the given direction. Also sets the object to display the given item. 
-		itemObject.spawn(itemClass, x, y, direction);
+		//Shoots the ItemObject into the air at the given (x,y) position in the given direction, with the given velocityMultiplier.
+		itemObject.spawn(x, y, velocityMultiplier, direction);
 		
 		//Returns the ItemObject which was spawned to represent the Item from the given class.
 		return itemObject;
 	}
-	
-	
 	
 	/** Gets a tree GameObject of the given class cached inside one of the Manager's pools. No same GameObject will be returned twice until it is freed using freeGameObject(). 
 	 * @param <T> The type of GameObject that wants to be retrieved. 

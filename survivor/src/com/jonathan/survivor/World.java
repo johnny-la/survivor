@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import com.badlogic.gdx.utils.Array;
+import com.jonathan.survivor.entity.Box;
 import com.jonathan.survivor.entity.Clickable;
 import com.jonathan.survivor.entity.GameObject;
 import com.jonathan.survivor.entity.Human;
@@ -15,7 +16,11 @@ import com.jonathan.survivor.entity.ItemObject.ItemState;
 import com.jonathan.survivor.entity.Player;
 import com.jonathan.survivor.entity.PlayerListener;
 import com.jonathan.survivor.entity.Tree;
+import com.jonathan.survivor.entity.Zombie;
+import com.jonathan.survivor.inventory.Item;
 import com.jonathan.survivor.managers.GameObjectManager;
+import com.jonathan.survivor.managers.ItemManager;
+import com.jonathan.survivor.managers.ZombieManager;
 import com.jonathan.survivor.math.Vector2;
 
 public class World
@@ -40,6 +45,12 @@ public class World
 	/** Holds the GameObject Manager instance used to manage the GameObjects in the world. */
 	private GameObjectManager goManager;
 	
+	/** Stores the ZombieManager which updates zombies every game tick and controls their AI. */
+	private ZombieManager zombieManager;
+	
+	/** Holds the ItemManager instance. Used to pool and retrieve Item instances given to every ItemObject spawned in the world.. */
+	private ItemManager itemManager;
+	
 	/** Stores the currently-active level of the world that is being displayed. Determines the walkable area of the world. */
 	private Level level;
 	/** Stores an instance of a terrain level, used when the player is outside in the procedurally-generated terrain. */
@@ -54,7 +65,10 @@ public class World
 	/** Helper Vector2 used to store the world coordinates of the last known touch. */
 	private Vector2 touchPoint;
 
-	public World(int worldSeed, Profile profile)
+	/** Accepts the world seed from which terrain is generated, the profile from which save data is retrieved, and the ItemManager from which 
+	 *  Item instances are retrieved and given to ItemObjects which are spawned in the world.
+	 */
+	public World(int worldSeed, Profile profile, ItemManager itemManager)
 	{
 		//Stores the seed used to randomly generate the world.
 		this.worldSeed = worldSeed;
@@ -66,6 +80,12 @@ public class World
 		
 		//Creates a GameObjectManager which stores and creates and manages all the instances of GameObjects.
 		goManager = new GameObjectManager(profile);
+		
+		//Instantiates the ZombieManager, which updates every zombie instance and manipulates their artificial intelligence.
+		zombieManager = new ZombieManager(this);
+		
+		//Stores the ItemManager instance, which provide Item instances to item GameObjects which are spawned in the world.
+		this.itemManager = itemManager;
 		
 		//Creates a new TerrainLevel using the profile, which specifies the world seed of the level. Also permits the level to be created where
 		//the user left off. This level is a container of TerrainLayers that the user can traverse.
@@ -103,6 +123,7 @@ public class World
 		//Check if the player has collided with anything of importance.
 		checkPlayerCollisions();
 		
+		//If the player is in IDLE state
 		if(player.getState() == State.IDLE)
 		{
 			
@@ -174,6 +195,12 @@ public class World
 				//Update the ItemObject.
 				updateItemObject((ItemObject) go, deltaTime);
 			}
+			//If the GameObject contained in the level is a Zombie
+			else if(go instanceof Zombie)
+			{
+				//Update the zombie's game logic.
+				zombieManager.update((Zombie) go, deltaTime);
+			}
 			//Else, for any other generic GameObject, simply update the GameObject.
 			else
 			{	
@@ -182,7 +209,7 @@ public class World
 			}
 		}
 	}
-	
+
 	/** Updates the Item Object's game logic. Note that an ItemObject is an item on the ground that can be looted. */
 	private void updateItemObject(ItemObject itemObject, float deltaTime)
 	{
@@ -219,44 +246,25 @@ public class World
 		@Override
 		public void scavengedObject(InteractiveObject object)
 		{
-			//Adds the scavenged GameObject to the profile. Like this, if, say, a tree was just scavenged, it will never re-appear in the same TerrainLayer.
-			profile.addScavengedLayerObject(object);
-			
-			//Spawn items at the location that the object was destroyed.
-			spawnItems(object);
+			//Plays the SCAVENGED animation of the tree, and spawns items from it.
+			scavengeObject(object);
 		}
 	}
 	
-	/** This method is called once to make the player move to the right. */
-	public void movePlayerRight()
+	/** This method is called once to make the human move in the given direction. */
+	public void walk(Human human, Direction direction)
 	{
 		//If the player is jumping or falling, don't let him move left, or serious glitches will occur.
-		if(player.getState() == State.JUMP || player.getState() == State.FALL)
+		if(human.getState() == State.JUMP || human.getState() == State.FALL)
 			return;
 		
 		//Sets the player to the walking state so that the world can apply a velocity to it.
-		player.setState(State.WALK);
-		//Makes the player walk in the right direction. This world's update() method knows how to interpret this direction.
-		player.setDirection(Direction.RIGHT);
+		human.setState(State.WALK);
+		//Makes the player walk in the given direction. This world's update() method knows how to interpret this direction and make the human walk in the right direction.
+		human.setDirection(direction);
 		
 		//Make the player lose his target once he has started to walk using the arrow buttons.
-		player.loseTarget();
-	}
-	
-	/** This method is called once to make the player move to the left. */
-	public void movePlayerLeft()
-	{
-		//If the player is jumping or falling, don't let him move left, or serious glitches will occur.
-		if(player.getState() == State.JUMP || player.getState() == State.FALL)
-			return;
-		
-		//Sets the player to the walking state so that the world can apply a velocity to it.
-		player.setState(State.WALK);
-		//Makes the player walk in the left direction.
-		player.setDirection(Direction.LEFT);
-		
-		//Make the player lose his target once he has started to walk using the arrow buttons.
-		player.loseTarget();
+		human.loseTarget();
 	}
 	
 	/** Stops the given Human GameObject from moving. */
@@ -359,9 +367,29 @@ public class World
 				//Start chopping the tree. The player knows his target is the tree to chop.
 				player.chopTree();
 			}
+			//Else, if the player's target was a box, open the box.
+			else if(target instanceof Box)
+			{
+				//Open the box and spring out items from it.
+				scavengeObject((InteractiveObject)target);
+			}
 		}
 	}
 	
+	/** Scavenges the given object and spawns items from it. Called when a box is opened or a tree is destroyed. */
+	private void scavengeObject(InteractiveObject scavengedObject) 
+	{
+		//Tell the InteractiveObject it was scavenged. Switches its state to SCAVENGED so that its correct animation plays.
+		scavengedObject.scavenged();
+		
+		//Adds the scavenged GameObject to the profile. Like this, if, say, a tree was just scavenged, it will never re-appear in the same TerrainLayer.
+		profile.addScavengedLayerObject(scavengedObject);
+		
+		//Spawn items from the given scavenged object. Spawns them according to the InteractiveObject's itemProbabilityMap:HashMap.
+		spawnItems(scavengedObject);
+		
+	}
+
 	/** Locks the GameObject to the ground when it is moving. Makes it so that the GameObject follows the path of the ground. */
 	public void lockToGround(GameObject gameObject)
 	{
@@ -432,21 +460,49 @@ public class World
 		//Stores the HashMap of the InteractiveGameObject, which indicates which items can be dropped once the object is scavenged.
 		HashMap<Class, Float> itemProbabilityMap = ((InteractiveObject)gameObject).getItemProbabilityMap();
 		
+		//Stores the amount of items that have been spawned. Allows items to fly further if items have already been spawned.
+		int itemsSpawned = 0;
+		
 		//Creates a set out of each key of the probability map. Each key is an Item subclass. Each key is an item that has a probability of being dropped from the 
 		//Interactive GameObject.
 		Set<Class> keys = itemProbabilityMap.keySet();
 		
 		//Cycles through each possible item type that can be dropped from the scavenged GameObject.
 		for(Class key:keys)
-		{			
+		{						
 			//Check if a random number is less than the probability of the item dropping. The probability of the item to drop is stored in the key of the HashMap,
 			//where the key is the Item subclass that has a probability of being dropped. Note that the value of the key can be between 0 and 1, where 1 means that
 			//the item will be dropped no matter the circumstances.
 			if(Math.random() < itemProbabilityMap.get(key))
 			{
-				//Spawns an ItemObject at the position of the destroyed GameObject. The first argument indicates that an Item of the type 'key' wants to be spawned.
-				//Last argument specifies that the items should fly the same direction that the player is facing.
-				ItemObject itemObject = goManager.spawnItemObject(key, gameObject.getPosition().x, gameObject.getPosition().y, player.getDirection());
+				//Stores the ItemObject spawned in the world.
+				ItemObject itemObject = null;
+				
+				//The Class.newInstance() method may cause an exception.
+				try 
+				{
+					//Spawns an ItemObject at the position of the destroyed GameObject. The first two arguments indicate the (x,y) position where the items will be
+					//spawned. Third argument is a velocity multiplier, allowing items to fly further depending on how many items have already been spawned. Last 
+					//argument specifies that the items should fly the same direction that the player is facing.
+					itemObject = goManager.spawnItemObject(gameObject.getPosition().x, gameObject.getPosition().y, 1 + itemsSpawned*0.6f, player.getDirection());
+					
+					//Stores the previous Item instance held by the ItemObject. This is because ItemObjects are pooled, and thus may have an old Item instance.
+					Item previousItem = itemObject.getItem();
+					
+					//If the ItemObject's previous item is not null
+					if(previousItem != null)
+					{
+						//Free the item back into the itemManager's pools for later reuse. Prevents the previous item from being garbage collected.
+						itemManager.freeItem(previousItem);
+					}
+					
+					//Obtains a new item of the given class from the itemManager, and sets it as the item the ItemObject represents.
+					itemObject.setItem(itemManager.obtainItem(key));
+				}
+				catch (Exception ex) 
+				{
+					ex.printStackTrace();
+				}
 				
 				//Tells the ItemObject that it is on the same TerrainCell as the GameObject which dropped this item. Allows the object to know which TerrainLayer it 
 				//belongs to.
@@ -454,6 +510,9 @@ public class World
 				
 				//Adds the spawned ItemObject to the list of ItemObjects inside the level. It is added to the correct TerrainLayer if the user is on a TerrainLevel.
 				level.addGameObject(itemObject);
+				
+				//Increments the amount of items that have been spawned at the GameObject.
+				itemsSpawned++;
 			}
 		}
 	}
@@ -466,8 +525,8 @@ public class World
 		//Moves the item to the player's center position in the given amount of seconds, specified by the last parameter.
 		itemObject.moveTo(player.getX(), player.getY() + player.COLLIDER_WIDTH/2, 0.4f);
 		
-		//Adds the item to the inventory. Note that we add the item class which the object holds to the inventory.
-		player.getInventory().addItem(itemObject.getItemClass(), 1);
+		//Increments the amount of this item contained in the inventory by one.
+		player.getInventory().addItem(itemObject.getItem().getClass(), 1);
 	}
 	
 	/** Called when a touch was registered on the screen. Coordinates given in world units. O(n**2) OPTIMIZE THIS. */
@@ -488,8 +547,8 @@ public class World
 				//Store the GameObjects residing in the middle layer
 				Array<GameObject> gameObjects = middleLayers[i].getGameObjects();
 				
-				//Cycle through the GameObjects of the middle layer
-				for(int j = 0; j < gameObjects.size; j++)
+				//Cycle through the GameObjects of the middle layer. Starts from the end of the list since those are the gameObjects at the front of the screen.
+				for(int j = gameObjects.size-1; j >= 0; j--)
 				{
 					//Store the GameObject
 					GameObject go = gameObjects.get(j);
@@ -499,6 +558,9 @@ public class World
 					{
 						//The GameObject has been clicked.
 						gameObjectClicked(go);
+						
+						//Only allow one object to be touched with one click.
+						return;
 					}
 				}
 			}
@@ -517,6 +579,20 @@ public class World
 			//Sets the terrain cell of the player to the center cell of the level. The player will always spawn in the center of a TerrainLevel.
 			player.setTerrainCell(terrainLevel.getCenterRow(), terrainLevel.getCenterCol());
 		}
+	}
+	
+	/** Returns true if the GameObject is close to the left or right edges of his TerrainLayer. */
+	public boolean closeToLayerEdge(GameObject gameObject) 
+	{
+		//Stores the TerrainLayer where the GameObject is located.
+		TerrainLayer terrainLayer = terrainLevel.getTerrainLayer(gameObject);
+		
+		//If the given GameObject is close to the layer's edge, return true.
+		if(terrainLayer.closeToEdge(gameObject))
+			return true;
+		//Else, if the GameObject is far from its layer's edge, return false.
+		else
+			return false;
 	}
 	
 	/** Returns the currently active level of the world used to dictate the walkable area the world. */
