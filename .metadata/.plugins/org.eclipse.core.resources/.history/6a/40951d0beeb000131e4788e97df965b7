@@ -1,0 +1,88 @@
+zombie_atlas@2x.png
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+Leg_Left
+  rotate: false
+  xy: 144, 182
+  size: 42, 60
+  orig: 41, 60
+  offset: 0, 0
+  index: -1
+Shoulder_Left
+  rotate: false
+  xy: 190, 182
+  size: 38, 44
+  orig: 38, 43
+  offset: 0, -1
+  index: -1
+Leg_Right
+  rotate: false
+  xy: 144, 246
+  size: 36, 62
+  orig: 35, 61
+  offset: 0, -1
+  index: -1
+Head0002
+  rotate: false
+  xy: 4, 154
+  size: 136, 152
+  orig: 141, 152
+  offset: 6, 0
+  index: -1
+Shoulder_Right
+  rotate: false
+  xy: 184, 276
+  size: 34, 44
+  orig: 33, 43
+  offset: 0, -1
+  index: -1
+Head0001
+  rotate: false
+  xy: 4, 4
+  size: 142, 146
+  orig: 141, 152
+  offset: 0, 0
+  index: -1
+Hand_Left
+  rotate: false
+  xy: 190, 230
+  size: 38, 42
+  orig: 38, 41
+  offset: 0, -1
+  index: -1
+Hand_Right
+  rotate: false
+  xy: 40, 310
+  size: 30, 34
+  orig: 30, 34
+  offset: 0, 0
+  index: -1
+Face
+  rotate: false
+  xy: 150, 108
+  size: 84, 70
+  orig: 84, 70
+  offset: 0, 0
+  index: -1
+Arm_Right
+  rotate: false
+  xy: 4, 310
+  size: 32, 56
+  orig: 31, 56
+  offset: 0, 0
+  index: -1
+Arm_Left
+  rotate: false
+  xy: 222, 276
+  size: 30, 48
+  orig: 29, 48
+  offset: 0, 0
+  index: -1
+Body
+  rotate: false
+  xy: 150, 4
+  size: 94, 100
+  orig: 93, 100
+  offset: 0, 0
+  index: -1

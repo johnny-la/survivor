@@ -3024,3 +3024,13 @@ Caused by: java.lang.IndexOutOfBoundsException: Index: 85, Size: 84
 	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
 	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:135)
 	... 23 more
+!SESSION 2014-03-21 07:18:50.859 -----------------------------------------------
+eclipse.buildId=M20120208-0800
+java.version=1.7.0_45
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=fr_FR
+Framework arguments:  -product org.eclipse.epp.package.java.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.java.product
+
+!ENTRY org.eclipse.epp.usagedata.recording 1 0 2014-03-21 07:22:25.048
+!MESSAGE Usage data upload to http://udc.eclipse.org/upload.php failed with error code 404.
