@@ -1,1 +1,6 @@
 1395226309004	Delete element
+1395406984972	Encapsulate field 'alerted'
+1395410617192	Rename field 'ZOMBIE_ALERT_DISTANCE'
+1395410891681	Rename method 'isPlayerClose'
+1395410896922	Rename method 'isPlayerVeryClose'
+1395413113112	Rename method 'isZombieAlerted'

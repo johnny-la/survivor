@@ -22,7 +22,7 @@ public abstract class Human extends GameObject implements Poolable
 	protected Mode mode;
 	
 	public enum State {
-		SPAWN, IDLE, WALK, JUMP, FALL, CHOP_TREE, MELEE, CHARGE, FIRE, HIT, DEAD
+		SPAWN, IDLE, WALK, JUMP, FALL, CHOP_TREE, MELEE, CHARGE, FIRE, ALERTED, HIT, DEAD
 	}
 	
 	/** Stores the state of the Human (IDLE, WALK, etc.), usually used to dictate which animations to play. */
@@ -36,7 +36,7 @@ public abstract class Human extends GameObject implements Poolable
 	}
 	
 	/** Stores the direction the Human is facing */
-	protected Direction direction;
+	protected Direction direction = Direction.RIGHT;	//RIGHT by default. Avoids null errors.
 	
 	/** Stores the GameObject where the human is trying to walk to. Null if the human has no target. */
 	private GameObject target;
@@ -52,6 +52,50 @@ public abstract class Human extends GameObject implements Poolable
 
 	/** Updates the Human's game logic, such as his state time. */
 	public abstract void update(float deltaTime);
+	
+	/** Lose the human's current target so that he stops walking towards his target. */
+	public void loseTarget()
+	{
+		//Makes the player's current target null.
+		this.target = null;
+		
+		//The human has not reached his target as he no longer has one.
+		targetReached = false;
+	}
+	
+	/** Returns true if the given human is facing the other human, and this human can thus see the other one. */
+	public boolean isFacing(Human other)
+	{
+		//If both the human and the other human are facing right
+		if(getDirection() == Direction.RIGHT && other.getDirection() == Direction.RIGHT)
+		{
+			//If the other human is to the right of this human
+			if(other.getX() > getX())
+				return true;	//Return true, since the human can see the other human.
+		}
+		//If the human is facing the right, and the human is facing the left
+		else if(getDirection() == Direction.RIGHT && other.getDirection() == Direction.LEFT)
+		{
+			//If the human is to the left of the other human, the human is facing the other human, and can see him.
+			if(getX() < other.getX())
+				return true;	//Return true, since the human can see the other human.
+		}
+		else if(getDirection() == Direction.LEFT && other.getDirection() == Direction.LEFT)
+		{
+			//If the other human is to the left of the human, the human is facing the other human.
+			if(other.getX() < getX())
+				return true;	//Return true, since the human can see the other human.
+		}
+		//Else, if the human is facing the left, and the other human is facing the right
+		else if(getDirection() == Direction.LEFT && other.getDirection() == Direction.RIGHT)
+		{
+			//If the human is to the right of the other human, the human can see the other human.
+			if(getX() > other.getX())
+				return true;	//Return true, since the human can see the other human.
+		}
+		
+		return false; //If this statement is reached, the human is not facing the other human.
+	}
 	
 	/** Gets the mode (EXPLORING or FIGHTING) of the GameObject */
 	public Mode getMode() {
@@ -99,16 +143,6 @@ public abstract class Human extends GameObject implements Poolable
 	/** Sets the direction (LEFT or RIGHT) that the GameObject is facing. */
 	public void setDirection(Direction direction) {
 		this.direction = direction;
-	}
-	
-	/** Lose the human's current target so that he stops walking towards his target. */
-	public void loseTarget()
-	{
-		//Makes the player's current target null.
-		this.target = null;
-		
-		//The human has not reached his target as he no longer has one.
-		targetReached = false;
 	}
 	
 	/** Sets the target where the human wants to walk to. */

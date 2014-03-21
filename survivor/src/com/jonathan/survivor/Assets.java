@@ -139,6 +139,7 @@ public class Assets
 	public SkeletonData zombieSkeletonData;
 	public Animation zombieIdle;
 	public Animation zombieWalk;
+	public Animation zombieAlerted;
 	public Animation zombieMelee;
 	
 	public TextureAtlas interactableObjectAtlas;
@@ -534,6 +535,7 @@ public class Assets
 		//Gets the animations from the Zombie's SkeletonData instance.
 		zombieIdle = zombieSkeletonData.findAnimation("Idle");
 		zombieWalk = zombieSkeletonData.findAnimation("Walk");
+		zombieAlerted = zombieSkeletonData.findAnimation("Alert");
 		zombieMelee = zombieSkeletonData.findAnimation("Melee");
 		
 		//Sets up the Spine data used to display and animate the trees.

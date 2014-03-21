@@ -2,11 +2,11 @@ package com.jonathan.survivor.renderers;
 
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.esotericsoftware.spine.AnimationState;
 import com.esotericsoftware.spine.AnimationState.AnimationStateListener;
 import com.esotericsoftware.spine.AnimationStateData;
+import com.esotericsoftware.spine.Event;
 import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Assets;
 import com.jonathan.survivor.entity.Human.Direction;
@@ -56,40 +56,12 @@ public class ZombieRenderer
 		animStateData = new AnimationStateData(assets.zombieSkeletonData);
 		
 		//Defines the crossfading times between animations. First two arguments specify the animations to crossfade. Third argument specifies crossfading time.
-		animStateData.setMix(assets.zombieIdle, assets.zombieIdle, 0);
 		animStateData.setMix(assets.zombieWalk, assets.zombieIdle, 0.3f);
 		animStateData.setMix(assets.zombieIdle, assets.zombieWalk, 0.1f);
-		
-		//Creates a listener to listen for events coming from the zombie's animations.
-		/*animationListener = new AnimationStateListener() {
-
-			@Override
-			public void event(int trackIndex, Event event) {
-				
-			}
-
-			@Override
-			public void complete(int trackIndex, int loopCount) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void start(int trackIndex) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void end(int trackIndex) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-		};*/
-		
-		//Register the AnimationStateListener to the zombie's AnimationState. This will delegate zombie animation events to the listener.
-		//animationState.addListener(animationListener);
+		animStateData.setMix(assets.zombieIdle, assets.zombieMelee, 0.1f);
+		animStateData.setMix(assets.zombieMelee, assets.zombieIdle, 0.1f);
+		animStateData.setMix(assets.zombieWalk, assets.zombieMelee, 0.1f);
+		animStateData.setMix(assets.zombieMelee, assets.zombieWalk, 0.1f);
 	}
 	
 	/** Draws the zombie using his Spine skeleton, which stores his animations, sprites, and everything needed to draw the zombie. Accepts a boolean which depicts
@@ -185,6 +157,12 @@ public class ZombieRenderer
 		{
 			//Plays the walk animation. First argument is an arbitrary index, and third argument specifies to loop the walk animation.
 			animationState.setAnimation(0, assets.zombieWalk, true);
+		}
+		//Else, if the zombie has just been alerted that the player is close to him
+		else if(zombie.getState() == State.ALERTED)
+		{
+			//Plays the alerted animation. First argument is an arbitrary index, and third argument specifies to play the animation only one.
+			animationState.setAnimation(0, assets.zombieMelee, false);			
 		}
 	}
 	

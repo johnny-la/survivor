@@ -206,8 +206,8 @@ public class Vector2
 	{
 		//Finds the x and y distance between both vectors by subtracting their x and y components. Note which vector is subtracted by which other vector is irrelevent,
 		//since the magnitude of the resulting vector will be the same.
-		float distX = this.x - x;
-		float distY = this.y - y;
+		float distX = this.x - other.x;
+		float distY = this.y - other.y;
 		
 		//Returns the distance square between both vectors. This is done via the pythagorean theorem, using sqrt(x*x + y*y). However, we return the distance squared 
 		//by avoiding the square root. This is cost-efficient.

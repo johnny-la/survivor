@@ -4,6 +4,7 @@ import com.jonathan.survivor.World;
 import com.jonathan.survivor.entity.Human.Direction;
 import com.jonathan.survivor.entity.Human.Mode;
 import com.jonathan.survivor.entity.Human.State;
+import com.jonathan.survivor.entity.Player;
 import com.jonathan.survivor.entity.Zombie;
 
 /*
@@ -14,6 +15,12 @@ public class ZombieManager
 {
 	/** Stores the amount of time the zombie stays idle before starting to move again. */
 	private static final float IDLE_TIME = 3;
+	
+	/** Holds the x-distance between the zombie and the player so that the zombie can see the player. */
+	private static final float ZOMBIE_VIEW_DISTANCE = 7f;
+	
+	/** Stores the x-distance between the zombie and the player so that the zombie can see the player even when he's in back of the zombie. */
+	private static final float ZOMBIE_BACK_VIEW = 2.5f;
 	
 	/** Holds the World instance that the zombies are a part of. Used to access the convenience methods created for the player and needed for the zombies. */
 	private World world;
@@ -74,7 +81,7 @@ public class ZombieManager
 		
 		//If the zombie is in exploration mode, update its AI accordingly.
 		if(zombie.getMode() == Mode.EXPLORING)
-		{
+		{			
 			//If the zombie is in IDLE state (i.e., he is just standing there)
 			if(zombie.getState() == State.IDLE)
 			{
@@ -94,18 +101,130 @@ public class ZombieManager
 						world.walk(zombie, Direction.LEFT);
 					}
 				}
+				
+				//If the zombie is alerted of the player's presence, make him follow the player to attack him.
+				if(zombie.isAlerted())
+				{
+					//Makes the zombie walk towards the player, since the zombie has been alerted.
+					walkTowardsPlayer(zombie);
+				}
+				
+				//Checks if the player is close to the zombie. If so, the zombie is alerted.
+				checkPlayerProximity(zombie);
+				
 			}
 			//If the zombie is currently walking
 			if(zombie.getState() == State.WALK)
 			{
-				//If the zombie is close to the edge of his TerrainLayer, and has been walking for more than one second
+				//If the zombie is close to the edge of his TerrainLayer, and has been walking for more than one second (Assures that the zombie doesn't stop walking)
 				if(world.closeToLayerEdge(zombie) && zombie.getStateTime() > 1f)
 				{
 					//Tell the zombie to stop walking. We want the zombie to stay within the confines of his designated layer.
 					world.stopMoving(zombie);
 				}
+				
+				//Checks if the player is close to the zombie. If so, the zombie is alerted.
+				checkPlayerProximity(zombie);
 			}
+		}
+	}
+
+	/** Sets the zombie to ALERT state if the zombie is not already alerted, and can see the player. */
+	private void checkPlayerProximity(Zombie zombie)
+	{
+		//If the zombie is not already alerted, but can be alerted by the player
+		if(zombie.isAlerted() == false && zombieSeesPlayer(zombie))
+		{
+			//Stop the zombie from walking until his ALERTED animation stops playing.
+			world.stopMoving(zombie);
+			
+			//Alert the zombie that the player is close. Makes the zombie go to ALERTED state and walk towards the player.
+			zombie.setAlerted(true);
+		}
+		//Else, if the zombie is alerted, is walking, but cannot see the player
+		else if(zombie.isAlerted() && zombie.getState() == State.WALK && !zombieSeesPlayer(zombie))
+		{
+			//Stop the zombie from walking, since can no longer see the player.
+			world.stopMoving(zombie);
+			
+			//Tell the zombie that he is no longer alerted.
+			zombie.setAlerted(false);
+		}
+	}
+	
+	/** Makes the zombie walk towards the player to essentially follow him. */
+	private void walkTowardsPlayer(Zombie zombie) 
+	{
+		//Gets the Player being controlled in the world.
+		Player player = world.getPlayer();
+		
+		//If the zombie is facing the player, make him walk in the direction he is already facing.
+		if(zombie.isFacing(player))
+		{
+			//Make the zombie walk in his current direction, since he is already facing the player.
+			world.walk(zombie, zombie.getDirection());
+		}
+		//Else, if the zombie is not facing the player
+		else 
+		{
+			//Make the zombie walk in the opposite direction in order to follow the player.
+			world.walk(zombie, (zombie.getDirection() == Direction.RIGHT)? Direction.LEFT:Direction.RIGHT);
 		}
 		
 	}
+	
+	/** Returns true if the zombie sees the player in the world. */
+	private boolean zombieSeesPlayer(Zombie zombie)
+	{
+		//Gets the Player being controlled in the world.
+		Player player = world.getPlayer();
+		
+		//If the zombie is facing the player, and the player is close to the zombie, the zombie is alerted of his presence
+		if(zombie.isFacing(player) && isClose(player, zombie))
+		{
+			return true; //Return true, since the zombie can be alerted of the player.
+		}
+		//Else, if the player is very close to the zombie, the zombie can see him, even if he isn't facing the player.
+		else if(isVeryClose(player, zombie))
+		{
+			return true; //Return true, since the zombie can be alerted of the player.
+		}
+		
+		return false; //If this statement is reached, the zombie cannot be alerted of the player.
+	}
+	
+	/** Returns true if the player is close to the given zombie. */
+	private boolean isClose(Player player, Zombie zombie)
+	{		
+		//If the player and the zombie are within ZOMBIE_ALERT_DISTANCE, the player is close to the zombie. Note that x-positions are compared.
+		if(Math.abs(player.getX() - zombie.getX()) < ZOMBIE_VIEW_DISTANCE)
+		{
+			//The zombie can only be deemed close to the player if they are both on the same row.
+			if(player.getTerrainCell().getRow() == zombie.getTerrainCell().getRow())
+			{
+				return true; //Return true, since the player is close to the zombie.
+			}
+		}
+		
+		//If this statement is reached, the player is far from the zombie.
+		return false;
+	}
+	
+	/** Returns true if the player is very close to the zombie, and the zombie can even see the player from in back of him. */
+	private boolean isVeryClose(Player player, Zombie zombie)
+	{
+		//If the player and the zombie are within ZOMBIE_BACK_VIEW, the player is very close to the zombie. 
+		if(Math.abs(player.getX() - zombie.getX()) < ZOMBIE_BACK_VIEW)
+		{
+			//The zombie can only be deemed close to the player if they are both on the same row.
+			if(player.getTerrainCell().getRow() == zombie.getTerrainCell().getRow())
+			{
+				return true; //Return true, since the player is very close to the zombie.
+			}
+		}
+		
+		//If this statement is reached, the player is not very close to the zombie.
+		return false;
+	}
+	
 }

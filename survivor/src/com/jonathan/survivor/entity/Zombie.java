@@ -1,9 +1,11 @@
 package com.jonathan.survivor.entity;
 
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationListener;
 import com.esotericsoftware.spine.AnimationState;
+import com.esotericsoftware.spine.AnimationState.AnimationStateListener;
+import com.esotericsoftware.spine.Event;
 import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Assets;
-import com.jonathan.survivor.renderers.ZombieRenderer;
 
 public class Zombie extends Human
 {
@@ -18,6 +20,9 @@ public class Zombie extends Human
 	public static final float JUMP_SPEED = 10.7f;
 	/** Stores the downwards speed at which the zombie falls through a TerrainLayer. */
 	public static final float FALL_SPEED = -5;
+	
+	/** Holds true if the Zombie is aware that the Player is within range of him. Makes him go towards the player. */
+	private boolean alerted;
 	
 	/** Controls the zombie's animations. Allows for crossfading between animations. */
 	private AnimationState animationState;
@@ -117,6 +122,66 @@ public class Zombie extends Human
 	/** Sets the Spine AnimationState instance used to modify the zombie's animations and control them. */
 	public void setAnimationState(AnimationState animationState) {
 		this.animationState = animationState;
+		
+		//If the zombie's animation state has been populated with a valid animationState
+		if(animationState != null)
+			//Create the animation listener which listens to the zombie's animation events. Needed to be done after the 
+			createAnimationListener();
+	}
+
+	/** Populates the zombie's animation listener if it doesn't already exist. Allows the zombie's events to be registered by this renderer.
+	 *  Must be called after its animation state is created */
+	private void createAnimationListener() 
+	{
+		//Creates a listener to listen for events coming from the zombie's animations.
+		AnimationStateListener animationListener = new AnimationStateListener() {
+
+			@Override
+			public void event(int trackIndex, Event event) {
+				
+			}
+
+			@Override
+			public void complete(int trackIndex, int loopCount) {
+				//If the zombie just completed his ALERTED animation
+				if(getState() == State.ALERTED)
+					//Set the zombie to IDLE state so that the ZombieManager knows to make him follow the player.
+					setState(State.IDLE);
+				
+			}
+
+			@Override
+			public void start(int trackIndex) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void end(int trackIndex) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		};
+		
+		//Register the AnimationStateListener to the zombie's AnimationState. This will delegate zombie animation events to the listener.
+		getAnimationState().addListener(animationListener);
+	}
+	
+	/** Returns true if the Zombie is aware that the Player is there. */
+	public boolean isAlerted() {
+		return alerted;
+	}
+
+	/** Sets whether or not the Zombie is aware of the player. If so, the Zombie walks towards the player */
+	public void setAlerted(boolean alerted) 
+	{
+		this.alerted = alerted;
+		
+		//If the zombie is alerted
+		if(alerted)
+			//Set him to ALERTED state so that the correct animation plays.
+			setState(State.ALERTED);
 	}
 
 }
