@@ -202,6 +202,12 @@ public class PlayerRenderer
 			//Last zero specifies that the ChopTree should play right after the ChopTree_Start animation.
 			animationState.addAnimation(0, assets.playerChopTree, true, 0);
 		}
+		//Else, if the player has just entered combat
+		else if(player.getState() == State.ENTER_COMBAT)
+		{
+			//Plays the ENTER_COMBAT animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
+			animationState.setAnimation(0, assets.playerEnterCombat, false);
+		}
 	}
 	
 	/** Updates the attachments being rendered on the player. */

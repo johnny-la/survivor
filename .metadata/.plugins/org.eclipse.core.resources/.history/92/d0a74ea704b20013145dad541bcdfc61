@@ -1,0 +1,9 @@
+package com.jonathan.survivor;
+
+/* 
+ * Listener which delegates important events from the World to the GameScreen. 
+ */
+
+public interface WorldListener {
+
+}

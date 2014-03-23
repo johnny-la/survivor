@@ -6,9 +6,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.esotericsoftware.spine.AnimationState;
 import com.esotericsoftware.spine.AnimationState.AnimationStateListener;
 import com.esotericsoftware.spine.AnimationStateData;
-import com.esotericsoftware.spine.Event;
 import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Assets;
+import com.jonathan.survivor.entity.GameObject;
 import com.jonathan.survivor.entity.Human.Direction;
 import com.jonathan.survivor.entity.Human.State;
 import com.jonathan.survivor.entity.Zombie;
@@ -23,6 +23,9 @@ public class ZombieRenderer
 	
 	/** Stores the color of transparent zombies, when they are on different layers than the player. */
 	private static final Color TRANSPARENT_COLOR = new Color(0, 0, 0, 0.4f);
+
+	/** Holds the color of the zombie when he is being targetted by the player. */
+	private static final Color TARGETTED_COLOR = new Color(0.6f, 0.7f, 1, 1);
 	
 	/** Defines the crossfading times between the zombies' animations. */
 	public static AnimationStateData animStateData;
@@ -58,10 +61,10 @@ public class ZombieRenderer
 		//Defines the crossfading times between animations. First two arguments specify the animations to crossfade. Third argument specifies crossfading time.
 		animStateData.setMix(assets.zombieWalk, assets.zombieIdle, 0.3f);
 		animStateData.setMix(assets.zombieIdle, assets.zombieWalk, 0.1f);
-		animStateData.setMix(assets.zombieIdle, assets.zombieMelee, 0.1f);
-		animStateData.setMix(assets.zombieMelee, assets.zombieIdle, 0.1f);
-		animStateData.setMix(assets.zombieWalk, assets.zombieMelee, 0.1f);
-		animStateData.setMix(assets.zombieMelee, assets.zombieWalk, 0.1f);
+		animStateData.setMix(assets.zombieIdle, assets.zombieAlerted, 0.1f);
+		animStateData.setMix(assets.zombieAlerted, assets.zombieIdle, 0.1f);
+		animStateData.setMix(assets.zombieWalk, assets.zombieAlerted, 0.1f);
+		animStateData.setMix(assets.zombieAlerted, assets.zombieWalk, 0.1f);
 	}
 	
 	/** Draws the zombie using his Spine skeleton, which stores his animations, sprites, and everything needed to draw the zombie. Accepts a boolean which depicts
@@ -80,9 +83,6 @@ public class ZombieRenderer
 		
 		//Stores the AnimationState used to change and control the zombie's animations.
 		AnimationState animationState = zombie.getAnimationState();
-		
-		//Reset the working color instance to WHITE so that the helper color starts from a clean slate.
-		workingColor.set(Color.WHITE);
 		
 		//If the zombie is looking left
 		if(zombie.getDirection() == Direction.LEFT)
@@ -107,13 +107,8 @@ public class ZombieRenderer
 			updateAnimation(zombie);
 		}
 		
-		//If the ItemObject is supposed to be drawn transparent
-		if(transparent)
-			//Multiply the working color by the TRANSPARENT_COLOR constant so that the ItemObject is drawn transparent.
-			workingColor.mul(TRANSPARENT_COLOR);
-		
-		//Set the Item GameObject's color to the workingColor instance, which stored the color that the ItemObject should be.
-		skeleton.getColor().set(workingColor);
+		//Sets the zombie to be the correct color depending on the zombie's current state, and whether or not it should be transparent.
+		updateColor(zombie, transparent);
 		
 		//Updates the state of the current zombie animation.
 		animationState.update(deltaTime);
@@ -162,13 +157,65 @@ public class ZombieRenderer
 		else if(zombie.getState() == State.ALERTED)
 		{
 			//Plays the alerted animation. First argument is an arbitrary index, and third argument specifies to play the animation only one.
-			animationState.setAnimation(0, assets.zombieMelee, false);			
+			animationState.setAnimation(0, assets.zombieAlerted, false);			
 		}
+		//Else, if the zombie has just entered combat
+		else if(zombie.getState() == State.ENTER_COMBAT)
+		{
+			//Plays the ENTER_COMBAT animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
+			animationState.setAnimation(0, assets.zombieEnterCombat, false);
+		}
+		
+		//Updates the speed at which the zombie's animations play, depending on the zombie's current state.
+		updateTimeScale(zombie);
+		
 	}
 	
 	/** Updates the attachments being rendered on the zombie. */
 	private void updateAttachments() 
 	{
 		
+	}
+	
+	/** Updates the zombie's color depending on whether its being targetted, and whether or not it should be drawn transparent. */
+	private void updateColor(Zombie zombie, boolean transparent)
+	{
+		//Retrieves the Spine skeleton used to animate and display the zombie.
+		Skeleton skeleton = zombie.getSkeleton();
+		
+		//Reset the working color instance to WHITE so that the helper color starts from a clean slate.
+		workingColor.set(Color.WHITE);
+		
+		//If the zombie is being targetted by the player
+		if(zombie.isTargetted())
+		{
+			//Updates the zombie's color so that the player knows he's targetted.
+			workingColor.mul(TARGETTED_COLOR);
+		}
+		
+		//If the ItemObject is supposed to be drawn transparent
+		if(transparent)
+			//Multiply the working color by the TRANSPARENT_COLOR constant so that the ItemObject is drawn transparent.
+			workingColor.mul(TRANSPARENT_COLOR);
+		
+		//Set the Item GameObject's color to the workingColor instance, which stored the color that the ItemObject should be.
+		skeleton.getColor().set(workingColor);
+		
+	}
+	
+	/** Updates the Zombie's TimeScale so that its animations play faster or slower, depending on the zombie's current state. */
+	private void updateTimeScale(Zombie zombie)
+	{
+		//Stores the AnimationState used to change and control the zombie's animations.
+		AnimationState animationState = zombie.getAnimationState();
+		
+		//If the zombie is alerted
+		if(zombie.isAlerted())
+			//Make the animation go faster since the zombie is walking faster
+			animationState.setTimeScale(Zombie.ALERTED_ANIM_SPEED);
+		//Else, if the zombie is not aware of the palyer's presence
+		else 
+			//Make the zombie's animations go at normal speed if the zombie is not alerted of the player's presence.
+			animationState.setTimeScale(1);
 	}
 }

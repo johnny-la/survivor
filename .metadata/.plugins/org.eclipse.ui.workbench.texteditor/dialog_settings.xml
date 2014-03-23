@@ -13,26 +13,26 @@
 		<item value="true" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="worldCamer" key="selection"/>
+		<item value="fire" key="selection"/>
 		<list key="findhistory">
-			<item value="worldCamer"/>
-			<item value="worldCAmera"/>
-			<item value="player"/>
-			<item value="Player"/>
-			<item value="system"/>
-			<item value="Syste"/>
-			<item value="system."/>
-			<item value="empty"/>
+			<item value="melee"/>
+			<item value="rightArrow"/>
+			<item value="leftArrow"/>
+			<item value="gun"/>
+			<item value="jump"/>
+			<item value="versus"/>
+			<item value="spine"/>
+			<item value="spine_ui"/>
 		</list>
 		<list key="replacehistory">
+			<item value="fire"/>
+			<item value="melee"/>
+			<item value="jump"/>
+			<item value="gun"/>
 			<item value="zombie"/>
 			<item value="Zombie"/>
 			<item value="Gunpowder"/>
 			<item value="Bullet"/>
-			<item value="Charcoal"/>
-			<item value="Sulfur"/>
-			<item value="Saltpeter"/>
-			<item value="Iron"/>
 		</list>
 	</section>
 </section>

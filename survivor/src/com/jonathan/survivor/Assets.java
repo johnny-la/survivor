@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.spine.Animation;
+import com.esotericsoftware.spine.Skeleton;
 import com.esotericsoftware.spine.SkeletonData;
 import com.esotericsoftware.spine.SkeletonJson;
 import com.esotericsoftware.spine.SkeletonRenderer;
@@ -72,6 +73,7 @@ public class Assets
 	public static final float TREE_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
 	public static final float BOX_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
 	public static final float ITEM_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
+	public static final float VERSUS_ANIM_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
 	
 	/** Holds the width and height of an item's sprite in an inventory. Used to resize sprites to the correct scale for inventories. */
 	public static final float INVENTORY_ITEM_WIDTH = 32, INVENTORY_ITEM_HEIGHT = 32;
@@ -106,6 +108,9 @@ public class Assets
 	public ButtonStyle circleButtonStyle;
 	public ImageButtonStyle leftArrowButtonStyle;
 	public ImageButtonStyle rightArrowButtonStyle;
+	public ImageButtonStyle jumpButtonStyle;
+	public ImageButtonStyle meleeButtonStyle;
+	public ImageButtonStyle fireButtonStyle;
 	public ButtonStyle backpackButtonStyle;	//The button on the top-left corner of the screen to open the backpack.
 	public ButtonStyle pauseButtonStyle;
 	
@@ -122,6 +127,11 @@ public class Assets
 	public LabelStyle hudHeaderStyle;
 	public LabelStyle hudLabelStyle;
 	
+	public TextureAtlas versusAnimAtlas;
+	public SkeletonJson versusAnimSkeletonJson;
+	public SkeletonData versusAnimSkeletonData;
+	public Animation versusPlay;
+	
 	public TextureAtlas playerAtlas;
 	public SkeletonJson playerSkeletonJson;
 	public SkeletonData playerSkeletonData;
@@ -133,6 +143,7 @@ public class Assets
 	public Animation playerFall;
 	public Animation playerChopTree;
 	public Animation playerChopTree_Start;
+	public Animation playerEnterCombat;
 	
 	public TextureAtlas zombieAtlas;
 	public SkeletonJson zombieSkeletonJson;
@@ -140,6 +151,7 @@ public class Assets
 	public Animation zombieIdle;
 	public Animation zombieWalk;
 	public Animation zombieAlerted;
+	public Animation zombieEnterCombat;
 	public Animation zombieMelee;
 	
 	public TextureAtlas interactableObjectAtlas;
@@ -287,6 +299,7 @@ public class Assets
 		manager.load("ui/hud/general/atlas/hud_atlas" + scaleExtension + ".pack", TextureAtlas.class);
 		manager.load("ui/hud/backpack_bg/atlas/backpack_bg_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		manager.load("ui/hud/survivalguide_bg/atlas/survivalguide_bg_atlas" + scaleExtension + ".txt", TextureAtlas.class);
+		manager.load("ui/hud/versus_hud/atlas/versus_hud_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		
 		//Puts music assets to queue inside the AssetManager using AssetManager.load("fileName", class).
 		
@@ -328,6 +341,7 @@ public class Assets
 		hudAtlas = manager.get("ui/hud/general/atlas/hud_atlas" + scaleExtension + ".pack");
 		backpackBgAtlas = manager.get("ui/hud/backpack_bg/atlas/backpack_bg_atlas" + scaleExtension + ".txt");
 		survivalGuideBgAtlas = manager.get("ui/hud/survivalguide_bg/atlas/survivalguide_bg_atlas" + scaleExtension + ".txt");
+		versusAnimAtlas = manager.get("ui/hud/versus_hud/atlas/versus_hud_atlas" + scaleExtension + ".txt");
 		
 		//Retrieves the music files.
 		//mainMenuMusic = manager.get("sound/music/Ashton Manor.mp3");
@@ -423,8 +437,6 @@ public class Assets
 		
 		//Create a style for the left arrow button
 		leftArrowButtonStyle = new ImageButtonStyle(circleButtonStyle);
-		//Scale the arrow down so that, no matter the atlas size used, the arrow takes the same world space.
-		leftArrow.setSize(leftArrow.getWidth()/scaleFactor, leftArrow.getHeight()/scaleFactor);
 		leftArrowButtonStyle.imageUp = leftArrowDrawable;
 		leftArrowButtonStyle.imageDown = leftArrowDrawable;
 		
@@ -440,6 +452,39 @@ public class Assets
 		rightArrowButtonStyle = new ImageButtonStyle(circleButtonStyle);
 		rightArrowButtonStyle.imageUp = rightArrowDrawable;
 		rightArrowButtonStyle.imageDown = rightArrowDrawable;
+		
+		//Fetches the jump sprite from the hud atlas to place on the jump button.
+		Sprite jumpImage = hudSkin.getSprite("Jump");
+		//Scale the jump sprite down so that, no matter the atlas size used, the arrow takes the same world space.
+		jumpImage.setSize(jumpImage.getWidth()/scaleFactor, jumpImage.getHeight()/scaleFactor);
+		SpriteDrawable jumpImageDrawable = new SpriteDrawable(jumpImage);	//Creates a Drawable wrapper for the sprite.
+		
+		//Create a style for the jump button
+		jumpButtonStyle = new ImageButtonStyle(circleButtonStyle);
+		jumpButtonStyle.imageUp = jumpImageDrawable;
+		jumpButtonStyle.imageDown = jumpImageDrawable;
+		
+		//Fetches the melee sprite from the hud atlas to place on the melee button.
+		Sprite meleeImage = hudSkin.getSprite("Knife");
+		//Scale the melee sprite down so that, no matter the atlas size used, the arrow takes the same world space.
+		meleeImage.setSize(meleeImage.getWidth()/scaleFactor, leftArrow.getHeight()/scaleFactor);
+		SpriteDrawable meleeImageDrawable = new SpriteDrawable(meleeImage);	//Creates a Drawable wrapper for the sprite.
+		
+		//Create a style for the melee button
+		meleeButtonStyle = new ImageButtonStyle(circleButtonStyle);
+		meleeButtonStyle.imageUp = meleeImageDrawable;
+		meleeButtonStyle.imageDown = meleeImageDrawable;
+		
+		//Fetches the gun sprite from the hud atlas to place on the gun button.
+		Sprite gunImage = hudSkin.getSprite("Gun");
+		//Scale the gun sprite down so that, no matter the atlas size used, the arrow takes the same world space.
+		gunImage.setSize(gunImage.getWidth()/scaleFactor, gunImage.getHeight()/scaleFactor);
+		SpriteDrawable gunImageDrawable = new SpriteDrawable(gunImage);	//Creates a Drawable wrapper for the sprite.
+		
+		//Create a style for the fire button
+		fireButtonStyle = new ImageButtonStyle(circleButtonStyle);
+		fireButtonStyle.imageUp = gunImageDrawable;
+		fireButtonStyle.imageDown = gunImageDrawable;
 		
 		//Creates the style for the backpack button. This is the button that appears on the top-left corner of the screen in exploration mode.
 		backpackButtonStyle = new ButtonStyle();
@@ -516,6 +561,13 @@ public class Assets
 		hudLabelStyle.font = moonFlowerBold_38;
 		hudLabelStyle.fontColor = Color.BLACK;
 		
+		//Sets up the Spine data used to display the portion of the UI used to show the versus Hud.
+		versusAnimSkeletonJson = new SkeletonJson(versusAnimAtlas);
+		versusAnimSkeletonJson.setScale(VERSUS_ANIM_SKELETON_SCALE);	//Re-scale the skeleton to fit world-units. 
+		versusAnimSkeletonData = versusAnimSkeletonJson.readSkeletonData(Gdx.files.internal("ui/hud/versus_hud/skeleton/versus_hud_skeleton.json"));		
+		//Gets the animations from the SpineUI's SkeletonData instance.
+		versusPlay = versusAnimSkeletonData.findAnimation("Play");
+		
 		//Sets up the Spine data used to display and animate the player.
 		playerSkeletonJson = new SkeletonJson(playerAtlas);
 		playerSkeletonJson.setScale(PLAYER_SKELETON_SCALE);	//Re-scale the skeleton to fit world-units. Atlas data is read the same no matter the scale of the SkeletonJson.
@@ -527,6 +579,7 @@ public class Assets
 		playerFall = playerSkeletonData.findAnimation("Fall");
 		playerChopTree = playerSkeletonData.findAnimation("ChopTree");
 		playerChopTree_Start = playerSkeletonData.findAnimation("ChopTree_Start");
+		playerEnterCombat = playerSkeletonData.findAnimation("Enter_Combat");
 		
 		//Sets up the Spine data used to display and animate the zombie.
 		zombieSkeletonJson = new SkeletonJson(zombieAtlas);
@@ -535,8 +588,10 @@ public class Assets
 		//Gets the animations from the Zombie's SkeletonData instance.
 		zombieIdle = zombieSkeletonData.findAnimation("Idle");
 		zombieWalk = zombieSkeletonData.findAnimation("Walk");
-		zombieAlerted = zombieSkeletonData.findAnimation("Alert");
+		zombieAlerted = zombieSkeletonData.findAnimation("Alerted");
+		zombieEnterCombat = zombieSkeletonData.findAnimation("Enter_Combat");
 		zombieMelee = zombieSkeletonData.findAnimation("Melee");
+		
 		
 		//Sets up the Spine data used to display and animate the trees.
 		treeSkeletonJson = new SkeletonJson(interactableObjectAtlas);

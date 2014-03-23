@@ -7,14 +7,20 @@ import com.esotericsoftware.spine.Event;
 import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Assets;
 
-public class Zombie extends Human
+public class Zombie extends Human implements Clickable
 {
 	/** Stores the width and height of the zombie's rectangle collider in world units. */
 	public static final float COLLIDER_WIDTH = 1.56f;
 	public static final float COLLIDER_HEIGHT = 2.5f;
 	
-	/** Stores the maximum walk speed of the zombie in the horizontal direction. */
-	public static final float MAX_WALK_SPEED = 2.2f;
+	/** Stores the walk speed of the zombie in the horizontal direction. */
+	public static final float NORMAL_WALK_SPEED = 2.2f;
+	
+	/** Holds the walking speed of the zombie when he is following the player. */
+	public static final float ALERTED_WALK_SPEED = 2.7f;
+	
+	/** Stores the multiplier of the zombie's walk animation when he is alerted and is following the player. */
+	public static final float ALERTED_ANIM_SPEED = ALERTED_WALK_SPEED / NORMAL_WALK_SPEED;
 	
 	/** Stores the jump speed of the zombie in the vertical direction. */
 	public static final float JUMP_SPEED = 10.7f;
@@ -23,6 +29,9 @@ public class Zombie extends Human
 	
 	/** Holds true if the Zombie is aware that the Player is within range of him. Makes him go towards the player. */
 	private boolean alerted;
+	
+	/** Stores true if the Zombie is being targetted by the player, and the player is trying to walk towards it. */
+	private boolean targetted;
 	
 	/** Controls the zombie's animations. Allows for crossfading between animations. */
 	private AnimationState animationState;
@@ -46,6 +55,9 @@ public class Zombie extends Human
 		
 		//Set the zombie to SPAWN state once instantiated.
 		setState(State.SPAWN);
+		
+		//Sets the zombie's walking speed to default.
+		setWalkSpeed(NORMAL_WALK_SPEED);
 	}
 	
 	public void update(float deltaTime)
@@ -110,8 +122,8 @@ public class Zombie extends Human
 	@Override
 	public boolean canTarget()
 	{
-		//The zombie can never be targetted.
-		return false;
+		//The zombie can always be targetted.
+		return true;
 	}
 
 	/** Retrieves the Spine AnimationState instance used to change the zombie's animations and control them. */
@@ -180,8 +192,29 @@ public class Zombie extends Human
 		
 		//If the zombie is alerted
 		if(alerted)
+		{
 			//Set him to ALERTED state so that the correct animation plays.
 			setState(State.ALERTED);
+			
+			//Makes the zombie walk faster if he is alerted
+			setWalkSpeed(ALERTED_WALK_SPEED);
+		}
+		//Else, if the zombie is not alerted anymore
+		else 
+		{
+			//Makes the zombie walk slower since he is no longer alerted
+			setWalkSpeed(NORMAL_WALK_SPEED);
+		}
+	}
+
+	/** Returns true if the zombie is being targetted by the player. If so, the player has clicked the zombie, and is walking towards it. */
+	public boolean isTargetted() {
+		return targetted;
+	}
+
+	/** Sets whether or not the zombie is being targetted by the player. If so, the player has clicked the zombie, and is walking towards it. */
+	public void setTargetted(boolean targetted) {
+		this.targetted = targetted;
 	}
 
 }

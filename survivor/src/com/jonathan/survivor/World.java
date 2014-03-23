@@ -9,6 +9,7 @@ import com.jonathan.survivor.entity.Clickable;
 import com.jonathan.survivor.entity.GameObject;
 import com.jonathan.survivor.entity.Human;
 import com.jonathan.survivor.entity.Human.Direction;
+import com.jonathan.survivor.entity.Human.Mode;
 import com.jonathan.survivor.entity.Human.State;
 import com.jonathan.survivor.entity.InteractiveObject;
 import com.jonathan.survivor.entity.ItemObject;
@@ -36,7 +37,7 @@ public class World
 	
 	/** A state the GameScreen needs to know about to change the UI */
 	public enum WorldState {
-		EXPLORING, FIGHTING, GAME_OVER
+		EXPLORING, VERSUS_ANIMATION, COMBAT, GAME_OVER
 	};
 	
 	/** Stores the state of the world, which simply dictates the GUI the GameScreen should display. */
@@ -55,9 +56,14 @@ public class World
 	private Level level;
 	/** Stores an instance of a terrain level, used when the player is outside in the procedurally-generated terrain. */
 	private TerrainLevel terrainLevel;
+	/** Holds an instance of a combat level, used when the player is fighting a zombie in combat mode. */
+	private CombatLevel combatLevel;
 	
 	/** Holds the Player GameObject that the user is guiding around the world. */
 	private Player player;
+	
+	/** Stores the WorldListener instance which delegates events from the World to the GameScreen. */
+	private WorldListener worldListener;	
 	
 	/** Listens to events delegated by the player. */
 	private EventListener eventListener;
@@ -90,7 +96,10 @@ public class World
 		//Creates a new TerrainLevel using the profile, which specifies the world seed of the level. Also permits the level to be created where
 		//the user left off. This level is a container of TerrainLayers that the user can traverse.
 		terrainLevel = new TerrainLevel(profile, goManager);
-		//Sets the terrain level as the currently active level to be displayed by the world.
+		//Instantiates a CombatLevel, used when the player fight against a zombie.
+		combatLevel = new CombatLevel();
+		
+		//The TerrainLevel is always the default level for the player upon world instantiation.
 		setLevel(terrainLevel);
 		
 		//Stores the player created inside the GameObjectManager inside a member variable.
@@ -156,14 +165,14 @@ public class World
 			//If the player is walking to the right
 			if(player.getDirection() == Direction.RIGHT)
 			{
-				//Apply a positive x-velocity to the player using the predefined walking speed constant.
-				player.setVelocity(Player.MAX_WALK_SPEED, 0);
+				//Apply a positive x-velocity to the player using the predefined player's walking speed.
+				player.setVelocity(player.getWalkSpeed(), 0);
 			}
 			//Else, if the player is walking to the left
 			else
 			{
 				//Apply a negative x-velocity to the player using the predefined walking speed constant.
-				player.setVelocity(-Player.MAX_WALK_SPEED, 0);
+				player.setVelocity(-player.getWalkSpeed(), 0);
 			}
 			
 			//Checks if the player switched layers by either moving to the right or left of his current layer. If so, we move the player over by a cell.
@@ -339,12 +348,44 @@ public class World
 		}
 	}
 	
+	/** Makes the versus animation play. When finished the player switches to combat mode. */
+	public void playVersusAnimation()
+	{
+		//Tells the AnimationRenderer to play the versus animation. When finished, the world is switched to Combat mode.
+		setWorldState(WorldState.VERSUS_ANIMATION);
+		
+		//Tells the GameScreen to pause the game until the versus animation stops playing.
+		worldListener.onPlayAnimation();		
+	}
+	
+	/** Makes the player enter combat with the zombie he has collided with. Called from the VersusAnimation class when the versus animation is finished playing. */
+	public void enterCombat() 
+	{
+		//Tells the GameScreen to resume the game since the versus animation is complete and we would like to switch to combat mode.
+		worldListener.onAnimationComplete();
+		
+		//Informs the GameScreen that it should switch to the combat HUD. Like this, the right UI widgets will be shown for combat.
+		worldListener.switchToCombat();
+		
+		//Sets the world to COMBAT state. As such, the world's game logic will be handled differently, and the Combat Hud will be displayed instead of the Exploration one.
+		setWorldState(WorldState.COMBAT);
+		
+		//Makes sure the player and the zombie stop moving before entering combat.
+		stopMoving(player);
+		stopMoving(player.getZombieToFight());
+		
+		//Inform the combat level which player and zombie are fighting. Positions the humans at the right place on the level.
+		combatLevel.startFighting(player, player.getZombieToFight());
+		
+		//Tell the world to use the combat level. This level will now be rendered and used as the playing surface for all GameObjects.
+		setLevel(combatLevel);
+	}
+	
 	/** Checks if the player is colliding with any GameObjects. */
 	private void checkPlayerCollisions()
 	{
 		//Checks if the player has collided with his target.
 		checkTargetCollisions();
-		
 	}
 	
 	/** Checks if the player has collided with his target. */
@@ -372,6 +413,12 @@ public class World
 			{
 				//Open the box and spring out items from it.
 				scavengeObject((InteractiveObject)target);
+			}
+			//Else, if the player's target was a zombie, act accordingly.
+			else if(target instanceof Zombie)
+			{
+				//If the zombie was touched by the player, tell the zombie it is no longer being targetted, since the zombie was reached.
+				((Zombie) target).setTargetted(false);
 			}
 		}
 	}
@@ -414,6 +461,11 @@ public class World
 			//If the the player has moved to the right of his current layer
 			if(gameObject.getX() > terrainLayer.getRightPoint().x)
 			{
+				//If a Zombie just switched layers
+				if(gameObject instanceof Zombie)
+					//Remove the zombie from its current TerrainLayer
+					terrainLevel.removeGameObject(gameObject);
+				
 				//Move the GameObject's cell to the right so that the GameObject knows that he has changed cells.
 				gameObject.getTerrainCell().moveRight();
 				
@@ -421,10 +473,19 @@ public class World
 				if(gameObject instanceof Player)
 					//Shift the layers of the level to the right so that the player stays in the center cell.
 					terrainLevel.shiftLayersRight();
+				//If a Zombie just switched layers
+				if(gameObject instanceof Zombie)
+					//Add the zombie to the TerrainLayer it just moved to.
+					terrainLevel.addGameObject(gameObject);
 			}
 			//If the the player has moved to the left of his current layer
 			else if(gameObject.getX() < terrainLayer.getLeftPoint().x)
 			{
+				//If a Zombie just switched layers
+				if(gameObject instanceof Zombie)
+					//Remove the zombie from its current TerrainLayer
+					terrainLevel.removeGameObject(gameObject);
+				
 				//Move the GameObject's cell to the left so that the GameObject knows that he has changed cells.
 				gameObject.getTerrainCell().moveLeft();
 				
@@ -432,6 +493,10 @@ public class World
 				if(gameObject instanceof Player)
 					//Shift the layers of the level to the left so that the player stays in the center cell.
 					terrainLevel.shiftLayersLeft();
+				//Else, if a Zombie just switched layers
+				else if(gameObject instanceof Zombie)
+					//Add the zombie to the TerrainLayer it just moved to.
+					terrainLevel.addGameObject(gameObject);
 			}
 		}
 	}
@@ -655,6 +720,16 @@ public class World
 	public void setPlayer(Player player)
 	{
 		this.player = player;
+	}
+
+	/** Retrieves the WorldListener which delegates World events to the GameScreen. */
+	public WorldListener getWorldListener() {
+		return worldListener;
+	}
+
+	/** Sets the WorldListener which delegates World events to the GameScreen. */
+	public void setWorldListener(WorldListener worldListener) {
+		this.worldListener = worldListener;
 	}
 	
 }

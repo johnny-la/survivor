@@ -1,13 +1,12 @@
 package com.jonathan.survivor.renderers;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.jonathan.survivor.CombatLevel;
 import com.jonathan.survivor.Level;
 import com.jonathan.survivor.TerrainLevel;
-
 /*
- * Helper class used to draw level geometry. Level instances are passed to their designated Renderer objects to be drawn.
+ * Draws level geometry. Level instances are passed by this class to their designated Renderer objects to be drawn.
  */
 
 public class LevelRenderer 
@@ -15,8 +14,13 @@ public class LevelRenderer
 	/** Stores the camera where the terrain is drawn. In this case, the world camera. */
 	private OrthographicCamera worldCamera;
 	
+	/** Stores the SpriteBatcher used to draw the level's elements. */
+	private SpriteBatch batcher;
+	
 	/** Stores the renderer used to draw terrain. */
 	private TerrainRenderer terrainRenderer;
+	/** Holds the renderer used to draw the combat level's terrain. */
+	private CombatRenderer combatRenderer;
 	
 	public LevelRenderer(OrthographicCamera worldCamera)
 	{
@@ -25,6 +29,8 @@ public class LevelRenderer
 		
 		//Creates a TerrainRenderer to draw terrain geometry. Passes the camera where the lines should be drawn.
 		terrainRenderer = new TerrainRenderer(worldCamera);
+		//Instantiates a CombatRenderer used to draw the terrain of a combat level. Passes the camera where the lines should be drawn.
+		combatRenderer = new CombatRenderer(worldCamera);
 	}
 	
 	/** Renders a level's geometry. This method is a helper method which delegates the level instance to a more specific renderer. */
@@ -34,6 +40,10 @@ public class LevelRenderer
 		if(level instanceof TerrainLevel)
 			//Delegate the rendering to the TerrainRenderer.
 			terrainRenderer.render((TerrainLevel)level);
+		//Else, if the level to draw is a CombatLevel
+		else if(level instanceof CombatLevel)
+			//Delegate the draw call to the CombatRenderer.
+			combatRenderer.render((CombatLevel)level);
 	}
 	
 	/** Called whenever the screen is resized. The argument contains the factor by which the screen had to be scaled compared to the target

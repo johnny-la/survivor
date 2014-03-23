@@ -1,20 +1,11 @@
 package com.jonathan.survivor.renderers;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.esotericsoftware.spine.Skeleton;
-import com.jonathan.survivor.Assets;
 import com.jonathan.survivor.Survivor;
 import com.jonathan.survivor.World;
-import com.jonathan.survivor.TerrainLayer.TerrainType;
+import com.jonathan.survivor.World.WorldState;
 import com.jonathan.survivor.entity.Player;
-import com.jonathan.survivor.entity.Human.Direction;
-import com.jonathan.survivor.math.Vector2;
 
 /**
  * Renders the world and its GameObjects. Also stores the camera used to view the world.
@@ -41,6 +32,8 @@ public class WorldRenderer
 	private LevelRenderer levelRenderer;
 	/** Stores the GameObjectRenderer which takes the world's data and renders it to the screen with sprites. */
 	private GameObjectRenderer goRenderer;
+	/** Holds the AnimationRenderer instance used to render all of the Spine animations which overlay the screen. */
+	private AnimationRenderer animationRenderer;
 	
 	
 	/** Creates a WorldRenderer instance used to draw the given world instance with the given SpriteBatch. */
@@ -57,13 +50,28 @@ public class WorldRenderer
 		levelRenderer = new LevelRenderer(worldCamera);
 		//Creates a GameObject renderer from the world. All gameObjects in the world will be drawn to the worldCamera using the specified SpriteBatch.
 		goRenderer = new GameObjectRenderer(world, batcher, worldCamera);
+		//Instantiates the AnimationRenderer, which draws all of the Spine animations which are screen overlays, such as the versus animation.
+		animationRenderer = new AnimationRenderer(world, batcher, worldCamera);
 	}
 	
 	/** Called every frame when the game is running to update the position of the camera. MUST be called before render() method. */
 	public void updateCamera()
 	{
-		worldCamera.position.x = world.getPlayer().getX();
-		worldCamera.position.y = world.getPlayer().getY() + Player.COLLIDER_HEIGHT/2;
+		//If the player is not in combat mode, the camera follows the center of the player.
+		if(world.getWorldState() != WorldState.COMBAT)
+		{
+			//Make the camera follow the center of the player.
+			worldCamera.position.x = world.getPlayer().getX();
+			worldCamera.position.y = world.getPlayer().getY() + Player.COLLIDER_HEIGHT/2;
+		}
+		//Else, if the player is in combat mode
+		else
+		{
+			//The camera's bottom-center position is locked to (0,0).
+			worldCamera.position.x = 0;
+			worldCamera.position.y = worldCamera.viewportHeight/2;
+		}
+		
 		//Updates the position of the camera.
 		worldCamera.update();
 	}
@@ -76,6 +84,9 @@ public class WorldRenderer
 		
 		//Render the gameObjects of the world to the screen.
 		goRenderer.render(deltaTime);
+		
+		//Renders all of the Spine overlay animations that should be shown.
+		animationRenderer.render(deltaTime);
 	}
 	
 	/** Retrieves the world camera used to render the world. */

@@ -1,0 +1,60 @@
+versus_hud_atlas@2x.png
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+Black_Bar
+  rotate: false
+  xy: 4, 4
+  size: 976, 132
+  orig: 976, 132
+  offset: 0, 0
+  index: -1
+Head0005
+  rotate: false
+  xy: 4, 140
+  size: 166, 224
+  orig: 166, 224
+  offset: 0, 0
+  index: -1
+Head0002
+  rotate: false
+  xy: 456, 326
+  size: 142, 152
+  orig: 142, 152
+  offset: 0, 0
+  index: -1
+S_Letter
+  rotate: false
+  xy: 174, 140
+  size: 142, 186
+  orig: 142, 186
+  offset: 0, 0
+  index: -1
+Face0001
+  rotate: false
+  xy: 480, 140
+  size: 84, 70
+  orig: 84, 70
+  offset: 0, 0
+  index: -1
+Face
+  rotate: false
+  xy: 480, 214
+  size: 84, 70
+  orig: 84, 70
+  offset: 0, 0
+  index: -1
+V_Letter
+  rotate: false
+  xy: 320, 140
+  size: 156, 182
+  orig: 156, 182
+  offset: 0, 0
+  index: -1
+Lightning
+  rotate: false
+  xy: 4, 368
+  size: 448, 138
+  orig: 448, 138
+  offset: 0, 0
+  index: -1

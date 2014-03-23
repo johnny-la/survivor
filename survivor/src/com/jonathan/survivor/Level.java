@@ -21,6 +21,9 @@ public interface Level
 	/** Adds the given GameObject to the level. Like this, the level will be aware that it contains this GameObject, and this GameObject will be drawn to the screen. */
 	void addGameObject(GameObject go);
 	
+	/** Removes the given GameObject from the level. Like this, the level will be aware that it no longer contains this GameObject, and will thus no longer be drawn to the screen. */
+	void removeGameObject(GameObject go);
+	
 	/** Returns all the GameObjects contained by the level */
 	Array<GameObject> getGameObjects();
 }

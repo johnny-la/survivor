@@ -192,6 +192,9 @@ public class ExplorationHud extends Hud
 		//Clears the stage and all its widgets to re-purpose the stage to draw the exploration HUD.
 		stage.clear();
 		
+		//Ensures that the right/left arrow button down booleans are set to false by default.
+		rightArrowButtonDown = leftArrowButtonDown = false;
+		
 		//Anchor the left arrow button to the bottom left of the screen using the offset constants.
 		leftArrowButton.setPosition(ARROW_BUTTON_X_OFFSET, ARROW_BUTTON_Y_OFFSET);
 		//Anchor the right arrow button to the bottom right of the screen using the offset constants.

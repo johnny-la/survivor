@@ -63,7 +63,7 @@ public class GameObjectRenderer
 		batcher.setProjectionMatrix(worldCamera.combined);
 		//Starts batching sprites to be drawn to the camera.
 		batcher.begin();
-
+				
 		//Renders the GameObjects stored inside the currently active level.
 		renderLevelObjects(deltaTime);
 		//Draws the player to the screen.

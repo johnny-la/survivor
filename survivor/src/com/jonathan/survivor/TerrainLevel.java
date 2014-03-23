@@ -258,6 +258,16 @@ public class TerrainLevel implements Level
 		gameObjects.add(gameObject);
 	}
 	
+	/** Removes the given GameObject from the TerrainLayer where it belongs. Allows the GameObject to be removed from the list of GameObjects of the correct TerrainLayer. */
+	public void removeGameObject(GameObject gameObject)
+	{
+		//Remove the GameObject from the TerrainLayer where it is contained. Allows the TerrainLayer to be aware of the GameObject it no longer contains.
+		getTerrainLayer(gameObject.getTerrainCell()).removeGameObject(gameObject);
+		
+		//Add the GameObject to the list of GameObjects contained inside the Level. Otherwise, the World won't know it exists.
+		gameObjects.removeValue(gameObject, true);
+	}
+	
 	/** Returns an array of all the GameObjects contained in the level. */
 	public Array<GameObject> getGameObjects()
 	{

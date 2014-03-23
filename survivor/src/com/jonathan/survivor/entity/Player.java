@@ -27,6 +27,9 @@ public class Player extends Human
 	/** Holds the player's inventory, which contains all of the player's collected items. */
 	private Inventory inventory;
 	
+	/** Holds the zombie that the player will fight once he enters combat mode. Convenience member variable to avoid large work-arounds. */
+	private Zombie zombieToFight;
+	
 	/** Stores the PlayerListener instance where methods are delegated upon player events. */
 	private PlayerListener playerListener;
 	
@@ -49,6 +52,9 @@ public class Player extends Human
 		
 		//Set the player to SPAWN state once instantiated.
 		setState(State.SPAWN);
+		
+		//Sets the player's walking speed to default.
+		setWalkSpeed(MAX_WALK_SPEED);
 	}
 	
 	public void update(float deltaTime)
@@ -147,6 +153,12 @@ public class Player extends Human
 				//Untarget the old target.
 				((InteractiveObject) oldTarget).untargetted();
 			}
+			//Else, if a zombie target was lost
+			else if(oldTarget instanceof Zombie)
+			{
+				//Tell the zombie that it is no longer targetted.
+				((Zombie) oldTarget).setTargetted(false);
+			}
 		}
 		
 		//Lose the target.
@@ -187,6 +199,16 @@ public class Player extends Human
 	/** Sets the loadout which stores the items held by the player. */
 	public void setInventory(Inventory inventory) {
 		this.inventory = inventory;
+	}
+	
+	/** Returns the zombie that the player should fight once he enters combat mode. Set when the player collides with a zombie. */
+	public Zombie getZombieToFight() {
+		return zombieToFight;
+	}
+
+	/** Sets the zombie the player should fight once he enters combat mode. Set when the player collides with a zombie. */
+	public void setZombieToFight(Zombie zombieToFight) {
+		this.zombieToFight = zombieToFight;
 	}
 	
 	/** Sets the given listener to have its methods delegated by the player instance. */

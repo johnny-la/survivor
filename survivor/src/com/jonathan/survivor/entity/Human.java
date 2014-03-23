@@ -15,14 +15,14 @@ import com.jonathan.survivor.entity.InteractiveObject.InteractiveState;
 public abstract class Human extends GameObject implements Poolable
 {
 	public enum Mode {
-		EXPLORING, FIGHTING
+		EXPLORING, COMBAT
 	}
 	
 	/** Stores the mode of the Human (EXPLORING or FIGHTING) used to determine how the human's logic should be processed. */
 	protected Mode mode;
 	
 	public enum State {
-		SPAWN, IDLE, WALK, JUMP, FALL, CHOP_TREE, MELEE, CHARGE, FIRE, ALERTED, HIT, DEAD
+		SPAWN, IDLE, WALK, JUMP, FALL, CHOP_TREE, ENTER_COMBAT, MELEE, CHARGE, FIRE, ALERTED, HIT, DEAD
 	}
 	
 	/** Stores the state of the Human (IDLE, WALK, etc.), usually used to dictate which animations to play. */
@@ -42,6 +42,9 @@ public abstract class Human extends GameObject implements Poolable
 	private GameObject target;
 	/** Holds true if the Human has reached his target. */
 	private boolean targetReached;
+	
+	/** Holds the walking speed of the human in the x-direction in meters/second. */
+	private float walkSpeed;
 	
 	/** Creates a Human GameObject instance whose bottom-center is at (x,y) and whose Rectangle collider is initialized with the given width and height. */
 	public Human(float x, float y, float width, float height)
@@ -151,6 +154,11 @@ public abstract class Human extends GameObject implements Poolable
 		//Lose the current target before setting a new target.
 		loseTarget();
 		
+		//If the human is targetting a zombie
+		if(target instanceof Zombie)
+			//Tell the zombie he is being targetted by the human. Its color will be changed to indicate that he is being targetted.
+			((Zombie)target).setTargetted(true);
+		
 		//Sets the new target for the Human.
 		this.target = target;
 	}
@@ -169,6 +177,16 @@ public abstract class Human extends GameObject implements Poolable
 	/** Sets whether or not the human has reached his target. */
 	public void setTargetReached(boolean targetReached) {
 		this.targetReached = targetReached;
+	}
+	
+	/** Gets the human's walking speed in the x-direction. */
+	public float getWalkSpeed() {
+		return walkSpeed;
+	}
+
+	/** Sets the human's walking speed in the x-direction in meters/second. */
+	public void setWalkSpeed(float walkSpeed) {
+		this.walkSpeed = walkSpeed;
 	}
 	
 	/** Called whenever this box GameObject has been pushed back into a pool. In this case, we reset the box's state back to default. */

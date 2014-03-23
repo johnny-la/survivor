@@ -3158,3 +3158,42 @@ java.lang.ArrayIndexOutOfBoundsException: 12
 	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:584)
 	at org.eclipse.equinox.launcher.Main.run(Main.java:1438)
 	at org.eclipse.equinox.launcher.Main.main(Main.java:1414)
+!SESSION 2014-03-21 18:54:08.004 -----------------------------------------------
+eclipse.buildId=M20120208-0800
+java.version=1.7.0_45
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=fr_FR
+Framework arguments:  -product org.eclipse.epp.package.java.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.java.product
+
+!ENTRY org.eclipse.core.resources 2 10035 2014-03-21 18:54:09.548
+!MESSAGE The workspace exited with unsaved changes in the previous session; refreshing workspace to recover changes.
+!SESSION 2014-03-22 14:11:46.616 -----------------------------------------------
+eclipse.buildId=M20120208-0800
+java.version=1.7.0_45
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=fr_FR
+Framework arguments:  -product org.eclipse.epp.package.java.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.java.product
+
+!ENTRY com.android.ide.eclipse.adt 1 0 2014-03-22 15:35:45.243
+!MESSAGE com.android.ide.eclipse.adt
+
+!ENTRY com.android.ide.eclipse.adt 1 0 2014-03-22 15:37:14.453
+!MESSAGE com.android.ide.eclipse.adt
+
+!ENTRY com.android.ide.eclipse.adt 1 0 2014-03-22 15:40:27.473
+!MESSAGE com.android.ide.eclipse.adt
+
+!ENTRY com.android.ide.eclipse.adt 1 0 2014-03-22 15:41:44.312
+!MESSAGE com.android.ide.eclipse.adt
+!SESSION 2014-03-23 13:35:41.382 -----------------------------------------------
+eclipse.buildId=M20120208-0800
+java.version=1.7.0_45
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=fr_FR
+Framework arguments:  -product org.eclipse.epp.package.java.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.java.product
+
+!ENTRY com.android.ide.eclipse.adt 1 0 2014-03-23 14:16:12.710
+!MESSAGE com.android.ide.eclipse.adt

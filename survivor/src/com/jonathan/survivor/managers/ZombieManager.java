@@ -16,8 +16,11 @@ public class ZombieManager
 	/** Stores the amount of time the zombie stays idle before starting to move again. */
 	private static final float IDLE_TIME = 3;
 	
-	/** Holds the x-distance between the zombie and the player so that the zombie can see the player. */
+	/** Holds the x-distance between the zombie and the player so that the zombie can first see the player. */
 	private static final float ZOMBIE_VIEW_DISTANCE = 7f;
+	
+	/** Stores the minimum x-distance between the zombie and the player so that the zombie will continue to follow him. */
+	private static final float FOLLOW_DISTANCE = 20f;
 	
 	/** Stores the x-distance between the zombie and the player so that the zombie can see the player even when he's in back of the zombie. */
 	private static final float ZOMBIE_BACK_VIEW = 2.5f;
@@ -37,6 +40,9 @@ public class ZombieManager
 	/** Updates the game logic for the given zombie. */
 	public void update(Zombie zombie, float deltaTime) 
 	{
+		//Check collisions with the zombie.
+		checkCollisions(zombie);
+		
 		//Updates the zombie's AI before updating its game logic. In essence, this method determines the zombie's next move.
 		updateAI(zombie, deltaTime);
 		
@@ -51,14 +57,14 @@ public class ZombieManager
 			//If the player is walking to the right
 			if(zombie.getDirection() == Direction.RIGHT)
 			{
-				//Apply a positive x-velocity to the player using the predefined walking speed constant.
-				zombie.setVelocity(Zombie.MAX_WALK_SPEED, 0);
+				//Apply a positive x-velocity to the zombie using the predefined zombie's walking speed.
+				zombie.setVelocity(zombie.getWalkSpeed(), 0);
 			}
 			//Else, if the player is walking to the left
 			else
 			{
-				//Apply a negative x-velocity to the player using the predefined walking speed constant.
-				zombie.setVelocity(-Zombie.MAX_WALK_SPEED, 0);
+				//Apply a negative x-velocity to the zombie using the predefined zombie's walking speed.
+				zombie.setVelocity(-zombie.getWalkSpeed(), 0);
 			}
 			
 			//Checks if the zombie switched layers by either moving to the right or left of his current layer. If so, we move the zombie over by a cell.
@@ -70,6 +76,23 @@ public class ZombieManager
 		
 		//Updates the position of the zombie based on his velocity. Also updates its collider's position.
 		zombie.update(deltaTime);
+	}
+	
+	/** Checks if the zombie has intersected with any GameObject which is pertinent to the zombie, such as the player. */
+	private void checkCollisions(Zombie zombie)
+	{
+		//Gets the Player being controlled in the world for collision checking.
+		Player player = world.getPlayer();
+
+		//If the zombie has intersected with the player
+		if(zombie.getCollider().intersects(player.getCollider()))
+		{
+			//Tell the player to fight this zombie once entering combat mode.
+			player.setZombieToFight(zombie);
+			
+			//Plays the versus animation, showing the player brawling against the zombie. When finished, the player switches to combat mode against the zombie.
+			world.playVersusAnimation();
+		}
 	}
 
 	/** Updates the zombie's state according to the principles of his artifical intelligence. */
@@ -102,13 +125,6 @@ public class ZombieManager
 					}
 				}
 				
-				//If the zombie is alerted of the player's presence, make him follow the player to attack him.
-				if(zombie.isAlerted())
-				{
-					//Makes the zombie walk towards the player, since the zombie has been alerted.
-					walkTowardsPlayer(zombie);
-				}
-				
 				//Checks if the player is close to the zombie. If so, the zombie is alerted.
 				checkPlayerProximity(zombie);
 				
@@ -129,31 +145,50 @@ public class ZombieManager
 		}
 	}
 
-	/** Sets the zombie to ALERT state if the zombie is not already alerted, and can see the player. */
+	/** Sets the zombie to ALERT state if the zombie is not already alerted. */
 	private void checkPlayerProximity(Zombie zombie)
 	{
-		//If the zombie is not already alerted, but can be alerted by the player
-		if(zombie.isAlerted() == false && zombieSeesPlayer(zombie))
+		//If the zombie can see the player, and the zombie isn't already alerted
+		if(zombieSeesPlayer(zombie) && zombie.isAlerted() == false)
 		{
-			//Stop the zombie from walking until his ALERTED animation stops playing.
+			//Stop the zombie from walking until his ALERTED animation finishes playing.
 			world.stopMoving(zombie);
 			
 			//Alert the zombie that the player is close. Makes the zombie go to ALERTED state and walk towards the player.
 			zombie.setAlerted(true);
 		}
-		//Else, if the zombie is alerted, is walking, but cannot see the player
-		else if(zombie.isAlerted() && zombie.getState() == State.WALK && !zombieSeesPlayer(zombie))
+		//Else, if the zombie is already alerted of the player's presence
+		else if(zombie.isAlerted())
 		{
-			//Stop the zombie from walking, since can no longer see the player.
-			world.stopMoving(zombie);
+			//If the zombie is IDLE and is alerted, the zombie has just finished his ALERTED animation, and should follow the player.
+			if(zombie.getState() == State.IDLE)
+			{
+				//Makes the zombie walk towards the player, since the zombie has been alerted.
+				followPlayer(zombie);
+			}
+			//Else, if the zombie is walking, the zombie is following the player. Thus, make a few logic checks.
+			else if(zombie.getState() == State.WALK)
+			{
+				//If the zombie can still follow the player, and is within viewing distance
+				if(canFollowPlayer(zombie))
+				{
+					//Continue to make the zombie walk towards the player.
+					followPlayer(zombie);
+				}
+				//Else, if the zombie can no longer see the player and follow him
+				else
+				{					
+					//Tell the zombie that he is no longer alerted. He will no longer follow the player, but rather follow his regular back-and-forth walking pattern.
+					zombie.setAlerted(false);
+				}
+			}
 			
-			//Tell the zombie that he is no longer alerted.
-			zombie.setAlerted(false);
 		}
+		
 	}
 	
 	/** Makes the zombie walk towards the player to essentially follow him. */
-	private void walkTowardsPlayer(Zombie zombie) 
+	private void followPlayer(Zombie zombie) 
 	{
 		//Gets the Player being controlled in the world.
 		Player player = world.getPlayer();
@@ -179,6 +214,12 @@ public class ZombieManager
 		//Gets the Player being controlled in the world.
 		Player player = world.getPlayer();
 		
+		//If the zombie is already alerted of the player's presence, and the zombie is within following distance of the player, make the zombie follow the player.
+		if(zombie.isAlerted() && canFollowPlayer(zombie))
+		{
+			
+		}
+		
 		//If the zombie is facing the player, and the player is close to the zombie, the zombie is alerted of his presence
 		if(zombie.isFacing(player) && isClose(player, zombie))
 		{
@@ -193,6 +234,26 @@ public class ZombieManager
 		return false; //If this statement is reached, the zombie cannot be alerted of the player.
 	}
 	
+	/** Returns true if the given zombie is already following the player, and can continue to follow him. The player has to be within a given distance from the zombie. */
+	private boolean canFollowPlayer(Zombie zombie) 
+	{
+		//Gets the Player being controlled in the world.
+		Player player = world.getPlayer();
+		
+		//If the player and the zombie are within FOLLOW_DISTANCE, the player is close enough to the zombie for the zombie to continue following him.
+		if(Math.abs(player.getX() - zombie.getX()) < FOLLOW_DISTANCE)
+		{
+			//The zombie can only be deemed close to the player if they are both on the same row.
+			if(player.getTerrainCell().getRow() == zombie.getTerrainCell().getRow())
+			{
+				return true; //Return true, since the player is close enough to the zombie to be followed.
+			}
+		}
+		
+		//If this statement is reached, the player is too far from the zombie to be followed.
+		return false;
+	}
+
 	/** Returns true if the player is close to the given zombie. */
 	private boolean isClose(Player player, Zombie zombie)
 	{		

@@ -33,8 +33,7 @@ public abstract class InteractiveObject extends GameObject implements Clickable,
 	public void targetted() 
 	{
 		//Set the Interactive GameObject to CLICKED state when targetted.
-		setInteractiveState(InteractiveState.CLICKED);
-		
+		setInteractiveState(InteractiveState.CLICKED);	
 	}
 	
 	/** Called when the Interactive GameObject has just been untargetted by a Human */

@@ -7,7 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.jonathan.survivor.Profile;
 import com.jonathan.survivor.Survivor;
 import com.jonathan.survivor.World;
+import com.jonathan.survivor.WorldListener;
 import com.jonathan.survivor.hud.BackpackHud;
+import com.jonathan.survivor.hud.CombatHud;
 import com.jonathan.survivor.hud.CraftingHud;
 import com.jonathan.survivor.hud.ExplorationHud;
 import com.jonathan.survivor.hud.Hud;
@@ -26,7 +28,7 @@ import com.jonathan.survivor.renderers.WorldRenderer;
 public class GameScreen extends Screen
 {
 	public enum GameState {
-		EXPLORING, BACKPACK, PAUSED, GAME_OVER
+		EXPLORING, COMBAT, BACKPACK, PAUSED, GAME_OVER, 
 	};
 	
 	/** Stores the state of the game, used to determine how to update the world, and how to draw the UI. */
@@ -64,6 +66,8 @@ public class GameScreen extends Screen
 	private Hud hud;
 	/** Stores the ExplorationHud instance which draws the UI when the user is in exploration mode. */
 	private ExplorationHud explorationHud;
+	/** Holds the CombatHud instance which draws the UI when the user is in combat mode. */
+	private CombatHud combatHud;
 	/** Stores the BackpackHud which displays the Backpack inventory screen. */
 	private BackpackHud backpackHud;
 	/** Stores the SurvivalGuideHud which displays the survival guide menu. */
@@ -94,6 +98,9 @@ public class GameScreen extends Screen
 		//Creates a world renderer, passing in the world to render, and the SpriteBatcher used to draw the sprites.
 		worldRenderer = new WorldRenderer(world, batcher);
 		
+		//Registers a WorldListener to the world. All events will be delegated to the GameListener instance, which is simply an inner class inside the GameScreen.
+		world.setWorldListener(new GameListener());
+		
 		//Registers the World to the Settings instance. Player information will be retrieved from this world to be saved to the hard drive.
 		settings.setWorld(world);
 		
@@ -121,6 +128,8 @@ public class GameScreen extends Screen
 		
 		//Creates an ExplorationRenderer which will display the exploration UI using the stage, and will call methods from the world on button clicks.
 		explorationHud = new ExplorationHud(stage, world);
+		//Creates the CombatHud used to render UI elements when the player is fighting against a zombie. Calls the world's methods according to button clicks.
+		combatHud = new CombatHud(stage, world);
 		//Instantiates the BackpackHud instance which displays the backpack UI using the stage.
 		backpackHud = new BackpackHud(stage, world);
 		//Creates the SurvivalGuideHud instance which displays the survival guide menu using the universal stage used for each HUD.
@@ -135,6 +144,7 @@ public class GameScreen extends Screen
 		
 		//Adds the UiListener instance to each Hud instance. Like this, the GameScreen is informed about button touches in the UI. Used to react appropriately to a button press.
 		explorationHud.addHudListener(uiListener);
+		combatHud.addHudListener(uiListener);
 		backpackHud.addHudListener(uiListener);
 		survivalGuideHud.addHudListener(uiListener);
 		craftingHud.addHudListener(uiListener);
@@ -218,6 +228,34 @@ public class GameScreen extends Screen
 		}
 	}
 	
+	/** Listens to any events delegated by the World pertinent to the game. */
+	public class GameListener implements WorldListener
+	{
+		/** Called when the game is supposed to play an animation which overlays the screen. In this case, the game should be paused until the animation stops playing. */
+		@Override
+		public void onPlayAnimation()
+		{
+			//Pauses the game to wait until the versus animation finishes
+			pauseForAnimation();
+		}
+		
+		/** Called when an animation finishes playing. This is for overlay animations which fill the screen. When complete, the GameScreen knows to resume the game. */
+		@Override
+		public void onAnimationComplete()
+		{
+			//Resumes the game since the versus animation has stopped playing
+			resumeForAnimation();
+		}
+		
+		/** Delegated when the versus animation stops playing, and the player switches to combat mode to fight a zombie. */
+		@Override 
+		public void switchToCombat()
+		{
+			//Tells the GameScreen to display the Combat HUD.
+			setGameState(GameState.COMBAT);
+		}
+	}
+	
 	@Override 
 	public void render(float deltaTime)
 	{
@@ -235,12 +273,12 @@ public class GameScreen extends Screen
 		{
 			//Update the world and its GameObjects. 
 			world.update(deltaTime);
-		}
+		}			
 		
 		//Update the camera used to view the world.
 		worldRenderer.updateCamera();
 	}
-	
+
 	/** Draws the UI, along with the world and its contained GameObjects. */
 	private void draw(float deltaTime)
 	{
@@ -257,7 +295,6 @@ public class GameScreen extends Screen
 		else 
 			//Render the world with a deltaTime of zero. Pauses animations to ensure that they don't advance in time.
 			worldRenderer.render(0);
-
 		
 		//Draws the HUD to the screen, depending on game state.
 		hud.draw(deltaTime);
@@ -302,6 +339,9 @@ public class GameScreen extends Screen
 		case EXPLORING:
 			hud = explorationHud;	//Switches to the hud for the game's exploration mode
 			break;
+		case COMBAT:
+			hud = combatHud; 	//Switches to the combat hud when the player is in combat mode.
+			break;
 		case BACKPACK:
 			hud = backpackHud;
 			break;
@@ -321,10 +361,11 @@ public class GameScreen extends Screen
 		//Tells the game it is paused and prevents the world and graphics from updating.
 		paused = true;
 		
-		//Stores the game state before pausing. Allows the game to be resumed to its game state before being paused.
-		stateBeforePause = gameState;
 		//Pauses input processing.
 		pauseInput();
+		
+		//Stores the game state before pausing. Allows the game to be resumed to its game state before being paused.
+		stateBeforePause = gameState;
 		
 		//Sets the game state to the new game state. Effectively transitions to the desired HUD for the specified game state.
 		setGameState(newState);
@@ -341,6 +382,46 @@ public class GameScreen extends Screen
 		
 		//Resumes input processing. Allows the input managers to call the world's methods.
 		resumeInput();
+	}
+	
+	/** Pauses the game when an animation plays. Allows the animation to finish without the player pressing anything. */
+	private void pauseForAnimation() 
+	{
+		//Tells the game it is paused and prevents the world and graphics from updating.
+		paused = true;
+		
+		//Pauses the currently active hud, so that the user can't press any buttons to interrupt it.
+		pauseHud();
+
+		//Pauses input processing.
+		pauseInput();
+	}
+	
+	/** Called when an screen overlay animation finishes playing. Resumes the game so that the user can continue playing. */
+	private void resumeForAnimation()
+	{
+		//Tells the game it can continue running. Allows graphics to update
+		paused = false;
+		
+		//Resumes the currently active hud, so that the user can press buttons on the HUD and interact with them.
+		resumeHud();
+
+		//Resumes input processing so that the user can press on GameObjects.
+		resumeInput();
+	}
+	
+	/** Pauses the Hud so that the user can't press any button on the Hud. */
+	private void pauseHud()
+	{
+		//Removes the stage from the inputMultiplexer. Makes it so that no Huds will receive any button click events.
+		inputMultiplexer.removeProcessor(stage);
+	}
+	
+	/** Resumes the Hud so that the user can again press a button on the Hud. */
+	private void resumeHud()
+	{
+		//Adds the stage from the inputMultiplexer. Makes it so that the Huds will once again receive button clicks events.
+		inputMultiplexer.addProcessor(stage);
 	}
 	
 	/** Pauses the game by pausing all of the input handling. */
