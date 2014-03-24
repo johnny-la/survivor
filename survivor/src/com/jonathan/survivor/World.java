@@ -26,8 +26,11 @@ import com.jonathan.survivor.math.Vector2;
 
 public class World
 {
-	/** Stores the acceleration due to gravity in the world in m/s^2 */
-	public static final Vector2 GRAVITY = new Vector2(0, -15f);
+	/** Stores the acceleration due to gravity in the world in m/s^2 when the player is in exploration state. */
+	public static final Vector2 GRAVITY_EXPLORATION = new Vector2(0, -15f);
+	
+	/** Stores the acceleration due to gravity in the world in m/s^2 when the player is fighting a zombie in combat state. */
+	public static final Vector2 GRAVITY_COMBAT = new Vector2(0, -52f);
 	
 	/** Stores the seed used to generate the geometry of the level and randomly place its GameObjects. */
 	private int worldSeed;
@@ -129,6 +132,25 @@ public class World
 	/**Updates the player, his movement, and his game logic. */
 	private void updatePlayer(float deltaTime)
 	{
+		//If the player is in exploration state
+		if(player.getMode() == Mode.EXPLORING)
+		{
+			//Delegate the update call to the updatePlayerExploring() method.
+			updatePlayerExploring();
+		}
+		else if(player.getMode() == Mode.COMBAT)
+		{
+			//Delegate the update call to the updatePlayerCombat() method.
+			updatePlayerCombat();
+		}
+		
+		//Updates the position of the player based on his velocity and updates his collider's position.
+		player.update(deltaTime);
+	}
+
+	/** Updates the player in the world when he's in EXPLORATION state, and is traversing the world. */
+	private void updatePlayerExploring() 
+	{
 		//Check if the player has collided with anything of importance.
 		checkPlayerCollisions();
 		
@@ -141,7 +163,7 @@ public class World
 		if(player.getState() == State.JUMP || player.getState() == State.FALL)
 		{
 			//Set the player's acceleration to the acceleration gravity.
-			player.setAcceleration(GRAVITY.x, GRAVITY.y);
+			player.setAcceleration(GRAVITY_EXPLORATION.x, GRAVITY_EXPLORATION.y);
 			
 			//FAILSAFE. Checks if the player switched layers by either moving to the right or left of his current layer. If so, we move the player over by a cell. 
 			checkForLayerSwitch(player);
@@ -181,11 +203,38 @@ public class World
 			//Makes the player follow the level's ground.
 			lockToGround(player);
 		}
-		
-		//Updates the position of the player based on his velocity and updates his collider's position.
-		player.update(deltaTime);
 	}
 	
+	/** Updates the player when he is in COMBAT mode, fighting another zombie */
+	private void updatePlayerCombat() 
+	{
+		//If the player is in IDLE state, just standing there
+		if(player.getState() == State.IDLE)
+		{
+			
+		}
+		//Else, if the player is currently jumping
+		else if(player.getState() == State.JUMP)
+		{
+			//Set the player's acceleration to the acceleration gravity.
+			player.setAcceleration(GRAVITY_COMBAT.x, GRAVITY_COMBAT.y);
+			
+			//If the player has collided with the ground
+			if(checkGroundCollision(player))
+			{
+				//Set the player to IDLE state.
+				player.setState(State.IDLE);
+				//Take off any acceleration from the player.
+				player.setAcceleration(0, 0);
+				//Set The player's velocity to zero.
+				player.setVelocity(0,0);
+				//Set the player's bottom y-position to the height of the ground.
+				player.setY(combatLevel.getGroundHeight(player.getX()));
+			}
+		}
+		
+	}
+
 	/** Updates the GameObjects contained by the currently active level of the world. */
 	private void updateLevelObjects(float deltaTime)
 	{
@@ -226,7 +275,7 @@ public class World
 		if(itemObject.getItemState() == ItemState.FLY)
 		{
 			//Apply gravity to the Item GameObject so that it falls to the ground.
-			itemObject.setAcceleration(GRAVITY.x, GRAVITY.y);
+			itemObject.setAcceleration(GRAVITY_EXPLORATION.x, GRAVITY_EXPLORATION.y);
 			
 			//Modify the ItemObject's cell if the object flies into a different cell. Ensures that the object is on the right cell.
 			//MAY CAUSE ERRORS -- The incorrect TerrainLayer will hold the ItemObject. Could add a case to change the correct TerrainLayer to hold the ItemObject.
@@ -509,6 +558,16 @@ public class World
 		{
 			//If the GameObject is falling and has fallen below ground height
 			if(gameObject.getVelocity().y < 0 && gameObject.getY() < terrainLevel.getTerrainLayer(gameObject.getTerrainCell()).getGroundHeight(gameObject.getX()))
+			{
+				//Return true, as the gameObject has fallen below the ground.
+				return true;
+			}
+		}
+		//Else, if the currently active level is a combat level, the player is fighting a zombie
+		else if(level instanceof CombatLevel)
+		{
+			//If the GameObject is falling and has fallen below ground height
+			if(gameObject.getVelocity().y < 0 && gameObject.getY() < combatLevel.getGroundHeight(gameObject.getX()))
 			{
 				//Return true, as the gameObject has fallen below the ground.
 				return true;

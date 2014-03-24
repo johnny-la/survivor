@@ -20,13 +20,13 @@ public class CombatLevel implements Level
 	/** Stores the width of the line in meters. This is simply the length of the black line on the level. */
 	private static final float LINE_WIDTH = 30f;
 	/** Stores the y-position of the level's black line. */
-	private static final float LINE_HEIGHT = 5.6f;
+	private static final float LINE_HEIGHT = 4.8f;
 	
 	/** Holds the x-position at which the player and the zombie should reside relative to the center of the level. */
 	private static final float START_X = 4.5f;
 	
 	/** Stores the y-position at which the humans' feet should reside on the level */
-	private static final float GROUND_HEIGHT = 3.8f;
+	private static final float GROUND_HEIGHT = 3.5f;
 	
 	/** Holds the left and right end points of the black line on the level. */
 	private final Vector2 leftPoint, rightPoint;

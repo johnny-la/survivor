@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.jonathan.survivor.World;
+import com.jonathan.survivor.entity.Player;
+import com.jonathan.survivor.entity.Human.State;
 
 /*
  * An instance of this class will display the HUD whilst in EXPLORATION mode.
@@ -117,8 +119,21 @@ public class CombatHud extends Hud
 		@Override
 		public void clicked(InputEvent event, float x, float y)
 		{		
-			//If the pause button was pressed
-			if(event.getTarget() == pauseButton)
+			//If the jump button was pressed
+			if(event.getTarget() == jumpButton || event.getTarget() == jumpButton.getImage())
+			{
+				//Gets the player controlled by the user in the world.
+				Player player = world.getPlayer();
+				
+				//Only let the player jump if he isn't playing his ENTER_COMBAT animation.
+				if(player.getState() != State.ENTER_COMBAT)
+				{
+					//Make the player jump.
+					world.getPlayer().jump();
+				}
+			}
+			//Else, if the pause button was pressed
+			else if(event.getTarget() == pauseButton)
 			{
 				//Tell the GameScreen that the pause button has been pressed. Switches to the pause menu.
 				hudListener.onPauseButton();

@@ -6,6 +6,7 @@ import com.esotericsoftware.spine.AnimationState.AnimationStateListener;
 import com.esotericsoftware.spine.Event;
 import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Assets;
+import com.jonathan.survivor.entity.Human.State;
 
 public class Zombie extends Human implements Clickable
 {
@@ -157,8 +158,16 @@ public class Zombie extends Human implements Clickable
 			public void complete(int trackIndex, int loopCount) {
 				//If the zombie just completed his ALERTED animation
 				if(getState() == State.ALERTED)
+				{
 					//Set the zombie to IDLE state so that the ZombieManager knows to make him follow the player.
 					setState(State.IDLE);
+				}
+				//Else, if the ENTER_COMBAT animation has just finished playing
+				else if(getState() == State.ENTER_COMBAT)
+				{
+					//Set the zombie back to IDLE state so that his correct animation plays.
+					setState(State.IDLE);
+				}
 				
 			}
 

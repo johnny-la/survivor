@@ -77,19 +77,28 @@ public class PlayerRenderer
 		
 		//Creates a listener to listen for events coming from the player's animations.
 		animationListener = new AnimationStateListener() {
-
+			/** Called when an event set up inside the Spine Timeline fires in one of the player's animations. */
 			@Override
-			public void event(int trackIndex, Event event) {
+			public void event(int trackIndex, Event event) 
+			{
+				//If the player's CHOP_TREE animation is playing, and the HIT_TREE event was fired
 				if(event.getInt() == HIT_TREE)
 				{
+					//Deal damage to the tree the player is chopping.
 					player.hitTree();
 				}
 				
 			}
 
 			@Override
-			public void complete(int trackIndex, int loopCount) {
-				// TODO Auto-generated method stub
+			public void complete(int trackIndex, int loopCount) 
+			{
+				//If the ENTER_COMBAT animation has just finished playing
+				if(player.getState() == State.ENTER_COMBAT)
+				{
+					//Set the player back to IDLE state so that his correct animation plays.
+					player.setState(State.IDLE);
+				}
 				
 			}
 

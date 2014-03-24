@@ -13,8 +13,8 @@ import com.jonathan.survivor.entity.Zombie;
 
 public class ZombieManager 
 {
-	/** Stores the amount of time the zombie stays idle before starting to move again. */
-	private static final float IDLE_TIME = 3;
+	/** Stores the amount of time the zombie stays idle before starting to move again (in EXPLORATION mode). */
+	private static final float IDLE_TIME_EXPLORATION = 3;
 	
 	/** Holds the x-distance between the zombie and the player so that the zombie can first see the player. */
 	private static final float ZOMBIE_VIEW_DISTANCE = 7f;
@@ -24,6 +24,9 @@ public class ZombieManager
 	
 	/** Stores the x-distance between the zombie and the player so that the zombie can see the player even when he's in back of the zombie. */
 	private static final float ZOMBIE_BACK_VIEW = 2.5f;
+	
+	/** Stores the amount of time the zombie stays idle before choosing a move to attack the player (in COMBAT mode). */
+	private static final float IDLE_TIME_COMBAT = 5;
 	
 	/** Holds the World instance that the zombies are a part of. Used to access the convenience methods created for the player and needed for the zombies. */
 	private World world;
@@ -39,6 +42,26 @@ public class ZombieManager
 	
 	/** Updates the game logic for the given zombie. */
 	public void update(Zombie zombie, float deltaTime) 
+	{
+		//If the zombie is in EXPLORATION mode
+		if(zombie.getMode() == Mode.EXPLORING)
+		{
+			//Delegate the update call to the 'updateExploring()' method.
+			updateExploring(zombie, deltaTime);
+		}
+		//Else, if the zombie is in COMBAT mode
+		else if(zombie.getMode() == Mode.EXPLORING)
+		{
+			//Delegate the update call to the 'updateCombat()' method.
+			updateCombat(zombie, deltaTime);
+		}
+		
+		//Updates the position of the zombie based on his velocity. Also updates its collider's position.
+		zombie.update(deltaTime);
+	}
+
+	/** Updates the game logic of the given zombie when he is in EXPLORING state. */
+	private void updateExploring(Zombie zombie, float deltaTime) 
 	{
 		//Check collisions with the zombie.
 		checkCollisions(zombie);
@@ -74,10 +97,30 @@ public class ZombieManager
 			world.lockToGround(zombie);
 		}
 		
-		//Updates the position of the zombie based on his velocity. Also updates its collider's position.
-		zombie.update(deltaTime);
 	}
 	
+	/** Updates the zombie when he is in COMBAT mode and fighting the player. */
+	private void updateCombat(Zombie zombie, float deltaTime) 
+	{
+		//If the zombie is in IDLE state
+		if(zombie.getState() == State.IDLE)
+		{
+			//If the zombie has been idling for long enough
+			if(zombie.getStateTime() > IDLE_TIME_COMBAT)
+			{
+				//Make the zombie choose his next move to attack the player
+				chooseNextMove(zombie);
+			}
+		}
+		
+	}
+
+	/** Makes the given zombie choose the next move to attack the player with. */
+	private void chooseNextMove(Zombie zombie) 
+	{
+		
+	}
+
 	/** Checks if the zombie has intersected with any GameObject which is pertinent to the zombie, such as the player. */
 	private void checkCollisions(Zombie zombie)
 	{
@@ -109,7 +152,7 @@ public class ZombieManager
 			if(zombie.getState() == State.IDLE)
 			{
 				//If the zombie has been in IDLE state for long enough, make him move again.
-				if(zombie.getStateTime() > IDLE_TIME)
+				if(zombie.getStateTime() > IDLE_TIME_EXPLORATION)
 				{
 					//If the zombie was facing the left when idle
 					if(zombie.getDirection() == Direction.LEFT)
