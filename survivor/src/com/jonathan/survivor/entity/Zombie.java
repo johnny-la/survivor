@@ -28,6 +28,9 @@ public class Zombie extends Human implements Clickable
 	/** Stores the downwards speed at which the zombie falls through a TerrainLayer. */
 	public static final float FALL_SPEED = -5;
 	
+	/** Holds the player's default health. */
+	public static final float DEFAULT_HEALTH = 60;
+	
 	/** Holds true if the Zombie is aware that the Player is within range of him. Makes him go towards the player. */
 	private boolean alerted;
 	
@@ -59,6 +62,9 @@ public class Zombie extends Human implements Clickable
 		
 		//Sets the zombie's walking speed to default.
 		setWalkSpeed(NORMAL_WALK_SPEED);
+		
+		//Give the zombie default health when instantiated.
+		setHealth(DEFAULT_HEALTH);
 	}
 	
 	public void update(float deltaTime)

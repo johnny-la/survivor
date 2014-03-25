@@ -13,17 +13,22 @@ public class Player extends Human
 	public static final float COLLIDER_WIDTH = 1.56f;
 	public static final float COLLIDER_HEIGHT = 2.5f;
 	
+	/** Holds the player's default health. */
+	public static final float DEFAULT_HEALTH = 60;
+	
 	/** Stores the maximum walk speed of the player in the horizontal direction. */
 	public static final float MAX_WALK_SPEED = 6f;
 	
-	public static final float WALK_ACCELERATION = 1;
 	/** Stores the jump speed of the player in the vertical direction when in EXPLORING mode. */
 	public static final float EXPLORATION_JUMP_SPEED = 10.7f;
+	/** Stores the jump speed of the player in the vertical direction when in COMBAT mode. */
+	public static final float COMBAT_JUMP_SPEED = 19.0f;
+	
 	/** Stores the downwards speed at which the player falls through a TerrainLayer. */
 	public static final float FALL_SPEED = -5;
 	
-	/** Stores the jump speed of the player in the vertical direction when in COMBAT mode. */
-	public static final float COMBAT_JUMP_SPEED = 19.0f;
+	/** Holds the amount of damage delivered to a zombie when it is stomped on the head by the player. */
+	private static final float HEAD_STOMP_DAMAGE = 10;
 	
 	/** Stores the player's loadout, containing the player's active weapons. */
 	private Loadout loadout;
@@ -58,6 +63,9 @@ public class Player extends Human
 		
 		//Sets the player's walking speed to default.
 		setWalkSpeed(MAX_WALK_SPEED);
+		
+		//Gives the player default health when instantiated.
+		setHealth(DEFAULT_HEALTH);
 	}
 	
 	public void update(float deltaTime)
@@ -133,6 +141,17 @@ public class Player extends Human
 		}
 	}
 	
+	/** Makes the player swing his melee weapon if he has one. */
+	public void melee()
+	{
+		//If the player has a melee weapon
+		if(hasMeleeWeapon())
+		{
+			//Switch to MELEE state so that the MELEE animation plays.
+			setState(State.MELEE);
+		}
+	}
+	
 	/** Called when the player has hit the tree stored as his target. */
 	public void hitTree() 
 	{	
@@ -156,6 +175,20 @@ public class Player extends Human
 			//Tell the world to spawn items at the destroyed tree's position.
 			playerListener.scavengedObject(tree);
 		}
+	}
+	
+	/** Called when the player hits a zombie's head. Deals damage to this zombie and changes its state. */
+	public void hitHead(Zombie zombie) 
+	{
+		//Deals damage to the zombie according to the head stomp constant.
+		zombie.takeDamage(HEAD_STOMP_DAMAGE);
+	}
+	
+	/** Regenerates the player to default health. */
+	public void regenerate()
+	{
+		//Give the player his default health back.
+		setHealth(DEFAULT_HEALTH);
 	}
 	
 	/** Called when the player loses his target. */

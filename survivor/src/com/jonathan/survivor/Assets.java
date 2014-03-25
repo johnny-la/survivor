@@ -92,6 +92,8 @@ public class Assets
 	private FreeTypeFontGenerator moonFlowerBoldGenerator;
 	public BitmapFont moonFlowerBold_54;
 	public BitmapFont moonFlowerBold_38;
+	private FreeTypeFontGenerator newTaieLueGenerator;
+	public BitmapFont newTaieLue_17;
 	
 	public Skin mainMenuSkin;	//We register an atlas to this skin (the main menu atlas). This lets us retrieve sprites from the atlas to use with 2D widgets.
 	public TextButtonStyle mainMenuButtonStyle;	//Defines the look of main menu buttons
@@ -126,6 +128,7 @@ public class Assets
 	public ButtonStyle backButtonStyle;
 	public LabelStyle hudHeaderStyle;
 	public LabelStyle hudLabelStyle;
+	public LabelStyle smallLabelStyle;
 	
 	public TextureAtlas versusAnimAtlas;
 	public SkeletonJson versusAnimSkeletonJson;
@@ -138,12 +141,15 @@ public class Assets
 	//public Slot meleeWeaponSlot;	//Stores slot where melee weapon images are placed. Populated in PlayerRenderer.
 	//public Attachment axeAttachment;	//Stores the names of the images in Spine used for each weapon. Set in PlayerRenderer.
 	public Animation playerIdle;
+	public Animation playerIdle_Combat;
 	public Animation playerWalk;
 	public Animation playerJump;
+	public Animation playerJump_Combat;
 	public Animation playerFall;
 	public Animation playerChopTree;
 	public Animation playerChopTree_Start;
 	public Animation playerEnterCombat;
+	public Animation playerMelee;
 	
 	public TextureAtlas zombieAtlas;
 	public SkeletonJson zombieSkeletonJson;
@@ -379,6 +385,13 @@ public class Assets
 		moonFlowerBold_38.setScale(moonFlowerBold_38.getScaleX() / fontScale);	
 		moonFlowerBold_38.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
+		//Creates the Font Generator for the Microsoft New Taie Lue Normal font.
+		newTaieLueGenerator = new FreeTypeFontGenerator(Gdx.files.internal("ui/fonts/new taie lue/NTAILU.ttf"));
+		//Creates the Microsoft New Taie Lue Normal 17pt font. This must be done after the loading is finished because AssetManagers can't load FreeTypeFontGenerators.
+		newTaieLue_17 = newTaieLueGenerator.generateFont((int)(17 * fontScale));	
+		newTaieLue_17.setScale(newTaieLue_17.getScaleX() / fontScale);	
+		newTaieLue_17.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
 		//Creates the skin and the styles used for the main menu GUI.
 		mainMenuSkin = new Skin(mainMenuAtlas);
 		
@@ -561,6 +574,11 @@ public class Assets
 		hudLabelStyle.font = moonFlowerBold_38;
 		hudLabelStyle.fontColor = Color.BLACK;
 		
+		//Creates the style for the small labels like those in the entries of the survival guide.
+		smallLabelStyle = new LabelStyle();
+		smallLabelStyle.font = newTaieLue_17;
+		smallLabelStyle.fontColor = Color.BLACK;
+		
 		//Sets up the Spine data used to display the portion of the UI used to show the versus Hud.
 		versusAnimSkeletonJson = new SkeletonJson(versusAnimAtlas);
 		versusAnimSkeletonJson.setScale(VERSUS_ANIM_SKELETON_SCALE);	//Re-scale the skeleton to fit world-units. 
@@ -574,12 +592,15 @@ public class Assets
 		playerSkeletonData = playerSkeletonJson.readSkeletonData(Gdx.files.internal("game/player/skeleton/player_skeleton.json"));		
 		//Gets the animations from the Player's SkeletonData instance.
 		playerIdle = playerSkeletonData.findAnimation("Idle");
+		playerIdle_Combat = playerSkeletonData.findAnimation("Idle_Combat");
 		playerWalk = playerSkeletonData.findAnimation("Walk");
 		playerJump = playerSkeletonData.findAnimation("Jump");
+		playerJump_Combat = playerSkeletonData.findAnimation("Jump_Combat");
 		playerFall = playerSkeletonData.findAnimation("Fall");
 		playerChopTree = playerSkeletonData.findAnimation("ChopTree");
 		playerChopTree_Start = playerSkeletonData.findAnimation("ChopTree_Start");
 		playerEnterCombat = playerSkeletonData.findAnimation("Enter_Combat");
+		playerMelee = playerSkeletonData.findAnimation("Melee");
 		
 		//Sets up the Spine data used to display and animate the zombie.
 		zombieSkeletonJson = new SkeletonJson(zombieAtlas);

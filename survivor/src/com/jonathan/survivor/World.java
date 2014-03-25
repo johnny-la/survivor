@@ -332,10 +332,15 @@ public class World
 		human.setVelocityX(0);
 		
 		//Only set the human to idle state if he is not jumping or falling. Otherwise, he will be set to IDLE whilst jumping/falling, causing glitches.
-		//Regardless, the human will be set to IDLE once he lands his jump/fall. 
-		if(human.getState() != State.JUMP && human.getState() != State.FALL)
+		//Regardless, the human will be set to IDLE once he lands his jump/fall. Or, if the human is in COMBAT mode, the JUMP/FALL state can be interrupted.
+		if((human.getState() != State.JUMP && human.getState() != State.FALL) || human.getMode() == Mode.COMBAT)
+		{
+			//Set the human's y-velocity to zero in the case that he was jumping or falling. Ensures that the human completely stops moving.
+			human.setVelocityY(0);
+			
 			//Tells the human instance that it is in idle state so that it stops moving. 
 			human.setState(State.IDLE);
+		}
 	}
 	
 	/** Makes the player walk to the specified GameObject. */
@@ -419,12 +424,12 @@ public class World
 		//Sets the world to COMBAT state. As such, the world's game logic will be handled differently, and the Combat Hud will be displayed instead of the Exploration one.
 		setWorldState(WorldState.COMBAT);
 		
+		//Inform the combat level which player and zombie are fighting. Positions the humans at the right place on the level.
+		combatLevel.startFighting(player, player.getZombieToFight());
+		
 		//Makes sure the player and the zombie stop moving before entering combat.
 		stopMoving(player);
 		stopMoving(player.getZombieToFight());
-		
-		//Inform the combat level which player and zombie are fighting. Positions the humans at the right place on the level.
-		combatLevel.startFighting(player, player.getZombieToFight());
 		
 		//Tell the world to use the combat level. This level will now be rendered and used as the playing surface for all GameObjects.
 		setLevel(combatLevel);
@@ -433,10 +438,35 @@ public class World
 	/** Checks if the player is colliding with any GameObjects. */
 	private void checkPlayerCollisions()
 	{
+		//If the player is in COMBAT mode, fighting a zombie
+		if(player.getMode() == Mode.COMBAT)
+		{
+			//Check if the player has intersected with anything in combat
+			checkCombatCollisions();
+		}
+		
 		//Checks if the player has collided with his target.
 		checkTargetCollisions();
 	}
 	
+	/** Checks if the player has made any collisions whilst in COMBAT mode with another zombie. */
+	private void checkCombatCollisions() 
+	{
+		//Retrieves the zombie that the player is fighting.
+		Zombie zombie = player.getZombieToFight();
+		
+		//If the player is jumping
+		if(player.getState() == State.JUMP)
+		{
+			//If the player is falling down and has hit the zombie
+			if(player.getVelocity().y < 0 && player.getCollider().intersects(zombie.getCollider()))
+			{
+				player.hitHead(zombie);
+			}
+		}
+		
+	}
+
 	/** Checks if the player has collided with his target. */
 	private void checkTargetCollisions()
 	{

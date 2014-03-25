@@ -43,6 +43,9 @@ public abstract class Human extends GameObject implements Poolable
 	/** Holds true if the Human has reached his target. */
 	private boolean targetReached;
 	
+	/** Stores the human's health. Once it drops below zero, the human is dead. */
+	private float health;
+	
 	/** Holds the walking speed of the human in the x-direction in meters/second. */
 	private float walkSpeed;
 	
@@ -187,6 +190,29 @@ public abstract class Human extends GameObject implements Poolable
 	/** Sets the human's walking speed in the x-direction in meters/second. */
 	public void setWalkSpeed(float walkSpeed) {
 		this.walkSpeed = walkSpeed;
+	}
+	
+	/** Deals damage to the human by removing the given amount from its health. */
+	public void takeDamage(float damage)
+	{
+		//Subtract the tree's health by the damage dealt.
+		health -= damage;
+		
+		//If the human has been killed
+		if(health <= 0)
+		{
+			
+		}
+	}
+	
+	/** Gets the human's health. */
+	public float getHealth() {
+		return health;
+	}
+
+	/** Sets the human's health. */
+	public void setHealth(float health) {
+		this.health = health;
 	}
 	
 	/** Called whenever this box GameObject has been pushed back into a pool. In this case, we reset the box's state back to default. */

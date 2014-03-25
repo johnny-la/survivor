@@ -132,6 +132,12 @@ public class CombatHud extends Hud
 					world.getPlayer().jump();
 				}
 			}
+			//Else, if the melee button was pressed
+			else if(event.getTarget() == meleeButton || event.getTarget() == meleeButton.getImage())
+			{
+				//Make the player perform a melee attack
+				world.getPlayer().melee();
+			}
 			//Else, if the pause button was pressed
 			else if(event.getTarget() == pauseButton)
 			{

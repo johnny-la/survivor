@@ -82,7 +82,7 @@ public class PlayerRenderer
 			public void event(int trackIndex, Event event) 
 			{
 				//If the player's CHOP_TREE animation is playing, and the HIT_TREE event was fired
-				if(event.getInt() == HIT_TREE)
+				if(event.getInt() == HIT_TREE )
 				{
 					//Deal damage to the tree the player is chopping.
 					player.hitTree();
@@ -95,6 +95,12 @@ public class PlayerRenderer
 			{
 				//If the ENTER_COMBAT animation has just finished playing
 				if(player.getState() == State.ENTER_COMBAT)
+				{
+					//Set the player back to IDLE state so that his correct animation plays.
+					player.setState(State.IDLE);
+				}
+				//Else, if the player has just finished his MELEE animation
+				else if(player.getState() == State.MELEE)
 				{
 					//Set the player back to IDLE state so that his correct animation plays.
 					player.setState(State.IDLE);
@@ -176,10 +182,21 @@ public class PlayerRenderer
 			//Sets the character to IDLE state, indicating that the renderer has received the message that the player spawned.
 			player.setState(State.IDLE);
 		}
+		//Else, if the player is in IDLE state
 		else if(player.getState() == State.IDLE)
 		{
-			//Sets the player to his idle animation. First argument is an arbitrary index, and third argument specifies to loop the animation.
-			animationState.setAnimation(0, assets.playerIdle, true);
+			//If the player is in EXPLORATION mode
+			if(player.getMode() == Mode.EXPLORING)
+			{
+				//Sets the player to his default idle animation. First argument is an arbitrary index, and third argument specifies to loop the animation.
+				animationState.setAnimation(0, assets.playerIdle, true);
+			}
+			//Else, if the player is in COMBAT mode
+			if(player.getMode() == Mode.COMBAT)
+			{
+				//Sets the player to his combat idle animation. First argument is an arbitrary index, and third argument specifies to loop the animation.
+				animationState.setAnimation(0, assets.playerIdle_Combat, true);
+			}	
 		}
 		else if(player.getState() == State.WALK)
 		{
@@ -188,13 +205,20 @@ public class PlayerRenderer
 		}
 		//If the player is jumping
 		if(player.getState() == State.JUMP)
-		{
-			//If the player is in exploration mode
+		{	
+			//If the player is in EXPLORATION mode
 			if(player.getMode() == Mode.EXPLORING)
 			{
-				//Plays the jump animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
+				//Plays the default jump animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
 				animationState.setAnimation(0, assets.playerJump, false);
 			}
+			//Else, if the player is in COMBAT mode
+			if(player.getMode() == Mode.COMBAT)
+			{
+				//Plays the combat jump animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
+				animationState.setAnimation(0, assets.playerJump_Combat, false);
+			}
+
 		}
 		//Else, if the player is falling from one layer to the next
 		else if(player.getState() == State.FALL)
@@ -216,6 +240,12 @@ public class PlayerRenderer
 		{
 			//Plays the ENTER_COMBAT animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
 			animationState.setAnimation(0, assets.playerEnterCombat, false);
+		}
+		//Else, if the player is supposed to perform a melee attack
+		else if(player.getState() == State.MELEE)
+		{
+			//Play the player's MELEE animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
+			animationState.setAnimation(0, assets.playerMelee, false);
 		}
 	}
 	

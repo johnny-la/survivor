@@ -82,7 +82,7 @@ public class SurvivalGuideHud extends Hud
 		list.setSelectedIndex(-1);
 		
 		//Instantiates the label that will display the description for an entry in the survival guide.
-		entryLabel = new Label("", assets.hudLabelStyle);
+		entryLabel = new Label("", assets.smallLabelStyle);
 		
 		//Creates the back button using the designated ButtonStyle, which dictates its appearance.
 		backButton = new Button(assets.backButtonStyle);
