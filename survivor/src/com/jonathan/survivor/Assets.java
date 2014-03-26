@@ -150,6 +150,7 @@ public class Assets
 	public Animation playerChopTree_Start;
 	public Animation playerEnterCombat;
 	public Animation playerMelee;
+	public Animation playerHit;
 	
 	public TextureAtlas zombieAtlas;
 	public SkeletonJson zombieSkeletonJson;
@@ -159,6 +160,7 @@ public class Assets
 	public Animation zombieAlerted;
 	public Animation zombieEnterCombat;
 	public Animation zombieMelee;
+	public Animation zombieHitHead;
 	
 	public TextureAtlas interactableObjectAtlas;
 	public SkeletonJson treeSkeletonJson;
@@ -601,6 +603,7 @@ public class Assets
 		playerChopTree_Start = playerSkeletonData.findAnimation("ChopTree_Start");
 		playerEnterCombat = playerSkeletonData.findAnimation("Enter_Combat");
 		playerMelee = playerSkeletonData.findAnimation("Melee");
+		playerHit = playerSkeletonData.findAnimation("Hit");
 		
 		//Sets up the Spine data used to display and animate the zombie.
 		zombieSkeletonJson = new SkeletonJson(zombieAtlas);
@@ -612,6 +615,7 @@ public class Assets
 		zombieAlerted = zombieSkeletonData.findAnimation("Alerted");
 		zombieEnterCombat = zombieSkeletonData.findAnimation("Enter_Combat");
 		zombieMelee = zombieSkeletonData.findAnimation("Melee");
+		zombieHitHead = zombieSkeletonData.findAnimation("Hit_Head");
 		
 		
 		//Sets up the Spine data used to display and animate the trees.

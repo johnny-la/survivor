@@ -30,7 +30,7 @@ public class World
 	public static final Vector2 GRAVITY_EXPLORATION = new Vector2(0, -15f);
 	
 	/** Stores the acceleration due to gravity in the world in m/s^2 when the player is fighting a zombie in combat state. */
-	public static final Vector2 GRAVITY_COMBAT = new Vector2(0, -52f);
+	public static final Vector2 GRAVITY_COMBAT = new Vector2(0, -45f);
 	
 	/** Stores the seed used to generate the geometry of the level and randomly place its GameObjects. */
 	private int worldSeed;
@@ -208,6 +208,9 @@ public class World
 	/** Updates the player when he is in COMBAT mode, fighting another zombie */
 	private void updatePlayerCombat() 
 	{
+		//Check if the player has collided with anything of importance.
+		checkPlayerCollisions();
+		
 		//If the player is in IDLE state, just standing there
 		if(player.getState() == State.IDLE)
 		{
@@ -438,15 +441,18 @@ public class World
 	/** Checks if the player is colliding with any GameObjects. */
 	private void checkPlayerCollisions()
 	{
-		//If the player is in COMBAT mode, fighting a zombie
-		if(player.getMode() == Mode.COMBAT)
+		//If the player is in EXPLORATION mode, check collisions accordingly.
+		if(player.getMode() == Mode.EXPLORING)
+		{
+			//Checks if the player has collided with his target.
+			checkTargetCollisions();
+		}
+		//Else, if the player is in COMBAT mode, fighting a zombie
+		else if(player.getMode() == Mode.COMBAT)
 		{
 			//Check if the player has intersected with anything in combat
 			checkCombatCollisions();
 		}
-		
-		//Checks if the player has collided with his target.
-		checkTargetCollisions();
 	}
 	
 	/** Checks if the player has made any collisions whilst in COMBAT mode with another zombie. */
@@ -458,11 +464,23 @@ public class World
 		//If the player is jumping
 		if(player.getState() == State.JUMP)
 		{
-			//If the player is falling down and has hit the zombie
-			if(player.getVelocity().y < 0 && player.getCollider().intersects(zombie.getCollider()))
+			//If the player hit the zombie
+			if(player.getCollider().intersects(zombie.getCollider()))
 			{
-				player.hitHead(zombie);
+				//If the player was falling down when hitting the zombie, he hit the zombie's head
+				if(player.getVelocity().y < 0)
+				{
+					//Make the player hit the zombie's head, making him jump after the hit.
+					player.hitHead(zombie);
+				}
 			}
+			
+		}
+		//Else, if the player wasn't jumping, but the zombie hit the player while charging.
+		else if(zombie.getState() == State.CHARGE && player.getCollider().intersects(zombie.getCollider()))
+		{
+			//Make the zombie charge hit the player.
+			zombie.chargeHit(player);
 		}
 		
 	}
@@ -773,6 +791,13 @@ public class World
 	{
 		//Updates the TerrainLevel of the world.
 		this.terrainLevel = terrainLevel;
+	}
+	
+	/** Retrieves the combat level of the world. */
+	public CombatLevel getCombatLevel() {
+
+		//Returns the world's combat level.
+		return combatLevel;
 	}
 	
 	/** Returns the state of the world, used to tell the GameScreen how to render its GUI. */

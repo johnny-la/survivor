@@ -10,6 +10,7 @@ import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Assets;
 import com.jonathan.survivor.entity.GameObject;
 import com.jonathan.survivor.entity.Human.Direction;
+import com.jonathan.survivor.entity.Human.Mode;
 import com.jonathan.survivor.entity.Human.State;
 import com.jonathan.survivor.entity.Zombie;
 
@@ -164,6 +165,18 @@ public class ZombieRenderer
 		{
 			//Plays the ENTER_COMBAT animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
 			animationState.setAnimation(0, assets.zombieEnterCombat, false);
+		}
+		//Else, if the zombie is charging towards the player
+		else if(zombie.getState() == State.CHARGE)
+		{
+			//Plays the walk animation. First argument is an arbitrary index, and third argument specifies to loop the walk animation.
+			animationState.setAnimation(0, assets.zombieWalk, true);
+		}
+		//Else, if the zombie was hit by the player
+		else if(zombie.getState() == State.HIT_HEAD)
+		{
+			//Plays the HIT_HEAD animation. First argument is an arbitrary index, and third argument specifies to loop the walk animation.
+			animationState.setAnimation(0, assets.zombieHitHead, true);
 		}
 		
 		//Updates the speed at which the zombie's animations play, depending on the zombie's current state.

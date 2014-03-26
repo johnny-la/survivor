@@ -6,6 +6,7 @@ import com.esotericsoftware.spine.AnimationState.AnimationStateListener;
 import com.esotericsoftware.spine.Event;
 import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Assets;
+import com.jonathan.survivor.entity.Human.Mode;
 import com.jonathan.survivor.entity.Human.State;
 
 public class Zombie extends Human implements Clickable
@@ -19,6 +20,12 @@ public class Zombie extends Human implements Clickable
 	
 	/** Holds the walking speed of the zombie when he is following the player. */
 	public static final float ALERTED_WALK_SPEED = 2.7f;
+
+	/** Stores the horizontal speed of the zombie when he is charging. */
+	public static final float CHARGE_WALK_SPEED = 9f;
+	
+	/** Holds the default amount of damage the CHARGE attack deals to the player. */
+	public static final float DEFAULT_CHARGE_DAMAGE = 30;
 	
 	/** Stores the multiplier of the zombie's walk animation when he is alerted and is following the player. */
 	public static final float ALERTED_ANIM_SPEED = ALERTED_WALK_SPEED / NORMAL_WALK_SPEED;
@@ -113,6 +120,17 @@ public class Zombie extends Human implements Clickable
 		loseTarget();
 	}
 	
+	/** Make the zombie charge hit the player. */
+	public void chargeHit(Player player) 
+	{
+		//Tell the player he was hit
+		player.setState(State.HIT);
+		
+		//Deal damage to the player according to the pre-defined constant.
+		player.takeDamage(DEFAULT_CHARGE_DAMAGE);
+		
+	}
+	
 	/** Called when the zombie loses his target. */
 	@Override
 	public void loseTarget()
@@ -131,6 +149,33 @@ public class Zombie extends Human implements Clickable
 	{
 		//The zombie can always be targetted.
 		return true;
+	}
+	
+	//Changes the zombie's state. Overridden to add functionality.
+	@Override
+	public void setState(State state)
+	{
+		//Change the zombie's state.
+		super.setState(state);
+		
+		//If the zombie is walking.
+		if(state == State.WALK)
+		{
+			//If the zombie is alerted, he walks faster
+			if(isAlerted())
+				//Set the zombie's walk speed to the correct pre-defined constant
+				setWalkSpeed(ALERTED_WALK_SPEED);
+			//Else, if the zombie is not alerted, and doesn't want to follow the player, his speed is different
+			else
+				//Set the zombie's walk speed to the correct pre-defined constant
+				setWalkSpeed(NORMAL_WALK_SPEED);
+		}
+		//Else, if the zombie is charging
+		else if(state == State.CHARGE)
+		{
+			//Set the zombie's walk speed to the correct pre-defined constant
+			setWalkSpeed(CHARGE_WALK_SPEED);
+		}
 	}
 
 	/** Retrieves the Spine AnimationState instance used to change the zombie's animations and control them. */
@@ -173,6 +218,24 @@ public class Zombie extends Human implements Clickable
 				{
 					//Set the zombie back to IDLE state so that his correct animation plays.
 					setState(State.IDLE);
+				}
+				//Else, if the player was hit
+				else if(getState() == State.HIT_HEAD)
+				{
+					//If the zombie is in EXPLORATION mode
+					if(getMode() == Mode.EXPLORING)
+					{
+						
+					}
+					//Else, if the zombie is in COMBAT mode with the player.
+					else if(getMode() == Mode.COMBAT)
+					{
+						//Set the zombie to WALK state, telling him to walk back to his starting position facing the player.
+						setState(State.WALK);
+						
+						//Tell the zombie to walk to the RIGHT to go back to his original position.
+						setDirection(Direction.RIGHT);
+					}
 				}
 				
 			}

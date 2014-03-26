@@ -105,6 +105,12 @@ public class PlayerRenderer
 					//Set the player back to IDLE state so that his correct animation plays.
 					player.setState(State.IDLE);
 				}
+				//Else, if the HIT animation just finished playing
+				else if(player.getState() == State.HIT)
+				{
+					//Set the player back to IDLE state
+					player.setState(State.IDLE);
+				}
 				
 			}
 
@@ -173,6 +179,7 @@ public class PlayerRenderer
 		//Stores the previous state of the player to determine if his state changes on the next render() call.
 		player.setPreviousState(player.getState());
 		
+		System.out.println("Player state: " + player.getState());
 		//If the player has just spawned
 		if(player.getState() == State.SPAWN)
 		{
@@ -246,6 +253,12 @@ public class PlayerRenderer
 		{
 			//Play the player's MELEE animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
 			animationState.setAnimation(0, assets.playerMelee, false);
+		}
+		//Else, if the player was hit by a zombie
+		else if(player.getState() == State.HIT)
+		{
+			//Play the player's HIT animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
+			animationState.setAnimation(0, assets.playerHit, false);
 		}
 	}
 	

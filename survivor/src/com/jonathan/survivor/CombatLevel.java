@@ -17,8 +17,9 @@ import com.jonathan.survivor.math.Vector2;
 
 public class CombatLevel implements Level
 {
-	/** Stores the width of the line in meters. This is simply the length of the black line on the level. */
-	private static final float LINE_WIDTH = 30f;
+	/** Stores the width of the level in meters. This is simply the length of the black line on the level. */
+	private static final float LEVEL_WIDTH = 20f;
+	
 	/** Stores the y-position of the level's black line. */
 	private static final float LINE_HEIGHT = 4.8f;
 	
@@ -46,8 +47,8 @@ public class CombatLevel implements Level
 	public CombatLevel()
 	{	
 		//Creates the left and right end points of the level's black line. Its position is determined by the pre-defined constants.
-		leftPoint = new Vector2(-LINE_WIDTH/2, LINE_HEIGHT);
-		rightPoint = new Vector2(LINE_WIDTH/2, LINE_HEIGHT);
+		leftPoint = new Vector2(-LEVEL_WIDTH/2, LINE_HEIGHT);
+		rightPoint = new Vector2(LEVEL_WIDTH/2, LINE_HEIGHT);
 	}
 	
 	/** Makes the given player and zombie start fighting on this CombatLevel. */
@@ -111,6 +112,30 @@ public class CombatLevel implements Level
 	{
 		//Returns the ground height at the zombie's initial x-position.
 		return getGroundHeight(getZombieStartX());
+	}
+	
+	/** Returns true if the given GameObject is past the left edge of the level. */
+	public boolean isPastLeftEdge(GameObject go)
+	{
+		//If the GameObject is to the left of the left point of the level, return true
+		if(go.getX() < leftPoint.x)
+			//Return true, since the GameObject is past the left edge of the level.
+			return true;
+		
+		//If this statement is reached, the GameObject is not past the left edge
+		return false;
+	}
+	
+	/** Returns true if the given GameObject is past the right edge of the level. */
+	public boolean isPastRightEdge(GameObject go)
+	{
+		//If the GameObject is to the left of the right point of the level, return true
+		if(go.getX() > rightPoint.x)
+			//Return true, since the GameObject is past the right edge of the level.
+			return true;
+		
+		//If this statement is reached, the GameObject is not past the right edge
+		return false;
 	}
 
 	/** Returns the y-position of the ground at the given x-position. */

@@ -26,7 +26,7 @@ public class ZombieManager
 	private static final float ZOMBIE_BACK_VIEW = 2.5f;
 	
 	/** Stores the amount of time the zombie stays idle before choosing a move to attack the player (in COMBAT mode). */
-	private static final float IDLE_TIME_COMBAT = 5;
+	private static final float IDLE_TIME_COMBAT = 3;
 	
 	/** Holds the World instance that the zombies are a part of. Used to access the convenience methods created for the player and needed for the zombies. */
 	private World world;
@@ -46,12 +46,18 @@ public class ZombieManager
 		//If the zombie is in EXPLORATION mode
 		if(zombie.getMode() == Mode.EXPLORING)
 		{
+			//Updates the zombie's AI in exploration mode before updating its game logic.
+			updateAIExploring(zombie, deltaTime);
+			
 			//Delegate the update call to the 'updateExploring()' method.
 			updateExploring(zombie, deltaTime);
 		}
 		//Else, if the zombie is in COMBAT mode
-		else if(zombie.getMode() == Mode.EXPLORING)
+		else if(zombie.getMode() == Mode.COMBAT)
 		{
+			//Updates the zombie's AI in combat mode before updating its game logic.
+			updateAICombat(zombie, deltaTime);
+			
 			//Delegate the update call to the 'updateCombat()' method.
 			updateCombat(zombie, deltaTime);
 		}
@@ -66,24 +72,21 @@ public class ZombieManager
 		//Check collisions with the zombie.
 		checkCollisions(zombie);
 		
-		//Updates the zombie's AI before updating its game logic. In essence, this method determines the zombie's next move.
-		updateAI(zombie, deltaTime);
-		
 		//If the zombie is in idle state
 		if(zombie.getState() == State.IDLE)
 		{
 			
 		}
-		//Else, if the player is walking
+		//Else, if the zombie is walking
 		else if(zombie.getState() == State.WALK)
 		{
-			//If the player is walking to the right
+			//If the zombie is walking to the right
 			if(zombie.getDirection() == Direction.RIGHT)
 			{
 				//Apply a positive x-velocity to the zombie using the predefined zombie's walking speed.
 				zombie.setVelocity(zombie.getWalkSpeed(), 0);
 			}
-			//Else, if the player is walking to the left
+			//Else, if the zombie is walking to the left
 			else
 			{
 				//Apply a negative x-velocity to the zombie using the predefined zombie's walking speed.
@@ -99,10 +102,99 @@ public class ZombieManager
 		
 	}
 	
+	/** Updates the zombie's state according to the principles of his artifical intelligence. Called when the zombie is in Exploration mode. */
+	private void updateAIExploring(Zombie zombie, float deltaTime) 
+	{
+		//If deltaTime is zero, the game is paused. Thus, don't compute AI for this render call.
+		if(deltaTime == 0)
+			return;
+		
+		//If the zombie is in IDLE state (i.e., he is just standing there)
+		if(zombie.getState() == State.IDLE)
+		{
+			//If the zombie has been in IDLE state for long enough, make him move again.
+			if(zombie.getStateTime() > IDLE_TIME_EXPLORATION)
+			{
+				//If the zombie was facing the left when idle
+				if(zombie.getDirection() == Direction.LEFT)
+				{
+					//Make the zombie walk to the right
+					world.walk(zombie, Direction.RIGHT);
+				}
+				//Else, if the zombie was facing to the right when idle
+				else 
+				{
+					//Make the zombie walk left.
+					world.walk(zombie, Direction.LEFT);
+				}
+			}
+			
+			//Checks if the player is close to the zombie. If so, the zombie is alerted.
+			checkPlayerProximity(zombie);
+			
+		}
+		//If the zombie is currently walking
+		if(zombie.getState() == State.WALK)
+		{
+			//If the zombie is close to the edge of his TerrainLayer, and has been walking for more than one second (Assures that the zombie doesn't stop walking)
+			if(world.closeToLayerEdge(zombie) && zombie.getStateTime() > 1f)
+			{
+				//Tell the zombie to stop walking. We want the zombie to stay within the confines of his designated layer.
+				world.stopMoving(zombie);
+			}
+			
+			//Checks if the player is close to the zombie. If so, the zombie is alerted.
+			checkPlayerProximity(zombie);
+		}
+		
+	}
+	
 	/** Updates the zombie when he is in COMBAT mode and fighting the player. */
 	private void updateCombat(Zombie zombie, float deltaTime) 
 	{
 		//If the zombie is in IDLE state
+		if(zombie.getState() == State.IDLE)
+		{
+			
+		}
+		//Else, if the zombie is walking or charging, make him walk.
+		else if(zombie.getState() == State.WALK || zombie.getState() == State.CHARGE)
+		{
+			//If the zombie is walking to the right
+			if(zombie.getDirection() == Direction.RIGHT)
+			{
+				//Apply a positive x-velocity to the zombie using the predefined zombie's walking speed.
+				zombie.setVelocity(zombie.getWalkSpeed(), 0);
+			}
+			//Else, if the zombie is walking to the left
+			else
+			{
+				//Apply a negative x-velocity to the zombie using the predefined zombie's walking speed.
+				zombie.setVelocity(-zombie.getWalkSpeed(), 0);
+			}
+			
+			//Ensures the zombie is always at ground height.
+			world.lockToGround(zombie);
+		}		
+		//Else, if the zombie has been hit in the head
+		else if(zombie.getState() == State.HIT_HEAD)
+		{
+			//Make the zombie stop moving until his HIT animation 
+			world.stopMoving(zombie);
+			
+			//Set the zombie back to HIT state, since the stopMoving function set his state back to IDLE.
+			zombie.setState(State.HIT_HEAD);
+		}
+	}
+
+	/** Updates the zombie's state according to the principles of his artifical intelligence. Called when the zombie is in COMBAT mode. */
+	private void updateAICombat(Zombie zombie, float deltaTime) 
+	{
+		//If deltaTime is zero, the game is paused. Thus, don't compute AI for this render call.
+		if(deltaTime == 0)
+			return;
+		
+		//If the zombie is in IDLE state (i.e., he is just standing there)
 		if(zombie.getState() == State.IDLE)
 		{
 			//If the zombie has been idling for long enough
@@ -111,14 +203,45 @@ public class ZombieManager
 				//Make the zombie choose his next move to attack the player
 				chooseNextMove(zombie);
 			}
+			
+		}
+		//If the zombie is currently in WALK state, he should be walking back to his start position.
+		else if(zombie.getState() == State.WALK)
+		{
+			//Moves the zombie to his start position.
+			moveToStart(zombie);
+		}
+		//Else, if the zombie is charging at the player
+		else if(zombie.getState() == State.CHARGE)
+		{
+			//Makes the zombie spawn at the right edge of the level once he reaches the left edge.
+			checkLevelBoundaries(zombie);
 		}
 		
 	}
 
+	/** Make the zombie charge towards the player. */
+	private void charge(Zombie zombie) 
+	{
+		//Tell the zombie he is charging towards the player.
+		zombie.setState(State.CHARGE);
+		
+		//Set the zombie's walk speed to the correct constant
+		zombie.setWalkSpeed(Zombie.CHARGE_WALK_SPEED);
+		
+	}
+	
 	/** Makes the given zombie choose the next move to attack the player with. */
 	private void chooseNextMove(Zombie zombie) 
 	{
+		//Generate a random number to choose the next move.
+		float randomFloat = (float)Math.random();
 		
+		if(randomFloat > 0.0f)
+		{
+			//Make the zombie charge towards the player.
+			charge(zombie);
+		}
 	}
 
 	/** Checks if the zombie has intersected with any GameObject which is pertinent to the zombie, such as the player. */
@@ -137,55 +260,81 @@ public class ZombieManager
 			world.playVersusAnimation();
 		}
 	}
-
-	/** Updates the zombie's state according to the principles of his artifical intelligence. */
-	private void updateAI(Zombie zombie, float deltaTime) 
+	
+	/** Moves the zombie back to his starting position. */
+	private void moveToStart(Zombie zombie) 
 	{
-		//If deltaTime is zero, the game is paused. Thus, don't compute AI for this render call.
-		if(deltaTime == 0)
-			return;
+		//Gets the starting x-position of the zombie
+		float startingPoint = world.getCombatLevel().getZombieStartX();
 		
-		//If the zombie is in exploration mode, update its AI accordingly.
-		if(zombie.getMode() == Mode.EXPLORING)
-		{			
-			//If the zombie is in IDLE state (i.e., he is just standing there)
-			if(zombie.getState() == State.IDLE)
+		//If the zombie is already at his starting point
+		if(zombie.getX() == startingPoint)
+		{
+			//Therefore, stop the zombie, since he has reached his starting point.
+			world.stopMoving(zombie);
+			
+			//Make the zombie face left towards the player.
+			zombie.setDirection(Direction.LEFT);
+		}
+		
+		//If the starting point is to the left of the zombie
+		if(startingPoint < zombie.getX())
+		{
+			//If the zombie was walking to the right, and the zombie is to the right of his objective, he has reached walked past his starting point.
+			if(zombie.getDirection() == Direction.RIGHT)
 			{
-				//If the zombie has been in IDLE state for long enough, make him move again.
-				if(zombie.getStateTime() > IDLE_TIME_EXPLORATION)
-				{
-					//If the zombie was facing the left when idle
-					if(zombie.getDirection() == Direction.LEFT)
-					{
-						//Make the zombie walk to the right
-						world.walk(zombie, Direction.RIGHT);
-					}
-					//Else, if the zombie was facing to the right when idle
-					else 
-					{
-						//Make the zombie walk left.
-						world.walk(zombie, Direction.LEFT);
-					}
-				}
+				//Therefore, stop the zombie, since he has reached his starting point.
+				world.stopMoving(zombie);
 				
-				//Checks if the player is close to the zombie. If so, the zombie is alerted.
-				checkPlayerProximity(zombie);
+				//Make the zombie face left towards the player.
+				zombie.setDirection(Direction.LEFT);
 				
+				//Snap the zombie to his starting point
+				zombie.setX(startingPoint);
 			}
-			//If the zombie is currently walking
-			if(zombie.getState() == State.WALK)
+			//Else, if the player has not reached his starting point, make him continue walking.
+			else
 			{
-				//If the zombie is close to the edge of his TerrainLayer, and has been walking for more than one second (Assures that the zombie doesn't stop walking)
-				if(world.closeToLayerEdge(zombie) && zombie.getStateTime() > 1f)
-				{
-					//Tell the zombie to stop walking. We want the zombie to stay within the confines of his designated layer.
-					world.stopMoving(zombie);
-				}
-				
-				//Checks if the player is close to the zombie. If so, the zombie is alerted.
-				checkPlayerProximity(zombie);
+				//Make the zombie walk to the left, towards his starting position.
+				world.walk(zombie, Direction.LEFT);
 			}
 		}
+		//Else, if the starting point is to the right of the zombie
+		else if(startingPoint > zombie.getX())
+		{
+			//If the zombie was walking to the left, and the zombie is to the left of his objective, he has reached walked past his starting point.
+			if(zombie.getDirection() == Direction.LEFT)
+			{
+				//Therefore, stop the zombie, since he has reached his starting point.
+				world.stopMoving(zombie);
+				
+				//Snap the zombie to his starting point
+				zombie.setX(startingPoint);
+			}
+			//Else, if the player has not reached his starting point, make him continue walking.
+			else
+			{
+				//Make the zombie walk to the right, towards his starting position.
+				world.walk(zombie, Direction.RIGHT);
+			}
+		}
+		
+		
+	}
+	
+	/** Checks if the zombie is within the confines of the combat level. If not, the zombie is respawned at the right place. */
+	private void checkLevelBoundaries(Zombie zombie) 
+	{
+		//If the zombie has past the left edge of the level
+		if(world.getCombatLevel().isPastLeftEdge(zombie))
+		{
+			//Spawn the zombie at the right edge of the level.
+			zombie.setX(world.getCombatLevel().getRightPoint().x);
+			
+			//Set the zombie to WALK state. He will then know to walk back to his starting position
+			zombie.setState(State.WALK);
+		}
+		
 	}
 
 	/** Sets the zombie to ALERT state if the zombie is not already alerted. */

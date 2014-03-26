@@ -54,10 +54,10 @@
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Label"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.utils.Pool.Poolable"/>
 <fullyQualifiedTypeName name="com.esotericsoftware.spine.Skeleton"/>
-<fullyQualifiedTypeName name="com.jonathan.survivor.World"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.math.Vector2"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.entity.Human.Mode"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.entity.Human.State"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.entity.Human.Direction"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.CombatLevel"/>
+<fullyQualifiedTypeName name="com.jonathan.survivor.World"/>
 </qualifiedTypeNameHistroy>
