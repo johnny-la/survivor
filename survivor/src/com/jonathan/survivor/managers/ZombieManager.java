@@ -223,12 +223,8 @@ public class ZombieManager
 	/** Make the zombie charge towards the player. */
 	private void charge(Zombie zombie) 
 	{
-		//Tell the zombie he is charging towards the player.
-		zombie.setState(State.CHARGE);
-		
-		//Set the zombie's walk speed to the correct constant
-		zombie.setWalkSpeed(Zombie.CHARGE_WALK_SPEED);
-		
+		//Play the CHARGE_START animation for the zombie. Once it is done, the zombie switches to CHARGE state to ram the player.
+		zombie.setState(State.CHARGE_START);		
 	}
 	
 	/** Makes the given zombie choose the next move to attack the player with. */

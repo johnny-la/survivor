@@ -22,7 +22,7 @@ public abstract class Human extends GameObject implements Poolable
 	protected Mode mode;
 	
 	public enum State {
-		SPAWN, IDLE, WALK, JUMP, FALL, CHOP_TREE, ENTER_COMBAT, MELEE, CHARGE, FIRE, ALERTED, HIT, HIT_HEAD, DEAD
+		SPAWN, IDLE, WALK, JUMP, FALL, CHOP_TREE, ENTER_COMBAT, MELEE, CHARGE_START, CHARGE, FIRE, ALERTED, HIT, HIT_HEAD, DEAD, 
 	}
 	
 	/** Stores the state of the Human (IDLE, WALK, etc.), usually used to dictate which animations to play. */
@@ -46,6 +46,9 @@ public abstract class Human extends GameObject implements Poolable
 	/** Stores the human's health. Once it drops below zero, the human is dead. */
 	private float health;
 	
+	/** Holds the amount of time that the Human is invulnerable to attacks. */
+	private float invulnerabilityTime;
+	
 	/** Holds the walking speed of the human in the x-direction in meters/second. */
 	private float walkSpeed;
 	
@@ -57,7 +60,19 @@ public abstract class Human extends GameObject implements Poolable
 	}
 
 	/** Updates the Human's game logic, such as his state time. */
-	public abstract void update(float deltaTime);
+	public void update(float deltaTime)
+	{
+		//Update the position of the player according to his velocity and acceleration.
+		updatePosition(deltaTime);
+		//Update the position of the collider to follow the player.
+		updateCollider();
+		
+		//Update the stateTime.
+		stateTime += deltaTime;
+		
+		//Update the invulnerability time. This essentially removes time off of the human's invulnerability.
+		invulnerabilityTime -= deltaTime;
+	}
 	
 	/** Lose the human's current target so that he stops walking towards his target. */
 	public void loseTarget()
@@ -203,6 +218,29 @@ public abstract class Human extends GameObject implements Poolable
 		{
 			
 		}
+		
+		//Make the Human invulnerable after being hit.
+		makeInvulnerable();
+	}
+	
+	/** Makes the Human invulnerable for a given amount of seconds. */
+	public abstract void makeInvulnerable();
+	
+	/** Returns true if the Human is invulnerable to incoming attacks. */
+	public boolean isInvulnerable()
+	{
+		//If the invulnerabilityTime is greater than zero, the Human is still invulnerable. 
+		return invulnerabilityTime > 0;
+	}
+	
+	/** Gets the amount of time that the Human is invulnerable for. */
+	public float getInvulnerabilityTime() {
+		return invulnerabilityTime;
+	}
+
+	/** Sets the amount of time that the Human is invulnerable for. */
+	public void setInvulnerabilityTime(float invulnerabilityTime) {
+		this.invulnerabilityTime = invulnerabilityTime;
 	}
 	
 	/** Gets the human's health. */

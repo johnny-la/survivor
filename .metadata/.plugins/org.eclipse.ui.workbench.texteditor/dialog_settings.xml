@@ -13,16 +13,16 @@
 		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="checkPlayer" key="selection"/>
+		<item value="charge" key="selection"/>
 		<list key="findhistory">
+			<item value="charge"/>
+			<item value="System.ou"/>
+			<item value="move the"/>
+			<item value="move"/>
+			<item value="HIT"/>
 			<item value="checkPlayer"/>
 			<item value="melee"/>
 			<item value="rightArrow"/>
-			<item value="leftArrow"/>
-			<item value="gun"/>
-			<item value="jump"/>
-			<item value="versus"/>
-			<item value="spine"/>
 		</list>
 		<list key="replacehistory">
 			<item value="fire"/>

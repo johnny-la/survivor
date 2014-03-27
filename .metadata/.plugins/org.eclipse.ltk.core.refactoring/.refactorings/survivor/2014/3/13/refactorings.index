@@ -7,3 +7,4 @@
 1395688931577	Rename field 'GRAVITY'
 1395830656336	Rename enum constant 'HIT'
 1395830887487	Rename enum constant 'HIT'
+1395914678612	Encapsulate field 'invulnerabilityTime'

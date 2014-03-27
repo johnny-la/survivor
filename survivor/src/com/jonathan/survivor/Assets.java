@@ -160,6 +160,8 @@ public class Assets
 	public Animation zombieAlerted;
 	public Animation zombieEnterCombat;
 	public Animation zombieMelee;
+	public Animation zombieCharge_Start;
+	public Animation zombieCharge;
 	public Animation zombieHitHead;
 	
 	public TextureAtlas interactableObjectAtlas;
@@ -615,6 +617,8 @@ public class Assets
 		zombieAlerted = zombieSkeletonData.findAnimation("Alerted");
 		zombieEnterCombat = zombieSkeletonData.findAnimation("Enter_Combat");
 		zombieMelee = zombieSkeletonData.findAnimation("Melee");
+		zombieCharge_Start = zombieSkeletonData.findAnimation("Charge_Start");
+		zombieCharge = zombieSkeletonData.findAnimation("Charge");
 		zombieHitHead = zombieSkeletonData.findAnimation("Hit_Head");
 		
 		

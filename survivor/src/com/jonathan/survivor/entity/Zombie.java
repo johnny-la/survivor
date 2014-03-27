@@ -18,6 +18,9 @@ public class Zombie extends Human implements Clickable
 	/** Stores the walk speed of the zombie in the horizontal direction. */
 	public static final float NORMAL_WALK_SPEED = 2.2f;
 	
+	/** Stores the walk speed of the zombie in the horizontal direction when in COMBAT mode. */
+	public static final float COMBAT_WALK_SPEED = 2.5f;
+	
 	/** Holds the walking speed of the zombie when he is following the player. */
 	public static final float ALERTED_WALK_SPEED = 2.7f;
 
@@ -34,6 +37,9 @@ public class Zombie extends Human implements Clickable
 	public static final float JUMP_SPEED = 10.7f;
 	/** Stores the downwards speed at which the zombie falls through a TerrainLayer. */
 	public static final float FALL_SPEED = -5;
+	
+	/** Holds the amount of time that the zombie is invulnerable when hit. */
+	public static final float INVULNERABLE_TIME = 3f;
 	
 	/** Holds the player's default health. */
 	public static final float DEFAULT_HEALTH = 60;
@@ -74,15 +80,11 @@ public class Zombie extends Human implements Clickable
 		setHealth(DEFAULT_HEALTH);
 	}
 	
+	/** Updates the zombie's internal game logic. */
 	public void update(float deltaTime)
 	{
-		//Update the position of the zombie according to his velocity and acceleration.
-		updatePosition(deltaTime);
-		//Update the position of the collider to follow the zombie.
-		updateCollider();
-		
-		//Update the stateTime.
-		stateTime += deltaTime;
+		//Update the zombie and his game logic.
+		super.update(deltaTime);
 	}
 
 	/** Makes the zombie jump. */
@@ -123,6 +125,10 @@ public class Zombie extends Human implements Clickable
 	/** Make the zombie charge hit the player. */
 	public void chargeHit(Player player) 
 	{
+		//If the player is invulnerable, he can't get hit. Therefore, return the method.
+		if(player.isInvulnerable())
+			return;
+		
 		//Tell the player he was hit
 		player.setState(State.HIT);
 		
@@ -167,8 +173,21 @@ public class Zombie extends Human implements Clickable
 				setWalkSpeed(ALERTED_WALK_SPEED);
 			//Else, if the zombie is not alerted, and doesn't want to follow the player, his speed is different
 			else
-				//Set the zombie's walk speed to the correct pre-defined constant
-				setWalkSpeed(NORMAL_WALK_SPEED);
+			{
+				//If the zombie is in EXPLORATION state
+				if(getMode() == Mode.EXPLORING)
+				{
+					//Set the zombie's walk speed to the correct, pre-defined constant
+					setWalkSpeed(NORMAL_WALK_SPEED);
+				}
+				//Else, if the zombie is in COMBAT state, he is trying to walk back to his starting point. Thus, his speed is faster.
+				else if(getMode() == Mode.COMBAT)
+				{
+					//Set the zombie's walk speed to the correct, pre-defined constant
+					setWalkSpeed(COMBAT_WALK_SPEED);
+				}
+				
+			}
 		}
 		//Else, if the zombie is charging
 		else if(state == State.CHARGE)
@@ -218,6 +237,12 @@ public class Zombie extends Human implements Clickable
 				{
 					//Set the zombie back to IDLE state so that his correct animation plays.
 					setState(State.IDLE);
+				}
+				//Else, if the zombie has finished playing its charge taunting animation
+				else if(getState() == State.CHARGE_START)
+				{
+					//Tell the zombie to charge at the player.
+					setState(State.CHARGE);
 				}
 				//Else, if the player was hit
 				else if(getState() == State.HIT_HEAD)
@@ -283,6 +308,14 @@ public class Zombie extends Human implements Clickable
 			//Makes the zombie walk slower since he is no longer alerted
 			setWalkSpeed(NORMAL_WALK_SPEED);
 		}
+	}
+	
+	/** Makes the zombie invulnerable from the player's attacks for a given amount of seconds. */
+	@Override
+	public void makeInvulnerable()
+	{
+		//Makes the zombie invulnerable for the given amount of seconds in the stored constant.
+		setInvulnerabilityTime(INVULNERABLE_TIME);
 	}
 
 	/** Returns true if the zombie is being targetted by the player. If so, the player has clicked the zombie, and is walking towards it. */
