@@ -22,6 +22,7 @@ import com.jonathan.survivor.inventory.Item;
 import com.jonathan.survivor.managers.GameObjectManager;
 import com.jonathan.survivor.managers.ItemManager;
 import com.jonathan.survivor.managers.ZombieManager;
+import com.jonathan.survivor.math.Rectangle;
 import com.jonathan.survivor.math.Vector2;
 
 public class World
@@ -467,8 +468,9 @@ public class World
 			//If the player hit the zombie
 			if(player.getCollider().intersects(zombie.getCollider()))
 			{
-				//If the player was falling down when hitting the zombie, he hit the zombie's head
-				if(player.getVelocity().y < 0)
+				//If the player was falling down when hitting the zombie, he hit the zombie's head. However, the player has
+				//to be on top of the zombie. Therefore, on top of the zombie's collider.
+				if(player.getVelocity().y < 0 && player.getY() > ((Rectangle)zombie.getCollider()).getTop())
 				{
 					//Make the player hit the zombie's head, making him jump after the hit.
 					player.hitHead(zombie);
@@ -476,8 +478,18 @@ public class World
 			}
 			
 		}
-		//Else, if the player wasn't jumping, but the zombie hit the player while charging.
-		else if(zombie.getState() == State.CHARGE && player.getCollider().intersects(zombie.getCollider()))
+		//Else, if the player is MELEEing.
+		else if(player.getState() == State.MELEE)
+		{
+			//If the player's melee weapon has hit the zombie
+			if(player.getMeleeWeaponCollider().intersects(zombie.getCollider()))
+			{
+				//Make the player hit the zombie with his melee weapon.
+				player.meleeHit(zombie);
+			}
+		}
+		//Else, if the player wasn't jumping, but the zombie's arms hit the player while charging.
+		else if(zombie.getState() == State.CHARGE && player.getCollider().intersects(zombie.getArmCollider()))
 		{
 			//Make the zombie charge hit the player.
 			zombie.chargeHit(player);

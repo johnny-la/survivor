@@ -100,7 +100,7 @@ public class ZombieRenderer
 		skeleton.setY(zombie.getY());
 		
 		//Updates the attachments on the zombie, such as his attached weapons.
-		updateAttachments();
+		updateAttachments(zombie);
 		
 		//Change the animation if the zombie's state has changed. Re-setting the AnimationState to the same animation twice causes errors.
 		if(zombie.getState() != zombie.getPreviousState())
@@ -180,6 +180,12 @@ public class ZombieRenderer
 			animationState.setAnimation(0, assets.zombieCharge, true);
 		}
 		//Else, if the zombie was hit by the player
+		else if(zombie.getState() == State.HIT)
+		{
+			//Plays the HIT animation. First argument is an arbitrary index, and third argument specifies to loop the walk animation.
+			animationState.setAnimation(0, assets.zombieHitHead, true);
+		}
+		//Else, if the zombie was hit on the head by the player
 		else if(zombie.getState() == State.HIT_HEAD)
 		{
 			//Plays the HIT_HEAD animation. First argument is an arbitrary index, and third argument specifies to loop the walk animation.
@@ -192,9 +198,10 @@ public class ZombieRenderer
 	}
 	
 	/** Updates the attachments being rendered on the zombie. */
-	private void updateAttachments() 
+	private void updateAttachments(Zombie zombie) 
 	{
 		
+		zombie.updateArmCollider();
 	}
 	
 	/** Updates the zombie's color depending on whether its being targetted, and whether or not it should be drawn transparent. */

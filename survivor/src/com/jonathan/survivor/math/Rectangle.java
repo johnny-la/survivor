@@ -81,6 +81,12 @@ public class Rectangle extends Collider
 		//Returns false if they don't intersect
 		return false;
 	}
+	
+	/** Returns the y-position of the top of the collider in world units. */
+	public float getTop()
+	{
+		return position.x + height;
+	}
 
 	/** Sets the width and height of the rectangle from its bottom-left position. */
 	public void setSize(float width, float height)

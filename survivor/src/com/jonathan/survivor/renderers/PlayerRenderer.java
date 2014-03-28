@@ -1,20 +1,22 @@
 package com.jonathan.survivor.renderers;
 
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.esotericsoftware.spine.AnimationState;
 import com.esotericsoftware.spine.AnimationState.AnimationStateListener;
 import com.esotericsoftware.spine.AnimationStateData;
+import com.esotericsoftware.spine.Bone;
 import com.esotericsoftware.spine.Event;
 import com.esotericsoftware.spine.Skeleton;
+import com.esotericsoftware.spine.attachments.RegionAttachment;
 import com.jonathan.survivor.Assets;
 import com.jonathan.survivor.entity.Human.Direction;
 import com.jonathan.survivor.entity.Human.Mode;
 import com.jonathan.survivor.entity.Human.State;
 import com.jonathan.survivor.entity.Player;
 import com.jonathan.survivor.inventory.MeleeWeapon;
+import com.jonathan.survivor.math.Rectangle;
 
 public class PlayerRenderer 
 {	
@@ -31,6 +33,12 @@ public class PlayerRenderer
 	private Player player;
 	/** Stores the Spine skeleton instance used to display the player and play his animations. */
 	private Skeleton playerSkeleton;
+	
+	/** Holds the bone where the melee weapons are equipped. */
+	private Bone rightHandBone;
+	
+	/** Stores the RegionAttachment storing the image of the axe on the player. */
+	private RegionAttachment axeAttachment;
 	
 	/** Defines the crossfading times between animations. */
 	private AnimationStateData animStateData;
@@ -56,6 +64,12 @@ public class PlayerRenderer
 		this.player = player;
 		//Stores the Spine skeleton instance used to display the player and play his animations.
 		this.playerSkeleton = player.getSkeleton();
+		
+		//Grabs the bones mapped to the player's skeleton.
+		rightHandBone = playerSkeleton.findBone("R_Hand");
+		
+		//Retrieves the attachments which store images on the player.
+		axeAttachment = (RegionAttachment) playerSkeleton.getAttachment(MeleeWeapon.WEAPON_SLOT_NAME, "Axe0002");
 		
 		//Sets up the animation states of the player, along with the crossfading times between animations/
 		setupAnimationStates();
@@ -179,7 +193,6 @@ public class PlayerRenderer
 		//Stores the previous state of the player to determine if his state changes on the next render() call.
 		player.setPreviousState(player.getState());
 		
-		System.out.println("Player state: " + player.getState());
 		//If the player has just spawned
 		if(player.getState() == State.SPAWN)
 		{
@@ -265,6 +278,9 @@ public class PlayerRenderer
 	/** Updates the attachments being rendered on the player. */
 	private void updateAttachments() 
 	{
+		//Updates the collider bound to the player's melee weapon to test for hit detection.
+		updateAttachmentColliders();
+		
 		//Stores the player's melee weapon, if it exists.
 		MeleeWeapon meleeWeapon = player.getLoadout().getMeleeWeapon();
 		
@@ -281,5 +297,47 @@ public class PlayerRenderer
 			//Remove the melee weapon attachment from the player since he has no equipped melee weapon.
 			playerSkeleton.setAttachment(MeleeWeapon.WEAPON_SLOT_NAME, null);
 		}
+	}
+
+	/** Updates the position and scale of the collider on the player's equipped melee weapon. */
+	private void updateAttachmentColliders() 
+	{
+		//If the player doesn't have a melee weapon, return this method, as its collider needn't be updated.
+		if(!player.hasMeleeWeapon())
+			return;
+		
+		//Stores the position of the player's hand in world coordinates.
+		float handX = playerSkeleton.getX() +rightHandBone.getWorldX();
+		float handY = playerSkeleton.getY() +rightHandBone.getWorldY();
+		
+		//Stores the player's melee weapon, if it exists.
+		MeleeWeapon meleeWeapon = player.getLoadout().getMeleeWeapon();
+		
+		//Stores the collider mapped to the player's melee weapon, which checks for collisions against zombies.
+		Rectangle weaponCollider = meleeWeapon.getCollider();
+		
+		//Finds the size of the melee weapon. It is equivalent to the size of the image displaying the axe.
+		float meleeWeaponWidth = axeAttachment.getWidth();
+		float meleeWeaponHeight = axeAttachment.getHeight();
+		
+		//If the player is facing the RIGHT, his weapon is to the right of him
+		if(player.getDirection() == Direction.RIGHT)
+		{
+			//Set the weapon's collider to be at the position of the hand
+			weaponCollider.setPosition(handX, handY);
+			
+			//Sets the size of the weapon's collider to that of the axe's image.
+			weaponCollider.setSize(meleeWeaponWidth, meleeWeaponHeight);
+		}
+		//Else, if the player is facing the left, his weapon is to the left of him.
+		else
+		{
+			//Set the weapon's collider to be at the position of the hand. The x-position starts at the left of the weapon.
+			weaponCollider.setPosition(handX - meleeWeaponWidth, handY);
+			
+			//Sets the size of the weapon's collider to that of the axe's image.
+			weaponCollider.setSize(meleeWeaponWidth, meleeWeaponHeight);
+		}
+		
 	}
 }

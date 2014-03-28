@@ -1,13 +1,13 @@
 package com.jonathan.survivor.entity;
 
-import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationListener;
 import com.esotericsoftware.spine.AnimationState;
 import com.esotericsoftware.spine.AnimationState.AnimationStateListener;
+import com.esotericsoftware.spine.Bone;
 import com.esotericsoftware.spine.Event;
 import com.esotericsoftware.spine.Skeleton;
+import com.esotericsoftware.spine.attachments.RegionAttachment;
 import com.jonathan.survivor.Assets;
-import com.jonathan.survivor.entity.Human.Mode;
-import com.jonathan.survivor.entity.Human.State;
+import com.jonathan.survivor.math.Rectangle;
 
 public class Zombie extends Human implements Clickable
 {
@@ -50,6 +50,13 @@ public class Zombie extends Human implements Clickable
 	/** Stores true if the Zombie is being targetted by the player, and the player is trying to walk towards it. */
 	private boolean targetted;
 	
+	/** Holds the collider mapped to the zombie's arms. Used to dictate whether the zombie has hit a player with his arms. */
+	private Rectangle armCollider;
+	
+	/** Stores the bones which controls the zombie's hands. Allows to compute the position and size of the arm's collider. */
+	private Bone rightHandBone;
+	private Bone leftHandBone;
+	
 	/** Controls the zombie's animations. Allows for crossfading between animations. */
 	private AnimationState animationState;
 	
@@ -67,6 +74,13 @@ public class Zombie extends Human implements Clickable
 		//Creates the Spine skeleton for the zombie using the ZombieSkeletonData.
 		setSkeleton(new Skeleton(Assets.instance.zombieSkeletonData));
 		
+		//Stores the bone controlling the zombie's hands
+		rightHandBone = getSkeleton().findBone("R_Hand");
+		leftHandBone = getSkeleton().findBone("L_Hand");
+		
+		//Creates a default rectangle for the zombie's arms.
+		armCollider = new Rectangle();
+		
 		//The zombie is always in exploration mode by default and not in fighting mode.
 		setMode(Mode.EXPLORING);
 		
@@ -80,6 +94,28 @@ public class Zombie extends Human implements Clickable
 		setHealth(DEFAULT_HEALTH);
 	}
 	
+	/** Updates the collider mapped to the zombie's hands. Used to determine if the zombie's hands hit the player in a melee attack. */
+	public void updateArmCollider() 
+	{
+		//Gets the zombie's skeleton.
+		Skeleton skeleton = getSkeleton();
+		
+		//Gets the x-position of the left-most hand in world units.
+		float leftX = Math.min(skeleton.getX() + rightHandBone.getWorldX(), skeleton.getX() + leftHandBone.getWorldX()) - 0.5f;
+		//Gets the y-position of the bottom-most hand in world coordinates.
+		float bottomY = Math.min(skeleton.getY() + rightHandBone.getWorldY(), skeleton.getY() + leftHandBone.getWorldY());
+		
+		//Computes the width and height between the zombie's two hands.
+		float width = Math.abs(rightHandBone.getWorldX() - leftHandBone.getWorldX());
+		float height = Math.abs(rightHandBone.getWorldY() - leftHandBone.getWorldY());
+		
+		//Sets the bottom-left position of the arm collider to the right position in world units.
+		armCollider.setPosition(leftX, bottomY);
+		//Modifies the size of the arm's collider. The collider goes from the center of one of the zombie's hands to the center of the other.
+		armCollider.setSize(width,height);
+		
+	}
+
 	/** Updates the zombie's internal game logic. */
 	public void update(float deltaTime)
 	{
@@ -245,6 +281,24 @@ public class Zombie extends Human implements Clickable
 					setState(State.CHARGE);
 				}
 				//Else, if the player was hit
+				else if(getState() == State.HIT)
+				{
+					//If the zombie is in EXPLORATION mode
+					if(getMode() == Mode.EXPLORING)
+					{
+						
+					}
+					//Else, if the zombie is in COMBAT mode with the player.
+					else if(getMode() == Mode.COMBAT)
+					{
+						//Set the zombie to WALK state, telling him to walk back to his starting position facing the player.
+						setState(State.WALK);
+						
+						//Tell the zombie to walk to the RIGHT to go back to his original position.
+						setDirection(Direction.RIGHT);
+					}
+				}
+				//Else, if the player was hit in the head.
 				else if(getState() == State.HIT_HEAD)
 				{
 					//If the zombie is in EXPLORATION mode
@@ -326,6 +380,36 @@ public class Zombie extends Human implements Clickable
 	/** Sets whether or not the zombie is being targetted by the player. If so, the player has clicked the zombie, and is walking towards it. */
 	public void setTargetted(boolean targetted) {
 		this.targetted = targetted;
+	}
+	
+	/** Returns the collider mapped to the zombie's arms. Used to dictate if the zombie melee hit the player. */
+	public Rectangle getArmCollider() {
+		return armCollider;
+	}
+
+	/** Sets the collider mapped to the zombie's arms. Used to dictate if the zombie melee hit the player. */
+	public void setArmCollider(Rectangle armCollider) {
+		this.armCollider = armCollider;
+	}
+	
+	/** Gets the bone mapped to the zombie's right hand. Allows to position the zombie's arm collider to dictate if the zombie hit the player. */
+	public Bone getRightHandBone() {
+		return rightHandBone;
+	}
+
+	/** Sets the bone mapped to the zombie's right hand. Allows to position the zombie's arm collider to dictate if the zombie hit the player. */
+	public void setRightHandBone(Bone rightHandBone) {
+		this.rightHandBone = rightHandBone;
+	}
+	
+	/** Gets the bone mapped to the zombie's left hand. Allows to position the zombie's arm collider to dictate if the zombie hit the player. */
+	public Bone getLeftHandBone() {
+		return leftHandBone;
+	}
+
+	/** Sets the bone mapped to the zombie's left hand. Allows to position the zombie's arm collider to dictate if the zombie hit the player. */
+	public void setLeftHandBone(Bone leftHandBone) {
+		this.leftHandBone = leftHandBone;
 	}
 
 }

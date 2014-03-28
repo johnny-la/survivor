@@ -176,13 +176,22 @@ public class ZombieManager
 			//Ensures the zombie is always at ground height.
 			world.lockToGround(zombie);
 		}		
+		//Else, if the zombie was hit by the player
+		else if(zombie.getState() == State.HIT)
+		{
+			//Make the zombie stop moving until his HIT animation finishes
+			world.stopMoving(zombie);
+			
+			//Set the zombie back to HIT state, since the stopMoving function unwantingly set his state to IDLE.
+			zombie.setState(State.HIT_HEAD);
+		}
 		//Else, if the zombie has been hit in the head
 		else if(zombie.getState() == State.HIT_HEAD)
 		{
-			//Make the zombie stop moving until his HIT animation 
+			//Make the zombie stop moving until his HIT_HEAD animation finishes
 			world.stopMoving(zombie);
 			
-			//Set the zombie back to HIT state, since the stopMoving function set his state back to IDLE.
+			//Set the zombie back to HIT_HEAD state, since the stopMoving function unwantingly set his state to IDLE.
 			zombie.setState(State.HIT_HEAD);
 		}
 	}

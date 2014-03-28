@@ -6,6 +6,7 @@ import com.jonathan.survivor.entity.InteractiveObject.InteractiveState;
 import com.jonathan.survivor.inventory.Axe;
 import com.jonathan.survivor.inventory.Inventory;
 import com.jonathan.survivor.inventory.Loadout;
+import com.jonathan.survivor.math.Rectangle;
 
 public class Player extends Human
 {
@@ -102,8 +103,12 @@ public class Player extends Human
 
 		}
 		//Else, if the player is in COMBAT mode
-		else if(getMode() == Mode.COMBAT)
+		else if(getMode() == Mode.COMBAT )
 		{
+			//If the player is not in idle state, don't let him jump. He can only jump in idle state.
+			if(getState() != State.IDLE)
+				return;
+				
 			//Set the y-velocity of the player to the desired jump speed.
 			setVelocity(0, COMBAT_JUMP_SPEED);
 			//Set the state of the player to his jumping state, telling the world he is jumping.
@@ -147,12 +152,31 @@ public class Player extends Human
 	/** Makes the player swing his melee weapon if he has one. */
 	public void melee()
 	{
-		//If the player has a melee weapon and is not jumping
-		if(hasMeleeWeapon() && getState() != State.JUMP)
+		//If the player is in combat mode
+		if(getMode() == Mode.COMBAT)
 		{
-			//Switch to MELEE state so that the MELEE animation plays.
-			setState(State.MELEE);
+			//If the player has a melee weapon and is in IDLE state
+			if(hasMeleeWeapon() && getState() == State.IDLE)
+			{
+				//Switch to MELEE state so that the MELEE animation plays.
+				setState(State.MELEE);
+			}
 		}
+	}
+	
+	/** Deals damage to the zombie with the player's melee weapon. */
+	public void meleeHit(Zombie zombie) 
+	{
+		//If the zombie is invulnerable, he can't get hit. Therefore, return the method.
+		if(zombie.isInvulnerable())
+			return;
+		
+		//Deals damage to the zombie according to the meleeWeapon's damage value.
+		zombie.takeDamage(loadout.getMeleeWeapon().getDamage());
+		
+		//Tell the zombie he was hit.
+		zombie.setState(State.HIT);
+		
 	}
 	
 	/** Called when the player has hit the tree stored as his target. */
@@ -248,6 +272,14 @@ public class Player extends Human
 		return loadout.getMeleeWeapon() != null;
 	}
 	
+	/** Returns the Collider of the player's melee weapon. Allows to test if the player has hit a zombie with his weapon. */
+	public Rectangle getMeleeWeaponCollider() 
+	{
+		//Returns the collider attached to the player's melee weapon.
+		return loadout.getMeleeWeapon().getCollider();
+	}
+
+	
 	/** Makes the player invulnerable from attacks for a given amount of seconds. */
 	@Override
 	public void makeInvulnerable()
@@ -291,5 +323,4 @@ public class Player extends Human
 	{
 		playerListener = listener;
 	}
-
 }

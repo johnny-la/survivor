@@ -8,3 +8,6 @@
 1395830656336	Rename enum constant 'HIT'
 1395830887487	Rename enum constant 'HIT'
 1395914678612	Encapsulate field 'invulnerabilityTime'
+1396011119777	Encapsulate field 'collider'
+1396014101701	Encapsulate field 'armCollider'
+1396014406600	Encapsulate field 'rightHandBone'
