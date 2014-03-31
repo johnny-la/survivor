@@ -15,9 +15,6 @@ import com.jonathan.survivor.entity.Zombie;
 
 public class VersusAnimation
 {
-	/** Holds the color which overlays the screen below the pause menu. */
-	public static final Color OVERLAY_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.0f);
-	
 	/** Stores the Assets singleton of the game used to fetch assets to draw the Spine animations. */
 	protected Assets assets = Assets.instance;
 	
@@ -94,11 +91,5 @@ public class VersusAnimation
 			//Reset playTime to zero for the next time that the animation plays. Like this, the animation will restart from the beginning.
 			playTime = 0;
 		}
-	}
-
-	/** Plays the animation of the Versus Hud showing the Player clashing with the Zombie before entering Combat Mode. */
-	public void play(Player player, Zombie zombie)
-	{
-		
 	}
 }

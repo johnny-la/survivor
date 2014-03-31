@@ -1,0 +1,53 @@
+package com.jonathan.survivor.inventory;
+
+import com.jonathan.survivor.entity.GameObject;
+import com.jonathan.survivor.math.Vector2;
+
+
+public abstract class RangedWeapon extends Weapon
+{	
+	/** Stores the name of the slot on the player in Spine where ranged weapon images are stored. */
+	public static final String WEAPON_SLOT_NAME = "Rifle";
+	
+	/** Stores the position where the gun's crosshair should be placed. This is where the trajectory lines starts. */
+	private final Vector2 crosshairPoint;
+	
+	/** Holds the amount of time it takes to charge the weapon completely. */
+	private float chargeTime;
+	
+	/** Accepts the name, description, damage, and charge time of the melee weapon. */
+	public RangedWeapon(String name, String description, float damage, float chargeTime)
+	{
+		super(name, description, damage);
+		
+		//Populate the object's member variables with the given constructor arguments.
+		this.chargeTime = chargeTime;
+		
+		//Creates a new, default position where the crosshair should be placed on the ranged weapon.
+		crosshairPoint = new Vector2();
+		
+		//All MeleeWeapons and their images are mapped to the slot named SLOT_NAME on the Player.
+		setWeaponSlotName(WEAPON_SLOT_NAME);
+	}
+
+	/** Called when the RangedWeapon has hit a GameObject and should deal damage to it. */
+	public void hit(GameObject gameObject) 
+	{
+	}
+	
+	/** Returns the position where the crosshair should be placed on the 
+	public Vector2 getCrosshairPoint() {
+		return crosshairPoint;
+	}
+
+	/** Gets the amount of  time it takes to charge the weapon. */
+	public float getChargeTime() {
+		return chargeTime;
+	}
+
+	/** Gets the amount of  time it takes to charge the weapon completely. */
+	public void setChargeTime(float chargeTime) {
+		this.chargeTime = chargeTime;
+	}
+	
+}

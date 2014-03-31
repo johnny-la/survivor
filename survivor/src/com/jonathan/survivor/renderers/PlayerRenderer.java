@@ -15,7 +15,10 @@ import com.jonathan.survivor.entity.Human.Direction;
 import com.jonathan.survivor.entity.Human.Mode;
 import com.jonathan.survivor.entity.Human.State;
 import com.jonathan.survivor.entity.Player;
+import com.jonathan.survivor.inventory.Axe;
 import com.jonathan.survivor.inventory.MeleeWeapon;
+import com.jonathan.survivor.inventory.RangedWeapon;
+import com.jonathan.survivor.inventory.Rifle;
 import com.jonathan.survivor.math.Rectangle;
 
 public class PlayerRenderer 
@@ -34,11 +37,14 @@ public class PlayerRenderer
 	/** Stores the Spine skeleton instance used to display the player and play his animations. */
 	private Skeleton playerSkeleton;
 	
-	/** Holds the bone where the melee weapons are equipped. */
+	/** Holds the bones on the player's skeleton in spine, which control the player's movements. */
 	private Bone rightHandBone;
+	private Bone leftHandBone;
+	private Bone gunTipBone;
 	
-	/** Stores the RegionAttachment storing the image of the axe on the player. */
+	/** Stores the RegionAttachment storing the images of the weapons on the player. */
 	private RegionAttachment axeAttachment;
+	private RegionAttachment rifleAttachment;
 	
 	/** Defines the crossfading times between animations. */
 	private AnimationStateData animStateData;
@@ -50,6 +56,7 @@ public class PlayerRenderer
 	
 	/** Stores the integers assigned to each event in Spine. Used to indicate which event was caught in the AnimationStateListener. */
 	private static final int HIT_TREE = 0;
+	private static final int HIT_ZOMBIE = 1;
 	
 	/** Accepts the player GameObject to render, the Spine skeleton used to to play his animations, the SpriteBatch used to draw the player, and the world 
 	 * camera where the player is drawn. */
@@ -65,11 +72,14 @@ public class PlayerRenderer
 		//Stores the Spine skeleton instance used to display the player and play his animations.
 		this.playerSkeleton = player.getSkeleton();
 		
-		//Grabs the bones mapped to the player's skeleton.
+		//Retrieves the bones mapped to the player's skeleton.
 		rightHandBone = playerSkeleton.findBone("R_Hand");
+		leftHandBone = playerSkeleton.findBone("L_Hand");
+		gunTipBone = playerSkeleton.findBone("Gun_Tip");
 		
-		//Retrieves the attachments which store images on the player.
-		axeAttachment = (RegionAttachment) playerSkeleton.getAttachment(MeleeWeapon.WEAPON_SLOT_NAME, "Axe0002");
+		//Retrieves the attachments which display the images on the player.
+		axeAttachment = (RegionAttachment) playerSkeleton.getAttachment(MeleeWeapon.WEAPON_SLOT_NAME, Axe.WEAPON_ATTACHMENT_NAME);
+		rifleAttachment = (RegionAttachment) playerSkeleton.getAttachment(RangedWeapon.WEAPON_SLOT_NAME, Rifle.WEAPON_ATTACHMENT_NAME);
 		
 		//Sets up the animation states of the player, along with the crossfading times between animations/
 		setupAnimationStates();
@@ -89,6 +99,12 @@ public class PlayerRenderer
 		animStateData.setMix(assets.playerChopTree, assets.playerIdle, 0.35f);
 		animStateData.setMix(assets.playerChopTree, assets.playerWalk, 0.27f);
 		
+		//Defines the crossfading times for the animations of the player in COMBAT mode.
+		animStateData.setMix(assets.playerMelee, assets.playerHit, 0.3f);
+		animStateData.setMix(assets.playerMelee, assets.playerJump_Combat, 0.3f);
+		animStateData.setMix(assets.playerHit, assets.playerIdle_Combat, 0.4f);
+		animStateData.setMix(assets.playerHit, assets.playerJump_Combat, 0.5f);
+		
 		//Creates a listener to listen for events coming from the player's animations.
 		animationListener = new AnimationStateListener() {
 			/** Called when an event set up inside the Spine Timeline fires in one of the player's animations. */
@@ -96,10 +112,16 @@ public class PlayerRenderer
 			public void event(int trackIndex, Event event) 
 			{
 				//If the player's CHOP_TREE animation is playing, and the HIT_TREE event was fired
-				if(event.getInt() == HIT_TREE )
+				if(event.getInt() == HIT_TREE)
 				{
 					//Deal damage to the tree the player is chopping.
 					player.hitTree();
+				}
+				//Else, if the player's MELEE animation is playing, and the HIT_ZOMBIE event was fired
+				else if(event.getInt() == HIT_ZOMBIE)
+				{
+					//Deal damage to the zombie that the player is fighting. If the weapon does not hit the zombie, the method simply returns.
+					player.meleeHit(player.getZombieToFight());
 				}
 				
 			}
@@ -119,11 +141,32 @@ public class PlayerRenderer
 					//Set the player back to IDLE state so that his correct animation plays.
 					player.setState(State.IDLE);
 				}
+				//Else, if the player has finished starting to charge his gun
+				else if(player.getState() == State.CHARGE_START)
+				{
+					//Change the player to CHARGE state, so that he can actually start charging his ranged weapon
+					player.setState(State.CHARGE);
+				}
+				//Else, if the player has finished firing his ranged weapon
+				else if(player.getState() == State.FIRE)
+				{
+					//Set the player back to default IDLE state.
+					player.setState(State.IDLE);
+				}
 				//Else, if the HIT animation just finished playing
 				else if(player.getState() == State.HIT)
 				{
-					//Set the player back to IDLE state
-					player.setState(State.IDLE);
+					//If the player was jumping while getting hit
+					if(player.getVelocity().y != 0)
+					{
+						//Wait until the player hits the ground. He will then switch to IDLE state. Like this, the HIT animation continues playing until the player hits the ground.
+					}
+					//Else, if the player wasn't hit while jumping, reset the player to IDLE state.
+					else
+					{
+						//Set the player back to IDLE state
+						player.setState(State.IDLE);
+					}
 				}
 				
 			}
@@ -267,27 +310,64 @@ public class PlayerRenderer
 			//Play the player's MELEE animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
 			animationState.setAnimation(0, assets.playerMelee, false);
 		}
+		//Else, if the player is pulling out his gun before charging it.
+		else if(player.getState() == State.CHARGE_START)
+		{
+			//Play the player's CHARGE_START animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
+			animationState.setAnimation(0, assets.playerCharge_Start, false);
+		}
+		//Else, if the player is charging his gun
+		else if(player.getState() == State.CHARGE)
+		{
+			//Play the player's CHARGE animation. First argument is an arbitrary index, and third argument specifies to loop the animation.
+			animationState.setAnimation(0, assets.playerCharge, true);
+		}
+		//Else, if the player is firing his gun
+		else if(player.getState() == State.FIRE)
+		{
+			//Play the player's FIRE animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
+			animationState.setAnimation(0, assets.playerFire, false);
+		}
 		//Else, if the player was hit by a zombie
 		else if(player.getState() == State.HIT)
 		{
 			//Play the player's HIT animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
 			animationState.setAnimation(0, assets.playerHit, false);
 		}
+		//Else, if the player is dead
+		else if(player.getState() == State.DEAD)
+		{
+			//Play his DEAD animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
+			animationState.setAnimation(0, assets.playerDead, false);
+		}
 	}
 	
 	/** Updates the attachments being rendered on the player. */
 	private void updateAttachments() 
 	{
-		//Updates the collider bound to the player's melee weapon to test for hit detection.
-		updateAttachmentColliders();
+		//Decides which weapons are visible on the player depending on his state and what he has equipped.
+		updateWeaponAttachment();
 		
+		//Updates the position of the tip of the player's gun and the crosshair of the player's ranged weapon. Allows to dictate where the gun's trajectory line should be drawn.
+		updateCrosshair();
+		
+		//Updates the collider bound to the player's melee weapon which tests for hit detection with a zombie.
+		updateAttachmentColliders();
+	}
+
+	/** Updates the weapon being displayed on the player, depending on the weapon that the player is currently using. */
+	private void updateWeaponAttachment() 
+	{
 		//Stores the player's melee weapon, if it exists.
 		MeleeWeapon meleeWeapon = player.getLoadout().getMeleeWeapon();
+		
+		//Retrieves the ranged weapon equipped on the player.
+		RangedWeapon rangedWeapon = player.getLoadout().getRangedWeapon();
 		
 		//If the player has a weapon
 		if(meleeWeapon != null)
 		{
-			//Set the melee weapon slot on the player's skeleton to display the image of the correctmelee weapon. The slot is
+			//Set the melee weapon slot on the player's skeleton to display the image of the correct melee weapon. The slot is
 			//where the weapon's image is stored, and the attachment is the name of the image for each weapon.
 			playerSkeleton.setAttachment(meleeWeapon.getSlotName(), meleeWeapon.getWeaponAttachment());
 		}
@@ -297,6 +377,41 @@ public class PlayerRenderer
 			//Remove the melee weapon attachment from the player since he has no equipped melee weapon.
 			playerSkeleton.setAttachment(MeleeWeapon.WEAPON_SLOT_NAME, null);
 		}
+		
+		//If the player has a ranged weapon and the player is playing an animation which requires his gun to be shown, make his weapon visible.
+		if(rangedWeapon != null && (player.getState() == State.CHARGE_START || player.getState() == State.CHARGE || player.getState() == State.FIRE))
+		{
+			//Tell the player to display the image of his equipped ranged weapon. An attachment is an image on the player's skeleton. It 
+			//is mapped to a specific slot where the images of all ranged weapons are placed.
+			playerSkeleton.setAttachment(rangedWeapon.getSlotName(), rangedWeapon.getWeaponAttachment());
+		}
+		else
+		{
+			//Remove the ranged weapon attachment from the player since he has no equipped ranged weapon.
+			playerSkeleton.setAttachment(RangedWeapon.WEAPON_SLOT_NAME, null);
+		}
+	}
+
+	/** Updates the registered position of the tip of the player's ranged weapon. Allows the crosshair to be drawn at the correct position. */
+	private void updateCrosshair() 
+	{
+		//If the player does not have his ranged weapon out, his crosshair will not appear. Therefore, return this method since updating the crosshair point is useless.
+		if(!player.hasRangedWeaponOut())
+			return;
+		
+		//Calculates the position of the tip of the player's ranged weapon.
+		float gunTipX = playerSkeleton.getX() + gunTipBone.getWorldX();
+		float gunTipY = playerSkeleton.getY() + gunTipBone.getWorldY();
+		
+		//Sets the crosshair point of the player at the position of the "gunTipBone", which denotes the position of the crosshair in Spine.
+		player.getCrosshairPoint().set(gunTipX, gunTipY);
+		
+		//Computes the end-position of the ranged weapon's crosshair based on the weapon's range. Allows to compute the line where the ranged weapon can hit an enemy.
+		float crosshairEndX = gunTipX + player.getRangedWeapon().getRange();
+		float crosshairEndY = gunTipY;
+		
+		//Updates the crosshair line of the player's gun
+		player.getRangedWeapon().getCrosshair().set(gunTipX, gunTipY, crosshairEndX, crosshairEndY);
 	}
 
 	/** Updates the position and scale of the collider on the player's equipped melee weapon. */
@@ -307,8 +422,8 @@ public class PlayerRenderer
 			return;
 		
 		//Stores the position of the player's hand in world coordinates.
-		float handX = playerSkeleton.getX() +rightHandBone.getWorldX();
-		float handY = playerSkeleton.getY() +rightHandBone.getWorldY();
+		float handX = playerSkeleton.getX() + rightHandBone.getWorldX();
+		float handY = playerSkeleton.getY() + rightHandBone.getWorldY();
 		
 		//Stores the player's melee weapon, if it exists.
 		MeleeWeapon meleeWeapon = player.getLoadout().getMeleeWeapon();
@@ -316,7 +431,7 @@ public class PlayerRenderer
 		//Stores the collider mapped to the player's melee weapon, which checks for collisions against zombies.
 		Rectangle weaponCollider = meleeWeapon.getCollider();
 		
-		//Finds the size of the melee weapon. It is equivalent to the size of the image displaying the axe.
+		//Finds the size of the melee weapon's image. It is equivalent to the size of the image displaying the axe.
 		float meleeWeaponWidth = axeAttachment.getWidth();
 		float meleeWeaponHeight = axeAttachment.getHeight();
 		
@@ -325,19 +440,15 @@ public class PlayerRenderer
 		{
 			//Set the weapon's collider to be at the position of the hand
 			weaponCollider.setPosition(handX, handY);
-			
-			//Sets the size of the weapon's collider to that of the axe's image.
-			weaponCollider.setSize(meleeWeaponWidth, meleeWeaponHeight);
 		}
 		//Else, if the player is facing the left, his weapon is to the left of him.
 		else
 		{
 			//Set the weapon's collider to be at the position of the hand. The x-position starts at the left of the weapon.
-			weaponCollider.setPosition(handX - meleeWeaponWidth, handY);
-			
-			//Sets the size of the weapon's collider to that of the axe's image.
-			weaponCollider.setSize(meleeWeaponWidth, meleeWeaponHeight);
+			weaponCollider.setPosition(handX - meleeWeapon.getReach(), handY);
 		}
 		
+		//Sets the size of the weapon's collider. The width is the melee weapon's reach, and its height is the height of the weapon's image.
+		weaponCollider.setSize(meleeWeapon.getReach(), meleeWeaponHeight);
 	}
 }

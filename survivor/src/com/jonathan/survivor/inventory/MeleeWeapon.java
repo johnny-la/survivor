@@ -7,8 +7,8 @@ import com.jonathan.survivor.math.Rectangle;
 
 public abstract class MeleeWeapon extends Weapon
 {
-	/** Stores the range in world units of the melee weapon. */
-	private float range;
+	/** Stores the horizontal reach of the melee weapon in world units. */
+	private float reach;
 	
 	/** Holds the rectangle collider put around the melee weapon when it is equipped. Allows to test for hit detection. */
 	private Rectangle collider;
@@ -17,7 +17,7 @@ public abstract class MeleeWeapon extends Weapon
 	public static final String WEAPON_SLOT_NAME = "Axe";
 	
 	/** Accepts the name, description, damage, and range of the melee weapon. */
-	public MeleeWeapon(String name, String description, float damage, float range)
+	public MeleeWeapon(String name, String description, float damage, float reach)
 	{
 		super(name, description, damage);
 		
@@ -28,17 +28,17 @@ public abstract class MeleeWeapon extends Weapon
 		this.collider = new Rectangle();
 		
 		//Populates the member variables with the constructor's parameters.
-		this.range = range;
+		this.reach = reach;
 	}
 
-	/** Gets the range in world units of the melee weapon. */
-	public float getRange() {
-		return range;
+	/** Gets the horizontal reach in world units of the melee weapon. */
+	public float getReach() {
+		return reach;
 	}
 
-	/** Sets the range in world units of the melee weapon. */
-	public void setRange(float range) {
-		this.range = range;
+	/** Sets the horizontal reach in world units of the melee weapon. */
+	public void setReach(float range) {
+		this.reach = range;
 	}
 
 	/** Called when the MeleeWeapon has hit a GameObject and should deal damage to it. */

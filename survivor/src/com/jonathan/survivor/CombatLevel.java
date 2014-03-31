@@ -32,6 +32,10 @@ public class CombatLevel implements Level
 	/** Holds the left and right end points of the black line on the level. */
 	private final Vector2 leftPoint, rightPoint;
 	
+	/** Holds the x-position of the zombie and the player before entering the CombatLevel. Allows them to re-transition back to the TerrainLevel. */
+	private float previousPlayerX;
+	private float previousZombieX;
+	
 	/** Stores the player contained in the level who is fighting the zombie. */
 	private Player player;
 	
@@ -48,7 +52,7 @@ public class CombatLevel implements Level
 	{	
 		//Creates the left and right end points of the level's black line. Its position is determined by the pre-defined constants.
 		leftPoint = new Vector2(-LEVEL_WIDTH/2, LINE_HEIGHT);
-		rightPoint = new Vector2(LEVEL_WIDTH/2, LINE_HEIGHT);
+		rightPoint = new Vector2(LEVEL_WIDTH/2, LINE_HEIGHT);		
 	}
 	
 	/** Makes the given player and zombie start fighting on this CombatLevel. */
@@ -70,6 +74,10 @@ public class CombatLevel implements Level
 		player.setDirection(Direction.RIGHT);
 		zombie.setDirection(Direction.LEFT);
 		
+		//Stores the x-positions of the player and the zombie before entering the CombatLevel. Allows them to go back to EXPORATION mode in their original positions.
+		previousPlayerX = player.getX();
+		previousZombieX = zombie.getX();
+		
 		//Sets the player and the zombie at their correct starting positions.
 		player.setPosition(getPlayerStartX(), getPlayerStartY());
 		zombie.setPosition(getZombieStartX(), getZombieStartY());
@@ -81,7 +89,21 @@ public class CombatLevel implements Level
 		
 		//Informs the class that the gameObjects array has to be repopulated since the GameObjects of the CombatLevel have been changed.
 		gameObjectsStored = false;
-
+	}
+	
+	/** Makes the given player and the given zombie stop fighting. Resets their states and their positions to cleanly switch to EXPLORATION mode. */
+	public void stopFighting(Player player, Zombie zombie) 
+	{
+		//Set the player and the zombie back to EXPLORATION mode.
+		player.setMode(Mode.EXPLORING);
+		zombie.setMode(Mode.EXPLORING);
+		
+		//Sets the player and the zombie to their original x-positions before having entered the CombatLevel. Like this, they spawn back at their original positions.
+		player.setX(previousPlayerX);
+		zombie.setX(previousZombieX);
+		
+		player.setState(State.IDLE);
+		zombie.setState(State.IDLE);
 	}
 
 	/** Returns the x-position where the player should start on the level. */

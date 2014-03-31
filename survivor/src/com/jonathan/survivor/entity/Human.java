@@ -213,10 +213,17 @@ public abstract class Human extends GameObject implements Poolable
 		//Subtract the tree's health by the damage dealt.
 		health -= damage;
 		
-		//If the human has been killed
-		if(health <= 0)
+		//If the zombie's health has dropped below zero
+		if(isDead())
 		{
-			
+			//Make the zombie play its DEAD animation
+			setState(State.DEAD);
+		}
+		//Else, if the zombie is not dead yet, simply make the zombie show his HIT animation
+		else
+		{
+			//Tell the zombie he was hit
+			setState(State.HIT);
 		}
 		
 		//Make the Human invulnerable after being hit.
@@ -251,6 +258,13 @@ public abstract class Human extends GameObject implements Poolable
 	/** Sets the human's health. */
 	public void setHealth(float health) {
 		this.health = health;
+	}
+	
+	/** Returns true if the Human's health has dropped to zero or below. */
+	public boolean isDead()
+	{
+		//Returns true if the Human's health is at zero or lower.
+		return health <= 0;
 	}
 	
 	/** Called whenever this box GameObject has been pushed back into a pool. In this case, we reset the box's state back to default. */

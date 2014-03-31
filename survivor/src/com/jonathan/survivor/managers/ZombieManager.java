@@ -252,6 +252,11 @@ public class ZombieManager
 	/** Checks if the zombie has intersected with any GameObject which is pertinent to the zombie, such as the player. */
 	private void checkCollisions(Zombie zombie)
 	{
+		//If the zombie is dead, its collisions are irrelevant.
+		if(zombie.getState() == State.DEAD)
+			//Therefore, return the method.
+			return;
+
 		//Gets the Player being controlled in the world for collision checking.
 		Player player = world.getPlayer();
 

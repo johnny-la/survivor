@@ -2,11 +2,18 @@ package com.jonathan.survivor.entity;
 
 import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Assets;
+import com.jonathan.survivor.entity.Human.State;
 import com.jonathan.survivor.entity.InteractiveObject.InteractiveState;
 import com.jonathan.survivor.inventory.Axe;
+import com.jonathan.survivor.inventory.Bullet;
 import com.jonathan.survivor.inventory.Inventory;
 import com.jonathan.survivor.inventory.Loadout;
+import com.jonathan.survivor.inventory.MeleeWeapon;
+import com.jonathan.survivor.inventory.RangedWeapon;
+import com.jonathan.survivor.inventory.Rifle;
+import com.jonathan.survivor.math.Line;
 import com.jonathan.survivor.math.Rectangle;
+import com.jonathan.survivor.math.Vector2;
 
 public class Player extends Human
 {
@@ -15,7 +22,7 @@ public class Player extends Human
 	public static final float COLLIDER_HEIGHT = 2.5f;
 	
 	/** Holds the player's default health. */
-	public static final float DEFAULT_HEALTH = 60;
+	public static final float DEFAULT_HEALTH = 100;
 	
 	/** Stores the maximum walk speed of the player in the horizontal direction. */
 	public static final float MAX_WALK_SPEED = 6f;
@@ -29,7 +36,7 @@ public class Player extends Human
 	public static final float FALL_SPEED = -5;
 	
 	/** Holds the amount of damage delivered to a zombie when it is stomped on the head by the player. */
-	private static final float HEAD_STOMP_DAMAGE = 10;
+	private static final float HEAD_STOMP_DAMAGE = 20;
 	
 	/** Stores the speed at which the player jumps after hitting the zombie's head. */
 	private static final float HEAD_STOMP_JUMP_SPEED = 15;
@@ -106,8 +113,8 @@ public class Player extends Human
 		else if(getMode() == Mode.COMBAT )
 		{
 			//If the player is not in idle state, don't let him jump. He can only jump in idle state.
-			if(getState() != State.IDLE)
-				return;
+			/*if(getState() != State.IDLE)
+				return;*/
 				
 			//Set the y-velocity of the player to the desired jump speed.
 			setVelocity(0, COMBAT_JUMP_SPEED);
@@ -119,6 +126,7 @@ public class Player extends Human
 		loseTarget();
 		
 		loadout.setMeleeWeapon(new Axe());
+		loadout.setRangedWeapon(new Rifle());
 		
 	}
 
@@ -155,8 +163,8 @@ public class Player extends Human
 		//If the player is in combat mode
 		if(getMode() == Mode.COMBAT)
 		{
-			//If the player has a melee weapon and is in IDLE state
-			if(hasMeleeWeapon() && getState() == State.IDLE)
+			//If the player has a melee weapon and is not meleeing already or jumping or being hit
+			if(hasMeleeWeapon() && getState() != State.MELEE && getState() != State.JUMP && getState() != State.HIT)
 			{
 				//Switch to MELEE state so that the MELEE animation plays.
 				setState(State.MELEE);
@@ -164,21 +172,82 @@ public class Player extends Human
 		}
 	}
 	
-	/** Deals damage to the zombie with the player's melee weapon. */
+	/** Makes the player start to charge his gun. Call only once, when the player starts charging his ranged weapon. */
+	public void charge()
+	{
+		//If the player doesn't have a ranged weapon equipped, or doesn't have bullets in his inventory, he can't charge his ranged weapon. Therefore, return this method.
+		if(!hasRangedWeapon() || !hasBullets())
+			return;
+		
+		//Set the player to CHARGE_START state, telling the player to pull out his gun before charging it. When done, the player will switch to CHARGE state.
+		setState(State.CHARGE_START);
+	}
+	
+	/** Makes the player fire his ranged weapon */
+	public void fire() 
+	{
+		//If the player does not have a ranged weapon, he cannot fire a gun. Therefore, return this method.
+		if(!hasRangedWeapon())
+			return;
+		
+		//If the player is in CHARGE_START state, the player is trying to fire his gun before he pulled it out. This cannot be done
+		if(getState() == State.CHARGE_START)
+		{
+			//Thus, set the player back to IDLE state.
+			setState(State.IDLE);
+		}
+		//Else, if the player is not in CHARGE_STATE, but is in CHARGE state, he can fire his ranged weapon.
+		else if(getState() == State.CHARGE)
+		{
+			//Fire the player's ranged weapon at the zombie that he's fighting. If the weapon's crosshair does not hit the zombie, the method returns.
+			fireWeapon(getZombieToFight());
+		}
+		
+	}
+
+	/** Deals damage to the zombie with the player's melee weapon. Only deals damage if the player's melee weapon is colliding with the given zombie. */
 	public void meleeHit(Zombie zombie) 
 	{
-		//If the zombie is invulnerable, he can't get hit. Therefore, return the method.
-		if(zombie.isInvulnerable())
+		//If the zombie is invulnerable, he can't get hit. Also, if the melee weapon is not intersecting the zombie, the zombie is not being touched by the weapon.
+		//Therefore, return the method.
+		if(zombie.isInvulnerable() || !getMeleeWeaponCollider().intersects(zombie.getCollider()))
 			return;
 		
 		//Deals damage to the zombie according to the meleeWeapon's damage value.
 		zombie.takeDamage(loadout.getMeleeWeapon().getDamage());
 		
-		//Tell the zombie he was hit.
-		zombie.setState(State.HIT);
+		//Checks if the zombie is dead. If so, play the KO animation.
+		checkDead(zombie);
+	}
+
+	/** Fire the player's currently equipped ranged weapon at the given zombie. */
+	private void fireWeapon(Zombie zombie) 
+	{
+		//If the weapon's crosshair intersects with the zombie's collider, the weapon has a change of hitting the zombie. The player must also have bullets.
+		if(getCrosshair().intersects(zombie.getCollider()) && hasBullets())
+		{
+			//Computes a random value between 0.9 and 1 which will dictate if the player's ranged weapon misses.
+			float rand = 0.75f + (float)Math.random()*0.25f;
+			
+			//If the random number is less than the percent charge completion of the player's weapon, odds are in the player's favour. The bullet has hit the zombie.
+			if(rand < getChargeCompletion())
+			{
+				//Deal damage to the zombie according to the strength of the player's ranged weapon.
+				zombie.takeDamage(getRangedWeapon().getDamage());
+				
+				//Checks if the zombie is dead. If so, play the KO animation.
+				checkDead(zombie);
+			}
+		}
+		
+		//Use one bullet in the player's inventory.
+		useBullets(1);
+		
+		//Tell the player that he is firing his gun, making his FIRE animation play. The player had to be in CHARGE state to call getChargeCompletion().
+		setState(State.FIRE);
 		
 	}
-	
+
 	/** Called when the player has hit the tree stored as his target. */
 	public void hitTree() 
 	{	
@@ -217,8 +286,49 @@ public class Player extends Human
 		//Deals damage to the zombie according to the head stomp constant.
 		zombie.takeDamage(HEAD_STOMP_DAMAGE);
 		
-		//Tell the zombie he was hit.
-		zombie.setState(State.HIT_HEAD);
+		//Checks if the zombie is dead. If so, play the KO animation.
+		checkDead(zombie);
+	}
+	
+	/** Checks if the zombie is dead. If so, plays the KO animation. */
+	private void checkDead(Zombie zombie) 
+	{
+		//If the zombie is dead
+		if(zombie.isDead())
+		{
+			//Tell the world to play the KO animation.
+			playerListener.playKoAnimation();
+		}
+	}
+	
+	/** Uses a given amount of bullets inside the player's inventory. */
+	private void useBullets(int quantity)
+	{
+		//Remove the given amount of bullets from the player's inventory.
+		inventory.addItem(Bullet.class, -quantity);
+	}
+	
+	/** Returns true if the player has bullets in his inventory. */
+	private boolean hasBullets() 
+	{
+		//If the value for the Bullet key inside the inventory is not null, the player has bullets in his inventory.
+		return inventory.getItemMap().get(Bullet.class) != null;
+	}
+	
+	/** Returns a float between 0 and 1 representing the charge completion of the player's ranged weapon. 1 means that the weapon is done charging completely. */
+	public float getChargeCompletion()
+	{
+		//If the player is not charging his gun, this method will return incorrect values based on the stateTime since the player is not charging his ranged weapon.
+		if(getState() != State.CHARGE)
+			return 0;
+			
+		//Returns a percent completion of the player charging his gun. Computes a normalized value between 0 and 1, where 1 means that the gun has finished charging.
+		float chargeRate = getStateTime() / getRangedWeapon().getChargeTime();
+		//Cap the charge rate at 1.
+		chargeRate = (chargeRate > 1)? 1:chargeRate;
+		
+		//Returns the charge completion of the player's ranged weapon.
+		return chargeRate;
 	}
 	
 	/** Regenerates the player to default health. */
@@ -264,12 +374,40 @@ public class Player extends Human
 		//The player can never be targetted.
 		return false;
 	}
-
+	
+	/** Returns the melee weapon that the player has equipped. */
+	public MeleeWeapon getMeleeWeapon()
+	{
+		//Returns the melee weapon stored in the player's loadout, which is the one that the player has equipped.
+		return getLoadout().getMeleeWeapon();
+	}
+	
+	/** Returns the ranged weapon that the player has equipped. */
+	public RangedWeapon getRangedWeapon()
+	{
+		//Returns the ranged weapon stored in the player's loadout, which is the one that the player has equipped.
+		return getLoadout().getRangedWeapon();
+	}
+	
 	/** Returns true if the player has a melee weapon equipped. */
 	public boolean hasMeleeWeapon()
 	{
 		//Returns true if the melee weapon in the player's loadout is not null.
 		return loadout.getMeleeWeapon() != null;
+	}
+	
+	/** Returns true if the player has a ranged weapon equipped. */
+	public boolean hasRangedWeapon()
+	{
+		//Returns true if the ranged weapon in the player's loadout is not null. If not, the player has a ranged weapon equipped.
+		return loadout.getRangedWeapon() != null;
+	}
+	
+	/** Returns true if the player has his ranged weapon out and visible. */
+	public boolean hasRangedWeaponOut() 
+	{
+		//Returns true if the player is in any state which requires his ranged weapon to be visible.
+		return getState() == State.CHARGE_START || getState() == State.CHARGE || getState() == State.FIRE;
 	}
 	
 	/** Returns the Collider of the player's melee weapon. Allows to test if the player has hit a zombie with his weapon. */
@@ -278,7 +416,20 @@ public class Player extends Human
 		//Returns the collider attached to the player's melee weapon.
 		return loadout.getMeleeWeapon().getCollider();
 	}
+	
+	/** Returns the crosshair line, which dictates where the player's ranged weapon will fire and where the bullet will travel. */
+	public Line getCrosshair()
+	{
+		//Returns the crosshair point of the ranged weapon the player has equipped.
+		return getRangedWeapon().getCrosshair();
+	}
 
+	/** Returns the position where the weapon crosshair should be placed on the player in world units. This is usually the tip of the player's ranged weapon. */
+	public Vector2 getCrosshairPoint()
+	{
+		//Returns the crosshair point of the ranged weapon the player has equipped.
+		return getRangedWeapon().getCrosshairPoint();
+	}
 	
 	/** Makes the player invulnerable from attacks for a given amount of seconds. */
 	@Override

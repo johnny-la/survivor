@@ -34,6 +34,8 @@ public class WorldRenderer
 	private GameObjectRenderer goRenderer;
 	/** Holds the AnimationRenderer instance used to render all of the Spine animations which overlay the screen. */
 	private AnimationRenderer animationRenderer;
+	/** Holds the EffectRenderer instance used to render all of the small effects on screen, such as the crosshairs. */
+	private EffectRenderer effectRenderer;
 	
 	
 	/** Creates a WorldRenderer instance used to draw the given world instance with the given SpriteBatch. */
@@ -52,13 +54,15 @@ public class WorldRenderer
 		goRenderer = new GameObjectRenderer(world, batcher, worldCamera);
 		//Instantiates the AnimationRenderer, which draws all of the Spine animations which are screen overlays, such as the versus animation.
 		animationRenderer = new AnimationRenderer(world, batcher, worldCamera);
+		//Creates the EffectRenderer instance used to render all of the small effects on screen, such as the crosshairs on each gun.
+		effectRenderer = new EffectRenderer(world, batcher, worldCamera);
 	}
 	
 	/** Called every frame when the game is running to update the position of the camera. MUST be called before render() method. */
 	public void updateCamera()
 	{
 		//If the player is not in combat mode, the camera follows the center of the player.
-		if(world.getWorldState() != WorldState.COMBAT)
+		if(world.getWorldState() != WorldState.COMBAT && world.getWorldState() != WorldState.KO_ANIMATION)
 		{
 			//Make the camera follow the center of the player.
 			worldCamera.position.x = world.getPlayer().getX();
@@ -87,6 +91,9 @@ public class WorldRenderer
 		
 		//Renders all of the Spine overlay animations that should be shown.
 		animationRenderer.render(deltaTime);
+		
+		//Draws all of the small effects to the screen, such as the crosshairs or trajectory lines for each weapon.
+		effectRenderer.render(deltaTime);
 	}
 	
 	/** Retrieves the world camera used to render the world. */

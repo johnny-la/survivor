@@ -74,6 +74,7 @@ public class Assets
 	public static final float BOX_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
 	public static final float ITEM_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
 	public static final float VERSUS_ANIM_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
+	public static final float KO_ANIM_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
 	
 	/** Holds the width and height of an item's sprite in an inventory. Used to resize sprites to the correct scale for inventories. */
 	public static final float INVENTORY_ITEM_WIDTH = 32, INVENTORY_ITEM_HEIGHT = 32;
@@ -135,6 +136,11 @@ public class Assets
 	public SkeletonData versusAnimSkeletonData;
 	public Animation versusPlay;
 	
+	public TextureAtlas koAnimAtlas;
+	public SkeletonJson koAnimSkeletonJson;
+	public SkeletonData koAnimSkeletonData;
+	public Animation koPlay;
+	
 	public TextureAtlas playerAtlas;
 	public SkeletonJson playerSkeletonJson;
 	public SkeletonData playerSkeletonData;
@@ -150,7 +156,11 @@ public class Assets
 	public Animation playerChopTree_Start;
 	public Animation playerEnterCombat;
 	public Animation playerMelee;
+	public Animation playerCharge_Start;
+	public Animation playerCharge;
+	public Animation playerFire;
 	public Animation playerHit;
+	public Animation playerDead;
 	
 	public TextureAtlas zombieAtlas;
 	public SkeletonJson zombieSkeletonJson;
@@ -163,6 +173,7 @@ public class Assets
 	public Animation zombieCharge_Start;
 	public Animation zombieCharge;
 	public Animation zombieHitHead;
+	public Animation zombieDead;
 	
 	public TextureAtlas interactableObjectAtlas;
 	public SkeletonJson treeSkeletonJson;
@@ -310,6 +321,7 @@ public class Assets
 		manager.load("ui/hud/backpack_bg/atlas/backpack_bg_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		manager.load("ui/hud/survivalguide_bg/atlas/survivalguide_bg_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		manager.load("ui/hud/versus_hud/atlas/versus_hud_atlas" + scaleExtension + ".txt", TextureAtlas.class);
+		manager.load("ui/hud/ko_hud/atlas/ko_hud_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		
 		//Puts music assets to queue inside the AssetManager using AssetManager.load("fileName", class).
 		
@@ -352,6 +364,7 @@ public class Assets
 		backpackBgAtlas = manager.get("ui/hud/backpack_bg/atlas/backpack_bg_atlas" + scaleExtension + ".txt");
 		survivalGuideBgAtlas = manager.get("ui/hud/survivalguide_bg/atlas/survivalguide_bg_atlas" + scaleExtension + ".txt");
 		versusAnimAtlas = manager.get("ui/hud/versus_hud/atlas/versus_hud_atlas" + scaleExtension + ".txt");
+		koAnimAtlas = manager.get("ui/hud/ko_hud/atlas/ko_hud_atlas" + scaleExtension + ".txt");
 		
 		//Retrieves the music files.
 		//mainMenuMusic = manager.get("sound/music/Ashton Manor.mp3");
@@ -590,6 +603,13 @@ public class Assets
 		//Gets the animations from the SpineUI's SkeletonData instance.
 		versusPlay = versusAnimSkeletonData.findAnimation("Play");
 		
+		//Sets up the Spine data used to display the KO animation when someone dies in COMBAT mode
+		koAnimSkeletonJson = new SkeletonJson(koAnimAtlas);
+		koAnimSkeletonJson.setScale(KO_ANIM_SKELETON_SCALE);	//Re-scale the skeleton to fit world-units. 
+		koAnimSkeletonData = koAnimSkeletonJson.readSkeletonData(Gdx.files.internal("ui/hud/ko_hud/skeleton/ko_hud_skeleton.json"));		
+		//Gets the animations from the SpineUI's SkeletonData instance.
+		koPlay = koAnimSkeletonData.findAnimation("Play");
+
 		//Sets up the Spine data used to display and animate the player.
 		playerSkeletonJson = new SkeletonJson(playerAtlas);
 		playerSkeletonJson.setScale(PLAYER_SKELETON_SCALE);	//Re-scale the skeleton to fit world-units. Atlas data is read the same no matter the scale of the SkeletonJson.
@@ -605,7 +625,11 @@ public class Assets
 		playerChopTree_Start = playerSkeletonData.findAnimation("ChopTree_Start");
 		playerEnterCombat = playerSkeletonData.findAnimation("Enter_Combat");
 		playerMelee = playerSkeletonData.findAnimation("Melee");
+		playerCharge_Start = playerSkeletonData.findAnimation("Charge_Start");
+		playerCharge = playerSkeletonData.findAnimation("Charge");
+		playerFire = playerSkeletonData.findAnimation("Fire");
 		playerHit = playerSkeletonData.findAnimation("Hit");
+		playerDead = playerSkeletonData.findAnimation("Dead");
 		
 		//Sets up the Spine data used to display and animate the zombie.
 		zombieSkeletonJson = new SkeletonJson(zombieAtlas);
@@ -620,6 +644,7 @@ public class Assets
 		zombieCharge_Start = zombieSkeletonData.findAnimation("Charge_Start");
 		zombieCharge = zombieSkeletonData.findAnimation("Charge");
 		zombieHitHead = zombieSkeletonData.findAnimation("Hit_Head");
+		zombieDead = zombieSkeletonData.findAnimation("Dead");
 		
 		
 		//Sets up the Spine data used to display and animate the trees.

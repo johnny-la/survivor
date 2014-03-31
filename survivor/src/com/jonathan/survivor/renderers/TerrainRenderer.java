@@ -63,12 +63,15 @@ public class TerrainRenderer
 			//Cycles through the columns of the TerrainLayers array.
 			for(int j = 0; j < layers[i].length; j++)
 			{
-				//Stores the bottom left and right end-points of the TerrainLayer using TerrainLayer.getLeft/RightPoint():Vector2.
-				Vector2 leftEndPoint = layers[i][j].getLeftPoint();
-				Vector2 rightEndPoint = layers[i][j].getRightPoint();
+				//Stores the TerrainLayer instance that is being cycled through
+				TerrainLayer layer = layers[i][j];
 				
-				//If the line is not inside the camera's viewable region, don't draw it. The two-end points of the line are accepted as arguments.
-				if(!isInCamera(leftEndPoint.x, leftEndPoint.y, rightEndPoint.x, rightEndPoint.y))
+				//Stores the bottom left and right end-points of the TerrainLayer using TerrainLayer.getLeft/RightPoint():Vector2.
+				Vector2 leftEndPoint = layer.getLeftPoint();
+				Vector2 rightEndPoint = layer.getRightPoint();
+				
+				//If the line is not inside the camera's viewable region, don't draw it. If the layer is a COSINE, camera culling is done for each individual line segment.
+				if(!isInCamera(leftEndPoint.x, leftEndPoint.y, rightEndPoint.x, rightEndPoint.y) && layer.getTerrainType() != TerrainType.COSINE)
 				{
 					continue;
 				}

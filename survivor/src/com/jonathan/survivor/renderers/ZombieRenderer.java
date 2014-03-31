@@ -182,14 +182,20 @@ public class ZombieRenderer
 		//Else, if the zombie was hit by the player
 		else if(zombie.getState() == State.HIT)
 		{
-			//Plays the HIT animation. First argument is an arbitrary index, and third argument specifies to loop the walk animation.
-			animationState.setAnimation(0, assets.zombieHitHead, true);
+			//Plays the HIT animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
+			animationState.setAnimation(0, assets.zombieHitHead, false);
 		}
 		//Else, if the zombie was hit on the head by the player
 		else if(zombie.getState() == State.HIT_HEAD)
 		{
-			//Plays the HIT_HEAD animation. First argument is an arbitrary index, and third argument specifies to loop the walk animation.
-			animationState.setAnimation(0, assets.zombieHitHead, true);
+			//Plays the HIT_HEAD animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
+			animationState.setAnimation(0, assets.zombieHitHead, false);
+		}
+		//Else, if the zombie is dead
+		else if(zombie.getState() == State.DEAD)
+		{
+			//Plays the zombie's DEAD animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
+			animationState.setAnimation(0, assets.zombieDead, false);
 		}
 		
 		//Updates the speed at which the zombie's animations play, depending on the zombie's current state.
@@ -201,7 +207,7 @@ public class ZombieRenderer
 	private void updateAttachments(Zombie zombie) 
 	{
 		
-		zombie.updateArmCollider();
+		zombie.updateColliders();
 	}
 	
 	/** Updates the zombie's color depending on whether its being targetted, and whether or not it should be drawn transparent. */

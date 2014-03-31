@@ -254,6 +254,14 @@ public class GameScreen extends Screen
 			//Tells the GameScreen to display the Combat HUD.
 			setGameState(GameState.COMBAT);
 		}
+
+		/** Delegated after the KO animation plays in COMBAT mode. Switches the HUD back to the Exploration HUD. */
+		@Override
+		public void switchToExploration() 
+		{
+			//Tells the GameScreen to display the Exploration HUD.
+			setGameState(GameState.EXPLORING);
+		}
 	}
 	
 	@Override 

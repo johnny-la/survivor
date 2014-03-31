@@ -25,11 +25,11 @@ public class CraftingHud extends Hud
 	
 	/** Holds the offset used to anchor the crafting table to the left of the backpack background. Offsets the table relative to the center of the screen. */
 	public static final float CRAFTING_TABLE_X_OFFSET = 108;
-	public static final float CRAFTING_TABLE_Y_OFFSET = -18;
+	public static final float CRAFTING_TABLE_Y_OFFSET = -16;
 	
 	/** Stores the offset used to anchor the craftButton to the bottom-right of the backpack background. Offsets the button relative to the bottom-right of the background*/
 	public static final float CRAFT_BUTTON_X_OFFSET = 66;
-	public static final float CRAFT_BUTTON_Y_OFFSET = 20;
+	public static final float CRAFT_BUTTON_Y_OFFSET = 21;
 	
 	/** Holds the offset used to anchor the header to the top-center of the screen. Offsets the header relative to the center of the screen. */
 	public static final float HEADER_X_OFFSET = -0.5f;

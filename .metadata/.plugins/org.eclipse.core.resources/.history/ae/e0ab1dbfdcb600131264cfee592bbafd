@@ -1,0 +1,34 @@
+package com.jonathan.survivor.inventory;
+
+import com.jonathan.survivor.renderers.RangedWeapon;
+
+public class Loadout 
+{
+	/** Stores the MeleeWeapon held in the loadout. */
+	private MeleeWeapon meleeWeapon;
+	
+	/** Holds the RangedWeapon equipped by the player. */
+	private RangedWeapon rangedWeapon;
+	
+	/** Creates an empty loadout with nothing inside it. */
+	public Loadout()
+	{
+	}
+	
+	/** Creates a loadout with the given items. */
+	public Loadout(MeleeWeapon meleeWeapon)
+	{
+		this.meleeWeapon = meleeWeapon;
+	}
+
+	/** Gets the MeleeWeapon held in the loadout. */
+	public MeleeWeapon getMeleeWeapon() {
+		return meleeWeapon;
+	}
+
+	/** Sets the MeleeWeapon held in the loadout. */
+	public void setMeleeWeapon(MeleeWeapon meleeWeapon) {
+		this.meleeWeapon = meleeWeapon;
+	}
+
+}

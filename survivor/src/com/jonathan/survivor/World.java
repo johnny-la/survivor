@@ -41,7 +41,7 @@ public class World
 	
 	/** A state the GameScreen needs to know about to change the UI */
 	public enum WorldState {
-		EXPLORING, VERSUS_ANIMATION, COMBAT, GAME_OVER
+		EXPLORING, COMBAT, VERSUS_ANIMATION, KO_ANIMATION, GAME_OVER
 	};
 	
 	/** Stores the state of the world, which simply dictates the GUI the GameScreen should display. */
@@ -212,13 +212,8 @@ public class World
 		//Check if the player has collided with anything of importance.
 		checkPlayerCollisions();
 		
-		//If the player is in IDLE state, just standing there
-		if(player.getState() == State.IDLE)
-		{
-			
-		}
-		//Else, if the player is currently jumping
-		else if(player.getState() == State.JUMP)
+		//Else, if the player's y-velocity is non-zero, the player is currently jumping
+		if(player.getVelocity().y != 0)
 		{
 			//Set the player's acceleration to the acceleration gravity.
 			player.setAcceleration(GRAVITY_COMBAT.x, GRAVITY_COMBAT.y);
@@ -226,8 +221,13 @@ public class World
 			//If the player has collided with the ground
 			if(checkGroundCollision(player))
 			{
-				//Set the player to IDLE state.
-				player.setState(State.IDLE);
+				//If the player was being hit while falling, or was simply jumping
+				if(player.getState() == State.HIT || player.getState() == State.JUMP)
+				{
+					//Set the player to IDLE state. This can't be done if player in CHARGE state, for instance. Otherwise, the player would stop charging once landing on the ground.
+					player.setState(State.IDLE);
+				}
+				
 				//Take off any acceleration from the player.
 				player.setAcceleration(0, 0);
 				//Set The player's velocity to zero.
@@ -310,6 +310,14 @@ public class World
 		{
 			//Plays the SCAVENGED animation of the tree, and spawns items from it.
 			scavengeObject(object);
+		}
+
+		/** Delegates when a zombie dies. Tells the world to play the KO animation. */
+		@Override
+		public void playKoAnimation() 
+		{
+			//Sets the WorldState to KO_ANIMATION, telling the AnimationRenderer to play the Ko Animation.
+			setWorldState(WorldState.KO_ANIMATION);
 		}
 	}
 	
@@ -439,6 +447,26 @@ public class World
 		setLevel(combatLevel);
 	}
 	
+	/** Makes the player leave COMBAT mode with the zombie he is fighting. Called after the KO animation plays. */
+	public void exitCombat() 
+	{
+		//Tell the GameScreen to switch back to the Exploration HUD.
+		worldListener.switchToExploration();
+		
+		//Set the world to EXPLORING state, so that the camera updates normally.
+		setWorldState(WorldState.EXPLORING);
+		
+		//Set the player and the zombie back to their original positions before fighting. Resets their states cleanly for a smooth transition to the TerrainLevel.
+		combatLevel.stopFighting(player, player.getZombieToFight());
+		
+		//Switch back to the terrain level.
+		setLevel(terrainLevel);
+		
+		//Ensures the the player and the zombie touch the ground. Resets their y-positions at the correct spot.
+		lockToGround(player);
+		lockToGround(player.getZombieToFight());
+	}
+	
 	/** Checks if the player is colliding with any GameObjects. */
 	private void checkPlayerCollisions()
 	{
@@ -462,15 +490,14 @@ public class World
 		//Retrieves the zombie that the player is fighting.
 		Zombie zombie = player.getZombieToFight();
 		
-		//If the player is jumping
-		if(player.getState() == State.JUMP)
+		//If the player's y-velocity is non-zero, player is jumping.
+		if(player.getVelocity().y != 0)
 		{
-			//If the player hit the zombie
-			if(player.getCollider().intersects(zombie.getCollider()))
+			//If the player hit the zombie, and the player is above the zombie's head
+			if(player.getCollider().intersects(zombie.getCollider()) && player.isAbove(zombie))
 			{
-				//If the player was falling down when hitting the zombie, he hit the zombie's head. However, the player has
-				//to be on top of the zombie. Therefore, on top of the zombie's collider.
-				if(player.getVelocity().y < 0 && player.getY() > ((Rectangle)zombie.getCollider()).getTop())
+				//If the player was falling down when hitting the zombie, he hit the zombie's head.
+				if(player.getVelocity().y < 0 )
 				{
 					//Make the player hit the zombie's head, making him jump after the hit.
 					player.hitHead(zombie);
@@ -478,18 +505,8 @@ public class World
 			}
 			
 		}
-		//Else, if the player is MELEEing.
-		else if(player.getState() == State.MELEE)
-		{
-			//If the player's melee weapon has hit the zombie
-			if(player.getMeleeWeaponCollider().intersects(zombie.getCollider()))
-			{
-				//Make the player hit the zombie with his melee weapon.
-				player.meleeHit(zombie);
-			}
-		}
-		//Else, if the player wasn't jumping, but the zombie's arms hit the player while charging.
-		else if(zombie.getState() == State.CHARGE && player.getCollider().intersects(zombie.getArmCollider()))
+		//If the zombie hit the player (the zombie's charge collider denotes the region where the zombie can hit the player when charging)
+		if(zombie.getState() == State.CHARGE && player.getCollider().intersects(zombie.getChargeCollider()))
 		{
 			//Make the zombie charge hit the player.
 			zombie.chargeHit(player);
