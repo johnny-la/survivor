@@ -7,3 +7,6 @@
 1396190311241	Encapsulate field 'range'
 1396190626546	Rename local variable 'range'
 1396228884791	Copy compilation unit
+1396296315201	Rename local variable 'bottomY'
+1396296400797	Rename local variable 'width'
+1396296407895	Rename local variable 'height'

@@ -6,6 +6,7 @@ import com.jonathan.survivor.inventory.Bullet;
 import com.jonathan.survivor.inventory.Charcoal;
 import com.jonathan.survivor.inventory.Gunpowder;
 import com.jonathan.survivor.inventory.Iron;
+import com.jonathan.survivor.inventory.Rifle;
 import com.jonathan.survivor.inventory.Saltpeter;
 import com.jonathan.survivor.inventory.Sulfur;
 import com.jonathan.survivor.inventory.Water;
@@ -20,7 +21,7 @@ public class CraftingManager
 	private Array<Combination> combinations;
 	
 	/** Holds all of the possible crafting combinations. */
-	public Combination axe, gunpowder, bullet;
+	public Combination axe, rifle, gunpowder, bullet;
 	
 	private CraftingManager()
 	{
@@ -29,23 +30,30 @@ public class CraftingManager
 		
 		//Creates all of the different crafting combinations in the game.
 		axe = new Combination();
-		axe.addItem(Iron.class, 5);
-		axe.addItem(Wood.class, 10);
+		axe.addItem(Iron.class, 1);
+		axe.addItem(Wood.class, 1);
 		axe.setResult(Axe.class, 1);
+		
+		rifle = new Combination();
+		rifle.addItem(Iron.class, 2);
+		rifle.addItem(Wood.class, 2);
+		rifle.setResult(Rifle.class, 1);
 		
 		gunpowder = new Combination();
 		gunpowder.addItem(Saltpeter.class, 12);
 		gunpowder.addItem(Charcoal.class, 8);
 		gunpowder.addItem(Sulfur.class, 6);
 		gunpowder.addItem(Water.class, 4);
-		gunpowder.setResult(Gunpowder.class, 13);
+		gunpowder.setResult(Gunpowder.class, 12);
 		
 		bullet = new Combination();
-		bullet.addItem(Wood.class, 2);
-		bullet.setResult(Bullet.class, 4);
+		bullet.addItem(Iron.class, 2);
+		bullet.addItem(Gunpowder.class, 4);
+		bullet.setResult(Bullet.class, 6);
 		
 		//Adds all of the combinations into an array
 		combinations.add(axe);
+		combinations.add(rifle);
 		combinations.add(gunpowder);
 		combinations.add(bullet);
 	}

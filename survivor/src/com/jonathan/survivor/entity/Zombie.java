@@ -1,12 +1,15 @@
 package com.jonathan.survivor.entity;
 
+import java.util.HashMap;
+
 import com.esotericsoftware.spine.AnimationState;
 import com.esotericsoftware.spine.AnimationState.AnimationStateListener;
 import com.esotericsoftware.spine.Bone;
 import com.esotericsoftware.spine.Event;
 import com.esotericsoftware.spine.Skeleton;
-import com.esotericsoftware.spine.attachments.RegionAttachment;
 import com.jonathan.survivor.Assets;
+import com.jonathan.survivor.inventory.Iron;
+import com.jonathan.survivor.inventory.Water;
 import com.jonathan.survivor.math.Rectangle;
 
 public class Zombie extends Human implements Clickable
@@ -63,6 +66,10 @@ public class Zombie extends Human implements Clickable
 	private Bone rightHandBone;
 	private Bone leftHandBone;
 	
+	/** Holds the HashMap of possible items that can be dropped from scavenging the Interactive GameObject. Key is the type 
+	 *  of item, and Float is the probability of it being dropped from 0 (least probable) to 1 (most probable). */
+	private HashMap<Class, Float> itemProbabilityMap;
+	
 	/** Controls the zombie's animations. Allows for crossfading between animations. */
 	private AnimationState animationState;
 	
@@ -100,6 +107,23 @@ public class Zombie extends Human implements Clickable
 		
 		//Give the zombie default health when instantiated.
 		setHealth(DEFAULT_HEALTH);
+		
+		//Sets up the probability map which dictates which items the zombie will drop.
+		setupItemProbabilityMap();
+	}
+	
+	/** Called on zombie creation in order to populate the HashMap which dictates the probability of certain items dropping when the zombie is killed. */
+	private void setupItemProbabilityMap()
+	{
+		//Creates the item probability map where the key dictates which item can drop once the zombie is destroyed, and the float is a number from 0 to 1
+		//dicatating the probability of that item being dropped. Note that 1 means that the item will be dropped every time a zombie is destroyed.
+		HashMap<Class, Float> probabilityMap = new HashMap<Class, Float>();
+		
+		//Adds the items which will be dropped from the zombie once it is killed.
+		probabilityMap.put(Iron.class, 1f);
+		
+		//Sets the itemProbabilityMap of the tree to the probability map created in this method. Tells the tree which items will be dropped once it destroyed.
+		setItemProbabilityMap(probabilityMap);
 	}
 	
 	/** Updates the various colliders mapped to the zombie. */
@@ -108,22 +132,25 @@ public class Zombie extends Human implements Clickable
 		//Gets the zombie's skeleton.
 		Skeleton skeleton = getSkeleton();
 		
-		//Sets the bottom-left position of the charge collider so as to follow the zombie's position
-		chargeCollider.setPosition(getX() - CHARGE_COLLIDER_WIDTH/2, getY());
-		
 		//Gets the x-position of the left-most hand in world units.
-		float leftX = Math.min(skeleton.getX() + rightHandBone.getWorldX(), skeleton.getX() + leftHandBone.getWorldX());
+		float handXLeft = Math.min(skeleton.getX() + rightHandBone.getWorldX(), skeleton.getX() + leftHandBone.getWorldX());
 		//Gets the y-position of the bottom-most hand in world coordinates.
-		float bottomY = Math.min(skeleton.getY() + rightHandBone.getWorldY(), skeleton.getY() + leftHandBone.getWorldY());
+		float handYBottom = Math.min(skeleton.getY() + rightHandBone.getWorldY(), skeleton.getY() + leftHandBone.getWorldY());
 		
 		//Computes the width and height between the zombie's two hands.
-		float width = Math.abs(rightHandBone.getWorldX() - leftHandBone.getWorldX());
-		float height = Math.abs(rightHandBone.getWorldY() - leftHandBone.getWorldY());
+		float handSeparationX = Math.abs(rightHandBone.getWorldX() - leftHandBone.getWorldX());
+		float handSeparationY = Math.abs(rightHandBone.getWorldY() - leftHandBone.getWorldY());
 		
 		//Sets the bottom-left position of the arm collider to the right position in world units.
-		armCollider.setPosition(leftX, bottomY);
+		armCollider.setPosition(handXLeft, handYBottom);
 		//Modifies the size of the arm's collider. The collider goes from the center of one of the zombie's hands to the center of the other.
-		armCollider.setSize(width,height);
+		armCollider.setSize(handSeparationX,handSeparationY);
+		
+		//Sets the bottom-left position of the charge collider so as to follow the zombie's left hand.
+		chargeCollider.setPosition(handXLeft, getY());
+		
+		//Sets the size of the charge collider to spawn the width between the zombie's hands, and to be the same height as the zombie.
+		chargeCollider.setSize(handSeparationX, COLLIDER_HEIGHT);
 		
 	}
 
@@ -428,6 +455,18 @@ public class Zombie extends Human implements Clickable
 	/** Sets the bone mapped to the zombie's left hand. Allows to position the zombie's arm collider to dictate if the zombie hit the player. */
 	public void setLeftHandBone(Bone leftHandBone) {
 		this.leftHandBone = leftHandBone;
+	}
+	
+	/** Returns the HashMap which holds which items will be dropped when this InteractiveObject is scavenged. The key is the type of the Item 
+	 *  dropped and the float is the probability of it dropping from [0,1]. */
+	public HashMap<Class, Float> getItemProbabilityMap() {
+		return itemProbabilityMap;
+	}
+
+	/** Sets the HashMap which holds which items will be dropped when this InteractiveObject is scavenged. The key is the type of the Item dropped
+	 *  and the float is the probability of it dropping from [0,1]. */
+	public void setItemProbabilityMap(HashMap<Class, Float> itemProbabilityMap) {
+		this.itemProbabilityMap = itemProbabilityMap;
 	}
 
 }

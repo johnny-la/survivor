@@ -15,6 +15,7 @@ import com.jonathan.survivor.inventory.Charcoal;
 import com.jonathan.survivor.inventory.Gunpowder;
 import com.jonathan.survivor.inventory.Iron;
 import com.jonathan.survivor.inventory.Item;
+import com.jonathan.survivor.inventory.Rifle;
 import com.jonathan.survivor.inventory.Saltpeter;
 import com.jonathan.survivor.inventory.Sulfur;
 import com.jonathan.survivor.inventory.Water;
@@ -163,6 +164,8 @@ public class ItemManager
 				templateSprite = assets.bulletSprite;
 			else if(itemClass.equals(Axe.class))
 				templateSprite = assets.axeSprite;
+			else if(itemClass.equals(Rifle.class))
+				templateSprite = assets.rifleSprite;
 
 			//Creates a new copy of the template sprite.
 			Sprite itemSprite = new Sprite(templateSprite);

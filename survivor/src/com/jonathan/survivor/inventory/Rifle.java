@@ -9,7 +9,6 @@ public class Rifle extends RangedWeapon
 	/** Stores the properties of the axe. */
 	public static final String NAME = "Rifle";
 	public static final String DESCRIPTION = "A weapon for the mightiest of hunters";
-	public static final Sprite INVENTORY_SPRITE = Assets.instance.axeSprite;
 	public static final float DAMAGE = 70;
 	public static final float RANGE = 15f;
 	public static final float CHARGE_TIME = 2.8f;

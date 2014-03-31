@@ -456,15 +456,34 @@ public class World
 		//Set the world to EXPLORING state, so that the camera updates normally.
 		setWorldState(WorldState.EXPLORING);
 		
-		//Set the player and the zombie back to their original positions before fighting. Resets their states cleanly for a smooth transition to the TerrainLevel.
-		combatLevel.stopFighting(player, player.getZombieToFight());
-		
-		//Switch back to the terrain level.
-		setLevel(terrainLevel);
-		
-		//Ensures the the player and the zombie touch the ground. Resets their y-positions at the correct spot.
-		lockToGround(player);
-		lockToGround(player.getZombieToFight());
+		//If the player was killed in the fight
+		if(player.getState() == State.DEAD)
+		{
+			//Set the world to GAME_OVER state, since the player died.
+			setWorldState(WorldState.GAME_OVER);
+			
+			//Tells the GameScreen to switch to the GameOverHud.
+			worldListener.gameOver();
+		}
+		//Else, if the zombie was killed in the fight
+		else
+		{
+			//Set the player and the zombie back to their original positions before fighting. Resets their states cleanly for a smooth transition to the TerrainLevel.
+			combatLevel.stopFighting(player, player.getZombieToFight());
+			
+			//Switch back to the terrain level.
+			setLevel(terrainLevel);
+			
+			//Ensures the the player and the zombie touch the ground. Resets their y-positions at the correct spot.
+			lockToGround(player);
+			lockToGround(player.getZombieToFight());
+			
+			//Adds the zombie to the profile as a scavenged object. Like this, the zombie will never spawn on the same layer again.
+			profile.addScavengedLayerObject(player.getZombieToFight());
+			
+			//Spawn items next to the zombie.
+			spawnItems(player.getZombieToFight());
+		}
 	}
 	
 	/** Checks if the player is colliding with any GameObjects. */
@@ -658,9 +677,22 @@ public class World
 	/** Spawns items at the GameObject's location. Called when a tree is chopped down or any other GameObject is scavenged/destroyed. */
 	public void spawnItems(GameObject gameObject)
 	{
-		//Stores the HashMap of the InteractiveGameObject, which indicates which items can be dropped once the object is scavenged.
-		HashMap<Class, Float> itemProbabilityMap = ((InteractiveObject)gameObject).getItemProbabilityMap();
+		//Stores the HashMap which indicates which items can be dropped once the object is scavenged.
+		HashMap<Class, Float> itemProbabilityMap = null; 
 		
+		//If the gameObject to spawn items from is an InteractiveObject
+		if(gameObject instanceof InteractiveObject)
+		{
+			//Grab the itemProbabilityMap from the InteractiveObject.
+			itemProbabilityMap = ((InteractiveObject)gameObject).getItemProbabilityMap();
+		}
+		//Else, if the gameObject from which items should be spawned is a zombie.
+		else if(gameObject instanceof Zombie)
+		{
+			//Grab the itemProbabilityMap from the Zombie.
+			itemProbabilityMap = ((Zombie)gameObject).getItemProbabilityMap();
+		}
+			
 		//Stores the amount of items that have been spawned. Allows items to fly further if items have already been spawned.
 		int itemsSpawned = 0;
 		

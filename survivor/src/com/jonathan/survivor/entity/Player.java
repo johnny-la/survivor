@@ -93,8 +93,8 @@ public class Player extends Human
 	/** Makes the player jump. */
 	public void jump() 
 	{
-		//If the player is already jumping, don't make him jump again. Return the method.
-		if(getState() == State.JUMP)
+		//If the player is already jumping, don't make him jump again. Or, if he is dead, he can't jump. Therefore, return the method.
+		if(getState() == State.JUMP || isDead())
 			return;
 		
 		//If the player is in exploration mode, use a different jump speed.
@@ -112,10 +112,6 @@ public class Player extends Human
 		//Else, if the player is in COMBAT mode
 		else if(getMode() == Mode.COMBAT )
 		{
-			//If the player is not in idle state, don't let him jump. He can only jump in idle state.
-			/*if(getState() != State.IDLE)
-				return;*/
-				
 			//Set the y-velocity of the player to the desired jump speed.
 			setVelocity(0, COMBAT_JUMP_SPEED);
 			//Set the state of the player to his jumping state, telling the world he is jumping.
@@ -160,6 +156,10 @@ public class Player extends Human
 	/** Makes the player swing his melee weapon if he has one. */
 	public void melee()
 	{
+		//If the player is dead, he can't melee. Therefore, return the method.
+		if(isDead())
+			return;
+		
 		//If the player is in combat mode
 		if(getMode() == Mode.COMBAT)
 		{
@@ -186,8 +186,8 @@ public class Player extends Human
 	/** Makes the player fire his ranged weapon */
 	public void fire() 
 	{
-		//If the player does not have a ranged weapon, he cannot fire a gun. Therefore, return this method.
-		if(!hasRangedWeapon())
+		//If the player does not have a ranged weapon, or if he is dead, he cannot fire a gun. Therefore, return this method.
+		if(!hasRangedWeapon() || isDead())
 			return;
 		
 		//If the player is in CHARGE_START state, the player is trying to fire his gun before he pulled it out. This cannot be done

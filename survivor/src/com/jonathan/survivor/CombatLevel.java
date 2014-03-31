@@ -102,8 +102,17 @@ public class CombatLevel implements Level
 		player.setX(previousPlayerX);
 		zombie.setX(previousZombieX);
 		
-		player.setState(State.IDLE);
-		zombie.setState(State.IDLE);
+		//If the zombie was killed in the fight
+		if(zombie.getState() == State.DEAD)
+		{
+			//Set the player back to IDLE state for when he goes back into the TerrainLevel
+			player.setState(State.IDLE);
+			//Set the zombie's previous state to IDLE so that he will play his DEAD animation again once he enters the TerrainLevel.
+			zombie.setPreviousState(State.IDLE);
+			
+			//Regenerate the player back to default health.
+			player.regenerate();
+		}
 	}
 
 	/** Returns the x-position where the player should start on the level. */

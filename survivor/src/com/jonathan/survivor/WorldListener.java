@@ -17,4 +17,8 @@ public interface WorldListener
 
 	/** Delegated after the KO animation plays in COMBAT mode. Tells the GameScreen to switch the HUD back to the Exploration HUD. */
 	public void switchToExploration();
+	
+	/** Tells the GameScreen to switch to its GameOverHud. */
+	public void gameOver();
 }
+

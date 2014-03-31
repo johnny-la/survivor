@@ -24,11 +24,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.spine.Animation;
-import com.esotericsoftware.spine.Skeleton;
 import com.esotericsoftware.spine.SkeletonData;
 import com.esotericsoftware.spine.SkeletonJson;
 import com.esotericsoftware.spine.SkeletonRenderer;
 import com.jonathan.survivor.inventory.Axe;
+import com.jonathan.survivor.inventory.Rifle;
 
 /** Loads all visual/audio assets needed by the game and stores them in public static variables. An asset is fetched from this class whenever something needs
  *  to be drawn on screen or played to the speakers.
@@ -204,6 +204,7 @@ public class Assets
 	public Sprite gunpowderSprite;
 	public Sprite bulletSprite;
 	public Sprite axeSprite;
+	public Sprite rifleSprite;
 	
 	public SkeletonRenderer skeletonRenderer; //Renderer used to draw spine skeletons with a SpriteBatch.
 	
@@ -685,7 +686,11 @@ public class Assets
 		gunpowderSprite = interactableObjectAtlas.createSprite("Gunpowder");
 		bulletSprite = interactableObjectAtlas.createSprite("Bullet");
 		axeSprite = playerAtlas.createSprite(Axe.WEAPON_ATTACHMENT_NAME);	//The name of the sprite in the atlas is the same as the name of the axe's attachment.
-		axeSprite.setSize(INVENTORY_ITEM_WIDTH, INVENTORY_ITEM_HEIGHT);	//Resizes the axe sprite to the default sprite size for an inventory item.
+		axeSprite.setSize(25, 40);	//Resizes the axe sprite to fit an inventory box.
+		axeSprite.setRotation(-15);	//Give a slight angle to the axe in the inventory.
+		rifleSprite = playerAtlas.createSprite(Rifle.WEAPON_ATTACHMENT_NAME);	//Grabs the rifle sprite from the player's atlas.
+		rifleSprite.setSize(60,15);	//Resizes the sprite to fit an inventory box.
+		rifleSprite.setRotation(15);
 		
 		//Creates a new skeleton renderer to draw Spine skeletons using a SpriteBatch instance.
 		skeletonRenderer = new SkeletonRenderer();
