@@ -746,6 +746,11 @@ public class World
 				
 				//Increments the amount of items that have been spawned at the GameObject.
 				itemsSpawned++;
+				
+				//If the GameObject has spawned three or more items already
+				if(itemsSpawned >= 3)
+					//Return the method. A GameObject can spawn a maximum of three items.
+					return;
 			}
 		}
 	}

@@ -121,6 +121,7 @@ public class Assets
 	public TextureRegion backpackBgRegion;
 	public TextureAtlas survivalGuideBgAtlas;
 	public TextureRegion survivalGuideBgRegion;
+	public TextureRegion gameOverTextRegion;
 	public ButtonStyle survivalGuideButtonStyle;
 	public ButtonStyle craftingButtonStyle;	//"Crafting" button displayed in backpack menu
 	public ListStyle survivalGuideListStyle;
@@ -144,8 +145,6 @@ public class Assets
 	public TextureAtlas playerAtlas;
 	public SkeletonJson playerSkeletonJson;
 	public SkeletonData playerSkeletonData;
-	//public Slot meleeWeaponSlot;	//Stores slot where melee weapon images are placed. Populated in PlayerRenderer.
-	//public Attachment axeAttachment;	//Stores the names of the images in Spine used for each weapon. Set in PlayerRenderer.
 	public Animation playerIdle;
 	public Animation playerIdle_Combat;
 	public Animation playerWalk;
@@ -533,6 +532,9 @@ public class Assets
 		//Retrieves the TextureRegion for the backpack's backgrounds.
 		backpackBgRegion = backpackBgAtlas.findRegion("Backpack_BG");
 		survivalGuideBgRegion = survivalGuideBgAtlas.findRegion("Backpack_BG0002");
+		
+		//Retrieves the TextureRegion to display the GameOver text in the GameOverHud
+		gameOverTextRegion = hudAtlas.findRegion("GameOverText");
 		
 		//Creates the style for the Survival Guide button
 		survivalGuideButtonStyle = new ButtonStyle();

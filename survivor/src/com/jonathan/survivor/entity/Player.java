@@ -338,6 +338,31 @@ public class Player extends Human
 		setHealth(DEFAULT_HEALTH);
 	}
 	
+	/** Overrides the takeDamage() method to take note of when the player dies, in order to display the KO animation. */
+	@Override 
+	public void takeDamage(float amount)
+	{
+		//Deal damage to the player
+		super.takeDamage(amount);
+		
+		//If the player died while taking damage
+		if(getState() == State.DEAD)
+		{
+			//Tell the World instance to play the KO animation. When the animation is done, the "Game Over" screen will be displayed.
+			playerListener.playKoAnimation();
+			
+			//Makes the player lose all of the items in his inventory.
+			loseLoot();
+		}
+	}
+	
+	/** Makes the player lose all of the items in his inventory. */
+	private void loseLoot() 
+	{
+		//Clears the player's inventory.
+		inventory.clear();
+	}
+
 	/** Called when the player loses his target. */
 	@Override
 	public void loseTarget()

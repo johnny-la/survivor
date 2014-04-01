@@ -175,12 +175,11 @@ public class CombatHud extends Hud
 		@Override
 		public void touchUp(InputEvent event, float x, float y, int pointer, int button)
 		{
-			System.out.println(event.getTarget() + " released");
 			//If the fire button was released, make the player fire his gun.
 			if(event.getTarget() == fireButton || event.getTarget() == fireButton.getImage())
 			{
+				//Make the player fire his ranged weapon, if he has one equipped.
 				world.getPlayer().fire();
-				System.out.println("Fire gun");
 			}
 		}
 

@@ -1,0 +1,64 @@
+package com.jonathan.survivor.hud;
+
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.jonathan.survivor.World;
+
+/*
+ * An instance of this class will display the HUD whilst in EXPLORATION mode.
+ */
+
+public class GameOverHud extends Hud
+{	
+	/** Stores the image which displays "Game Over". */
+	private Image gameOverText;
+	
+	/** Stores the listener used to listen for events from the arrow buttons. */
+	private ButtonListener buttonListener;
+	
+	/** Holds the amount of time the GameOverHud has been displayed. Once a certain time period elapses, the player is redirected to the MainMenu. */
+	private float playTime;
+	
+	/** Accepts the stage where 2d widgets will be drawn and placed, and the world, which will receive information about
+	 *  button presses. */
+	public GameOverHud(Stage stage, World world)
+	{
+		super(stage, world);
+		
+		gameOverText = new Image(assets.gameOverTextRegion);
+		
+		//Creates a new listener for the buttons
+		buttonListener = new ButtonListener();
+	}
+
+	@Override
+	public void draw(float deltaTime) 
+	{		
+		//Draws the widgets to the screen.
+		super.draw(deltaTime);
+	}
+	
+	class ButtonListener extends ClickListener
+	{
+		/** Delegates when a button is pressed. */
+		@Override
+		public void clicked(InputEvent event, float x, float y)
+		{
+			
+		}
+	}
+
+	/** Called when the stage must be reset to draw the widgets contained in this class. Used when the stage needs to be re-purposed. Also called when the
+	 *  screen is resized to re-place the widgets. */
+	@Override
+	public void reset(float guiWidth, float guiHeight) 
+	{
+		//Clears the stage and all its widgets to re-purpose the stage to draw the exploration HUD.
+		stage.clear();
+		
+		//Adds the "Game Over" image to the stage.
+		stage.addActor(gameOverText);
+	}	
+}

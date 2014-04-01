@@ -10,6 +10,7 @@ import com.jonathan.survivor.inventory.Charcoal;
 import com.jonathan.survivor.inventory.Saltpeter;
 import com.jonathan.survivor.inventory.Sulfur;
 import com.jonathan.survivor.inventory.Water;
+import com.jonathan.survivor.inventory.Wood;
 
 public class Box extends InteractiveObject implements Poolable
 {
@@ -57,6 +58,7 @@ public class Box extends InteractiveObject implements Poolable
 		
 		//Adds the items which will be dropped from the box once it is destroyed.
 		probabilityMap.put(Water.class, 0.6f);
+		probabilityMap.put(Wood.class, 0.3f);
 		probabilityMap.put(Charcoal.class, 0.5f);
 		probabilityMap.put(Saltpeter.class, 0.2f);
 		probabilityMap.put(Sulfur.class, 0.4f);

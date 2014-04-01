@@ -12,6 +12,7 @@ import com.jonathan.survivor.hud.BackpackHud;
 import com.jonathan.survivor.hud.CombatHud;
 import com.jonathan.survivor.hud.CraftingHud;
 import com.jonathan.survivor.hud.ExplorationHud;
+import com.jonathan.survivor.hud.GameOverHud;
 import com.jonathan.survivor.hud.Hud;
 import com.jonathan.survivor.hud.HudListener;
 import com.jonathan.survivor.hud.PauseMenuHud;
@@ -76,6 +77,8 @@ public class GameScreen extends Screen
 	private CraftingHud craftingHud;
 	/** Holds the HUD which displays the pause menu. */
 	private PauseMenuHud pauseMenuHud;
+	/** Stores the HUD which displays the "Game Over" text when the player is dead. */
+	private GameOverHud gameOverHud;
 	
 	/** Stores the UiListener which receives all events related to the UI or the HUD. Used to react appropriately to button presses. */
 	private UiListener uiListener;
@@ -138,6 +141,8 @@ public class GameScreen extends Screen
 		craftingHud = new CraftingHud(stage, world, profile.getInventory(), itemManager);
 		//Instantiates a pause menu instance by passing the stage, which indicates that all widgets will be drawn to this stage. The world is unused in the HUD.
 		pauseMenuHud = new PauseMenuHud(stage, world);
+		//Creates the GameOverHud which displays the "Game Over" text when the player is dead, and subsequently brings him back to the main menu.
+		gameOverHud = new GameOverHud(stage, world);
 		
 		//Creates the UiListener instance which will receive all events related to the UI and its button presses. 
 		uiListener = new UiListener();
@@ -149,6 +154,7 @@ public class GameScreen extends Screen
 		survivalGuideHud.addHudListener(uiListener);
 		craftingHud.addHudListener(uiListener);
 		pauseMenuHud.addHudListener(uiListener);
+		gameOverHud.addHudListener(uiListener);
 		
 		//The game always starts off in exploration mode. This tells the class to display the exploration UI for the game.
 		setGameState(GameState.EXPLORING);
@@ -263,7 +269,7 @@ public class GameScreen extends Screen
 			setGameState(GameState.EXPLORING);
 		}
 		
-		/** Delegates when the player dies in combat. Switches to the GameOverHud. */
+		/** Delegates from the World when the player dies in combat. Switches to the GameOverHud. */
 		@Override
 		public void gameOver()
 		{
@@ -363,6 +369,9 @@ public class GameScreen extends Screen
 			break;
 		case PAUSED:
 			hud = pauseMenuHud;	//Switches to the pause menu's UI.
+			break;
+		case GAME_OVER:
+			hud = gameOverHud;	//Switches to the GameOverHud which displays the "GameOver" text and redirects the player to the main menu.
 			break;
 		}
 		
