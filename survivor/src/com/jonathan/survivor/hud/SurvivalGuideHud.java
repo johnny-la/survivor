@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -18,18 +19,21 @@ import com.jonathan.survivor.World;
 public class SurvivalGuideHud extends Hud
 {
 	/** Stores the amount the list is offset up, relative to the center of the screen. This is the top-most y-position of the text, where 0 will place it at the center of the screen. */
-	public static final float LIST_Y_OFFSET = 52;
+	public static final float LIST_Y_OFFSET = 50;
 	/** Holds the amount the list is nudged to the left. This allows the entries in the list to look left-aligned. */
-	public static final float LIST_X_OFFSET = 118;
+	public static final float LIST_X_OFFSET = 125;
+	
+	/** Holds the width and height of the scroll pane where entries are displayed in the survival guide. */
+	public static final float SCROLL_PANE_WIDTH = 270;
+	public static final float SCROLL_PANE_HEIGHT = 150;
 	
 	/** Stores the x-offset of the "Guide" header relative to the center of the screen. */
 	public static final float HEADER_X_OFFSET = 100;	//Unused
 	/** Stores the offset between the bottom of the "Guide" header and the top of the listof entries. Adds spacing between the header and the buttons. */
 	public static final float HEADER_Y_OFFSET = 10;		//Unused
 
-	
 	/** Stores the offset used to anchor the back button to the bottom-right of the screen with a certain padding. */
-	public static final float BACK_BUTTON_X_OFFSET = 28;
+	public static final float BACK_BUTTON_X_OFFSET = 20;
 	public static final float BACK_BUTTON_Y_OFFSET = 13;
 	
 	
@@ -42,20 +46,39 @@ public class SurvivalGuideHud extends Hud
 	/** Holds the label displaying the description for the entry the user clicked. */
 	private Label entryLabel;
 	
+	/** Stores the ScrollPane which allows the items in the survival guide to be scollable. */
+	private ScrollPane scrollPane;
+	
+	/** Holds the table where the scroll pane is contained. This is the high-level container for the list. */
+	private Table scrollPaneTable;
+	
 	/** True if the description for an entry is currently being shown. On back, revert to the entry name list. */
 	private boolean displayingDescription;
 	
 	/** Holds the list of entry names that the user can choose from the list. */
-	private final String[] entryNames = new String[]{"How to Escape", "How to Eat", "How to defend yourself"}; 
+	private final String[] entryNames = new String[]{"Exploration Tutorial", "Combat tutorial", "How to Escape", "Recipes"}; 
 	/** Holds the description of every entry in the survival guide. */
-	private final String[] entries = new String[]{"Build a Time Machine", 
-			
-												  "Make Bread" +
-												  "\n- 1 Wheat " +
-												  "\n- 1 Baking Powder", 
+	private final String[] entries = new String[]{"To move left or right, press the \ndirectional arrows on the bottom of \nthe screen.\n\n" +
+												  "Press any object in the world to \nwalk towards it and interact with it.\n",
 												  
-											      "Craft a rifle" +
-											      "\n- 20 iron"};
+												  "To enter combat with a zombie, \nsimply come into contact with a \nzombie in the world.\n\n" +
+												  "To jump, press the green button \non the bottom-left.\n\n" +
+												  "By hitting the zombie on the head, \nyou can deal damage to him.\n\n" +
+												  "To melee the zombie, press the \norange button on the bottom-right.\n\n" +
+												  "To fire your ranged weapon, press \nthe red button on the bottom-right\n" +
+												  "(Note: each shot requires one bullet)",
+			
+												  "Build a Teleporter\n" +
+												  "- 40 sulfur + 120 wood\n + 100 iron + 40 saltpeter", 
+												  
+											      "Axe:\n" +
+											      " 10 wood + 5 iron\n\n" +
+											      "Rifle:\n" +
+											      " 15 wood + 10 iron\n\n" +
+											      "Bullets:\n" +
+											      " 4 gunpowder + 2 iron\n\n" +
+											      "Gunpowder:\n" +
+											      " 6 sulfur + 4 water + 8 charcoal\n + 12 saltpeter\n\n"};
 	
 	/** Stores the back button, used to exit out of the backpack hud. */
 	private Button backButton;
@@ -83,6 +106,13 @@ public class SurvivalGuideHud extends Hud
 		
 		//Instantiates the label that will display the description for an entry in the survival guide.
 		entryLabel = new Label("", assets.smallLabelStyle);
+		
+		//Places the list inside the ScrollPane to add scrolling functionality to that list.
+		scrollPane = new ScrollPane(list, assets.inventoryScrollPaneStyle);
+		//Modifies the overscroll of the scroll pane. Args: maxOverscrollDistance, minVelocity, maxVelocity
+		scrollPane.setupOverscroll(30, 100, 200);
+		//Disables scrolling in the x-direction.
+		scrollPane.setScrollingDisabled(true, false);
 		
 		//Creates the back button using the designated ButtonStyle, which dictates its appearance.
 		backButton = new Button(assets.backButtonStyle);
@@ -123,9 +153,9 @@ public class SurvivalGuideHud extends Hud
 		
 		//Creates a new Table instance to neatly arrange the buttons on the hud.
 		table = new Table();
-		
+		table.setFillParent(true);
 		//Adds the list of survival guide entries to the table. Pads it to the left so that it is nudged to the right.
-		table.add(list);
+		table.add(scrollPane).width(SCROLL_PANE_WIDTH).height(SCROLL_PANE_HEIGHT);;
 		
 	}
 	
@@ -139,10 +169,8 @@ public class SurvivalGuideHud extends Hud
 	/** Displays the list consisting of entry names. */
 	private void showEntryList() 
 	{
-		//Removes the label displaying the entry's desciption. We want to revert to the list of all entries.
-		table.removeActor(entryLabel);
 		//Replaces the entry description with the entry list. 
-		table.add(list);
+		scrollPane.setWidget(list);
 		
 		//Tells the survival guide HUD it is displaying the list of entry names, and not an entry description
 		displayingDescription = false;
@@ -154,14 +182,12 @@ public class SurvivalGuideHud extends Hud
 	
 	/** Displays the description for the entry with the given index in the entryNames:String[] array. */
 	private void showEntryDescription(int index) 
-	{
-		//Removes the list of all entries from the table. We want to add the description for the clicked entry.
-		table.removeActor(list);
-		
+	{		
 		//Set the label to hold the description for the pressed entry
 		entryLabel.setText(entries[index]);
-		//Adds the entry label to the table so that the entry's description is displayed instead of the entry list. Pads the text to shift it to the right.
-		table.add(entryLabel).left();
+		
+		//Make the scroll pane display the newly updated entryLabel. The label shows the description for the pressed entry.
+		scrollPane.setWidget(entryLabel);
 		
 		//Tells the survival guide that it is currently displaying the description for an entry. On back button, the list of entry names will be shown.
 		displayingDescription = true;
@@ -205,13 +231,9 @@ public class SurvivalGuideHud extends Hud
 		//Draws the widgets on the stage to ensure that each widget's size is updated.
 		stage.draw();
 		
-		//Stores the width and height of the table depending on whether an entry description or the entry list is being displayed.
-		float tableWidth = (displayingDescription)? entryLabel.getWidth() : list.getWidth();
-		float tableHeight = (displayingDescription)? entryLabel.getHeight() : list.getHeight();
-		
 		//Offsets the table so that the text is left aligned at x = LIST_X_OFFSET. 
-		table.setX(tableWidth/2 - LIST_X_OFFSET);
+		table.setX(SCROLL_PANE_WIDTH/2 - LIST_X_OFFSET);
 		//Sets the y-position of the table so that the top of the text inside the guide is always at the same height relative to screen's center.
-		table.setY(LIST_Y_OFFSET - tableHeight/2);
+		table.setY(LIST_Y_OFFSET - SCROLL_PANE_HEIGHT/2);
 	}
 }

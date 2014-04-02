@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="com.jonathan.survivor.managers.GameObjectManager"/>
 <fullyQualifiedTypeName name="com.jonathan.entity.Player"/>
 <fullyQualifiedTypeName name="com.jonathan.entity.Human.Direction"/>
 <fullyQualifiedTypeName name="com.esotericsoftware.spine.Animation"/>
@@ -55,9 +54,10 @@
 <fullyQualifiedTypeName name="com.jonathan.survivor.entity.Human.Direction"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.CombatLevel"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.World"/>
-<fullyQualifiedTypeName name="com.jonathan.survivor.entity.Human.State"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.math.Vector2"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.math.Line"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.inventory.Bullet"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Image"/>
+<fullyQualifiedTypeName name="com.jonathan.survivor.inventory.Rifle"/>
+<fullyQualifiedTypeName name="com.jonathan.survivor.entity.Human.State"/>
 </qualifiedTypeNameHistroy>

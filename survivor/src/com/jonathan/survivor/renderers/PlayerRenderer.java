@@ -168,6 +168,12 @@ public class PlayerRenderer
 						player.setState(State.IDLE);
 					}
 				}
+				//Else, if the player has just finished teleporting, he has won the game
+				else if(player.getState() == State.TELEPORT)
+				{
+					//Inform the GameScreen that the player has won the game.
+					//hudListener.winGame();
+				}
 				
 			}
 
@@ -309,6 +315,9 @@ public class PlayerRenderer
 		{
 			//Play the player's MELEE animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
 			animationState.setAnimation(0, assets.playerMelee, false);
+			//Queues the IDLE animation to play right after the MELEE animation. First argument is an arbitrary index, and third argument specifies to loop the animation.
+			//Last zero specifies that the IDLE should play right after the MELEE animation.
+			animationState.addAnimation(0, assets.playerIdle_Combat, true, 0);
 		}
 		//Else, if the player is pulling out his gun before charging it.
 		else if(player.getState() == State.CHARGE_START)
@@ -339,6 +348,12 @@ public class PlayerRenderer
 		{
 			//Play his DEAD animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
 			animationState.setAnimation(0, assets.playerDead, false);
+		}
+		//Else, if the player has won the game and is teleporting out of the world
+		else if(player.getState() == State.TELEPORT)
+		{
+			//Play his TELEPORT animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
+			animationState.setAnimation(0, assets.playerTeleport, false);
 		}
 	}
 	

@@ -5190,3 +5190,13 @@ Contains: Could not delete: C:\Users\Clementine\Documents\survivor\survivor-desk
 !MESSAGE Could not delete: C:\Users\Clementine\Documents\survivor\survivor-desktop\bin\ui\hud.
 !SUBENTRY 5 org.eclipse.core.filesystem 4 273 2014-04-01 06:55:22.689
 !MESSAGE Could not delete: C:\Users\Clementine\Documents\survivor\survivor-desktop\bin\ui.
+!SESSION 2014-04-01 16:32:54.432 -----------------------------------------------
+eclipse.buildId=M20120208-0800
+java.version=1.7.0_45
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=fr_FR
+Framework arguments:  -product org.eclipse.epp.package.java.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.java.product
+
+!ENTRY com.android.ide.eclipse.adt 1 0 2014-04-01 17:33:47.461
+!MESSAGE com.android.ide.eclipse.adt

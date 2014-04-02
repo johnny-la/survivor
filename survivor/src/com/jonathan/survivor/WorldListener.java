@@ -20,5 +20,8 @@ public interface WorldListener
 	
 	/** Tells the GameScreen to switch to its GameOverHud. */
 	public void gameOver();
+
+	/** Called when the player's TELEPORT animation is done playing after crafting a teleporter. Transitions the player back to the main menu. */
+	public void winGame();
 }
 

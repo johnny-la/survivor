@@ -9,6 +9,7 @@ import com.jonathan.survivor.inventory.Iron;
 import com.jonathan.survivor.inventory.Rifle;
 import com.jonathan.survivor.inventory.Saltpeter;
 import com.jonathan.survivor.inventory.Sulfur;
+import com.jonathan.survivor.inventory.Teleporter;
 import com.jonathan.survivor.inventory.Water;
 import com.jonathan.survivor.inventory.Wood;
 
@@ -21,7 +22,7 @@ public class CraftingManager
 	private Array<Combination> combinations;
 	
 	/** Holds all of the possible crafting combinations. */
-	public Combination axe, rifle, gunpowder, bullet;
+	public Combination axe, rifle, gunpowder, bullet, timeMachine;
 	
 	private CraftingManager()
 	{
@@ -51,11 +52,16 @@ public class CraftingManager
 		bullet.addItem(Gunpowder.class, 4);
 		bullet.setResult(Bullet.class, 6);
 		
+		timeMachine = new Combination();
+		timeMachine.addItem(Wood.class, 1);
+		timeMachine.setResult(Teleporter.class, 1);
+		
 		//Adds all of the combinations into an array
 		combinations.add(axe);
 		combinations.add(rifle);
 		combinations.add(gunpowder);
 		combinations.add(bullet);
+		combinations.add(timeMachine);
 	}
 	
 	/** Returns the resulting item crafted using the given array of items. If null, no result is formed using the given list of items. */

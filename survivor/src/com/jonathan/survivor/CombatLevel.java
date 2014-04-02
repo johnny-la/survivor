@@ -102,6 +102,21 @@ public class CombatLevel implements Level
 		player.setX(previousPlayerX);
 		zombie.setX(previousZombieX);
 		
+		//If the player is to the right of the zombie
+		if(player.getX() > zombie.getX())
+		{
+			//Make the player and the zombie face each other.
+			player.setDirection(Direction.LEFT);
+			zombie.setDirection(Direction.RIGHT);
+		}
+		//Else, if the player is to the left of the zombie
+		else
+		{
+			//Make the player and the zombie face each other by making the player face right and the zombie face left.
+			player.setDirection(Direction.RIGHT);
+			zombie.setDirection(Direction.LEFT);
+		}
+		
 		//If the zombie was killed in the fight
 		if(zombie.getState() == State.DEAD)
 		{

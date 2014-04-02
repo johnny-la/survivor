@@ -22,4 +22,7 @@ public interface HudListener
 
 	/** Called when the crafting button is pressed in the backpack. Transitions to the crafting HUD. */
 	void switchToCraftingMenu();
+
+	/** Delegated by the CraftingHud when the player crafts a TimeMachine. Tells the GameScreen to make the player win the game. */
+	void activateTeleporter();
 }

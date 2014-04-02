@@ -22,7 +22,7 @@ public abstract class Human extends GameObject implements Poolable
 	protected Mode mode;
 	
 	public enum State {
-		SPAWN, IDLE, WALK, JUMP, FALL, CHOP_TREE, ENTER_COMBAT, MELEE, CHARGE_START, CHARGE, FIRE, ALERTED, HIT, HIT_HEAD, DEAD, 
+		SPAWN, IDLE, WALK, JUMP, FALL, CHOP_TREE, ENTER_COMBAT, MELEE, CHARGE_START, CHARGE, FIRE, ALERTED, HIT, HIT_HEAD, DEAD, TELEPORT
 	}
 	
 	/** Stores the state of the Human (IDLE, WALK, etc.), usually used to dictate which animations to play. */

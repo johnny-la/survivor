@@ -18,6 +18,7 @@ import com.jonathan.survivor.inventory.Item;
 import com.jonathan.survivor.inventory.Rifle;
 import com.jonathan.survivor.inventory.Saltpeter;
 import com.jonathan.survivor.inventory.Sulfur;
+import com.jonathan.survivor.inventory.Teleporter;
 import com.jonathan.survivor.inventory.Water;
 import com.jonathan.survivor.inventory.Wood;
 
@@ -162,6 +163,8 @@ public class ItemManager
 				templateSprite = assets.gunpowderSprite;
 			else if(itemClass.equals(Bullet.class))
 				templateSprite = assets.bulletSprite;
+			else if(itemClass.equals(Teleporter.class))
+				templateSprite = assets.teleporterSprite;
 			else if(itemClass.equals(Axe.class))
 				templateSprite = assets.axeSprite;
 			else if(itemClass.equals(Rifle.class))

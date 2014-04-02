@@ -9,7 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.jonathan.survivor.World;
+import com.jonathan.survivor.inventory.Axe;
 import com.jonathan.survivor.inventory.Inventory;
+import com.jonathan.survivor.inventory.Rifle;
+import com.jonathan.survivor.inventory.Teleporter;
 import com.jonathan.survivor.managers.CraftingManager;
 import com.jonathan.survivor.managers.CraftingManager.Item;
 import com.jonathan.survivor.managers.ItemManager;
@@ -207,6 +210,10 @@ public class CraftingHud extends Hud
 	/** Transfers the given quantity of the given item from the inventory list to the crafting table. */
 	private void transferToCraftingTable(Class itemClass, int quantity) 
 	{	
+		//If the crafting table is full, and the table does not already contain the item we want to add, the given item can't be transfered to the crafting table. 
+		if(craftingTable.isFull() && !craftingTable.containsItem(itemClass))
+			return;
+		
 		//Removes the given quantity of items from the inventoryList. The number next to the item will simply be updated.
 		inventoryList.addItem(itemClass, -quantity);
 		
@@ -251,8 +258,20 @@ public class CraftingHud extends Hud
 		//Add the given quantity of the crafted item into the inventory. Note: must be called after 'inventoryList.addItem()'
 		inventory.addItem(craftedItem.getItem(), craftedItem.getQuantity());
 		
-		//Empties the crafting table of its current items. False argument specifies that the items in the crafting table are not put back into the player's inventory.
+		//Empties the crafting table of its current items. False argument specifies that the items in the crafting table will not be put back into the player's inventory.
 		emptyCraftingTable(false);
+		
+		//If the player just crafted an axe
+		if(craftedItem.getItem() == Axe.class)
+			//Make the player equip an axe
+			world.getPlayer().getLoadout().setMeleeWeapon(new Axe());
+		//If the player just crafted a rifle
+		else if(craftedItem.getItem() == Rifle.class)
+			//Make the player equip a rifle
+			world.getPlayer().getLoadout().setRangedWeapon(new Rifle());
+		//Else, if a Teleporter was just created 
+		else if(craftedItem.getItem() == Teleporter.class)
+			hudListener.activateTeleporter();
 		
 		//Empty the craftedItem instance variable, since the item was just crafted, and thus is no longer in the crafting table.
 		craftedItem = null;

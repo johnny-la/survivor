@@ -338,8 +338,8 @@ public class TerrainLayer
 		//Generates a new random number between 0 and 1 which dictates whether or not a zombie will be spawned in the center of the TerrainLayer.
 		float randZombie = objectRand.nextFloat();
 		
-		//If the random number is less than the zombie probability rate, place a zombie on the layer.
-		if(randZombie < ZOMBIE_PROBABILITY_RATE)
+		//If the random number is less than the zombie probability rate, place a zombie on the layer. However, the layer has to be checked to make sure that a zombie can spawn on it.
+		if(randZombie < ZOMBIE_PROBABILITY_RATE && canSpawnZombie())
 		{
 			//If the zombie has not yet been killed on the TerrainLayer, spawn him there.
 			if(!scavengedObjects.contains(objectIndex))
@@ -363,6 +363,24 @@ public class TerrainLayer
 		
 	}
 	
+	/** Returns true if a zombie can be spawned on this layer. The only reason it could not spawn is if this layer is the one where the player has spawned. */
+	private boolean canSpawnZombie() 
+	{
+		//Retrieves the terrain coordinates where the player is first spawned.
+		int playerSpawnRow = profile.getTerrainRowOffset() + TerrainLevel.NUM_LAYER_ROWS/2;
+		int playerSpawnCol = profile.getTerrainColOffset() + TerrainLevel.NUM_LAYER_COLS/2;
+		
+		//If this layer is the same layer where the player is spawned
+		if(row == playerSpawnRow && col == playerSpawnCol)
+		{
+			//Return false, since a zombie should not spawn right next to the player when the game starts.
+			return false;
+		}
+		
+		//If this statement is reached, the zombie can be spawned on this layer. In fact, this layer is not the one where the player first spawns.
+		return true;
+	}
+
 	/** Frees the GameObjects stored inside the layer. Puts them back into the GameObjectManager's pools, so that they can be reused. Called when the layer
 	 *  should be re-purposed into another layer. */
 	public void freeGameObjects()

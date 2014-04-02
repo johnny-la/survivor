@@ -1,1 +1,7 @@
 1396349722205	Copy compilation unit
+1396386811449	Delete element
+1396386817595	Copy compilation unit
+1396388029298	Rename type 'TimeMachine'
+1396388107751	Rename field 'timeMachineSprite'
+1396392092080	Rename enum constant 'TELEPORTER'
+1396394184651	Rename method 'winGame'

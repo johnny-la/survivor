@@ -1,0 +1,22 @@
+package com.jonathan.survivor.inventory;
+
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.jonathan.survivor.Assets;
+
+public class Teleporter extends Craftable
+{
+	/** Stores the properties of the Time Machine item. */
+	private static final String NAME = "Time Machine";	
+	private static final String DESCRIPTION = "Basic tool of escape";
+	
+	private static final String ITEM_ATTACHMENT_NAME = "TimeMachine";
+	
+	/** Creates a Time Machine item that can be displayed in an inventory slot. */
+	public Teleporter()
+	{
+		super(NAME, DESCRIPTION);
+		
+		//Sets the name of the attachment in Spine that will display the time machine as an item in the world.
+		setItemAttachment(ITEM_ATTACHMENT_NAME);
+	}
+}

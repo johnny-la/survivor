@@ -119,11 +119,7 @@ public class Player extends Human
 		}
 		
 		//Make the player lose his target so that he stops walking to a specific GameObject after jumping.
-		loseTarget();
-		
-		loadout.setMeleeWeapon(new Axe());
-		loadout.setRangedWeapon(new Rifle());
-		
+		loseTarget();		
 	}
 
 	/** Makes the player fall through one layer. */
@@ -390,6 +386,13 @@ public class Player extends Human
 		//Lose the target.
 		super.loseTarget();
 		
+	}
+	
+	/** Returns true if the player has won the game. */
+	public boolean didWin()
+	{
+		//If the player is in TELEPORT state, he has won the game.
+		return getState() == State.TELEPORT;
 	}
 	
 	/** Override the canTarget method as always returning false since the Player can never be targetted. */

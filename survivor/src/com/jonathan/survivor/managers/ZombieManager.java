@@ -43,6 +43,11 @@ public class ZombieManager
 	/** Updates the game logic for the given zombie. */
 	public void update(Zombie zombie, float deltaTime) 
 	{
+		//If the player won the game, the zombies don't need to be updated anymore
+		if(world.getPlayer().didWin())
+			//Therefore, return the method.
+			return;
+		
 		//If the zombie is in EXPLORATION mode
 		if(zombie.getMode() == Mode.EXPLORING)
 		{
@@ -252,7 +257,7 @@ public class ZombieManager
 	/** Checks if the zombie has intersected with any GameObject which is pertinent to the zombie, such as the player. */
 	private void checkCollisions(Zombie zombie)
 	{
-		//If the zombie is dead, its collisions are irrelevant.
+		//If the zombie is dead, the zombie's collisions are irrelevant.
 		if(zombie.getState() == State.DEAD)
 			//Therefore, return the method.
 			return;

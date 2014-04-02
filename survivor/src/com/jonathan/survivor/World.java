@@ -758,6 +758,10 @@ public class World
 	/** Makes the user pick up the given Item GameObject, removing the GameObject from the world and adding it to the inventory. */
 	public void collectItemObject(ItemObject itemObject)
 	{
+		//If the item has already been clicked, don't collect the item again. Therefore, return this method.
+		if(itemObject.getItemState() == ItemState.CLICKED)
+			return;
+		
 		//Tells the ItemObject that it has been clicked so that the correct animation plays.
 		itemObject.setItemState(ItemState.CLICKED);
 		//Moves the item to the player's center position in the given amount of seconds, specified by the last parameter.

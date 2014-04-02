@@ -160,6 +160,7 @@ public class Assets
 	public Animation playerFire;
 	public Animation playerHit;
 	public Animation playerDead;
+	public Animation playerTeleport;
 	
 	public TextureAtlas zombieAtlas;
 	public SkeletonJson zombieSkeletonJson;
@@ -202,6 +203,7 @@ public class Assets
 	public Sprite saltpeterSprite;
 	public Sprite gunpowderSprite;
 	public Sprite bulletSprite;
+	public Sprite teleporterSprite;
 	public Sprite axeSprite;
 	public Sprite rifleSprite;
 	
@@ -633,6 +635,7 @@ public class Assets
 		playerFire = playerSkeletonData.findAnimation("Fire");
 		playerHit = playerSkeletonData.findAnimation("Hit");
 		playerDead = playerSkeletonData.findAnimation("Dead");
+		playerTeleport = playerSkeletonData.findAnimation("Teleport");
 		
 		//Sets up the Spine data used to display and animate the zombie.
 		zombieSkeletonJson = new SkeletonJson(zombieAtlas);
@@ -687,12 +690,13 @@ public class Assets
 		sulfurSprite = interactableObjectAtlas.createSprite("Sulfur");
 		gunpowderSprite = interactableObjectAtlas.createSprite("Gunpowder");
 		bulletSprite = interactableObjectAtlas.createSprite("Bullet");
+		teleporterSprite = interactableObjectAtlas.createSprite("Teleporter");
 		axeSprite = playerAtlas.createSprite(Axe.WEAPON_ATTACHMENT_NAME);	//The name of the sprite in the atlas is the same as the name of the axe's attachment.
-		axeSprite.setSize(25, 40);	//Resizes the axe sprite to fit an inventory box.
-		axeSprite.setRotation(-15);	//Give a slight angle to the axe in the inventory.
-		rifleSprite = playerAtlas.createSprite(Rifle.WEAPON_ATTACHMENT_NAME);	//Grabs the rifle sprite from the player's atlas.
-		rifleSprite.setSize(60,15);	//Resizes the sprite to fit an inventory box.
-		rifleSprite.setRotation(15);
+		axeSprite.setSize(axeSprite.getWidth()/2, axeSprite.getHeight()/2);	//Resizes the axe sprite to fit an inventory box.
+		rifleSprite = interactableObjectAtlas.createSprite(Rifle.WEAPON_ATTACHMENT_NAME);	//Grabs the rifle sprite from the player's atlas.
+		//rifleSprite.setSize(rifleSprite.getWidth()/5, rifleSprite.getHeight()/5);	//Resizes the sprite to fit an inventory box.
+		//rifleSprite.setOrigin(rifleSprite.getWidth()/2, 0);
+		//rifleSprite.setRotation(15);
 		
 		//Creates a new skeleton renderer to draw Spine skeletons using a SpriteBatch instance.
 		skeletonRenderer = new SkeletonRenderer();
