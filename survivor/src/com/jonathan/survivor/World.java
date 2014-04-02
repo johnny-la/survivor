@@ -311,14 +311,14 @@ public class World
 			//Plays the SCAVENGED animation of the tree, and spawns items from it.
 			scavengeObject(object);
 		}
-
+		
 		/** Delegates when a zombie dies. Tells the world to play the KO animation. */
 		@Override
 		public void playKoAnimation() 
 		{
 			//Sets the WorldState to KO_ANIMATION, telling the AnimationRenderer to play the Ko Animation.
 			setWorldState(WorldState.KO_ANIMATION);
-		}
+		}		
 	}
 	
 	/** This method is called once to make the human move in the given direction. */

@@ -346,17 +346,17 @@ public class Player extends Human
 		{
 			//Tell the World instance to play the KO animation. When the animation is done, the "Game Over" screen will be displayed.
 			playerListener.playKoAnimation();
-			
-			//Makes the player lose all of the items in his inventory.
-			loseLoot();
 		}
 	}
 	
 	/** Makes the player lose all of the items in his inventory. */
-	private void loseLoot() 
+	public void loseLoot() 
 	{
 		//Clears the player's inventory.
 		inventory.clear();
+		
+		//Clear the player's loadout to ensure that he loses all his weapons.
+		loadout.clear();
 	}
 
 	/** Called when the player loses his target. */

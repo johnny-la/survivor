@@ -7,4 +7,5 @@ public interface PlayerListener
 	
 	/** Delegates when a zombie dies. Tells the world to play the KO animation. */
 	void playKoAnimation();
+
 }

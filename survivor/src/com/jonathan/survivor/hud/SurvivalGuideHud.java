@@ -1,8 +1,6 @@
 package com.jonathan.survivor.hud;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -12,8 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.jonathan.survivor.World;
 
 public class SurvivalGuideHud extends Hud
@@ -24,8 +24,8 @@ public class SurvivalGuideHud extends Hud
 	public static final float LIST_X_OFFSET = 125;
 	
 	/** Holds the width and height of the scroll pane where entries are displayed in the survival guide. */
-	public static final float SCROLL_PANE_WIDTH = 270;
-	public static final float SCROLL_PANE_HEIGHT = 150;
+	public static final float SCROLL_PANE_WIDTH = 270;	//270
+	public static final float SCROLL_PANE_HEIGHT = 150;	//150
 	
 	/** Stores the x-offset of the "Guide" header relative to the center of the screen. */
 	public static final float HEADER_X_OFFSET = 100;	//Unused
@@ -40,8 +40,14 @@ public class SurvivalGuideHud extends Hud
 	/** Stores the image of the survival guide's background. */
 	private Image survivalGuideBg;
 	
-	/** Stores the list prompting the user to select an item to view in the survival guide. */
-	private List list;
+	/** Stores the list of buttons which the user can press to access an entry in the survival guide. */
+	private Array<TextButton> entryButtons;
+	
+	/** Stores a table containing all of the entry buttons, arranged in a vertical list. The user can scroll through it in a scroll pane and select an entry. */
+	private Table entryButtonTable;
+	
+	/** Holds the Listener which registers any button clicks. If an entry button is pressed, the correct description for that pressed entry is shown. */
+	private ButtonListener buttonListener;
 	
 	/** Holds the label displaying the description for the entry the user clicked. */
 	private Label entryLabel;
@@ -56,17 +62,23 @@ public class SurvivalGuideHud extends Hud
 	private boolean displayingDescription;
 	
 	/** Holds the list of entry names that the user can choose from the list. */
-	private final String[] entryNames = new String[]{"Exploration Tutorial", "Combat tutorial", "How to Escape", "Recipes"}; 
+	private final String[] entryNames = new String[]{"Exploration Tutorial", "Combat tutorial", "Crafting Tutorial", "How to Escape", "Recipes"}; 
 	/** Holds the description of every entry in the survival guide. */
-	private final String[] entries = new String[]{"To move left or right, press the \ndirectional arrows on the bottom of \nthe screen.\n\n" +
-												  "Press any object in the world to \nwalk towards it and interact with it.\n",
+	private final String[] entries = new String[]{"To move left or right, press the directional arrows on the bottom of the screen.\n\n" +
+												  "Press any object in the world to walk towards it and interact with it.\n",
 												  
-												  "To enter combat with a zombie, \nsimply come into contact with a \nzombie in the world.\n\n" +
-												  "To jump, press the green button \non the bottom-left.\n\n" +
-												  "By hitting the zombie on the head, \nyou can deal damage to him.\n\n" +
-												  "To melee the zombie, press the \norange button on the bottom-right.\n\n" +
-												  "To fire your ranged weapon, press \nthe red button on the bottom-right\n" +
+												  "To enter combat with a zombie, simply come into contact with a zombie in the world.\n\n" +
+												  "To jump, press the green button on the bottom-left.\n\n" +
+												  "By hitting the zombie on the head, you can deal damage to him.\n\n" +
+												  "To melee the zombie, press the orange button on the bottom-right.\n\n" +
+												  "To fire your ranged weapon, press the red button on the bottom-right\n" +
 												  "(Note: each shot requires one bullet)",
+												  
+												  "Click an item in the left-hand list to add it to the crafting table. Every time an item is pressed," +
+												  "one instane of that item is transfered to the crafting table. To remove the item from the crafting table," +
+												  "press on the item in the crafting table. If the crafting table contains a combination of items in the right" +
+												  "quantities, an item will appear below the arrow sign. To craft this item and add it to the inventory, press" +
+												  "the 'Craft' button.",
 			
 												  "Build a Teleporter\n" +
 												  "- 40 sulfur + 120 wood\n + 100 iron + 40 saltpeter", 
@@ -96,19 +108,16 @@ public class SurvivalGuideHud extends Hud
 		//Re-scales the background so that it takes the same space on the screen no matter the atlas size chosen.
 		survivalGuideBg.setSize(survivalGuideBg.getWidth() / assets.scaleFactor, survivalGuideBg.getHeight() / assets.scaleFactor);
 		
-		//Creates the list displaying the names of all entries in the survival guide.
-		list = new List(entryNames, assets.survivalGuideListStyle);
-		//Makes it so that the selection box around the selected item in the list is invisible. No selection box should appear in the entry list.
-		list.setColor(Color.CLEAR);
-		
-		//Reset the list's index to negative one, so that any item in the list will trigger the changed() method when initially pressed.
-		list.setSelectedIndex(-1);
-		
 		//Instantiates the label that will display the description for an entry in the survival guide.
 		entryLabel = new Label("", assets.smallLabelStyle);
+		//Wraps the text by words every time the text goes over the scrollPane.
+		entryLabel.setWrap(true);
 		
-		//Places the list inside the ScrollPane to add scrolling functionality to that list.
-		scrollPane = new ScrollPane(list, assets.inventoryScrollPaneStyle);
+		//Creates the table which contains all the buttons which the user can press to access an entry in the survival guide.
+		createButtonTable();
+		
+		//Places the table of entry buttons inside the ScrollPane to add scrolling functionality to that list.
+		scrollPane = new ScrollPane(entryButtonTable, assets.inventoryScrollPaneStyle);
 		//Modifies the overscroll of the scroll pane. Args: maxOverscrollDistance, minVelocity, maxVelocity
 		scrollPane.setupOverscroll(30, 100, 200);
 		//Disables scrolling in the x-direction.
@@ -118,18 +127,6 @@ public class SurvivalGuideHud extends Hud
 		backButton = new Button(assets.backButtonStyle);
 		//Resizes the back button so that, no matter the size of the atlas chosen, the button will occupy the same space in gui coordinates.
 		backButton.setSize(backButton.getWidth() / assets.scaleFactor, backButton.getHeight() / assets.scaleFactor);
-		
-		//Adds a change listener to the list to detect when an entry name is selected.
-		list.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				//Show the entry description for the given entry index that was pressed.
-				showEntryDescription(list.getSelectedIndex());			
-				//Reset the list's index to negative one, so that any item in the list will trigger the changed() method when pressed.
-				list.setSelectedIndex(-1);
-			}
-
-		});
 		
 		//Add a ClickListener to the back button
 		backButton.addListener(new ClickListener() {
@@ -153,12 +150,62 @@ public class SurvivalGuideHud extends Hud
 		
 		//Creates a new Table instance to neatly arrange the buttons on the hud.
 		table = new Table();
+		//Set the table to fit the entire stage.
 		table.setFillParent(true);
 		//Adds the list of survival guide entries to the table. Pads it to the left so that it is nudged to the right.
 		table.add(scrollPane).width(SCROLL_PANE_WIDTH).height(SCROLL_PANE_HEIGHT);;
 		
 	}
 	
+	/** Called upon instantiation to create the table which holds buttons. The user can press these buttons to access entries in the survival guide. */
+	private void createButtonTable() 
+	{
+		//Creates the table which will hold the list of all buttons which serve to access an entry in the survival guide.
+		entryButtonTable = new Table();
+		
+		//Instantiates the array which contains all of the entryButtons which serve to access an entry in the survival guide.
+		entryButtons = new Array<TextButton>();
+		
+		//Creates a ButtonListener which will listen to any button clicks coming from the entry buttons.
+		buttonListener = new ButtonListener();
+		
+		//Cycles through all the entries in the survival guide, and creates a button for each one
+		for(int i = 0; i < entryNames.length; i++)
+		{
+			//Creates a new button for the entry that is being cycled through. Uses a pre-defined ButtonStyle to define the button's look.
+			TextButton button = new TextButton(entryNames[i], assets.survivalGuideListButtonStyle);
+			
+			//Makes the button store its index internally. Like this, the button knows which entry to display when it is pressed.
+			button.setUserObject(new Integer(i));
+			
+			//Registers the ButtonListener to the entry button.
+			button.addListener(buttonListener);
+			
+			//Adds the button to the list of entry buttons contained in the survival guide.
+			entryButtons.add(button);
+			
+			//Adds the button to the entry button table.
+			entryButtonTable.add(button).width(SCROLL_PANE_WIDTH).height(button.getHeight()).row();
+		}
+		
+	}
+	
+	/** Registers the entries button which were clicked in the SurvivalGuideHud. */
+	private class ButtonListener extends ClickListener
+	{
+		/** Delegated when the user clicks a button. */
+		@Override
+		public void clicked(InputEvent event, float x, float y)
+		{
+			//Retrives the entryButton which was pressed. Since the pressed item is always the label contained in the button, its parent will be the TextButton itself.
+			//Note that only entry buttons trigger this clicked() method.
+			TextButton entryButton = (TextButton)event.getTarget().getParent();
+			
+			//Grabs the user object stored in the button, which is the index of the entry which should be displayed. Displays the description for this index.
+			showEntryDescription((Integer)entryButton.getUserObject());
+		}
+	}
+
 	@Override
 	public void draw(float deltaTime)
 	{
@@ -169,8 +216,8 @@ public class SurvivalGuideHud extends Hud
 	/** Displays the list consisting of entry names. */
 	private void showEntryList() 
 	{
-		//Replaces the entry description with the entry list. 
-		scrollPane.setWidget(list);
+		//Replaces the entry description with the table of entry buttons. 
+		scrollPane.setWidget(entryButtonTable);
 		
 		//Tells the survival guide HUD it is displaying the list of entry names, and not an entry description
 		displayingDescription = false;

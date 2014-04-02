@@ -5,3 +5,8 @@
 1396388107751	Rename field 'timeMachineSprite'
 1396392092080	Rename enum constant 'TELEPORTER'
 1396394184651	Rename method 'winGame'
+1396437460605	Rename method 'createEntryButtons'
+1396439940412	Rename method 'gameOver'
+1396439948276	Rename method 'gameOverHudComplete'
+1396439952120	Rename method 'gameOverHudFinished'
+1396439956837	Rename method 'gameOverAnimFinished'

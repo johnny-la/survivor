@@ -48,8 +48,6 @@ public class Inventory
 			//Insert a new integer value for the item class key.
 			itemMap.put(itemClass, 0);
 		
-		System.out.println("Quantity of " + itemClass);
-		
 		//Returns the value stored inside the itemClass key, which corresponds to the quantity of items for the given class inside the player's inventory.
 		return itemMap.get(itemClass);
 	}
@@ -57,17 +55,17 @@ public class Inventory
 	/** Clears all of the items stored in the inventory. */
 	public void clear() 
 	{
+
 		//Cycle through each item/key in the inventory.
 		for(Class key:itemMap.keySet())
 		{
 			//If the key we are cycling through is null, skip to the next key.
-			if(key != null)
+			if(key == null || itemMap.get(key) == null)
 				continue;
 			
 			//Removes every key inside the itemMap. Essentially clears the inventory.
 			itemMap.remove(key);
 		}
-		
 	}
 	
 	/** Returns the ItemMap which maps the Item classes to the amount of the item stored inside the inventory. */

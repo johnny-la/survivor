@@ -40,4 +40,12 @@ public class Loadout
 		this.rangedWeapon = rangedWeapon;
 	}
 
+	/** Clears all of the weapons held by the player. */
+	public void clear() 
+	{
+		//Nullify the player's melee and ranged weapon. Ensures that the player loses his weapons.
+		meleeWeapon = null;		
+		rangedWeapon = null;
+	}
+
 }

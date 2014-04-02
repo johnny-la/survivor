@@ -251,6 +251,17 @@ public class GameScreen extends Screen
 			pauseInput();
 			pauseHud();
 		}
+
+		/** Called by the GameOverHud when it is done being displayed. Informs the GameScreen that the player is dead. */
+		@Override
+		public void gameOverHudFinished() 
+		{
+			//Make the player lose all of his items.
+			world.getPlayer().loseLoot();			
+			
+			
+			goToMainMenu();
+		}
 	}
 	
 	/** Listens to any events delegated by the World pertinent to the game. */
