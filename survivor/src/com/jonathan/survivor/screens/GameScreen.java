@@ -259,7 +259,7 @@ public class GameScreen extends Screen
 			//Make the player lose all of his items.
 			world.getPlayer().loseLoot();			
 			
-			
+			//Switch to the main menu without saving the player's progress. Like this, the player will have to restart from his last save point.
 			goToMainMenu();
 		}
 	}

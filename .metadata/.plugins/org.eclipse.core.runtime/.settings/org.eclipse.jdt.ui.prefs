@@ -17,6 +17,7 @@ content_assist_proposals_foreground=0,0,0
 content_assist_show_visible_proposals=true
 content_assist_sorter=org.eclipse.jdt.ui.RelevanceSorter
 eclipse.preferences.version=1
+editor_folding_enabled=false
 fontPropagated=true
 markOccurrences=false
 org.eclipse.jdt.ui.editor.tab.width=

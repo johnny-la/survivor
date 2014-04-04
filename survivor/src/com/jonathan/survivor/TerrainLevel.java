@@ -264,7 +264,7 @@ public class TerrainLevel implements Level
 		//Remove the GameObject from the TerrainLayer where it is contained. Allows the TerrainLayer to be aware of the GameObject it no longer contains.
 		getTerrainLayer(gameObject.getTerrainCell()).removeGameObject(gameObject);
 		
-		//Add the GameObject to the list of GameObjects contained inside the Level. Otherwise, the World won't know it exists.
+		//Removes the GameObject from the list of GameObjects contained inside the Level. Like this, the GameObject will no longer be rendered or updated by the World.
 		gameObjects.removeValue(gameObject, true);
 	}
 	

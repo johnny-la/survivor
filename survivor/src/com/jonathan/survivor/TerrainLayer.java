@@ -50,7 +50,7 @@ public class TerrainLayer
 	public static final float EDGE_MARGIN = 2;
 	
 	/** Holds the probability rate (0: lowest chance, 1: highest chance) that a zombie gets spawned on the TerrainLayer. */
-	public static final float ZOMBIE_PROBABILITY_RATE = 0.05f;
+	public static final float ZOMBIE_PROBABILITY_RATE = 0.1f;
 	
 	/** Stores the position of the bottom-left and bottom-right ends of the layer. */
 	private final Vector2 leftPoint, rightPoint;

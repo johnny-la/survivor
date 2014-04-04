@@ -233,13 +233,6 @@ public class ZombieManager
 		}
 		
 	}
-
-	/** Make the zombie charge towards the player. */
-	private void charge(Zombie zombie) 
-	{
-		//Play the CHARGE_START animation for the zombie. Once it is done, the zombie switches to CHARGE state to ram the player.
-		zombie.setState(State.CHARGE_START);		
-	}
 	
 	/** Makes the given zombie choose the next move to attack the player with. */
 	private void chooseNextMove(Zombie zombie) 
@@ -247,11 +240,30 @@ public class ZombieManager
 		//Generate a random number to choose the next move.
 		float randomFloat = (float)Math.random();
 		
-		if(randomFloat > 0.0f)
+		if(randomFloat < 0.3f)
 		{
 			//Make the zombie charge towards the player.
 			charge(zombie);
 		}
+		else if(randomFloat < 1.0f)
+		{
+			//Make the zombie perform a smash which will cause an earthquake.
+			smash(zombie);
+		}
+	}
+	
+	/** Make the zombie charge towards the player. */
+	private void charge(Zombie zombie) 
+	{
+		//Play the CHARGE_START animation for the zombie. Once it is done, the zombie switches to CHARGE state to ram the player.
+		zombie.setState(State.CHARGE_START);		
+	}
+	
+	/** Makes the zombie perform a SMASH. */
+	private void smash(Zombie zombie) 
+	{
+		//Tell the zombie to perform a smash move, which will cause an earthquake to go in the player's direction.
+		zombie.setState(State.SMASH);
 	}
 
 	/** Checks if the zombie has intersected with any GameObject which is pertinent to the zombie, such as the player. */
@@ -333,8 +345,7 @@ public class ZombieManager
 				world.walk(zombie, Direction.RIGHT);
 			}
 		}
-		
-		
+
 	}
 	
 	/** Checks if the zombie is within the confines of the combat level. If not, the zombie is respawned at the right place. */
@@ -389,9 +400,7 @@ public class ZombieManager
 					zombie.setAlerted(false);
 				}
 			}
-			
 		}
-		
 	}
 	
 	/** Makes the zombie walk towards the player to essentially follow him. */

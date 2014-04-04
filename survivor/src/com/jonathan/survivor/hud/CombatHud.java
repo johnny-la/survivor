@@ -103,7 +103,7 @@ public class CombatHud extends Hud
 		buttonTouchListener = new ButtonTouchListener();
 		
 		//Adds the listeners to the buttons to know when they are pressed.
-		jumpButton.addListener(buttonListener);
+		jumpButton.addListener(buttonTouchListener);
 		meleeButton.addListener(buttonListener);
 		fireButton.addListener(buttonTouchListener);
 		
@@ -125,21 +125,8 @@ public class CombatHud extends Hud
 		@Override
 		public void clicked(InputEvent event, float x, float y)
 		{		
-			//If the jump button was pressed
-			if(event.getTarget() == jumpButton || event.getTarget() == jumpButton.getImage())
-			{
-				//Gets the player controlled by the user in the world.
-				Player player = world.getPlayer();
-				
-				//Only let the player jump if he isn't playing his ENTER_COMBAT animation.
-				if(player.getState() != State.ENTER_COMBAT)
-				{
-					//Make the player jump.
-					world.getPlayer().jump();
-				}
-			}
-			//Else, if the melee button was pressed
-			else if(event.getTarget() == meleeButton || event.getTarget() == meleeButton.getImage())
+			//If the melee button was pressed
+			if(event.getTarget() == meleeButton || event.getTarget() == meleeButton.getImage())
 			{
 				//Make the player perform a melee attack
 				world.getPlayer().melee();
@@ -160,8 +147,21 @@ public class CombatHud extends Hud
 		@Override
 		public boolean touchDown(InputEvent event, float x, float y, int pointer, int button)
 		{
-			//If the fire button was pressed, make the player charge his gun.
-			if(event.getTarget() == fireButton || event.getTarget() == fireButton.getImage())
+			//If the jump button was pressed
+			if(event.getTarget() == jumpButton || event.getTarget() == jumpButton.getImage())
+			{
+				//Gets the player controlled by the user in the world.
+				Player player = world.getPlayer();
+				
+				//Only let the player jump if he isn't playing his ENTER_COMBAT animation.
+				if(player.getState() != State.ENTER_COMBAT)
+				{
+					//Make the player jump.
+					world.getPlayer().jump();
+				}
+			}
+			//Else, if the fire button was pressed, make the player charge his gun.
+			else if(event.getTarget() == fireButton || event.getTarget() == fireButton.getImage())
 			{
 				//Make the player start to charge his gun
 				world.getPlayer().charge();

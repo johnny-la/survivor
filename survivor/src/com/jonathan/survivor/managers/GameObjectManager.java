@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Pool;
 import com.jonathan.survivor.Assets;
 import com.jonathan.survivor.Profile;
 import com.jonathan.survivor.entity.Box;
+import com.jonathan.survivor.entity.Earthquake;
 import com.jonathan.survivor.entity.GameObject;
 import com.jonathan.survivor.entity.Human.Direction;
 import com.jonathan.survivor.entity.ItemObject;
@@ -38,6 +39,7 @@ public class GameObjectManager
 		poolMap.put(Box.class, new BoxPool());
 		poolMap.put(Zombie.class, new ZombiePool());
 		poolMap.put(ItemObject.class, new ItemObjectPool());
+		poolMap.put(Earthquake.class, new EarthquakePool());
 	}
 	
 	/** Creates the player GameObject, along with his skeleton. Accepts profile to re-create the player with his old settings. */
@@ -77,6 +79,19 @@ public class GameObjectManager
 		return itemObject;
 	}
 	
+	/** Spawns an Earthquake instance at the given bottom-center (x,y) position. The earthquake will move in the given direction passed as an argument. */
+	public Earthquake spawnEarthquake(float x, float y, Direction direction) 
+	{
+		//Retrieves an Earthquake instance stored inside an internal pool.
+		Earthquake earthquake = getGameObject(Earthquake.class);
+		
+		//Fire the earthquake, starting at the given bottom-center (x,y) position, going in the given direction.
+		earthquake.fire(x, y, direction);
+		
+		//Returns the earthquake that was spawned and fired.
+		return earthquake;	
+	}
+	
 	/** Gets a tree GameObject of the given class cached inside one of the Manager's pools. No same GameObject will be returned twice until it is freed using freeGameObject(). 
 	 * @param <T> The type of GameObject that wants to be retrieved. 
 	 * @return A GameObject of the given class */
@@ -84,7 +99,6 @@ public class GameObjectManager
 	{
 		//Either returns a tree inside the pool that is free, or creates a new tree and returns it if no free ones are available.
 		return (T) poolMap.get(goClass).obtain();
-		
 	}
 	
 	/** Frees a gameObject back inside the manager's internal GameObject pools. Tells the manager that the GameObject is no longer in use, and that the it can be

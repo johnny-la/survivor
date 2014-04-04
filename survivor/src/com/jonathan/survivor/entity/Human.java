@@ -22,7 +22,7 @@ public abstract class Human extends GameObject implements Poolable
 	protected Mode mode;
 	
 	public enum State {
-		SPAWN, IDLE, WALK, JUMP, FALL, CHOP_TREE, ENTER_COMBAT, MELEE, CHARGE_START, CHARGE, FIRE, ALERTED, HIT, HIT_HEAD, DEAD, TELEPORT
+		SPAWN, IDLE, WALK, JUMP, DOUBLE_JUMP, FALL, CHOP_TREE, ENTER_COMBAT, MELEE, CHARGE_START, CHARGE, SMASH, FIRE, ALERTED, HIT, HIT_HEAD, DEAD, TELEPORT
 	}
 	
 	/** Stores the state of the Human (IDLE, WALK, etc.), usually used to dictate which animations to play. */
@@ -62,9 +62,9 @@ public abstract class Human extends GameObject implements Poolable
 	/** Updates the Human's game logic, such as his state time. */
 	public void update(float deltaTime)
 	{
-		//Update the position of the player according to his velocity and acceleration.
+		//Update the position of the Human according to his velocity and acceleration.
 		updatePosition(deltaTime);
-		//Update the position of the collider to follow the player.
+		//Update the position of the collider to follow the Human.
 		updateCollider();
 		
 		//Update the stateTime.

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import com.badlogic.gdx.utils.Array;
+import com.esotericsoftware.spine.Bone;
 import com.jonathan.survivor.entity.Box;
 import com.jonathan.survivor.entity.Clickable;
 import com.jonathan.survivor.entity.GameObject;
@@ -14,8 +15,10 @@ import com.jonathan.survivor.entity.Human.State;
 import com.jonathan.survivor.entity.InteractiveObject;
 import com.jonathan.survivor.entity.ItemObject;
 import com.jonathan.survivor.entity.ItemObject.ItemState;
+import com.jonathan.survivor.entity.Earthquake;
 import com.jonathan.survivor.entity.Player;
 import com.jonathan.survivor.entity.PlayerListener;
+import com.jonathan.survivor.entity.Projectile;
 import com.jonathan.survivor.entity.Tree;
 import com.jonathan.survivor.entity.Zombie;
 import com.jonathan.survivor.inventory.Item;
@@ -257,6 +260,12 @@ public class World
 				//Update the ItemObject.
 				updateItemObject((ItemObject) go, deltaTime);
 			}
+			//Else, if the GameObject contained in the level is a Projectile.
+			else if(go instanceof Projectile)
+			{
+				//Passes the update call to the updateProjectile() method.
+				updateProjectile((Projectile) go, deltaTime);
+			}
 			//If the GameObject contained in the level is a Zombie
 			else if(go instanceof Zombie)
 			{
@@ -299,6 +308,30 @@ public class World
 		
 		//Update the ItemObject, along with its collider and its position.
 		itemObject.update(deltaTime);
+	}
+	
+	/** Updates the given projectile checks for collisions and updates its position based on its velocity. */
+	private void updateProjectile(Projectile projectile, float deltaTime)
+	{		
+		//If the projectile exists inside the CombatLevel
+		if(level instanceof CombatLevel)
+		{
+			//If the projectile has past either the left or the right edge of the CombatLevel, it is no longer visible.
+			if(combatLevel.isPastLeftEdge(projectile) || combatLevel.isPastRightEdge(projectile))
+			{				
+				//Remove the projectile from the level so that it is no longer updated or drawn to the screen.
+				level.removeGameObject(projectile);
+				
+				//Therefore, free the projectile back into the GameObjectManager's internal pool since it is no longer needed.
+				goManager.freeGameObject((Earthquake)projectile, Earthquake.class);
+			}
+		}
+		
+		//Updates the Projectile's position and collider depending on its velocity and acceleration.
+		projectile.update(deltaTime);
+		
+		//Checks if the projectile has collided with the player. Must be called after projectile.update() so that the collider position updates before collisions checking.
+		checkProjectileCollisions(projectile);
 	}
 	
 	/** Listens for events delegated by the GameObjects of the world. */
@@ -568,6 +601,27 @@ public class World
 		}
 	}
 	
+	//Checks if the projectile has hit anything of interest. If, for instance, an earthquake hits the player, the player takes damage. */
+	private void checkProjectileCollisions(Projectile projectile)
+	{
+		//If the projectile to test collisions for is an Earthquake caused by a zombie
+		if(projectile instanceof Earthquake)
+		{
+			//If the projectile has collided with the player
+			if(projectile.getCollider().intersects(player.getCollider()))
+			{
+				//Deal damage to the player.
+				projectile.hit(player);
+				
+				//Free the Earthquake instance back into the GameObjectManager's internal pools for later reuse.
+				goManager.freeGameObject(projectile, Earthquake.class);
+				
+				//Remove the projectile from the level so that it disappears from the level and stops being updated.
+				level.removeGameObject(projectile);
+			}
+		}
+	}
+	
 	/** Scavenges the given object and spawns items from it. Called when a box is opened or a tree is destroyed. */
 	private void scavengeObject(InteractiveObject scavengedObject) 
 	{
@@ -771,6 +825,23 @@ public class World
 		player.getInventory().addItem(itemObject.getItem().getClass(), 1);
 	}
 	
+	/** Make the zombie spawn an earthquake right under his feet, which will move towards the player and try to hit him. */
+	public void spawnEarthquake(Zombie zombie) 
+	{
+		//Retrieves the zombie's bone which controls his right hand.
+		Bone rightHand = zombie.getRightHandBone();
+		
+		//Computes the world position of the zombie's right hand. This is where the earthquake is spawned.
+		float rightHandX = zombie.getSkeleton().getX() + rightHand.getWorldX();
+		float rightHandY = zombie.getSkeleton().getY() + rightHand.getWorldY();
+		
+		//Spawn an earthquake projectile at the position of the zombie's left hand, going in the same direction as the zombie is facing. Stores the spawned earthquake.
+		Earthquake earthquake = goManager.spawnEarthquake(rightHandX, rightHandY, zombie.getDirection());
+		
+		//Adds the Earthquake instance to the level so that it can be updated by the World and drawn by the Renderers. */
+		level.addGameObject(earthquake);
+	}
+	
 	/** Called when a touch was registered on the screen. Coordinates given in world units. O(n**2) OPTIMIZE THIS. */
 	public void touchUp(float x, float y)
 	{
@@ -914,6 +985,5 @@ public class World
 	/** Sets the WorldListener which delegates World events to the GameScreen. */
 	public void setWorldListener(WorldListener worldListener) {
 		this.worldListener = worldListener;
-	}
-	
+	}	
 }

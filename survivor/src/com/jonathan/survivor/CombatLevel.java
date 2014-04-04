@@ -6,6 +6,7 @@ import com.jonathan.survivor.entity.Human.Direction;
 import com.jonathan.survivor.entity.Human.Mode;
 import com.jonathan.survivor.entity.Human.State;
 import com.jonathan.survivor.entity.Player;
+import com.jonathan.survivor.entity.Projectile;
 import com.jonathan.survivor.entity.Zombie;
 import com.jonathan.survivor.math.Vector2;
 
@@ -42,6 +43,8 @@ public class CombatLevel implements Level
 	/** Holds the Zombie contained in the level which is fighting the player. */
 	private Zombie zombie;
 	
+	/** Stores the lists of each type of GameObject contained and rendered in the level. */
+	private Array<Projectile> projectiles = new Array<Projectile>();
 	/** Helper array used to store all the GameObjects in the level. Avoids activating the garbage collector. */
 	private Array<GameObject> gameObjects = new Array<GameObject>();
 	/** Stores true if the gameObjects array has already been populated with the GameObjects contained in the level. Prevents having to re-populate the array every frame. */
@@ -192,16 +195,30 @@ public class CombatLevel implements Level
 		return GROUND_HEIGHT;
 	}
 
+	/** Adds a GameObject to the level. Consequently, the GameObject will start to be updated and rendered as part of the level. */
 	@Override
 	public void addGameObject(GameObject go) 
 	{
-		// TODO Auto-generated method stub
+		//If the GameObject is a Projectile
+		if(go instanceof Projectile)
+			//Add the given GameObject to the list of projectiles contained in the level.
+			projectiles.add((Projectile) go);
+		
+		//Adds the given GameObject into the list of GameObjects contained in the level. This way, the given GameObject will be rendered by the renderers. */
+		gameObjects.add(go);
 	}
 
+	/** Removes a GameObject from the level. Consequently, the GameObject will no longer be updated or rendered as a part of the level. */
 	@Override
 	public void removeGameObject(GameObject go) 
 	{
-		// TODO Auto-generated method stub
+		//If the GameObject to remove from the level is a Projectile
+		if(go instanceof Projectile)
+			//Removes the projectile from the list of projectiles stored in this layer. The projectile will thus no longer be drawn by the game. */
+			projectiles.removeValue((Projectile)go, true);
+		
+		//Removes the GameObject from the list of GameObjects contained inside the Level. Like this, the GameObject will no longer be rendered or updated by the World.
+		gameObjects.removeValue(go, true);
 	}
 
 	@Override
@@ -215,6 +232,9 @@ public class CombatLevel implements Level
 			
 			//Add the zombie as a contained GameObject in the level.
 			gameObjects.add(zombie);
+			
+			//Adds all the projectiles in the level into the list of GameObjects contained in the level.
+			gameObjects.addAll(projectiles);
 			
 			//Tells the level that its gameObjects array has been populated with the correct GameObjects. The array will not be re-populated until invalidated.
 			gameObjectsStored = true;

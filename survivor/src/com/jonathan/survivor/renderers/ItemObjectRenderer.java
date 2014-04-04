@@ -43,6 +43,7 @@ public class ItemObjectRenderer
 		//Stores the Skeleton instance owned by the ItemObject, which allows the object to be drawn to the screen.
 		Skeleton skeleton = itemObject.getSkeleton();
 		
+		//Sets the skeleton to display the image of the inventory item held by the ItemObject.
 		skeleton.setAttachment(Item.SLOT_NAME, itemObject.getItem().getItemAttachment());
 		
 		//Updates the position of the skeleton to that of the Item GameObject. The position for both is denoted by the bottom-center.

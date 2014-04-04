@@ -71,13 +71,13 @@ public class SurvivalGuideHud extends Hud
 												  "To jump, press the green button on the bottom-left.\n\n" +
 												  "By hitting the zombie on the head, you can deal damage to him.\n\n" +
 												  "To melee the zombie, press the orange button on the bottom-right.\n\n" +
-												  "To fire your ranged weapon, press the red button on the bottom-right\n" +
+												  "To fire your ranged weapon, press the red button on the bottom-right of the screen.\n\n" +
 												  "(Note: each shot requires one bullet)",
 												  
-												  "Click an item in the left-hand list to add it to the crafting table. Every time an item is pressed," +
-												  "one instane of that item is transfered to the crafting table. To remove the item from the crafting table," +
-												  "press on the item in the crafting table. If the crafting table contains a combination of items in the right" +
-												  "quantities, an item will appear below the arrow sign. To craft this item and add it to the inventory, press" +
+												  "Click an item in the left-hand list to add it to the crafting table. \n\nEvery time an item is pressed, " +
+												  "one instane of that item is transfered to the crafting table. \n\nTo remove the item from the crafting table, " +
+												  "press on the item in the crafting table. \n\nIf the crafting table contains a combination of items in the right " +
+												  "quantities, an item will appear below the arrow sign. \n\nTo craft this item and add it to the inventory, press " +
 												  "the 'Craft' button.",
 			
 												  "Build a Teleporter\n" +
@@ -122,6 +122,8 @@ public class SurvivalGuideHud extends Hud
 		scrollPane.setupOverscroll(30, 100, 200);
 		//Disables scrolling in the x-direction.
 		scrollPane.setScrollingDisabled(true, false);
+		
+		scrollPane.setSmoothScrolling(true);
 		
 		//Creates the back button using the designated ButtonStyle, which dictates its appearance.
 		backButton = new Button(assets.backButtonStyle);

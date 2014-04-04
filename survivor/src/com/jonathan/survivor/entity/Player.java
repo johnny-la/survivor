@@ -279,6 +279,9 @@ public class Player extends Human
 		//Sets the y-velocity of the player to slightly jump after hitting the zombie's head.
 		setVelocityY(HEAD_STOMP_JUMP_SPEED);
 		
+		//Tell the player to play his double jump animation.
+		setState(State.DOUBLE_JUMP);
+		
 		//Deals damage to the zombie according to the head stomp constant.
 		zombie.takeDamage(HEAD_STOMP_DAMAGE);
 		

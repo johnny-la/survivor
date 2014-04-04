@@ -28,7 +28,7 @@ public class Zombie extends Human implements Clickable
 	public static final float ALERTED_WALK_SPEED = 2.7f;
 
 	/** Stores the horizontal speed of the zombie when he is charging. */
-	public static final float CHARGE_WALK_SPEED = 9f;
+	public static final float CHARGE_WALK_SPEED = 10f;
 	
 	/** Holds the default amount of damage the CHARGE attack deals to the player. */
 	public static final float DEFAULT_CHARGE_DAMAGE = 50;
@@ -276,100 +276,6 @@ public class Zombie extends Human implements Clickable
 	/** Sets the Spine AnimationState instance used to modify the zombie's animations and control them. */
 	public void setAnimationState(AnimationState animationState) {
 		this.animationState = animationState;
-		
-		//If the zombie's animation state has been populated with a valid animationState
-		if(animationState != null)
-			//Create the animation listener which listens to the zombie's animation events. Needed to be done after the 
-			createAnimationListener();
-	}
-
-	/** Populates the zombie's animation listener if it doesn't already exist. Allows the zombie's events to be registered by this renderer.
-	 *  Must be called after its animation state is created */
-	private void createAnimationListener() 
-	{
-		//Creates a listener to listen for events coming from the zombie's animations.
-		AnimationStateListener animationListener = new AnimationStateListener() {
-
-			@Override
-			public void event(int trackIndex, Event event) {
-				
-			}
-
-			@Override
-			public void complete(int trackIndex, int loopCount) {
-				//If the zombie just completed his ALERTED animation
-				if(getState() == State.ALERTED)
-				{
-					//Set the zombie to IDLE state so that the ZombieManager knows to make him follow the player.
-					setState(State.IDLE);
-				}
-				//Else, if the ENTER_COMBAT animation has just finished playing
-				else if(getState() == State.ENTER_COMBAT)
-				{
-					//Set the zombie back to IDLE state so that his correct animation plays.
-					setState(State.IDLE);
-				}
-				//Else, if the zombie has finished playing its charge taunting animation
-				else if(getState() == State.CHARGE_START)
-				{
-					//Tell the zombie to charge at the player.
-					setState(State.CHARGE);
-				}
-				//Else, if the player was hit
-				else if(getState() == State.HIT)
-				{
-					//If the zombie is in EXPLORATION mode
-					if(getMode() == Mode.EXPLORING)
-					{
-						
-					}
-					//Else, if the zombie is in COMBAT mode with the player.
-					else if(getMode() == Mode.COMBAT)
-					{
-						//Set the zombie to WALK state, telling him to walk back to his starting position facing the player.
-						setState(State.WALK);
-						
-						//Tell the zombie to walk to the RIGHT to go back to his original position.
-						setDirection(Direction.RIGHT);
-					}
-				}
-				//Else, if the player was hit in the head.
-				else if(getState() == State.HIT_HEAD)
-				{
-					//If the zombie is in EXPLORATION mode
-					if(getMode() == Mode.EXPLORING)
-					{
-						
-					}
-					//Else, if the zombie is in COMBAT mode with the player.
-					else if(getMode() == Mode.COMBAT)
-					{
-						//Set the zombie to WALK state, telling him to walk back to his starting position facing the player.
-						setState(State.WALK);
-						
-						//Tell the zombie to walk to the RIGHT to go back to his original position.
-						setDirection(Direction.RIGHT);
-					}
-				}
-				
-			}
-
-			@Override
-			public void start(int trackIndex) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void end(int trackIndex) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-		};
-		
-		//Register the AnimationStateListener to the zombie's AnimationState. This will delegate zombie animation events to the listener.
-		getAnimationState().addListener(animationListener);
 	}
 	
 	/** Returns true if the Zombie is aware that the Player is there. */

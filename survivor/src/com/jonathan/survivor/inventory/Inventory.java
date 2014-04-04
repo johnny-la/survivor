@@ -55,17 +55,8 @@ public class Inventory
 	/** Clears all of the items stored in the inventory. */
 	public void clear() 
 	{
-
-		//Cycle through each item/key in the inventory.
-		for(Class key:itemMap.keySet())
-		{
-			//If the key we are cycling through is null, skip to the next key.
-			if(key == null || itemMap.get(key) == null)
-				continue;
-			
-			//Removes every key inside the itemMap. Essentially clears the inventory.
-			itemMap.remove(key);
-		}
+		//Removes every value inside the itemMap. Essentially clears the inventory.			
+		itemMap.clear();
 	}
 	
 	/** Returns the ItemMap which maps the Item classes to the amount of the item stored inside the inventory. */

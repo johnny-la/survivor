@@ -10,3 +10,15 @@
 1396439948276	Rename method 'gameOverHudComplete'
 1396439952120	Rename method 'gameOverHudFinished'
 1396439956837	Rename method 'gameOverAnimFinished'
+1396521395290	Encapsulate field 'fireVelocity'
+1396521418040	Encapsulate field 'damage'
+1396563252903	Move compilation unit
+1396563286132	Move compilation unit
+1396563896629	Copy compilation unit
+1396564920910	Copy compilation unit
+1396565170734	Rename local variable 'itemObject'
+1396566668211	Rename local variable 'leftHand'
+1396566681855	Rename local variable 'leftHandX'
+1396606608818	Rename field 'newTaieLue_17'
+1396606625682	Rename field 'newTaieLueGenerator'
+1396608380383	Rename method 'updateWeaponAttachment'

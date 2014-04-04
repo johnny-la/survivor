@@ -129,8 +129,14 @@ public class PlayerRenderer
 			@Override
 			public void complete(int trackIndex, int loopCount) 
 			{
-				//If the ENTER_COMBAT animation has just finished playing
-				if(player.getState() == State.ENTER_COMBAT)
+				//If the player is double jumping
+				if(player.getState() == State.DOUBLE_JUMP)
+				{
+					//Set the player back to IDLE state so that he switches to IDLE state after double jumping.
+					player.setState(State.IDLE);
+				}
+				//Else, if the ENTER_COMBAT animation has just finished playing
+				else if(player.getState() == State.ENTER_COMBAT)
 				{
 					//Set the player back to IDLE state so that his correct animation plays.
 					player.setState(State.IDLE);
@@ -289,6 +295,12 @@ public class PlayerRenderer
 			}
 
 		}
+		//Else, if the player is double jumping
+		else if(player.getState() == State.DOUBLE_JUMP)
+		{
+			//Plays the double jump animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
+			animationState.setAnimation(0, assets.playerJump_Combat, false);
+		}
 		//Else, if the player is falling from one layer to the next
 		else if(player.getState() == State.FALL)
 		{
@@ -361,7 +373,10 @@ public class PlayerRenderer
 	private void updateAttachments() 
 	{
 		//Decides which weapons are visible on the player depending on his state and what he has equipped.
-		updateWeaponAttachment();
+		updateWeaponAttachments();
+		
+		//Updates all other attachments on the player.
+		updateOtherAttachments();
 		
 		//Updates the position of the tip of the player's gun and the crosshair of the player's ranged weapon. Allows to dictate where the gun's trajectory line should be drawn.
 		updateCrosshair();
@@ -371,7 +386,7 @@ public class PlayerRenderer
 	}
 
 	/** Updates the weapon being displayed on the player, depending on the weapon that the player is currently using. */
-	private void updateWeaponAttachment() 
+	private void updateWeaponAttachments() 
 	{
 		//Stores the player's melee weapon, if it exists.
 		MeleeWeapon meleeWeapon = player.getLoadout().getMeleeWeapon();
@@ -405,6 +420,24 @@ public class PlayerRenderer
 			//Remove the ranged weapon attachment from the player since he has no equipped ranged weapon.
 			playerSkeleton.setAttachment(RangedWeapon.WEAPON_SLOT_NAME, null);
 		}
+	}
+	
+	/** Updates the miscalaneous attachments on the player to change which images are displayed on him. */
+	private void updateOtherAttachments() 
+	{
+		//Remove the Teleporter image from the player unless he is playing his Teleporter animation.
+		if(player.getState() == State.TELEPORT)
+		{
+			//Display the image of the teleporter on the player.
+			playerSkeleton.setAttachment("Teleporter", "Teleporter");
+		}
+		//Else, if the player is not playing his TELEPORT animation
+		else
+		{
+			//Remove the image of the teleporter from the player since he is not playing his TELEPORT animation and thus doesn't need it.
+			playerSkeleton.setAttachment("Teleporter", null);
+		}
+		
 	}
 
 	/** Updates the registered position of the tip of the player's ranged weapon. Allows the crosshair to be drawn at the correct position. */

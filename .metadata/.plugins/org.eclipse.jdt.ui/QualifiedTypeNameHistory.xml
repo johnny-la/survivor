@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="com.jonathan.entity.Player"/>
 <fullyQualifiedTypeName name="com.jonathan.entity.Human.Direction"/>
 <fullyQualifiedTypeName name="com.esotericsoftware.spine.Animation"/>
 <fullyQualifiedTypeName name="com.esotericsoftware.spine.Event"/>
@@ -38,26 +37,27 @@
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.TextButton"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Skin"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.entity.Box"/>
-<fullyQualifiedTypeName name="com.jonathan.survivor.Assets"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.utils.reflect.ReflectionException"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.utils.reflect.Constructor"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.ScrollPane"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.graphics.Color"/>
-<fullyQualifiedTypeName name="com.jonathan.survivor.hud.CraftingHud.ButtonListener"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.utils.Array"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.managers.CraftingManager"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.managers.CraftingManager.Item"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Label"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.utils.Pool.Poolable"/>
 <fullyQualifiedTypeName name="com.esotericsoftware.spine.Skeleton"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.entity.Human.Mode"/>
-<fullyQualifiedTypeName name="com.jonathan.survivor.entity.Human.Direction"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.CombatLevel"/>
-<fullyQualifiedTypeName name="com.jonathan.survivor.World"/>
-<fullyQualifiedTypeName name="com.jonathan.survivor.math.Vector2"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.math.Line"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.inventory.Bullet"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Image"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.inventory.Rifle"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.entity.Human.State"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.utils.Array"/>
+<fullyQualifiedTypeName name="com.jonathan.survivor.hud.CraftingHud.ButtonListener"/>
+<fullyQualifiedTypeName name="com.jonathan.survivor.math.Vector2"/>
+<fullyQualifiedTypeName name="com.jonathan.survivor.entity.Human.Direction"/>
+<fullyQualifiedTypeName name="com.jonathan.survivor.entity.Projectile"/>
+<fullyQualifiedTypeName name="com.jonathan.survivor.Assets"/>
+<fullyQualifiedTypeName name="com.jonathan.survivor.World"/>
 </qualifiedTypeNameHistroy>

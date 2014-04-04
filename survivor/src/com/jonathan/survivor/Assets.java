@@ -73,6 +73,7 @@ public class Assets
 	public static final float TREE_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
 	public static final float BOX_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
 	public static final float ITEM_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
+	public static final float PROJECTILE_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
 	public static final float VERSUS_ANIM_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
 	public static final float KO_ANIM_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
 	
@@ -93,8 +94,8 @@ public class Assets
 	private FreeTypeFontGenerator moonFlowerBoldGenerator;
 	public BitmapFont moonFlowerBold_54;
 	public BitmapFont moonFlowerBold_38;
-	private FreeTypeFontGenerator newTaieLueGenerator;
-	public BitmapFont newTaieLue_17;
+	private FreeTypeFontGenerator sanchezRegularGenerator;
+	public BitmapFont sanchezRegular_17;
 	
 	public Skin mainMenuSkin;	//We register an atlas to this skin (the main menu atlas). This lets us retrieve sprites from the atlas to use with 2D widgets.
 	public TextButtonStyle mainMenuButtonStyle;	//Defines the look of main menu buttons
@@ -150,6 +151,7 @@ public class Assets
 	public Animation playerWalk;
 	public Animation playerJump;
 	public Animation playerJump_Combat;
+	public Animation playerDoubleJump;
 	public Animation playerFall;
 	public Animation playerChopTree;
 	public Animation playerChopTree_Start;
@@ -172,6 +174,7 @@ public class Assets
 	public Animation zombieMelee;
 	public Animation zombieCharge_Start;
 	public Animation zombieCharge;
+	public Animation zombieSmash;
 	public Animation zombieHitHead;
 	public Animation zombieDead;
 	
@@ -194,6 +197,10 @@ public class Assets
 	public Animation itemFly;
 	public Animation itemGrounded;
 	public Animation itemClicked;
+	
+	public SkeletonJson projectileSkeletonJson;
+	public SkeletonData projectileSkeletonData;
+	public Animation projectileIdle;
 	
 	public Sprite woodSprite;	//Stores the sprites for each item when displayed in an inventory. Note these are template sprites which are copied. These copies are stored inside pools.
 	public Sprite ironSprite;
@@ -404,12 +411,12 @@ public class Assets
 		moonFlowerBold_38.setScale(moonFlowerBold_38.getScaleX() / fontScale);	
 		moonFlowerBold_38.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
-		//Creates the Font Generator for the Microsoft New Taie Lue Normal font.
-		newTaieLueGenerator = new FreeTypeFontGenerator(Gdx.files.internal("ui/fonts/new taie lue/NTAILU.ttf"));
-		//Creates the Microsoft New Taie Lue Normal 17pt font. This must be done after the loading is finished because AssetManagers can't load FreeTypeFontGenerators.
-		newTaieLue_17 = newTaieLueGenerator.generateFont((int)(17 * fontScale));	
-		newTaieLue_17.setScale(newTaieLue_17.getScaleX() / fontScale);	
-		newTaieLue_17.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		//Creates the Font Generator for the Sanchez Regular font.
+		sanchezRegularGenerator = new FreeTypeFontGenerator(Gdx.files.internal("ui/fonts/sanchez regular/Sanchezregular.otf"));
+		//Creates the Sanchez Regular 17pt font. This must be done after the loading is finished because AssetManagers can't load FreeTypeFontGenerators.
+		sanchezRegular_17 = sanchezRegularGenerator.generateFont((int)(17 * fontScale));	
+		sanchezRegular_17.setScale(sanchezRegular_17.getScaleX() / fontScale);	
+		sanchezRegular_17.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
 		//Creates the skin and the styles used for the main menu GUI.
 		mainMenuSkin = new Skin(mainMenuAtlas);
@@ -499,7 +506,7 @@ public class Assets
 		//Fetches the melee sprite from the hud atlas to place on the melee button.
 		Sprite meleeImage = hudSkin.getSprite("Knife");
 		//Scale the melee sprite down so that, no matter the atlas size used, the arrow takes the same world space.
-		meleeImage.setSize(meleeImage.getWidth()/scaleFactor, leftArrow.getHeight()/scaleFactor);
+		meleeImage.setSize(meleeImage.getWidth()/scaleFactor, meleeImage.getHeight()/scaleFactor);
 		SpriteDrawable meleeImageDrawable = new SpriteDrawable(meleeImage);	//Creates a Drawable wrapper for the sprite.
 		
 		//Create a style for the melee button
@@ -565,7 +572,7 @@ public class Assets
 		survivalGuideListButtonStyle.font = moonFlowerBold_38;
 		survivalGuideListButtonStyle.fontColor = new Color(0f, 0f, 0f, 1);	//If unselected, the text for the item in the world selection list will be black.
 		survivalGuideListButtonStyle.downFontColor = new Color(0.0f, 0.4f, 0.8f, 1);
-		survivalGuideListButtonStyle.up = survivalGuideListButtonStyle.down = mainMenuSkin.getDrawable("ListSelection");
+		//survivalGuideListButtonStyle.up = survivalGuideListButtonStyle.down = mainMenuSkin.getDrawable("ListSelection");
 		survivalGuideListButtonStyle.pressedOffsetX = 1f;
 		survivalGuideListButtonStyle.pressedOffsetY = -1.5f;
 		
@@ -600,7 +607,7 @@ public class Assets
 		
 		//Creates the style for the small labels like those in the entries of the survival guide.
 		smallLabelStyle = new LabelStyle();
-		smallLabelStyle.font = newTaieLue_17;
+		smallLabelStyle.font = sanchezRegular_17;
 		smallLabelStyle.fontColor = Color.BLACK;
 		
 		//Sets up the Spine data used to display the portion of the UI used to show the versus Hud.
@@ -627,6 +634,7 @@ public class Assets
 		playerWalk = playerSkeletonData.findAnimation("Walk");
 		playerJump = playerSkeletonData.findAnimation("Jump");
 		playerJump_Combat = playerSkeletonData.findAnimation("Jump_Combat");
+		playerDoubleJump = playerSkeletonData.findAnimation("DoubleJump");
 		playerFall = playerSkeletonData.findAnimation("Fall");
 		playerChopTree = playerSkeletonData.findAnimation("ChopTree");
 		playerChopTree_Start = playerSkeletonData.findAnimation("ChopTree_Start");
@@ -651,6 +659,7 @@ public class Assets
 		zombieMelee = zombieSkeletonData.findAnimation("Melee");
 		zombieCharge_Start = zombieSkeletonData.findAnimation("Charge_Start");
 		zombieCharge = zombieSkeletonData.findAnimation("Charge");
+		zombieSmash = zombieSkeletonData.findAnimation("Smash");
 		zombieHitHead = zombieSkeletonData.findAnimation("Hit_Head");
 		zombieDead = zombieSkeletonData.findAnimation("Dead");
 		
@@ -682,6 +691,13 @@ public class Assets
 		itemFly = itemSkeletonData.findAnimation("Fly");
 		itemGrounded = itemSkeletonData.findAnimation("Grounded");
 		itemClicked = itemSkeletonData.findAnimation("Clicked");
+		
+		//Sets up the skeleton used to display projectiles such as an earthquake. 
+		projectileSkeletonJson = new SkeletonJson(zombieAtlas);
+		projectileSkeletonJson.setScale(PROJECTILE_SKELETON_SCALE);
+		projectileSkeletonData = projectileSkeletonJson.readSkeletonData(Gdx.files.internal("game/projectile/skeleton/projectile_skeleton.json"));
+		//Stores the animations of the projectile's skeleton.
+		projectileIdle = projectileSkeletonData.findAnimation("Idle");
 		
 		//Creates the sprites displayed in the inventory for each item. These are template sprites which are copied to be placed inside pools.
 		woodSprite = interactableObjectAtlas.createSprite("Wood");

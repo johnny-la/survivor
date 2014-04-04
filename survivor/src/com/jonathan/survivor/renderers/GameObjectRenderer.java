@@ -9,6 +9,7 @@ import com.jonathan.survivor.World;
 import com.jonathan.survivor.entity.GameObject;
 import com.jonathan.survivor.entity.InteractiveObject;
 import com.jonathan.survivor.entity.ItemObject;
+import com.jonathan.survivor.entity.Projectile;
 import com.jonathan.survivor.entity.Zombie;
 
 public class GameObjectRenderer 
@@ -33,6 +34,8 @@ public class GameObjectRenderer
 	private ZombieRenderer zombieRenderer;
 	/** Holds the ItemObjectRenderer used to render any ItemObjects that have been dropped in the world by scavenging GameObjects. */
 	private ItemObjectRenderer itemObjectRenderer;
+	/** Stores the ProjectileRenderer instance used to draw projectiles to the screen. */
+	private ProjectileRenderer projectileRenderer;
 	
 	/** Accepts the world from which we find the GameObjects to draw, the SpriteBatch used to draw the GameObjects, and the world camera
 	 *  where the GameObjects are drawn. */
@@ -51,9 +54,11 @@ public class GameObjectRenderer
 		//Creates an InteractiveObjectRenderer, passing the SpriteBatch it will use to draw the InteractiveObjects.
 		interactiveObjectRenderer = new InteractiveObjectRenderer(batcher);
 		//Instantiates the zombieRenderer used to draw all zombies to the screen. The zombies will be drawn using the given SpriteBatch argument.
-		zombieRenderer = new ZombieRenderer(batcher);
+		zombieRenderer = new ZombieRenderer(world, batcher);
 		//Instantiates the ItemObjectRenderer which will be used to draw the dropped ItemObjects. The renderer will draw the objects using the passed SpriteBatch.
 		itemObjectRenderer = new ItemObjectRenderer(batcher);
+		//Creates the ProjectileRenderer used to draw the projectiles to the screen. The projectiles will be drawn using the SpriteBatch passed as a constructor argument.
+		projectileRenderer = new ProjectileRenderer(batcher);
 		
 	}
 	
@@ -105,8 +110,12 @@ public class GameObjectRenderer
 				}
 			}
 			
-			//If the GameObject is an InteractiveObject
-			if(go instanceof InteractiveObject)
+			//If the GameObject to draw is a Projectile
+			if(go instanceof Projectile)
+				//Delegate the draw call to the ProjectileRenderer class.
+				projectileRenderer.draw((Projectile) go);
+			//Else, if the GameObject is an InteractiveObject
+			else if(go instanceof InteractiveObject)
 				//Pass the drawing call to the InteractiveObjectRenderer, specifying whether or not it should be drawn transparent.
 				interactiveObjectRenderer.draw((InteractiveObject) go, drawTransparent);
 			//Else, if the GameObject that is being cycled through is a zombie.

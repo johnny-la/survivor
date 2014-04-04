@@ -6,9 +6,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.esotericsoftware.spine.AnimationState;
 import com.esotericsoftware.spine.AnimationState.AnimationStateListener;
 import com.esotericsoftware.spine.AnimationStateData;
+import com.esotericsoftware.spine.Bone;
+import com.esotericsoftware.spine.Event;
 import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Assets;
-import com.jonathan.survivor.entity.GameObject;
+import com.jonathan.survivor.World;
 import com.jonathan.survivor.entity.Human.Direction;
 import com.jonathan.survivor.entity.Human.Mode;
 import com.jonathan.survivor.entity.Human.State;
@@ -16,6 +18,9 @@ import com.jonathan.survivor.entity.Zombie;
 
 public class ZombieRenderer 
 {	
+	/** Stores the world whose methods are called, for instance, when an Earthquake needs to be spawned by a zombie. */
+	private World world;
+	
 	/** Stores the SpriteBatcher used to draw the zombie's sprites. */
 	private SpriteBatch batcher;	
 	
@@ -38,12 +43,13 @@ public class ZombieRenderer
 	private Color workingColor;
 	
 	/** Stores the integers assigned to each event in Spine. Used to indicate which event was caught in the AnimationStateListener. */
-	//private static final int HIT_TREE = 0;
+	private static final int HIT_GROUND = 0;
 	
-	/** Accepts the zombie GameObject to render, the Spine skeleton used to to play his animations, the SpriteBatch used to draw the zombie. */
-	public ZombieRenderer(SpriteBatch batcher)
+	/** Accepts the World instance whose methods are called when needed, and the SpriteBatch used to draw the zombies. */
+	public ZombieRenderer(World world, SpriteBatch batcher)
 	{
-		//Stores the SpriteBatch used to draw the zombie.
+		//Stores the given arguments into their respective member variables
+		this.world = world;
 		this.batcher = batcher;
 		
 		//Instantiates the helper Color object used to color the ItemObjects.
@@ -69,6 +75,108 @@ public class ZombieRenderer
 		animStateData.setMix(assets.zombieCharge_Start, assets.zombieCharge, 0.2f);
 	}
 	
+	private class ZombieAnimationListener implements AnimationStateListener 
+	{
+		/** Stores the Zombie instance which delegates the methods in this listener. */
+		private Zombie zombie;
+		
+		//Creates a new AnimationListener for the given Zombie. This Zombie will delegate the listener's methods. */
+		public ZombieAnimationListener(Zombie zombie)
+		{
+			//Registers the Zombie which will trigger this listener's methods.
+			this.zombie = zombie;
+		}
+		
+		@Override
+		public void event(int trackIndex, Event event) 
+		{
+			//If the zombie has hit the ground while performing his SMASH animation, spawn an Earthquake at the zombie's position.
+			if(event.getInt() == HIT_GROUND)
+			{				
+				//Make the zombie spawn an earthquake at his feet.
+				world.spawnEarthquake(zombie);
+			}
+		}
+
+		@Override
+		public void complete(int trackIndex, int loopCount) {
+			//If the zombie just completed his ALERTED animation
+			if(zombie.getState() == State.ALERTED)
+			{
+				//Set the zombie to IDLE state so that the ZombieManager knows to make him follow the player.
+				zombie.setState(State.IDLE);
+			}
+			//Else, if the ENTER_COMBAT animation has just finished playing
+			else if(zombie.getState() == State.ENTER_COMBAT)
+			{
+				//Set the zombie back to IDLE state so that his correct animation plays.
+				zombie.setState(State.IDLE);
+			}
+			//Else, if the zombie has finished playing its charge taunting animation
+			else if(zombie.getState() == State.CHARGE_START)
+			{
+				//Tell the zombie to charge at the player.
+				zombie.setState(State.CHARGE);
+			}
+			//Else, if the zombie has completed playing its SMASH animation
+			else if(zombie.getState() == State.SMASH)
+			{
+				//Set the zombie back to IDLE state so that he chooses his next move.
+				zombie.setState(State.IDLE);
+			}
+			//Else, if the player was hit
+			else if(zombie.getState() == State.HIT)
+			{
+				//If the zombie is in EXPLORATION mode
+				if(zombie.getMode() == Mode.EXPLORING)
+				{
+					
+				}
+				//Else, if the zombie is in COMBAT mode with the player.
+				else if(zombie.getMode() == Mode.COMBAT)
+				{
+					//Set the zombie to WALK state, telling him to walk back to his starting position facing the player.
+					zombie.setState(State.WALK);
+					
+					//Tell the zombie to walk to the RIGHT to go back to his original position.
+					zombie.setDirection(Direction.RIGHT);
+				}
+			}
+			//Else, if the zombie was hit in the head.
+			else if(zombie.getState() == State.HIT_HEAD)
+			{
+				//If the zombie is in EXPLORATION mode
+				if(zombie.getMode() == Mode.EXPLORING)
+				{
+					
+				}
+				//Else, if the zombie is in COMBAT mode with the player.
+				else if(zombie.getMode() == Mode.COMBAT)
+				{
+					//Set the zombie to WALK state, telling him to walk back to his starting position facing the player.
+					zombie.setState(State.WALK);
+					
+					//Tell the zombie to walk to the RIGHT to go back to his original position.
+					zombie.setDirection(Direction.RIGHT);
+				}
+			}
+			
+		}
+
+		@Override
+		public void start(int trackIndex) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void end(int trackIndex) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
 	/** Draws the zombie using his Spine skeleton, which stores his animations, sprites, and everything needed to draw the zombie. Accepts a boolean which depicts
 	 *  whether or not the zombie should be drawn transparently. */
 	public void draw(Zombie zombie, boolean transparent, float deltaTime)
@@ -81,6 +189,10 @@ public class ZombieRenderer
 		{
 			//Creates and sets a new AnimationState instance used to control the zombie's animations.
 			zombie.setAnimationState(new AnimationState(ZombieRenderer.animStateData));
+			
+			//Creates a new AnimationListener for the zombie and registers it to his AnimationState. Passing the zombie as a constructor argument ensures
+			//that the listener knows that this zombie triggers the listener's methods.
+			zombie.getAnimationState().addListener(new ZombieAnimationListener(zombie));
 		}
 		
 		//Stores the AnimationState used to change and control the zombie's animations.
@@ -108,7 +220,7 @@ public class ZombieRenderer
 			//Update the zombie's animation since his state has changed. Passes in the zombie whose animations need to be updated.
 			updateAnimation(zombie);
 		}
-		
+
 		//Sets the zombie to be the correct color depending on the zombie's current state, and whether or not it should be transparent.
 		updateColor(zombie, transparent);
 		
@@ -179,6 +291,12 @@ public class ZombieRenderer
 			//Plays the CHARGE animation. First argument is an arbitrary index, and third argument specifies to loop the walk animation.
 			animationState.setAnimation(0, assets.zombieCharge, true);
 		}
+		//Else, if the zombie is performing a SMASH which will cause an earthquake
+		else if(zombie.getState() == State.SMASH)
+		{
+			//Play the zombie's SMASH animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
+			animationState.setAnimation(0, assets.zombieSmash, true);
+		}
 		//Else, if the zombie was hit by the player
 		else if(zombie.getState() == State.HIT)
 		{
@@ -206,7 +324,7 @@ public class ZombieRenderer
 	/** Updates the attachments being rendered on the zombie. */
 	private void updateAttachments(Zombie zombie) 
 	{
-		
+		//Update the myriad extra colliders attached to the zombie.
 		zombie.updateColliders();
 	}
 	
