@@ -2,6 +2,7 @@ package com.jonathan.survivor;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.FPSLogger;
+import com.esotericsoftware.spine.Slot;
 import com.jonathan.survivor.managers.MusicManager;
 import com.jonathan.survivor.managers.ProfileManager;
 import com.jonathan.survivor.managers.SoundManager;
@@ -42,14 +43,20 @@ public class Survivor extends Game
 	/** Stores the Settings instance used to save the user's profile. */
 	private Settings settings;
 	
+	private Slot slot;
+	
 	/** Stores whether or not we are in debug mode */
-	public static final boolean DEBUG_MODE = true;
+	public static final boolean DEBUG_MODE = false;
 	/** Logs the framerate to the console */
 	private FPSLogger fpsCounter = new FPSLogger();
 	
 	@Override
 	public void create()
 	{
+		//Creates a new Assets instance to be used as a singleton. Cannot be instantiated upon declaration in the Assets class, because static variables retain their value
+		//even after app destruction.
+		Assets.instance = new Assets();
+		
 		//Creates a new MusicManager and SoundManager to play and manage music and sound effects.
 		musicManager = new MusicManager();
 		soundManager = new SoundManager();

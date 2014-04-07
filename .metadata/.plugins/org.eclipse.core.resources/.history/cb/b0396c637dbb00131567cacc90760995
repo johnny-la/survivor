@@ -1,0 +1,10 @@
+package com.jonathan.survivor.entity;
+
+
+public class Earthquake extends Projectile
+{
+	public Earthquake()
+	{
+		
+	}
+}

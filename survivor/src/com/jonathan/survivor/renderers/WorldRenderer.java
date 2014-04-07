@@ -49,7 +49,7 @@ public class WorldRenderer
 		worldCamera = new OrthographicCamera(worldWidth, worldHeight);
 		
 		//Creates a LevelRenderer from which the level geometry is drawn. We pass in the camera so that geometry is drawn to the world camera.
-		levelRenderer = new LevelRenderer(worldCamera);
+		levelRenderer = new LevelRenderer(batcher, worldCamera);
 		//Creates a GameObject renderer from the world. All gameObjects in the world will be drawn to the worldCamera using the specified SpriteBatch.
 		goRenderer = new GameObjectRenderer(world, batcher, worldCamera);
 		//Instantiates the AnimationRenderer, which draws all of the Spine animations which are screen overlays, such as the versus animation.

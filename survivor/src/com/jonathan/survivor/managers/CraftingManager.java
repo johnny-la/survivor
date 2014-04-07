@@ -1,6 +1,7 @@
 package com.jonathan.survivor.managers;
 
 import com.badlogic.gdx.utils.Array;
+import com.jonathan.survivor.Survivor;
 import com.jonathan.survivor.inventory.Axe;
 import com.jonathan.survivor.inventory.Bullet;
 import com.jonathan.survivor.inventory.Charcoal;
@@ -22,7 +23,7 @@ public class CraftingManager
 	private Array<Combination> combinations;
 	
 	/** Holds all of the possible crafting combinations. */
-	public Combination axe, rifle, gunpowder, bullet, timeMachine;
+	public Combination axe, rifle, gunpowder, bullet, teleporter;
 	
 	private CraftingManager()
 	{
@@ -36,32 +37,64 @@ public class CraftingManager
 		axe.setResult(Axe.class, 1);
 		
 		rifle = new Combination();
-		rifle.addItem(Iron.class, 2);
-		rifle.addItem(Wood.class, 2);
+		if(!Survivor.DEBUG_MODE)
+		{
+			rifle.addItem(Iron.class, 10);
+			rifle.addItem(Wood.class, 15);
+		}
+		else
+		{
+			rifle.addItem(Iron.class, 2);
+			rifle.addItem(Wood.class, 2);
+		}
 		rifle.setResult(Rifle.class, 1);
 		
 		gunpowder = new Combination();
-		gunpowder.addItem(Saltpeter.class, 12);
-		gunpowder.addItem(Charcoal.class, 8);
-		gunpowder.addItem(Sulfur.class, 6);
-		gunpowder.addItem(Water.class, 4);
+		if(!Survivor.DEBUG_MODE)
+		{
+			gunpowder.addItem(Saltpeter.class, 12);
+			gunpowder.addItem(Charcoal.class, 8);
+			gunpowder.addItem(Sulfur.class, 6);
+			gunpowder.addItem(Water.class, 4);
+		}
+		else
+		{
+			gunpowder.addItem(Water.class, 1);
+		}
 		gunpowder.setResult(Gunpowder.class, 12);
 		
 		bullet = new Combination();
-		bullet.addItem(Iron.class, 2);
-		bullet.addItem(Gunpowder.class, 4);
+		if(!Survivor.DEBUG_MODE)
+		{
+			bullet.addItem(Iron.class, 2);
+			bullet.addItem(Gunpowder.class, 4);
+		}
+		else
+		{
+			bullet.addItem(Gunpowder.class, 4);
+		}
 		bullet.setResult(Bullet.class, 6);
 		
-		timeMachine = new Combination();
-		timeMachine.addItem(Wood.class, 1);
-		timeMachine.setResult(Teleporter.class, 1);
+		teleporter = new Combination();
+		if(!Survivor.DEBUG_MODE)
+		{
+			teleporter.addItem(Saltpeter.class, 40);
+			teleporter.addItem(Wood.class, 120);
+			teleporter.addItem(Sulfur.class, 40);
+			teleporter.addItem(Iron.class, 100);
+		}
+		else
+		{
+			teleporter.addItem(Wood.class, 1);
+		}
+		teleporter.setResult(Teleporter.class, 1);
 		
 		//Adds all of the combinations into an array
 		combinations.add(axe);
 		combinations.add(rifle);
 		combinations.add(gunpowder);
 		combinations.add(bullet);
-		combinations.add(timeMachine);
+		combinations.add(teleporter);
 	}
 	
 	/** Returns the resulting item crafted using the given array of items. If null, no result is formed using the given list of items. */

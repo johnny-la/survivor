@@ -53,7 +53,7 @@ import com.jonathan.survivor.inventory.Rifle;
 
 public class Assets 
 {
-	public static final Assets instance = new Assets();	//Stores a singleton instance of the Assets class. All assets are loaded and stored in one instance for easy access.
+	public static Assets instance;	//Stores a singleton instance of the Assets class. All assets are loaded and stored in one instance for easy access.
 	private AssetManager manager = new AssetManager();	//Stores an AssetManager instance. This allows for loading on a separate thread from the render thread. All assets are loaded through
 														//object.
 	
@@ -69,11 +69,13 @@ public class Assets
 	/** Stores the amount the skeletons must be scaled in order to fit the world coordinates. This is done because the skeletons were made with larger textures than are used. The first
 	 * float is the ratio of size of the skeleton using @1x textures compared to the size of the skeleton in Spine. World scale converts the skeleton's size from pixels to meters. */
 	public static final float PLAYER_SKELETON_SCALE = 0.156f * Survivor.WORLD_SCALE;
+	public static final float PLAYER_SKELETON_UI_SCALE = 0.21f;
 	public static final float ZOMBIE_SKELETON_SCALE = 0.173f * Survivor.WORLD_SCALE;
 	public static final float TREE_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
 	public static final float BOX_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
 	public static final float ITEM_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
 	public static final float PROJECTILE_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
+	public static final float BACKGROUND_TILE_SCALE = Survivor.WORLD_SCALE;
 	public static final float VERSUS_ANIM_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
 	public static final float KO_ANIM_SKELETON_SCALE = 0.25f * Survivor.WORLD_SCALE;
 	
@@ -86,8 +88,9 @@ public class Assets
 	//Stores the assets used by the loading screen and company splash screen.
 	public TextureAtlas loadingScreenAtlas;
 	public Sprite companyLogo;
-	public Sprite loadingText;
-	public Array<Sprite> preloaderSprites;
+	public Sprite mugishaLogo;
+	public Sprite loadingBackground;
+	public LabelStyle loadingLabelStyle;
 	
 	//Stores the assets used by the main menu screen.
 	public TextureAtlas mainMenuAtlas;
@@ -146,6 +149,7 @@ public class Assets
 	public TextureAtlas playerAtlas;
 	public SkeletonJson playerSkeletonJson;
 	public SkeletonData playerSkeletonData;
+	public SkeletonData playerSkeletonData_UI; //Stores the SkeletonData used for the player drawn in UIs. The only difference is that the skeleton is scaled in pixel units.
 	public Animation playerIdle;
 	public Animation playerIdle_Combat;
 	public Animation playerWalk;
@@ -163,6 +167,8 @@ public class Assets
 	public Animation playerHit;
 	public Animation playerDead;
 	public Animation playerTeleport;
+	public Animation playerSleep;
+	public Animation playerSleep_Alert;
 	
 	public TextureAtlas zombieAtlas;
 	public SkeletonJson zombieSkeletonJson;
@@ -213,6 +219,11 @@ public class Assets
 	public Sprite teleporterSprite;
 	public Sprite axeSprite;
 	public Sprite rifleSprite;
+	
+	public Sprite snow1;
+	public Sprite snow2;
+	public Sprite snow3;
+	public Sprite snow4;
 	
 	public SkeletonRenderer skeletonRenderer; //Renderer used to draw spine skeletons with a SpriteBatch.
 	
@@ -272,21 +283,47 @@ public class Assets
 		//Loads the atlases and sprites used by the loading screen and company splash screens.
 		loadingScreenAtlas = new TextureAtlas(Gdx.files.internal("ui/loading screen/loading_items_atlas" + scaleExtension + ".txt"));
 		companyLogo = loadingScreenAtlas.createSprite("Company Logo");
-		loadingText = loadingScreenAtlas.createSprite("Loading Text");
-		preloaderSprites = loadingScreenAtlas.createSprites("Preloader");
+		mugishaLogo = loadingScreenAtlas.createSprite("Mugisha Logo");
 		
 		//Resize the sprites according to the scale factor of the screen. That is, if we are using an @2x texture atlas, scaleFactor=2. So, reduce the sprites
 		//to half their size so that they are the same size as the original @1x textures. Like this, coordinate systems stay the same no matter the texture 
 		//resolution.
 		companyLogo.setSize(companyLogo.getWidth()/scaleFactor, companyLogo.getHeight()/scaleFactor);
-		loadingText.setSize(loadingText.getWidth()/scaleFactor, loadingText.getHeight()/scaleFactor);
-		Sprite preloaderSprite;
-		for(int i = 0; i < preloaderSprites.size; i++)
-		{
-			preloaderSprite = preloaderSprites.get(i);
-			preloaderSprite.setSize(preloaderSprite.getWidth()/scaleFactor, preloaderSprite.getHeight()/scaleFactor);
-		}
+		mugishaLogo.setSize(mugishaLogo.getWidth()/scaleFactor, mugishaLogo.getHeight()/scaleFactor);
+	}
+	
+	/** Loads the assets which are needed for the loading screen. They are loaded when the splash screen is shown. */ 
+	public void loadSplashScreenAssets()
+	{
+		//Loads the sprites which the splash screen need to load before switching to the loading screen. For instance, the player atlas needs to be loaded to be shown in the loading screen.
+		playerAtlas = new TextureAtlas(Gdx.files.internal("game/player/atlas/player_atlas" + scaleExtension + ".txt"));
+		loadingBackground = loadingScreenAtlas.createSprite("Loading Background");
 		
+		//Resizes the loaded sprites to ensure that they are the same scale no matter the atlas size chosen. Ensures that they always take the same screen space.
+		loadingBackground.setSize(loadingBackground.getWidth()/scaleFactor, loadingBackground.getHeight()/scaleFactor);
+		
+		//Sets up the Spine data used to display and animate the player in the loading screen.
+		playerSkeletonJson = new SkeletonJson(playerAtlas);
+		playerSkeletonJson.setScale(PLAYER_SKELETON_UI_SCALE);	//Re-scale the skeleton to fit GUI camera units. 
+		playerSkeletonData_UI = playerSkeletonJson.readSkeletonData(Gdx.files.internal("game/player/skeleton/player_skeleton.json"));		
+		//Stores the player's animations which are needed for the loading screen.
+		playerSleep = playerSkeletonData_UI.findAnimation("Sleep");
+		playerSleep_Alert = playerSkeletonData_UI.findAnimation("Sleep_Alert");
+
+		//Creates the Font Generator for the Sanchez Regular font.
+		sanchezRegularGenerator = new FreeTypeFontGenerator(Gdx.files.internal("ui/fonts/sanchez regular/Sanchezregular.otf"));
+		//Creates the Sanchez Regular 17pt font. This must be done after the loading is finished because AssetManagers can't load FreeTypeFontGenerators.
+		sanchezRegular_17 = sanchezRegularGenerator.generateFont((int)(17 * fontScale));	
+		sanchezRegular_17.setScale(sanchezRegular_17.getScaleX() / fontScale);	
+		sanchezRegular_17.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		//Creates the LabelStyle which determines the look of the text in the loading screen.
+		loadingLabelStyle = new LabelStyle();
+		loadingLabelStyle.font = sanchezRegular_17;
+		loadingLabelStyle.fontColor = Color.WHITE;
+		
+		//Creates a new skeleton renderer to draw Spine skeletons using a SpriteBatch instance.
+		skeletonRenderer = new SkeletonRenderer();
 	}
 	
 	/** Queues all assets for loading. Loading is performed every time the updateLoading() method is called. Before calling updateLoading(), the AssetManager must know
@@ -323,7 +360,6 @@ public class Assets
 	private void queueGameAssets()
 	{
 		//Put all assets to queue for loading using the AssetManager.load("fileName", class) method.
-		manager.load("game/player/atlas/player_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		manager.load("game/zombie/atlas/zombie_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		manager.load("game/interactable_objects/atlas/interactable_objects_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		manager.load("ui/hud/general/atlas/hud_atlas" + scaleExtension + ".pack", TextureAtlas.class);
@@ -366,7 +402,6 @@ public class Assets
 		mainMenuAtlas = manager.get("ui/main menu/atlas/main/main_menu_atlas" + scaleExtension + ".pack");
 		
 		//Retrieves the assets for the game.
-		playerAtlas = manager.get("game/player/atlas/player_atlas" + scaleExtension + ".txt");
 		zombieAtlas = manager.get("game/zombie/atlas/zombie_atlas" + scaleExtension + ".txt");
 		interactableObjectAtlas = manager.get("game/interactable_objects/atlas/interactable_objects_atlas" + scaleExtension + ".txt");
 		hudAtlas = manager.get("ui/hud/general/atlas/hud_atlas" + scaleExtension + ".pack");
@@ -394,11 +429,11 @@ public class Assets
 		
 		//Loads the assets used in-game.
 		loadGameAssets();
-		
 	}
 	
-	/** Loads the assets used by the main menu which can't be loaded by the Asset Manager in the updateLoading() method, such as TTF fonts or button styles */
-	private void loadMainMenuAssets()
+	/** Loads the assets used by the main menu which can't be loaded by the Asset Manager in the updateLoading() method, such as TTF fonts or button styles. MUST be called after
+	 *  loading in the loading screen is complete, and and after updateLoading() returns true. */
+	public void loadMainMenuAssets()
 	{
 		//Creates the Moon Flower Bold 54pt font. This must be done after the loading is finished because AssetManagers can't load FreeTypeFontGenerators.
 		moonFlowerBoldGenerator = new FreeTypeFontGenerator(Gdx.files.internal("ui/fonts/moon flower bold/Moon Flower Bold.ttf"));
@@ -410,13 +445,6 @@ public class Assets
 		moonFlowerBold_38 = moonFlowerBoldGenerator.generateFont((int)(38 * fontScale));	
 		moonFlowerBold_38.setScale(moonFlowerBold_38.getScaleX() / fontScale);	
 		moonFlowerBold_38.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		
-		//Creates the Font Generator for the Sanchez Regular font.
-		sanchezRegularGenerator = new FreeTypeFontGenerator(Gdx.files.internal("ui/fonts/sanchez regular/Sanchezregular.otf"));
-		//Creates the Sanchez Regular 17pt font. This must be done after the loading is finished because AssetManagers can't load FreeTypeFontGenerators.
-		sanchezRegular_17 = sanchezRegularGenerator.generateFont((int)(17 * fontScale));	
-		sanchezRegular_17.setScale(sanchezRegular_17.getScaleX() / fontScale);	
-		sanchezRegular_17.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
 		//Creates the skin and the styles used for the main menu GUI.
 		mainMenuSkin = new Skin(mainMenuAtlas);
@@ -450,8 +478,10 @@ public class Assets
 		confirmDialogWindowStyle = new WindowStyle(moonFlowerBold_54, new Color(0.2941f, 0.3216f, 0.2316f, 1f), new NinePatchDrawable(confirmDialogNinePatch));
 	}
 	
-	/** Loads the assets used in-game which couldn't be loaded by the Asset Manager in the updateLoading() method, such as SkeletonJson files. */
-	private void loadGameAssets()
+	/** Loads the assets used in-game which couldn't be loaded by the Asset Manager in the updateLoading() method, such as SkeletonJson files. MUST be called after
+	 *  loading in the loading screen is complete, and and after updateLoading() returns true. Otherwise, there will be certain atlases and assets that won't be loaded
+	 *  that will cause NullPointerExceptions. */
+	public void loadGameAssets()
 	{		
 		//Loads the assets needed for the HUD
 		hudSkin = new Skin(hudAtlas);
@@ -624,11 +654,10 @@ public class Assets
 		//Gets the animations from the SpineUI's SkeletonData instance.
 		koPlay = koAnimSkeletonData.findAnimation("Play");
 
-		//Sets up the Spine data used to display and animate the player.
-		playerSkeletonJson = new SkeletonJson(playerAtlas);
+		//Sets up the Spine data used to display and animate the player in the world. Note that the skeleton JSON was already created inside loadSplashScreenAssets().
 		playerSkeletonJson.setScale(PLAYER_SKELETON_SCALE);	//Re-scale the skeleton to fit world-units. Atlas data is read the same no matter the scale of the SkeletonJson.
 		playerSkeletonData = playerSkeletonJson.readSkeletonData(Gdx.files.internal("game/player/skeleton/player_skeleton.json"));		
-		//Gets the animations from the Player's SkeletonData instance.
+		//Gets the player's animations from the Player's SkeletonData instance.
 		playerIdle = playerSkeletonData.findAnimation("Idle");
 		playerIdle_Combat = playerSkeletonData.findAnimation("Idle_Combat");
 		playerWalk = playerSkeletonData.findAnimation("Walk");
@@ -716,8 +745,17 @@ public class Assets
 		//rifleSprite.setOrigin(rifleSprite.getWidth()/2, 0);
 		//rifleSprite.setRotation(15);
 		
-		//Creates a new skeleton renderer to draw Spine skeletons using a SpriteBatch instance.
-		skeletonRenderer = new SkeletonRenderer();
+		//Creates the template sprites for the background tiles.
+		snow1 = interactableObjectAtlas.createSprite("Snow0001");
+		snow2 = interactableObjectAtlas.createSprite("Snow0002");
+		snow3 = interactableObjectAtlas.createSprite("Snow0003");
+		snow4 = interactableObjectAtlas.createSprite("Snow0004");
+		
+		//Resizes the background sprites so that they are the same size no matter the scale of the atlas. Note that multiplying by BACKGROUND_TILE_SCALE converts their scale to world units.
+		snow1.setSize(BACKGROUND_TILE_SCALE * snow1.getWidth()/scaleFactor, BACKGROUND_TILE_SCALE * snow1.getHeight()/scaleFactor);
+		snow2.setSize(BACKGROUND_TILE_SCALE * snow2.getWidth()/scaleFactor, BACKGROUND_TILE_SCALE * snow2.getHeight()/scaleFactor);
+		snow3.setSize(BACKGROUND_TILE_SCALE * snow3.getWidth()/scaleFactor, BACKGROUND_TILE_SCALE * snow3.getHeight()/scaleFactor);
+		snow4.setSize(BACKGROUND_TILE_SCALE * snow4.getWidth()/scaleFactor, BACKGROUND_TILE_SCALE * snow4.getHeight()/scaleFactor);
 	}
 	
 	/** Returns the loading progress for the assets. Note that this method will return zero if the updateLoading() method has not been called yet. 
@@ -737,8 +775,9 @@ public class Assets
 		loadingScreenAtlas.dispose();
 		
 		companyLogo = null;
-		loadingText = null;
-		preloaderSprites = null;
+		mugishaLogo = null;
+		loadingBackground = null;
+		loadingLabelStyle = null;
 	}
 	
 	/** Called on application quit inside the Survivor class. Frees any audio/visual resources used by the application. */
@@ -755,5 +794,6 @@ public class Assets
 		
 		//Dispose of all assets loaded by the AssetManager.
 		manager.clear();
+		manager.dispose();
 	}
 }

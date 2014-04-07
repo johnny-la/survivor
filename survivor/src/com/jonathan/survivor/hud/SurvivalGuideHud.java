@@ -75,7 +75,7 @@ public class SurvivalGuideHud extends Hud
 												  "(Note: each shot requires one bullet)",
 												  
 												  "Click an item in the left-hand list to add it to the crafting table. \n\nEvery time an item is pressed, " +
-												  "one instane of that item is transfered to the crafting table. \n\nTo remove the item from the crafting table, " +
+												  "one instance of that item is transfered to the crafting table. \n\nTo remove the item from the crafting table, " +
 												  "press on the item in the crafting table. \n\nIf the crafting table contains a combination of items in the right " +
 												  "quantities, an item will appear below the arrow sign. \n\nTo craft this item and add it to the inventory, press " +
 												  "the 'Craft' button.",

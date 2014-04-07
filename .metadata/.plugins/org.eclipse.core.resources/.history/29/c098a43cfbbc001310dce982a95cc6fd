@@ -1,0 +1,120 @@
+
+hud_atlas@2x.png
+format: RGBA4444
+filter: Nearest,Nearest
+repeat: none
+GameOverText
+  rotate: false
+  xy: 2, 118
+  size: 588, 136
+  orig: 588, 136
+  offset: 0, 0
+  index: -1
+CraftingButton
+  rotate: true
+  xy: 592, 63
+  size: 191, 282
+  orig: 191, 282
+  offset: 0, 0
+  index: -1
+SurvivalGuideButton
+  rotate: true
+  xy: 876, 41
+  size: 213, 243
+  orig: 213, 243
+  offset: 0, 0
+  index: -1
+CraftButton
+  rotate: false
+  xy: 2, 15
+  size: 249, 101
+  orig: 249, 101
+  offset: 0, 0
+  index: -1
+CircleButton
+  rotate: false
+  xy: 1121, 105
+  size: 150, 149
+  orig: 150, 149
+  offset: 0, 0
+  index: -1
+Gun
+  rotate: false
+  xy: 1273, 130
+  size: 174, 124
+  orig: 174, 124
+  offset: 0, 0
+  index: -1
+Arrow
+  rotate: false
+  xy: 1449, 135
+  size: 111, 119
+  orig: 111, 119
+  offset: 0, 0
+  index: -1
+Jump
+  rotate: true
+  xy: 253, 35
+  size: 81, 109
+  orig: 81, 109
+  offset: 0, 0
+  index: -1
+Knife
+  rotate: true
+  xy: 1121, 41
+  size: 62, 127
+  orig: 62, 127
+  offset: 0, 0
+  index: -1
+BackButton
+  rotate: false
+  xy: 1562, 162
+  size: 84, 92
+  orig: 84, 92
+  offset: 0, 0
+  index: -1
+Backpack
+  rotate: false
+  xy: 364, 36
+  size: 54, 80
+  orig: 54, 80
+  offset: 0, 0
+  index: -1
+CraftingArrow
+  rotate: true
+  xy: 253, 2
+  size: 31, 44
+  orig: 31, 44
+  offset: 0, 0
+  index: -1
+PauseButton
+  rotate: false
+  xy: 1648, 205
+  size: 48, 49
+  orig: 48, 49
+  offset: 0, 0
+  index: -1
+List_Background
+  rotate: false
+  xy: 1273, 109
+  size: 21, 19
+  split: 4, 3, 3, 4
+  orig: 21, 19
+  offset: 0, 0
+  index: -1
+ItemBox
+  rotate: false
+  xy: 1250, 88
+  size: 16, 15
+  split: 2, 2, 2, 2
+  orig: 16, 15
+  offset: 0, 0
+  index: -1
+ScrollKnob
+  rotate: false
+  xy: 1562, 154
+  size: 4, 6
+  split: 1, 1, 2, 1
+  orig: 4, 6
+  offset: 0, 0
+  index: -1

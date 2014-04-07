@@ -1,5 +1,6 @@
 package com.jonathan.survivor.renderers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.jonathan.survivor.CombatLevel;
@@ -17,15 +18,22 @@ public class LevelRenderer
 	/** Stores the SpriteBatcher used to draw the level's elements. */
 	private SpriteBatch batcher;
 	
+	/** Holds the renderer used to draw the background. */
+	private BackgroundRenderer backgroundRenderer;
+	
 	/** Stores the renderer used to draw terrain. */
 	private TerrainRenderer terrainRenderer;
 	/** Holds the renderer used to draw the combat level's terrain. */
 	private CombatRenderer combatRenderer;
 	
-	public LevelRenderer(OrthographicCamera worldCamera)
+	public LevelRenderer(SpriteBatch batcher, OrthographicCamera worldCamera)
 	{
-		//Stores the camera where the level should be drawn.
+		//Stores the constructor arguments in their respective member variables.
+		this.batcher = batcher;
 		this.worldCamera = worldCamera;
+		
+		//Instantiates the BackgroundRenderer, used to render the Background, and update it so that it follows the player's position.
+		backgroundRenderer = new BackgroundRenderer(batcher, worldCamera);
 		
 		//Creates a TerrainRenderer to draw terrain geometry. Passes the camera where the lines should be drawn.
 		terrainRenderer = new TerrainRenderer(worldCamera);
@@ -36,6 +44,9 @@ public class LevelRenderer
 	/** Renders a level's geometry. This method is a helper method which delegates the level instance to a more specific renderer. */
 	public void render(Level level)
 	{
+		//Updates the background's position and draws it to the screen.
+		backgroundRenderer.render(Gdx.graphics.getDeltaTime());
+		
 		//If the level we want to draw is a TerrainLevel
 		if(level instanceof TerrainLevel)
 			//Delegate the rendering to the TerrainRenderer.

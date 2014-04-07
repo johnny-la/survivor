@@ -194,6 +194,9 @@ public class CraftingTable
 		//Else, if the given item is not null, populate the craftedItemCell with the correct item.
 		else
 		{
+			//Empty the craftedItemCell so that the quantity of the item is reset to zero before calling the 'ItemCell.addQuantity()' method.
+			craftedItemCell.empty();
+			
 			//Set the contained item class of the craftedItemCell to that of the Item argument. Ensures that the correct item is displayed inside the cell.
 			craftedItemCell.setItemClass(craftedItem.getItem());
 			

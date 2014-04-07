@@ -13,18 +13,19 @@
 		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="charge" key="selection"/>
+		<item value="" key="selection"/>
 		<list key="findhistory">
-			<item value="charge"/>
-			<item value="take"/>
-			<item value="addGame"/>
-			<item value="gameOver"/>
-			<item value="isDead"/>
-			<item value="time machine"/>
-			<item value="TimeMachine"/>
-			<item value="Time Machine"/>
+			<item value="reset"/>
+			<item value="player"/>
+			<item value="inventory"/>
+			<item value="itemMap"/>
+			<item value="pose"/>
+			<item value="set"/>
+			<item value="setup"/>
+			<item value="setTo"/>
 		</list>
 		<list key="replacehistory">
+			<item value="camera"/>
 			<item value="teleporter"/>
 			<item value="Teleporter"/>
 			<item value="fire"/>
@@ -32,7 +33,6 @@
 			<item value="jump"/>
 			<item value="gun"/>
 			<item value="zombie"/>
-			<item value="Zombie"/>
 		</list>
 	</section>
 </section>

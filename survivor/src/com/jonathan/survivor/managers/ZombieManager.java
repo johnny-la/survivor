@@ -80,7 +80,8 @@ public class ZombieManager
 		//If the zombie is in idle state
 		if(zombie.getState() == State.IDLE)
 		{
-			
+			//Ensure that the zombie is at ground level when in IDLE state.
+			//zombie.setY(world.getTerrainLevel().getTerrainLayer(zombie.getX()));
 		}
 		//Else, if the zombie is walking
 		else if(zombie.getState() == State.WALK)

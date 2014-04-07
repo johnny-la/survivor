@@ -2,16 +2,39 @@ package com.jonathan.survivor.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Array;
+import com.esotericsoftware.spine.Event;
+import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Survivor;
 import com.jonathan.survivor.utils.SpriteUtils;
 
 public class LoadingScreen extends Screen
 {
+	/** Holds the center position of the progress and hint labels, relative to the center of the screen. That is, (0,0) places the labels at the center of the screen. */
+	private static final float PROGRESS_LABEL_X = -20, PROGRESS_LABEL_Y = -50.5f;	
+	private static final float HINT_LABEL_X = 0.5f, HINT_LABEL_Y = -90f;	
+	
+	/** Holds the left-center position of the player relative to the center of the screen. Note that this measurement is in meters, not in pixels, and is thus much smaller. */
+	private static final float PLAYER_X = -0.1f, PLAYER_Y = 0.05f;
+	
+	private static final float HINT_DISPLAY_TIME = 2;	//Holds the amount of time a hint is displayed before switching.
+	
 	private OrthographicCamera guiCamera;	//Stores the camera displaying the loading screen's GUI.
-	private Sprite preloaderSprite;	//Stores the sprite the preloader should be showing. Changes depending on loading progress.
+	
+	private Label progressLabel; 	//Holds the label showing a percentage of loading progress.
+	private Label hintLabel; 	//Holds the label showing hints which let the user pass time.
+	
+	private Skeleton playerSkeleton;	//Stores the skeleton instance which draws the player to the screen.
+	
+	private String[] hints = {"Loading worlds...", "Loading zombies...", "Loading the mentally challenged..."};	//Stores the list of all possible hints.
+	
+	private int hintTime = 0;	//Stores the amount of time a hint has been showing.
+	private float playerStateTime;	//Holds the amount of time the player has been playing his current animation. Used to tell Spine which time in the animation to play.
+	private float displayTime = 0; //Stores the amount of time the loading screen has been displayed.
+	
+	//Helper Array that's passed to the Animation.set() method when the player plays an animation.
+	private Array<Event> events = new Array<Event>();
 	
 	public LoadingScreen(Survivor game)
 	{
@@ -24,11 +47,22 @@ public class LoadingScreen extends Screen
 		//Create a new camera with the designated size retrieved from the Screen superclass.
 		guiCamera = new OrthographicCamera(guiWidth, guiHeight);
 		
+		//Creates the label which displays the loading progress as a percentage.
+		progressLabel = new Label("", assets.loadingLabelStyle);
+		//Instantiates the label which gives the players hints while waiting for loading to complete.
+		hintLabel = new Label(hints[0], assets.loadingLabelStyle);
+		
+		//Creates the player's Skeleton, which allows the player to be drawn to the screen. Note that the UI skeletonData is used. It allows the player to be placed in pixel coordinates.
+		playerSkeleton = new Skeleton(assets.playerSkeletonData_UI);
 	}
 	
 	@Override
 	public void render(float deltaTime)
 	{
+		//Stores the amount by which the color of the background is shifted.
+		//float colorShift = displayTime/10;
+		//Sets OpenGL to clear the screen with blue.
+		Gdx.gl.glClearColor(0.2f /*+ colorShift)%1.0f*/,0.4f /*+ colorShift)%1.0f*/,0.6f /*+ colorShift)%1.0f*/,1);
 		//Clears the screen.
 		super.render(deltaTime);
 		
@@ -36,8 +70,8 @@ public class LoadingScreen extends Screen
 		//It is done on a separate thread. Note that this method returns true if the loading is complete. This method must be called every frame to continue loading.
 		boolean loadingComplete = assets.updateLoading();
 		
-		//Updates the sprite used by the preloader to indicate progress.
-		updatePreloaderSprite();
+		//Updates the various elements of the loading screen.
+		update(deltaTime);
 		
 		//Draw the GUI for the LoadingScreen.
 		drawGUI();
@@ -48,6 +82,10 @@ public class LoadingScreen extends Screen
 			//Load the profiles saved inside the hard drive. This must be done here because the AssetsManager class from the Assets singleton can't load JSON files.
 			profileManager.loadProfiles();
 			
+			//Loads all the assets needed for the main menu and the game which were not loaded automatically by the Assets class with the updateLoading() method.
+			/*assets.loadMainMenuAssets();
+			assets.loadGameAssets();*/
+			
 			//Switch to the main menu screen
 			game.setScreen(new MainMenuScreen(game));
 			//Return this method call. It is good practice to do so to avoid errors.
@@ -55,61 +93,76 @@ public class LoadingScreen extends Screen
 		}
 		
 	}
-	
-	private void updatePreloaderSprite()
-	{
-		//Stores the loading progress of the assets singleton, which loads all of the visual/audible assets for the game.
-		float progress = assets.getProgress();
+
+	/** Updates the logic of the loading screen, positioning certain widgets and changing certain elements. */
+	private void update(float deltaTime) 
+	{		
+		//Updates the progress label to store the percent completion of the loading.
+		progressLabel.setText("" + (int)(assets.getProgress()*100.0) + "%");
 		
-		System.out.println("Progress " + progress);
+		//Sets the loadingText sprite to be in the center of the screen, a little above the preloader.
+		SpriteUtils.setPosition(assets.loadingBackground, 0, 0);
 		
-		//Depending on the loading progress, display a different sprite for the preloader. Note that assets.preloaderSprite.get(0) shows the preloader
-		//bar empty, while assets.preloaderSprite.get(5) shows it full.
-		if(progress >= 0.95f)
+		//Positions the progress label at center position (PROGRESS_LABEL_X, PROGRESS_LABEL_Y) relative to the center of the screen.
+		progressLabel.setPosition(PROGRESS_LABEL_X - progressLabel.getWidth()/2, PROGRESS_LABEL_Y - progressLabel.getHeight()/2);
+		
+		//Positions the player on top of the bed.
+		playerSkeleton.setX(PLAYER_X);
+		playerSkeleton.setY(PLAYER_Y);
+		
+		//Apply the 'Sleep' animation to the player's skeleton. Second and third arguments specify how much time the player has been playing his animation, third indicates we want to 
+		//loop the animation , and last is an array where any possible animation events are delegated.
+		assets.playerSleep.apply(playerSkeleton, playerStateTime, playerStateTime, true, events);
+		
+		//Update the player's skeleton before drawing it.
+		playerSkeleton.update(deltaTime);
+		//Update the player to ensure he is within the viewable region of the world.
+		playerSkeleton.updateWorldTransform();
+		
+		//If the current hint has been showing for long enough
+		if(hintTime > HINT_DISPLAY_TIME)
 		{
-			preloaderSprite = assets.preloaderSprites.get(5);
+			//Chooses a random new hint to display.
+			hintLabel.setText(hints[(int)(Math.random()*hints.length)]);
+			
+			//Reset the hint time, since the hint has just been changed.
+			hintTime = 0;
 		}
-		else if(progress > 0.8f)
-		{
-			preloaderSprite = assets.preloaderSprites.get(4);
-		}
-		else if(progress > 0.6f)
-		{
-			preloaderSprite = assets.preloaderSprites.get(3);
-		}
-		else if(progress > 0.4f)
-		{
-			preloaderSprite = assets.preloaderSprites.get(2);
-		}
-		else if(progress > 0.2f)
-		{
-			preloaderSprite = assets.preloaderSprites.get(1);
-		}
-		else
-		{
-			preloaderSprite = assets.preloaderSprites.get(0);
-		}
+		
+		//Positions the hint label at center position (HINT_LABEL_X, HINT_LABEL_Y) relative to the center of the screen.
+		hintLabel.setPosition(HINT_LABEL_X - hintLabel.getWidth()/2, HINT_LABEL_Y - hintLabel.getHeight()/2);
+		
+		//Increments the amount of time the current hint has been showing
+		hintTime += deltaTime;
+		
+		//Increments the player's state time. This keeps track of which point the player should be in his current animation.
+		playerStateTime += deltaTime;
+		
+		//Increases the amount of time the loading screen has been showing.
+		displayTime += deltaTime;
 	}
-	
+
 	/**  Draws the GUI for the Loading Screen */
 	private void drawGUI()
 	{
-		//Sets the loadingText sprite to be in the center of the screen, a little above the preloader.
-		SpriteUtils.setPosition(assets.loadingText, 0, 41);
-		//Sets the preloader's center to be blow the loading text.
-		SpriteUtils.setPosition(preloaderSprite, 0, -10);
-		
 		//Sets the projection matrix of the sprite batcher to the camera's.
 		batcher.setProjectionMatrix(guiCamera.combined);
 		//Begin batching and drawing sprites through the SpriteBatch instance.
 		batcher.begin();
 		
 		//Draw the loading text sprite and the preloader sprite using a SpriteBatch.
-		assets.loadingText.draw(batcher);
-		preloaderSprite.draw(batcher);
+		assets.loadingBackground.draw(batcher);
+		
+		//Renders the labels to the screen. Second argument specifies to draw the labels at alpha=100%.
+		progressLabel.draw(batcher, 1.0f);
+		hintLabel.draw(batcher, 1.0f);
+		
+		//Draws the player to the screen.
+		assets.skeletonRenderer.draw(batcher, playerSkeleton);
 		
 		//Draw the sprites batched inside the batcher.
 		batcher.end();
+		
 	}
 	
 	@Override

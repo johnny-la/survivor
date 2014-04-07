@@ -50,7 +50,7 @@ public class TerrainLayer
 	public static final float EDGE_MARGIN = 2;
 	
 	/** Holds the probability rate (0: lowest chance, 1: highest chance) that a zombie gets spawned on the TerrainLayer. */
-	public static final float ZOMBIE_PROBABILITY_RATE = 0.1f;
+	public static final float ZOMBIE_PROBABILITY_RATE = 0.5f;
 	
 	/** Stores the position of the bottom-left and bottom-right ends of the layer. */
 	private final Vector2 leftPoint, rightPoint;
@@ -395,6 +395,12 @@ public class TerrainLayer
 			//Frees the boxes back into the pool of the GameObjectManager for later reuse.
 			goManager.freeGameObject(boxes.get(i), Box.class);
 
+		//Cycles through the array of Zombies, which must be freed back into the GameObjectManager's internal pools.
+		for(int i = 0; i < zombies.size; i++)
+			//Frees the Zombies back into their respective pool inside the GameObjectManager so that they can be reused once more Zombies are spawned.
+			goManager.freeGameObject(zombies.get(i), Zombie.class);
+		
+		//Cycles through the array of ItemObjects, which must be freed back into the GameObjectManager's internal pools.
 		for(int i = 0; i < itemObjects.size; i++)
 			//Frees the ItemObjects back into their respective pool inside the GameObjectManager so that they can be reused once more ItemObjects are dropped.
 			goManager.freeGameObject(itemObjects.get(i), ItemObject.class);
@@ -418,6 +424,10 @@ public class TerrainLayer
 		if(gameObject instanceof ItemObject)
 			//Add the ItemObject to the list of Item GameObjects contained by this TerrainLayer.
 			itemObjects.add((ItemObject)gameObject);
+		//Else, if the GameObject to add to the layer is a zombie
+		else if(gameObject instanceof Zombie)
+			//Adds the zombie to the list of zombies contained in the layer.
+			zombies.add((Zombie)gameObject);
 		
 		//Add the GameObject to the list of all GameObjects contained in the TerrainLayer.
 		gameObjects.add(gameObject);
@@ -428,15 +438,15 @@ public class TerrainLayer
 	{
 		//If the GameObject we want to add is an ItemObject, then a collectible has just been removed from the ground. NEVER CALLED. Pre-mature implementation.
 		if(gameObject instanceof ItemObject)
+		{
 			//Removes the ItemObject from the list of Item GameObjects contained by this TerrainLayer.
 			itemObjects.removeValue((ItemObject)gameObject, true);
+		}
 		//Else, if the GameObject to remove is a zombie
 		else if(gameObject instanceof Zombie)
 		{
 			//Removes the zombie from the list of zombies contained in the layer.
 			zombies.removeValue((Zombie)gameObject, true);
-			
-			System.out.println("Zombie array " + zombies);
 		}
 
 		//Removes the GameObject from the list of all GameObjects contained in the TerrainLayer.

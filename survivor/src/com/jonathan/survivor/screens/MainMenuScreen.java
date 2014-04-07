@@ -87,15 +87,15 @@ public class MainMenuScreen extends Screen
 		labelStyle = new LabelStyle(assets.moonFlowerBold_54, Color.WHITE);
 		
 		//Adds the logoImage to the top of the table. We make it span two columns so that it is display at the center of the two buttons below.
-		table.add(logoImage).colspan(2).width(logoImage.getWidth()).height(logoImage.getHeight());
+		table.add(logoImage).colspan(/*2*/1).width(logoImage.getWidth()).height(logoImage.getHeight()).padBottom(5);
 		//Skip a row
 		table.row();
 		//Add the play button to the table, make it right aligned, and give it a 10 pixel blank space to the right. We set the width and height to the button's 
 		//width and height to ensure that the button is not scaled when added to the table.
-		table.add(playButton).right().pad(10).width(playButton.getWidth()).height(playButton.getHeight());
+		table.add(playButton)/*.right().pad(10)*/.width(playButton.getWidth()).height(playButton.getHeight());
 		//Add the options button to the table, make it left aligned, and give it a 10 pixel blank space to the left. We set the width and height to the button's 
 		//width and height to ensure that the button is not scaled when added to the table.
-		table.add(optionsButton).left().pad(10).width(optionsButton.getWidth()).height(optionsButton.getHeight());
+		//table.add(optionsButton).left().pad(10).width(optionsButton.getWidth()).height(optionsButton.getHeight());
 		
 		//Show the table's debug lines if we are in debug mode
 		if(Survivor.DEBUG_MODE)

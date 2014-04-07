@@ -2,7 +2,11 @@ package com.jonathan.survivor;
 
 import com.badlogic.gdx.utils.Array;
 import com.jonathan.survivor.TerrainLayer.TerrainDirection;
+import com.jonathan.survivor.entity.Box;
 import com.jonathan.survivor.entity.GameObject;
+import com.jonathan.survivor.entity.ItemObject;
+import com.jonathan.survivor.entity.Tree;
+import com.jonathan.survivor.entity.Zombie;
 import com.jonathan.survivor.managers.GameObjectManager;
 import com.jonathan.survivor.math.Cell;
 
@@ -20,6 +24,13 @@ public class TerrainLevel implements Level
 	/** Stores the bottom-left (x,y) position of the first terrain layer. Only relevant when layers first created. */
 	public static final float START_X_POS = 0;//(-TerrainLayer.LAYER_WIDTH * (NUM_LAYER_COLS / 2)) - (TerrainLayer.LAYER_WIDTH/2);
 	public static final float START_Y_POS = 0;//(-TerrainLayer.LAYER_HEIGHT * (NUM_LAYER_ROWS / 2)) - (TerrainLayer.LAYER_HEIGHT/2);
+	
+	/** Holds arrays containing the different types of GameObjects on the layer. */
+	private Array<Tree> trees = new Array<Tree>();
+	private Array<Box> boxes = new Array<Box>();
+	private Array<Zombie> zombies = new Array<Zombie>();
+	/** Stores an array of all the ItemObjects that have been dropped on this TerrainLayer. These items can be picked up. */
+	private Array<ItemObject> itemObjects = new Array<ItemObject>();
 	
 	/** Helper array used to store all the GameObjects in the level. Avoids activating the garbage collector. */
 	private Array<GameObject> gameObjects = new Array<GameObject>();
@@ -254,8 +265,10 @@ public class TerrainLevel implements Level
 		//Add the GameObject to the TerrainLayer where it is contained. Allows the TerrainLayer to be aware of the GameObjects it contains.
 		getTerrainLayer(gameObject.getTerrainCell()).addGameObject(gameObject);
 		
+		//Tells the level that its gameObjects:Array<GameObject> has to be re-populated since a new GameObject has been added to a layer.
+		gameObjectsStored = false;
 		//Add the GameObject to the list of GameObjects contained inside the Level. Otherwise, the World won't know it exists.
-		gameObjects.add(gameObject);
+		//gameObjects.add(gameObject);
 	}
 	
 	/** Removes the given GameObject from the TerrainLayer where it belongs. Allows the GameObject to be removed from the list of GameObjects of the correct TerrainLayer. */
@@ -264,8 +277,10 @@ public class TerrainLevel implements Level
 		//Remove the GameObject from the TerrainLayer where it is contained. Allows the TerrainLayer to be aware of the GameObject it no longer contains.
 		getTerrainLayer(gameObject.getTerrainCell()).removeGameObject(gameObject);
 		
+		//Tells the level that its gameObjects:Array<GameObject> has to be re-populated since a new GameObject has been removed from a layer.
+		gameObjectsStored = false;
 		//Removes the GameObject from the list of GameObjects contained inside the Level. Like this, the GameObject will no longer be rendered or updated by the World.
-		gameObjects.removeValue(gameObject, true);
+		//gameObjects.removeValue(gameObject, true);
 	}
 	
 	/** Returns an array of all the GameObjects contained in the level. */
@@ -276,6 +291,11 @@ public class TerrainLevel implements Level
 		{
 			//Clears the current GameObject list.
 			gameObjects.clear();
+			//Clears the various lists of GameObjects in the level so as to re-populate them.
+			trees.clear();
+			boxes.clear();
+			zombies.clear();
+			itemObjects.clear();
 			
 			//Cycle through the rows of TerrainLayers.
 			for(int i = layers.length-1; i >= 0; i--)
@@ -283,10 +303,19 @@ public class TerrainLevel implements Level
 				//Cycle through the columns of the row
 				for(int j = 0; j < layers[i].length; j++)
 				{
-					//Add all the GameObjects from the layer into the gameObjects array which will be returned by this method.
-					gameObjects.addAll(layers[i][j].getGameObjects());
+					//Add all the GameObjects from the layer into their respective arrays which hold the GameObjects of the level.
+					trees.addAll(layers[i][j].getTrees());
+					boxes.addAll(layers[i][j].getBoxes());
+					zombies.addAll(layers[i][j].getZombies());
+					itemObjects.addAll(layers[i][j].getItemObjects());
 				}
 			}
+			
+			//Places the GameObjects into the high-level 'gameObjects' container. Adds them in the order they are drawn.
+			gameObjects.addAll(trees);
+			gameObjects.addAll(boxes);
+			gameObjects.addAll(zombies);
+			gameObjects.addAll(itemObjects);
 			
 			//Tells the level that its gameObjects array has been populated with the correct GameObjects. The array will not be re-populated until invalidated.
 			gameObjectsStored = true;
@@ -422,5 +451,25 @@ public class TerrainLevel implements Level
 	{
 		//Sets the 2d array of TerrainLayers.
 		this.layers = layers;
+	}
+
+	/** Gets the list of all trees contained in the level. */
+	public Array<Tree> getTrees() {
+		return trees;
+	}
+
+	/** Gets the list of all boxes contained in the level. */
+	public Array<Box> getBoxes() {
+		return boxes;
+	}
+
+	/** Gets the list of all zombies contained in the level. */
+	public Array<Zombie> getZombies() {
+		return zombies;
+	}
+
+	/** Gets the list of all ItemObjects contained in the level. */
+	public Array<ItemObject> getItemObjects() {
+		return itemObjects;
 	}
 }

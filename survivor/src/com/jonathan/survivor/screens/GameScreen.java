@@ -259,6 +259,9 @@ public class GameScreen extends Screen
 			//Make the player lose all of his items.
 			world.getPlayer().loseLoot();			
 			
+			//Save the player's settings, such as his location and his items before switching to the main menu.
+			settings.save();
+			
 			//Switch to the main menu without saving the player's progress. Like this, the player will have to restart from his last save point.
 			goToMainMenu();
 		}
@@ -311,6 +314,9 @@ public class GameScreen extends Screen
 		@Override
 		public void winGame()
 		{
+			//Save the player's settings, such as his location and his items before switching to the main menu.
+			settings.save();
+			
 			//Reverts the player back to the main menu.
 			goToMainMenu();
 		}
@@ -343,7 +349,7 @@ public class GameScreen extends Screen
 	private void draw(float deltaTime)
 	{
 		//Sets OpenGL to clear the screen with white.
-		Gdx.gl.glClearColor(1,1,1,1);
+		Gdx.gl.glClearColor(1f, 1f,1f,1);	//Blue: 0.96f,0.99f,1f,1
 		//Clears the screen.
 		super.render(deltaTime);
 
@@ -511,7 +517,6 @@ public class GameScreen extends Screen
 	{
 		//Transitions to the main menu.
 		game.setScreen(new MainMenuScreen(game));
-		
 	}
 	
 	@Override

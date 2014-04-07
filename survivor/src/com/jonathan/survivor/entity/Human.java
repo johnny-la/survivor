@@ -273,5 +273,9 @@ public abstract class Human extends GameObject implements Poolable
 	{
 		//Tell the Human it has just spawned, in order for its renderer to know to reset the Human back to IDLE state.
 		setState(State.SPAWN);
+		
+		//Zero the human's velocity and acceleration so that he doesn't start moving when he respawns.
+		setVelocity(0,0);
+		setAcceleration(0,0);
 	}
 }

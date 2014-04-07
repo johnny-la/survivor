@@ -2,6 +2,7 @@ package com.jonathan.survivor.entity;
 
 import java.util.HashMap;
 
+import com.badlogic.gdx.utils.Pool.Poolable;
 import com.esotericsoftware.spine.AnimationState;
 import com.esotericsoftware.spine.AnimationState.AnimationStateListener;
 import com.esotericsoftware.spine.Bone;

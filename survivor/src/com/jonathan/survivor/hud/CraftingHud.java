@@ -252,15 +252,6 @@ public class CraftingHud extends Hud
 		if(craftedItem == null)
 			return;
 		
-		//Adds the craftedItem into the inventoryList. If a button corresponding to that item already exists, the number next to the item will simply be updated.
-		inventoryList.addItem(craftedItem.getItem(), craftedItem.getQuantity());
-		
-		//Add the given quantity of the crafted item into the inventory. Note: must be called after 'inventoryList.addItem()'
-		inventory.addItem(craftedItem.getItem(), craftedItem.getQuantity());
-		
-		//Empties the crafting table of its current items. False argument specifies that the items in the crafting table will not be put back into the player's inventory.
-		emptyCraftingTable(false);
-		
 		//If the player just crafted an axe
 		if(craftedItem.getItem() == Axe.class)
 			//Make the player equip an axe
@@ -271,7 +262,17 @@ public class CraftingHud extends Hud
 			world.getPlayer().getLoadout().setRangedWeapon(new Rifle());
 		//Else, if a Teleporter was just created 
 		else if(craftedItem.getItem() == Teleporter.class)
+			//Tell the GameScreen to make the player play his TELEPORT animation.
 			hudListener.activateTeleporter();
+		
+		//Adds the craftedItem into the inventoryList. If a button corresponding to that item already exists, the number next to the item will simply be updated.
+		inventoryList.addItem(craftedItem.getItem(), craftedItem.getQuantity());
+
+		//Add the given quantity of the crafted item into the inventory. Note: must be called after 'inventoryList.addItem()'
+		inventory.addItem(craftedItem.getItem(), craftedItem.getQuantity());
+		
+		//Empties the crafting table of its current items. False argument specifies that the items in the crafting table will not be put back into the player's inventory.
+		emptyCraftingTable(false);
 		
 		//Empty the craftedItem instance variable, since the item was just crafted, and thus is no longer in the crafting table.
 		craftedItem = null;

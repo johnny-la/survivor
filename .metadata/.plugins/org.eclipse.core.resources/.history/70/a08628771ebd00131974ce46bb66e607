@@ -1,0 +1,151 @@
+interactable_objects_atlas.png
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+Snow0004
+  rotate: false
+  xy: 332, 106
+  size: 130, 41
+  orig: 328, 162
+  offset: 93, 61
+  index: -1
+Rifle
+  rotate: false
+  xy: 464, 80
+  size: 44, 35
+  orig: 44, 35
+  offset: 0, 0
+  index: -1
+Teleporter
+  rotate: false
+  xy: 308, 167
+  size: 41, 45
+  orig: 41, 44
+  offset: 0, -1
+  index: -1
+Box_Lid
+  rotate: false
+  xy: 351, 74
+  size: 73, 30
+  orig: 73, 30
+  offset: 0, 0
+  index: -1
+Snow0005
+  rotate: false
+  xy: 2, 2
+  size: 328, 163
+  orig: 328, 162
+  offset: 0, -1
+  index: -1
+Snow0001
+  rotate: false
+  xy: 318, 214
+  size: 124, 40
+  orig: 328, 162
+  offset: 79, 68
+  index: -1
+Gunpowder
+  rotate: false
+  xy: 444, 2
+  size: 47, 35
+  orig: 47, 35
+  offset: 0, 0
+  index: -1
+Saltpeter
+  rotate: false
+  xy: 444, 39
+  size: 44, 39
+  orig: 43, 39
+  offset: 0, 0
+  index: -1
+Iron
+  rotate: false
+  xy: 464, 117
+  size: 43, 30
+  orig: 43, 30
+  offset: 0, 0
+  index: -1
+Water
+  rotate: false
+  xy: 351, 149
+  size: 31, 35
+  orig: 31, 34
+  offset: 0, -1
+  index: -1
+Bottom_Layer
+  rotate: false
+  xy: 2, 167
+  size: 74, 83
+  orig: 74, 83
+  offset: 0, 0
+  index: -1
+Box_Base
+  rotate: false
+  xy: 351, 39
+  size: 73, 33
+  orig: 73, 32
+  offset: 0, -1
+  index: -1
+Snow0002
+  rotate: false
+  xy: 147, 167
+  size: 129, 64
+  orig: 328, 162
+  offset: 86, 69
+  index: -1
+Middle_Layer
+  rotate: false
+  xy: 78, 167
+  size: 67, 75
+  orig: 66, 75
+  offset: 0, 0
+  index: -1
+Top_Layer
+  rotate: false
+  xy: 444, 216
+  size: 37, 35
+  orig: 36, 35
+  offset: 0, 0
+  index: -1
+Sulfur
+  rotate: false
+  xy: 384, 149
+  size: 34, 34
+  orig: 33, 34
+  offset: 0, 0
+  index: -1
+Bullet
+  rotate: false
+  xy: 444, 181
+  size: 39, 33
+  orig: 39, 33
+  offset: 0, 0
+  index: -1
+Snow0003
+  rotate: false
+  xy: 332, 2
+  size: 104, 35
+  orig: 328, 162
+  offset: 83, 60
+  index: -1
+Charcoal
+  rotate: false
+  xy: 444, 149
+  size: 41, 30
+  orig: 40, 30
+  offset: 0, 0
+  index: -1
+Trunk
+  rotate: false
+  xy: 278, 167
+  size: 28, 51
+  orig: 28, 51
+  offset: 0, 0
+  index: -1
+Wood
+  rotate: false
+  xy: 278, 220
+  size: 38, 34
+  orig: 38, 34
+  offset: 0, 0
+  index: -1

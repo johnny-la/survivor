@@ -894,6 +894,14 @@ public class World
 		}
 	}
 	
+	/** Called when the player's TELEPORT animation is done playing. The player has thus won the game. */
+	public void winGame() 
+	{
+		//Saves the game inside GameScreen and transitions the usedr to the main menu.
+		worldListener.winGame();
+		
+	}
+	
 	/** Returns true if the GameObject is close to the left or right edges of his TerrainLayer. */
 	public boolean closeToLayerEdge(GameObject gameObject) 
 	{

@@ -9,8 +9,11 @@ import com.esotericsoftware.spine.AnimationStateData;
 import com.esotericsoftware.spine.Bone;
 import com.esotericsoftware.spine.Event;
 import com.esotericsoftware.spine.Skeleton;
+import com.esotericsoftware.spine.Slot;
+import com.esotericsoftware.spine.attachments.Attachment;
 import com.esotericsoftware.spine.attachments.RegionAttachment;
 import com.jonathan.survivor.Assets;
+import com.jonathan.survivor.World;
 import com.jonathan.survivor.entity.Human.Direction;
 import com.jonathan.survivor.entity.Human.Mode;
 import com.jonathan.survivor.entity.Human.State;
@@ -23,6 +26,9 @@ import com.jonathan.survivor.math.Rectangle;
 
 public class PlayerRenderer 
 {	
+	/** Stores the world whose methods are called, for instance, when the player wins the game and the world needs to be informed about it. */
+	private World world;
+	
 	/** Stores the SpriteBatcher used to draw the player's sprites. */
 	private SpriteBatch batcher;	
 	
@@ -42,9 +48,15 @@ public class PlayerRenderer
 	private Bone leftHandBone;
 	private Bone gunTipBone;
 	
-	/** Stores the RegionAttachment storing the images of the weapons on the player. */
+	/** Stores the slots which display attachments on the player's skeleton. Typically holds images to be displayed on the player, such as a weapon. */
+	private Slot meleeWeaponSlot;
+	private Slot rangedWeaponSlot;
+	private Slot teleporterSlot;	//Stores the teleporter image
+	
+	/** Stores the RegionAttachment which store and display the images of the weapons and equipment on the player. */
 	private RegionAttachment axeAttachment;
 	private RegionAttachment rifleAttachment;
+	private RegionAttachment teleporterAttachment;
 	
 	/** Defines the crossfading times between animations. */
 	private AnimationStateData animStateData;
@@ -58,10 +70,12 @@ public class PlayerRenderer
 	private static final int HIT_TREE = 0;
 	private static final int HIT_ZOMBIE = 1;
 	
-	/** Accepts the player GameObject to render, the Spine skeleton used to to play his animations, the SpriteBatch used to draw the player, and the world 
+	/** Accepts the player GameObject to render, the world whose methods are called on animation events, the SpriteBatch used to draw the player, and the world 
 	 * camera where the player is drawn. */
-	public PlayerRenderer(Player player, SpriteBatch batcher, OrthographicCamera worldCamera)
+	public PlayerRenderer(Player player, World world, SpriteBatch batcher, OrthographicCamera worldCamera)
 	{
+		//Holds the world whose methods are called according to the player's animations.
+		this.world = world;
 		//Stores the SpriteBatch used to draw the player.
 		this.batcher = batcher;
 		//Stores the world camera where the player's sprites are drawn.
@@ -77,9 +91,15 @@ public class PlayerRenderer
 		leftHandBone = playerSkeleton.findBone("L_Hand");
 		gunTipBone = playerSkeleton.findBone("Gun_Tip");
 		
-		//Retrieves the attachments which display the images on the player.
+		//Stores the slots which hold interchangeable attachments on the player. Each of them holds specific types of images, such as weapons or the teleporter.
+		meleeWeaponSlot = playerSkeleton.findSlot(MeleeWeapon.WEAPON_SLOT_NAME);
+		rangedWeaponSlot = playerSkeleton.findSlot(RangedWeapon.WEAPON_SLOT_NAME);
+		teleporterSlot = playerSkeleton.findSlot("Teleporter");
+		
+		//Retrieves the attachments which display the images on the player. Each attachment is mapped to something called a slot.
 		axeAttachment = (RegionAttachment) playerSkeleton.getAttachment(MeleeWeapon.WEAPON_SLOT_NAME, Axe.WEAPON_ATTACHMENT_NAME);
 		rifleAttachment = (RegionAttachment) playerSkeleton.getAttachment(RangedWeapon.WEAPON_SLOT_NAME, Rifle.WEAPON_ATTACHMENT_NAME);
+		teleporterAttachment = (RegionAttachment) playerSkeleton.getAttachment("Teleporter", "Teleporter");
 		
 		//Sets up the animation states of the player, along with the crossfading times between animations/
 		setupAnimationStates();
@@ -177,8 +197,8 @@ public class PlayerRenderer
 				//Else, if the player has just finished teleporting, he has won the game
 				else if(player.getState() == State.TELEPORT)
 				{
-					//Inform the GameScreen that the player has won the game.
-					//hudListener.winGame();
+					//Inform the World that the player has won the game.
+					world.winGame();
 				}
 				
 			}
@@ -397,28 +417,26 @@ public class PlayerRenderer
 		//If the player has a weapon
 		if(meleeWeapon != null)
 		{
-			//Set the melee weapon slot on the player's skeleton to display the image of the correct melee weapon. The slot is
-			//where the weapon's image is stored, and the attachment is the name of the image for each weapon.
-			playerSkeleton.setAttachment(meleeWeapon.getSlotName(), meleeWeapon.getWeaponAttachment());
+			//Set the melee weapon slot on the player's skeleton to display the image of the correct melee weapon. 
+			meleeWeaponSlot.setAttachment(axeAttachment);
 		}
 		//Else, if the player doesn't have a weapon
 		else
 		{
 			//Remove the melee weapon attachment from the player since he has no equipped melee weapon.
-			playerSkeleton.setAttachment(MeleeWeapon.WEAPON_SLOT_NAME, null);
+			meleeWeaponSlot.setAttachment(null);
 		}
 		
 		//If the player has a ranged weapon and the player is playing an animation which requires his gun to be shown, make his weapon visible.
 		if(rangedWeapon != null && (player.getState() == State.CHARGE_START || player.getState() == State.CHARGE || player.getState() == State.FIRE))
 		{
-			//Tell the player to display the image of his equipped ranged weapon. An attachment is an image on the player's skeleton. It 
-			//is mapped to a specific slot where the images of all ranged weapons are placed.
-			playerSkeleton.setAttachment(rangedWeapon.getSlotName(), rangedWeapon.getWeaponAttachment());
+			//Tell the player to display the image of his equipped ranged weapon. An attachment is an image on the player's skeleton. It is mapped to the ranged weapon slot.
+			rangedWeaponSlot.setAttachment(rifleAttachment);
 		}
 		else
 		{
-			//Remove the ranged weapon attachment from the player since he has no equipped ranged weapon.
-			playerSkeleton.setAttachment(RangedWeapon.WEAPON_SLOT_NAME, null);
+			//Removes the attachment from the rangedWeaponSlot. This essentially removes the image from the slot which holds the ranged weapons.
+			rangedWeaponSlot.setAttachment(null);
 		}
 	}
 	
@@ -428,16 +446,15 @@ public class PlayerRenderer
 		//Remove the Teleporter image from the player unless he is playing his Teleporter animation.
 		if(player.getState() == State.TELEPORT)
 		{
-			//Display the image of the teleporter on the player.
-			playerSkeleton.setAttachment("Teleporter", "Teleporter");
+			//Display the image of the teleporter on the player by assigning the teleporter attachment to its appropriate slot.
+			teleporterSlot.setAttachment(teleporterAttachment);
 		}
 		//Else, if the player is not playing his TELEPORT animation
 		else
 		{
-			//Remove the image of the teleporter from the player since he is not playing his TELEPORT animation and thus doesn't need it.
-			playerSkeleton.setAttachment("Teleporter", null);
+			//Remove the image of the teleporter from the player since he is not playing his TELEPORT animation. Achieved by setting a null attachment to the teleporter slot.
+			teleporterSlot.setAttachment(null);
 		}
-		
 	}
 
 	/** Updates the registered position of the tip of the player's ranged weapon. Allows the crosshair to be drawn at the correct position. */
