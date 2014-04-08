@@ -11,10 +11,15 @@ public class CompanySplashScreen extends Screen
 	
 	private int frameCount = 0;	//Holds the number of frames the game has been in this screen. Used to determine when the splash screen should start loading assets.
 	
-	private static final float TIME_SHOWN = 1.5f;	//Stores the amount of time the splash screen is shown before moving to the loading screen.
-	private float timeElapsed;	//Stores the time elapsed since the splash screen started showing.
+	/** Stores the amount of time the splash screen is shown before moving to the loading screen. */
+	private static final float TIME_SHOWN = 1.5f;
+	/** The amount of time it takes for the splash screen to fade out. */
+	private static final float FADE_TIME = 0.5f;
+	/** Stores the time elapsed since the splash screen started showing. */
+	private float timeElapsed;
 	
-	
+	/** Creates a new splash screen which displays the name of the application's creators. Accepts the Survivor instance which controls
+	 *  this screen and calls its render() method. */
 	public CompanySplashScreen(Survivor game)
 	{
 		super(game);
@@ -56,9 +61,16 @@ public class CompanySplashScreen extends Screen
 		//If the splash screen has been shown for a time greater than the maximum time it should be shown, switch to the loading screen.
 		if(timeElapsed > TIME_SHOWN || game.DEBUG_MODE)
 		{
-			//Switch to the loading screen.
-			game.setScreen(new LoadingScreen(game));
-			return;
+			//Fade the splash screen widgets.
+			fadeWidgets();
+			
+			//If the splash screen has finished fading 
+			if(timeElapsed > TIME_SHOWN + FADE_TIME)
+			{
+				//Switch to the loading screen.
+				game.setScreen(new LoadingScreen(game));
+				return;
+			}
 		}
 		
 		//Increments the amount of frames the user has passed in the splash screen.
@@ -71,6 +83,17 @@ public class CompanySplashScreen extends Screen
 			//Loads the assets that will be needed when the user switches to the loading screen. Certain elements, such as fonts and the player, need to be loaded.
 			assets.loadSplashScreenAssets();
 		}
+	}
+
+	/** Fades the widgets displayed in the splash screen for FADE_TIME seconds. */
+	private void fadeWidgets() 
+	{
+		//Stores a normalized value between 0 and 1 determining the alpha of the widgets. If alpha=0, FADE_TIME seconds have passed since starting to fade the widgets.
+		float alpha = 1 - (timeElapsed - TIME_SHOWN)/FADE_TIME;
+		//Applies the transparency to each of the widgets in the splash screen.
+		assets.companyLogo.setColor(1,1,1,alpha);
+		assets.mugishaLogo.setColor(1,1,1,alpha);
+		
 	}
 
 	/** Draws the splash screen and all of its widgets. */

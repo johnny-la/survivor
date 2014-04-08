@@ -53,9 +53,12 @@ import com.jonathan.survivor.inventory.Rifle;
 
 public class Assets 
 {
-	public static Assets instance;	//Stores a singleton instance of the Assets class. All assets are loaded and stored in one instance for easy access.
-	private AssetManager manager = new AssetManager();	//Stores an AssetManager instance. This allows for loading on a separate thread from the render thread. All assets are loaded through
-														//object.
+	/** Stores a singleton instance of the Assets class. All assets are loaded and stored in one instance for easy access. */
+	public static Assets instance;	
+	/** Stores an AssetManager instance. This allows for loading on a separate thread from the render thread. All assets are loaded through object.*/
+	private AssetManager manager = new AssetManager();	
+	
+	public Thread loadingThread;
 	
 	/** Stores a file extension (i.e., "@4x", "@2x", "")  telling us which atlases to load depending on screen size. */
 	public final String scaleExtension;	
@@ -271,6 +274,8 @@ public class Assets
 			scaleFactor = 1;
 		}
 		
+		loadingThread = new Thread();
+		
 		//Queue all of the assets for loading. We have to queue assets inside the AssetManager instance before actually loading them.
 		queueAssetsForLoading();
 	}
@@ -392,6 +397,19 @@ public class Assets
 		return loadingComplete;
 	}
 	
+	private class LoadingRunnable implements Runnable
+	{
+		boolean complete = false;
+		
+		@Override
+		public void run() 
+		{
+			loadExtraAssets();
+			complete = true;
+		}
+		
+	}
+	
 	/** Stores the assets loaded from the AssetManager into their respective member variables. Like this, any class with access to the singleton can easily access the assets
 	 *  loaded from this class. */
 	private void storeLoadedAssets()
@@ -418,7 +436,8 @@ public class Assets
 		swoosh = manager.get("sound/sfx/ui/Swoosh.ogg", Sound.class);
 		
 		/* Loads any assets that couldn't be loaded using the AssetManager. */
-		loadExtraAssets();	
+		//loadExtraAssets();	
+		loadingThread.run();
 	}
 	
 	/** Loads any extra assets that couldn't be loaded using the AssetManager. */
