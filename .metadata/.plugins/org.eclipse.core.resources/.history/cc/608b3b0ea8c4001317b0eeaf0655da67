@@ -1,0 +1,5 @@
+package com.jonathan.survivor.managers;
+
+public class PreferencesManager {
+
+}

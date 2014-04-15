@@ -19,8 +19,9 @@ public class BackpackHud extends Hud
 	/** Stores the offset between the bottom of the "Backpack" header and the top of the buttons. Adds spacing between the header and the buttons. */
 	public static final float HEADER_Y_OFFSET = 15;
 	
-	/** Stores the offset used to anchor the back button to the bottom-right of the screen with a certain padding. */
+	/** Stores the x-offset used to anchor the back button to the bottom-right of the screen with a certain padding. */
 	public static final float BACK_BUTTON_X_OFFSET = 10;
+	/** Stores the y-offset used to anchor the back button to the bottom-right of the screen with a certain padding. */
 	public static final float BACK_BUTTON_Y_OFFSET = 5;
 	
 	

@@ -7,6 +7,7 @@ import com.jonathan.survivor.Assets;
 import com.jonathan.survivor.Settings;
 import com.jonathan.survivor.Survivor;
 import com.jonathan.survivor.managers.MusicManager;
+import com.jonathan.survivor.managers.PreferencesManager;
 import com.jonathan.survivor.managers.ProfileManager;
 import com.jonathan.survivor.managers.SoundManager;
 
@@ -39,6 +40,8 @@ public abstract class Screen implements com.badlogic.gdx.Screen
 	protected SoundManager soundManager;
 	/** Stores the universal Profile Manager used by the game controlling this screen. Used to access profiles and their data. */
 	protected ProfileManager profileManager;
+	/** Holds the PreferencesManager instance used to access and modify the user's preferences. */
+	protected PreferencesManager prefsManager;
 	
 	/** Stores the Settings instance used to save player information to the hard drive. */
 	protected Settings settings;
@@ -56,6 +59,8 @@ public abstract class Screen implements com.badlogic.gdx.Screen
 		soundManager = game.getSoundManager();
 		//Retrieves the profile manager to allow every screen subclass to access the profiles used by the user.
 		profileManager = game.getProfileManager();
+		//Stores the PreferencesManager instance used by the game to access and modify the player's preferences (i.e., music/sound volume, etc.)
+		prefsManager = game.getPrefsManager();
 		
 		//Retrieves the Settings instance to allow every screen subclass to save player information to the hard drive.
 		settings = game.getSettings();

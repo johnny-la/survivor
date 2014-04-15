@@ -2,6 +2,7 @@ package com.jonathan.survivor.managers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.jonathan.survivor.Profile;
 
@@ -15,34 +16,33 @@ public class ProfileManager
 	/** Stores the local file path for the profiles. Note that it ends with an underscore as it will be proceeded by "[id].json" */
 	private static final String FILE_PATH = "data/profile_";
 	
-	/** Stores the maximum amount of profiles the user can have. */
-	private final int maxProfiles;
+	/** Stores the amount of profiles created by the player in order to determine how many should be loaded from the hard drive. */
+	private int numProfiles;
 	/** Stores an array of every profile that has been read by the ProfileManager to avoid re-reading JSON files. Note that the index into the profiles array for a
 	 * given profile is the same as to the profile's id.*/
-	private Profile[] profiles;
+	private Array<Profile> profiles;
 	/** Stores the current profile being used by the user. */
 	private Profile currentProfile;
 	
-	/** Creates a profile manager, specifying the maximum amount of profiles the user can hold. */
-	public ProfileManager(int maxProfiles)
+	/** Creates a profile manager, specifying the maximum amount of profiles the user can hold. 
+	 * @param amountProfiles Specifies how many profiles the manager will retrieve from the hard drive. Should correspond to amount of profiles the user has saved. */
+	public ProfileManager(int numProfiles)
 	{
-		//Stores the max amount of profiles the user can have.
-		this.maxProfiles = maxProfiles;
-		
-		//Creates a new container for the profiles, with a length equal to the max amount of profiles the user can have.
-		profiles = new Profile[maxProfiles];
+		//Stores the amount of profiles the manager has to load from the hard drive.
+		this.numProfiles = numProfiles;
+		//Creates a new container for the player's profiles, where each index corresponds to the ID of the profile.
+		profiles = new Array<Profile>();
 	}
 	
 	/** Loads the profiles existing in the hard drive and populates the profiles:Profile[] array. */
 	public void loadProfiles()
 	{
-		//deleteAllProfiles();
-		//Cycles through the profiles:Profile[] array and populates it with any profiles which have already been created on the hard drive.
-		for(int i = 0; i < maxProfiles; i++)
+		//Cycles through the profiles array and populates it with any profiles which have already been created on the hard drive.
+		for(int i = 0; i < numProfiles; i++)
 		{
 			//Retrieves the profile for the current index. Second argument specifies that we don't want to create a new profile if it doesn't
 			//already exist on the hard drive. We only want to retrieve an already created profile. 
-			profiles[i] = getProfile(i, false);
+			profiles.set(i, getProfile(i, false));
 		}
 	}
 
@@ -74,15 +74,15 @@ public class ProfileManager
 	 */
 	public Profile getProfile(int profileId, boolean createNew)
 	{
-		//If the profile id is out of range of the profiles:Profile[] array, throw an exception.
-		if(profileId < 0 || profileId >= maxProfiles)
+		//If the profile id is out of range of the profiles array, throw an exception.
+		if(profileId < 0 || profileId >= numProfiles)
 			throw new IllegalArgumentException("Invalid profileId: " + profileId);
 		
 		//If the profile has already been saved inside the profiles:Profile[] array
-		if(profiles[profileId] != null)
+		if(profiles.get(profileId) != null)
 		{
 			//Get the profile from the profile array, and set it as the current profile being used by the user, since it was the last one read.
-			currentProfile = profiles[profileId];
+			currentProfile = profiles.get(profileId);
 			//Return the profile with the given id passed as an argument.
 			return currentProfile;
 		}
@@ -104,7 +104,7 @@ public class ProfileManager
 				//Converts the text into a Profile object using Json.fromJson(class, fileText):Profile. Stores the new profile as the current profile.
 				currentProfile = json.fromJson(Profile.class, text);
 				//Stores the profile just created into the correct index (profileId) of the profiles array.
-				profiles[profileId] = currentProfile;
+				profiles.set(profileId, currentProfile);
 			}
 			catch(Exception ex)
 			{
@@ -122,7 +122,7 @@ public class ProfileManager
 		}
 		
 		//Returns the profile we either retrieved from the hard drive or created from scratch.
-		return profiles[profileId];
+		return profiles.get(profileId);
 	}
 	
 	/** Creates a profile with the given profile ID, and saves it to the hard drive. Also sets the created profile to be the current user profile. */
@@ -131,9 +131,12 @@ public class ProfileManager
 		//Create a new profile with the given id passed as a parameter. Sets it as the current profile being used by the user.
 		currentProfile = new Profile(profileId);
 		//Stores the profile we just created in the correct index of the profiles:Profile[] array.
-		profiles[profileId] = currentProfile;
+		profiles.set(profileId, currentProfile);
 		//Saves the profile we just created to the hard drive as a JSON file.
-		saveProfile(profiles[profileId]);
+		saveProfile(profiles.get(profileId));
+		
+		//Increments the amount of profiles the user has created. Note that this must be done since the user has created a new profile on the hard drive.
+		numProfiles++;
 	}
 	
 	/** Saves the profile to the hard drive. The file name depends on the ID of the profile passed as a parameter. */
@@ -172,24 +175,57 @@ public class ProfileManager
 		//Delete the profile from the hard drive.
 		profileFile.delete();
 		
-		//Empties the reference to profile from the array. Like this, the profile is lost from memory.
-		profiles[profileId] = null;
+		//Shifts the profiles from [profileId+1,numProfiles] to [profileId,numProfiles-1] to ensure that the empty spot from the deleted profile is filled. 
+		shiftProfiles(profileId);
+		
+		//Decrements the number of profiles stored in the ProfileManager.
+		numProfiles--;
 	}
 	
+	/** Shifts all the saved profiles from indices [profileId+1,numProfiles] to indices [profileId,numProfiles-1]. Called when the profile with the given
+	 * id is deleted to ensure that the empty spot from the deleted profile is filled. 
+	 */
+	private void shiftProfiles(int profileId) 
+	{
+		//Cycles from profileId+1 to numProfiles and rotates them to indices [profileId, numProfiles-1].
+		for(int i = profileId+1; i < numProfiles; i++)
+		{
+			//Get a file handle to the JSON file of profile with index i. We want to move it to the index i-1 to shift it to the left
+			FileHandle oldProfileFile = Gdx.files.local(FILE_PATH + i + ".json");
+			//Stores the file path where profile i-1 should be saved. We want to move the profile with index i to this target file.
+			FileHandle targetProfileFile = Gdx.files.local(FILE_PATH + (i-1) + ".json");
+			
+			//Move the profile to its new target file, effectively shifting the profiles to the left on the hard drive.
+			oldProfileFile.copyTo(targetProfileFile);
+			
+			//Shift the profile one index to the left in order to fill up the spot of the deleted profile.
+			profiles.set(i-1, profiles.get(i));
+		}
+		
+	}
+
 	/** Deletes all profiles from the hard drive, if they exist. */
 	public void deleteAllProfiles()
 	{
-		//Cycles through the profiles
-		for(int id = 0; id < maxProfiles; id++)
+		//Cycles through the profiles saved in the ProfileManager
+		for(int id = 0; id < numProfiles; id++)
 		{
 			//Deletes the profiles
 			deleteProfile(id);
 		}
 	}
 	
-	/** Gets the maximum amount of profiles the user can have. */
-	public int getMaxProfiles()
+	/** Returns true if the ProfileManager does not have any loaded profiles. */
+	public boolean isEmpty()
 	{
-		return maxProfiles;
+		//Returns true if there are no profiles saved in the ProfileManager.
+		return numProfiles == 0;
+	}
+	
+	
+	/** Gets the number of profiles the user has saved on the hard drive. */
+	public int getNumProfiles()
+	{
+		return numProfiles;
 	}
 }

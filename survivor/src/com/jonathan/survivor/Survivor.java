@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.esotericsoftware.spine.Slot;
 import com.jonathan.survivor.managers.MusicManager;
+import com.jonathan.survivor.managers.PreferencesManager;
 import com.jonathan.survivor.managers.ProfileManager;
 import com.jonathan.survivor.managers.SoundManager;
 import com.jonathan.survivor.screens.CompanySplashScreen;
@@ -38,6 +39,8 @@ public class Survivor extends Game
 	private MusicManager musicManager;
 	/** Stores the universal Sound Manager used by the game which plays sounds and controls the volume of sound effects. */
 	private SoundManager soundManager;
+	/** Holds the PreferencesManager, used to modify and access the player's preferences, such as music/sound volume. */
+	private PreferencesManager prefsManager;
 	/** Stores the universal Profile Manager used by the game which retrieves/saves profiles from/to the hard drive. */
 	private ProfileManager profileManager;
 	
@@ -59,8 +62,10 @@ public class Survivor extends Game
 		//Creates a new MusicManager and SoundManager to play and manage music and sound effects.
 		musicManager = new MusicManager();
 		soundManager = new SoundManager();
-		//Creates the profile manager instance, used to manage the profiles used by the user. Parameter specifies how many profiles the manager can hold.
-		profileManager = new ProfileManager(MAX_PROFILES);
+		//Instantiates the PreferencesManager used to access and modify the player's preferences, such as music and sound volume.
+		prefsManager = new PreferencesManager();
+		//Creates the profile manager instance, used to manage the profiles used by the user. Parameter specifies how many profiles the manager has to load.
+		profileManager = new ProfileManager(prefsManager.getAmountProfiles());
 		
 		//Creates a settings instance that will be used to save the player's profile. The passed ProfileManager will be used to save the profile to the hard drive.
 		settings = new Settings(profileManager);
@@ -120,6 +125,12 @@ public class Survivor extends Game
 	public ProfileManager getProfileManager()
 	{
 		return profileManager;
+	}
+	
+	/** Returns the universal PreferencesManager used by the game to store and retrieve the player's preferences. */
+	public PreferencesManager getPrefsManager()
+	{
+		return prefsManager;
 	}
 	
 	/** Returns the universal Settings instance used by the game to save player information to the hard drive. */

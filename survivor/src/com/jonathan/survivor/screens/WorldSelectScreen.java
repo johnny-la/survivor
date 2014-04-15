@@ -121,6 +121,9 @@ public class WorldSelectScreen extends Screen
 				//corresponds to the chosen index of the list, and the second argument specfies to create a new profile if one doesn't already exist.
 				Profile profile = profileManager.getProfile(worldSelectList.getSelectedIndex(), true);
 				
+				//Tell the PreferencesManager that the given profile was loaded. Like this, the "Continue" button will load this profile the next time the game is loaded.
+				prefsManager.profileLoaded(worldSelectList.getSelectedIndex());
+				
 				//Disposes of the assets used by the loading and company splash screen to free up system resources.
 				assets.disposeInitialAssets();
 				
@@ -192,7 +195,7 @@ public class WorldSelectScreen extends Screen
 		populateWorldList();
 		
 		//Create a list to select a world using the list of items and the list style from the assets class. The style defines the look of the list.
-		worldSelectList = new List(listItems, assets.mainMenuListStyle);
+		worldSelectList = new List(listItems, assets.mainMenuListButtonStyle);
 		//Sets the color of the filled box around the selected item to blue.
 		worldSelectList.setColor(new Color(0, 0.4f, 1, 1));
 		
@@ -211,8 +214,8 @@ public class WorldSelectScreen extends Screen
 	/** Populates the 'listItems:String[]' array with every profile saved in the hard drive. Called when the world list's items must be re-initialized. */
 	private void populateWorldList()
 	{
-		//Stores the maximum amount of profiles the user can have.
-		int len = profileManager.getMaxProfiles();
+		//Stores the amount of profiles that the user has.
+		int len = profileManager.getNumProfiles();
 		//Creates a new array of strings containing each item in the list. Each item is a string. We need 'len' strings; one for every profile.
 		listItems = new String[len];
 		
@@ -261,11 +264,11 @@ public class WorldSelectScreen extends Screen
 	private void updateDeleteButton(int selectedIndex)
 	{
 		//If the selected profile doesn't already exist on the hard drive
-		if(profileManager.getProfile(selectedIndex) == null)
+		//if(profileManager.getProfile(selectedIndex) == null)
 			//Hide the deleteButton, since the selected profile is a "Create New" profile, and thus cannot be deleted
 			deleteButton.setVisible(false);
 		//Else, if the selected profile already exists
-		else
+		//else
 			//Allow the deleteButton to be shown.
 			deleteButton.setVisible(true);
 		

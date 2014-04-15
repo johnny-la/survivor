@@ -103,9 +103,11 @@ public class Assets
 	
 	public Skin mainMenuSkin;	//We register an atlas to this skin (the main menu atlas). This lets us retrieve sprites from the atlas to use with 2D widgets.
 	public TextButtonStyle mainMenuButtonStyle;	//Defines the look of main menu buttons
+	public TextButtonStyle gameSelectButtonStyle;	//Defines the look of the buttons in the GameSelectScreen.
 	public ButtonStyle deleteButtonStyle;	//Holds the ButtonStyle used to dictate the look of the delete button in the WorldSelectScreen.
 	public LabelStyle mainMenuHeaderStyle;	//Defines the look of the headers in the main menu.
-	public ListStyle mainMenuListStyle;	//Defines the look of the world selection list in the main menu.
+	public TextButtonStyle mainMenuListButtonStyle;	//Defines the look of the buttons in the world selection list in the WorldSelectScreen.
+	public ScrollPaneStyle mainMenuScrollPaneStyle;	//Defines the look of the scroll pane in the WorldSelectMenu
 	
 	public NinePatch confirmDialogNinePatch;	//Stores the 9-patch used as the background for a confirm dialog.
 	public WindowStyle confirmDialogWindowStyle;	//Needed for the constructor of the Dialog superclass. Does not define the look of the confirmDialog, but is nevertheless required.
@@ -457,6 +459,12 @@ public class Assets
 		mainMenuButtonStyle.down = mainMenuSkin.getDrawable("ClickButton_Down");	//Sets the sprite for the 'down' state of the main menu buttons
 		mainMenuButtonStyle.font = moonFlowerBold_54;
 
+		//Creates the TextButtonStyle which dictates the look of the "New Game", "Continue", and "Load" buttons in the GameSelectScreen.
+		gameSelectButtonStyle = new TextButtonStyle();
+		gameSelectButtonStyle.up = mainMenuSkin.getDrawable("ClickButton_Up");	//Sets the sprite for the 'up' state of the main menu buttons
+		gameSelectButtonStyle.down = mainMenuSkin.getDrawable("ClickButton_Down");	//Sets the sprite for the 'down' state of the main menu buttons
+		gameSelectButtonStyle.font = moonFlowerBold_54;
+		gameSelectButtonStyle.fontColor = Color.WHITE;
 		
 		//Instantiates the ButtonStyle instance used to display the delete button in the WorldSelectMenu.
 		deleteButtonStyle = new ButtonStyle();
@@ -466,12 +474,19 @@ public class Assets
 		//Creates the LabelStyle used to determine the appearance of headers in the main menu. A gray color is chosen as a second argument.
 		mainMenuHeaderStyle = new LabelStyle(moonFlowerBold_54, new Color(0.2941f, 0.3216f, 0.2316f, 1f));
 		
-		//Creates the list style used by the main menu's world selection list.
-		mainMenuListStyle = new ListStyle();
-		mainMenuListStyle.font = moonFlowerBold_38;
-		mainMenuListStyle.selection = mainMenuSkin.getDrawable("ListSelection");//new NinePatchDrawable(ninePatch);
-		mainMenuListStyle.fontColorUnselected = new Color(0.5f, 0.5f, 0.5f, 1);	//If unselected, the text for the item in the world selection list will be light gray.
-		mainMenuListStyle.fontColorSelected = Color.WHITE;
+		//Creates the button style used by the profile buttons in the WorldSelectScreen's list.
+		mainMenuListButtonStyle = new TextButtonStyle();
+		mainMenuListButtonStyle.font = moonFlowerBold_38;
+		mainMenuListButtonStyle.fontColor = new Color(0.5f, 0.5f, 0.5f, 1);	//If unselected, the text for the item in the world selection list will be light gray.
+		mainMenuListButtonStyle.checkedFontColor = Color.WHITE;	//If selected, the button text will be white.
+		mainMenuListButtonStyle.checked = mainMenuSkin.getDrawable("ListSelection"); //The background of the button when it is selected
+		mainMenuListButtonStyle.pressedOffsetX = 1.5f;
+		mainMenuListButtonStyle.pressedOffsetX = -2;
+		
+		//Instantiates the ScrollPaneStyle which dictates the background and scrolling knob images used by the world list in the WorldSelectMenu.
+		mainMenuScrollPaneStyle = new ScrollPaneStyle();
+		mainMenuScrollPaneStyle.background = hudSkin.getDrawable("List_Background");
+		mainMenuScrollPaneStyle.vScrollKnob = hudSkin.getDrawable("ScrollKnob");
 		
 		//Retrieves the 9-patch from the main menu atlas used to display the confirm dialog's background
 		confirmDialogNinePatch = mainMenuSkin.getPatch("ConfirmDialog");
