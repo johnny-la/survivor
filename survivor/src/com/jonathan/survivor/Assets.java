@@ -485,8 +485,8 @@ public class Assets
 		
 		//Instantiates the ScrollPaneStyle which dictates the background and scrolling knob images used by the world list in the WorldSelectMenu.
 		mainMenuScrollPaneStyle = new ScrollPaneStyle();
-		mainMenuScrollPaneStyle.background = hudSkin.getDrawable("List_Background");
-		mainMenuScrollPaneStyle.vScrollKnob = hudSkin.getDrawable("ScrollKnob");
+		//mainMenuScrollPaneStyle.background = hudSkin.getDrawable("List_Background");
+		//mainMenuScrollPaneStyle.vScrollKnob = hudSkin.getDrawable("ScrollKnob");
 		
 		//Retrieves the 9-patch from the main menu atlas used to display the confirm dialog's background
 		confirmDialogNinePatch = mainMenuSkin.getPatch("ConfirmDialog");

@@ -11,10 +11,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.jonathan.survivor.Profile;
 import com.jonathan.survivor.Survivor;
 import com.jonathan.survivor.hud.ConfirmDialog;
@@ -53,11 +55,6 @@ public class GameSelectScreen extends Screen
 	
 	/** Holds the "Back" button */
 	private TextButton backButton;
-	
-	/** Stores the items shown by the world selection list. */
-	private String[] listItems;	
-	/** Stores the list which allows the user to choose a world. */
-	private List worldSelectList;	
 	
 	/** Holds the width of the world selection list. That is, the width of the blue bar in pixels for the target resolution (480x320). */
 	private final static float WORLD_LIST_WIDTH = 280f;	
@@ -193,9 +190,8 @@ public class GameSelectScreen extends Screen
 		//Stores the profileId for the profile we want to create. We want the profile to be placed after the last created profile, which has id=getNumProfiles()-1,
 		//since profileIds are zero-based.
 		int newProfileId = profileManager.getNumProfiles();
-		//Creates a new profile in the profileManager with the given index. The 'true' argument specifies that the profile will be created if it doesn't 
-		//already exist in the manager. It doesn't already exist, since we chose a profileId that doesn't already exist.
-		Profile profile = profileManager.getProfile(newProfileId, true);
+		//Creates a new profile in the profileManager and saves it to the hard drive.
+		Profile profile = profileManager.createProfile(newProfileId);
 		
 		//Tell the PreferencesManager that a new profile was created with the given Id. Makes it so that this profile will be loaded when "Continue" is pressed.
 		prefsManager.newProfileCreated(newProfileId);
@@ -274,6 +270,7 @@ public class GameSelectScreen extends Screen
 	public void resume() 
 	{
 	}
+
 	
 	/** Receives input-related events, such as the user pressing the BACK button on his Android device. */
 	private class InputListener extends InputAdapter

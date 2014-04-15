@@ -11,10 +11,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.jonathan.survivor.Profile;
 import com.jonathan.survivor.Survivor;
 import com.jonathan.survivor.hud.ConfirmDialog;
@@ -49,13 +51,26 @@ public class WorldSelectScreen extends Screen
 	/** Holds the confirm dialog shown when the user presses the 'delete' button. */
 	private ConfirmDialog confirmDialog;	
 	
-	/** Stores the items shown by the world selection list. */
-	private String[] listItems;	
-	/** Stores the list which allows the user to choose a world. */
-	private List worldSelectList;	
+	/** Stores the list of buttons which the user can press to load a saved profile. */
+	private Array<TextButton> profileButtons;
+	/** Stores a table containing all of the profile buttons, arranged in a vertical list. The user can scroll through it in a scroll pane and select an profile. */
+	private Table profileButtonTable;
+	
+	/** Holds the Listener which registers the profile button clicks. The selectedProfileId:int integer is updated when a profile button is pressed. */
+	private ButtonListener buttonListener;
+	
+	/** Stores the ScrollPane which allows the items in the survival guide to be scollable. */
+	private ScrollPane scrollPane;
+	/** Holds the table where the scroll pane is contained. This is the high-level container for the list. */
+	private Table scrollPaneTable;	
+	
+	/** Stores the id of the selected profile in the profile list. */
+	private int selectedProfileId;
 	
 	/** Holds the width of the world selection list. That is, the width of the blue bar in pixels for the target resolution (480x320). */
 	private final static float WORLD_LIST_WIDTH = 280f;	
+	/** Stores the height of the world selection list. This is the width in pixels at base resolution (480x320). */
+	private final static float WORLD_LIST_HEIGHT = 150f;
 
 	public WorldSelectScreen(Survivor game)
 	{
@@ -118,11 +133,11 @@ public class WorldSelectScreen extends Screen
 			public void clicked(InputEvent event, float x, float y)
 			{
 				//Retrieves the profile corresponding to the chosen item in the world list using profileManager.getProfile(id, createNew), where the id of the profile
-				//corresponds to the chosen index of the list, and the second argument specfies to create a new profile if one doesn't already exist.
-				Profile profile = profileManager.getProfile(worldSelectList.getSelectedIndex(), true);
+				//corresponds to the chosen button in the list.
+				Profile profile = profileManager.getProfile(selectedProfileId);
 				
-				//Tell the PreferencesManager that the given profile was loaded. Like this, the "Continue" button will load this profile the next time the game is loaded.
-				prefsManager.profileLoaded(worldSelectList.getSelectedIndex());
+				//Tell the PreferencesManager that the selected profile was loaded. This profile will be registered as the player's last used profile.
+				prefsManager.profileLoaded(selectedProfileId);
 				
 				//Disposes of the assets used by the loading and company splash screen to free up system resources.
 				assets.disposeInitialAssets();
@@ -161,8 +176,8 @@ public class WorldSelectScreen extends Screen
 			@Override
 			public void clicked(InputEvent event, float x, float y)
 			{
-				//Deletes the profile from the selected item in the list. Removes the profile from the hard drive.
-				deleteProfile(worldSelectList.getSelectedIndex());
+				//Deletes the profile that is selected in the list. The Id of the selected profile is stored in 'selectedProfileId'.
+				deleteProfile(selectedProfileId);
 			}
 		});
 		
@@ -173,7 +188,7 @@ public class WorldSelectScreen extends Screen
 		table.add(header).colspan(2).row().pad(10);
 		//Add the world selection list to the table, and make it span two columns. The width of the list is resized so that the blue box is the same size no matter how
 		//big the largest label on the list is. Then, skip a row. Note that List.getWidth() actually returns the width of the largest string in the list.
-		table.add(worldSelectList).colspan(2).width(WORLD_LIST_WIDTH).row();
+		table.add(scrollPane).colspan(2).width(WORLD_LIST_WIDTH).height(WORLD_LIST_HEIGHT).row();
 		//Add the play button to the table, and give it a 10 pixel blank space around its edges. We set the width and height of the table's cell to the button's width
 		//and height to ensure that the button is not scaled when added to the table.
 		table.add(startButton).pad(10).width(startButton.getWidth()).height(startButton.getHeight());
@@ -194,30 +209,35 @@ public class WorldSelectScreen extends Screen
 		//Populates the 'listItems:String[]' array with the data of every profile saved on the hard drive to be displayed in the list.
 		populateWorldList();
 		
-		//Create a list to select a world using the list of items and the list style from the assets class. The style defines the look of the list.
-		worldSelectList = new List(listItems, assets.mainMenuListButtonStyle);
-		//Sets the color of the filled box around the selected item to blue.
-		worldSelectList.setColor(new Color(0, 0.4f, 1, 1));
+		//Creates the table which will hold the list of all buttons which serve to access an entry in the survival guide.
+		profileButtonTable = new Table();
 		
-		//Adds a ChangeListener on the list to detect when the selected profile is changed.
-		worldSelectList.addListener(new ChangeListener() {
-			//Delegates when the selected item for the world list changed.
-			public void changed(ChangeEvent event, Actor actor)
-			{
-				//Updates the position of the delete button to be next to the currently-selected item in the world select list.
-				updateDeleteButton(worldSelectList.getSelectedIndex());
-			}
-		});
+		//Places the table of entry buttons inside the ScrollPane to add scrolling functionality to that list.
+		scrollPane = new ScrollPane(profileButtonTable, assets.inventoryScrollPaneStyle);
+		//Modifies the overscroll of the scroll pane. Args: maxOverscrollDistance, minVelocity, maxVelocity
+		scrollPane.setupOverscroll(30, 100, 200);
+		//Disables scrolling in the x-direction.
+		scrollPane.setScrollingDisabled(true, false);
+		
+		//Enables smooth scrolling. Its effects are unknown.
+		scrollPane.setSmoothScrolling(true);
 
 	}
 	
-	/** Populates the 'listItems:String[]' array with every profile saved in the hard drive. Called when the world list's items must be re-initialized. */
+	/** Creates the profile buttons and adds them to the profileButtons array, and to the profileButtonTable. */
 	private void populateWorldList()
-	{
+	{	
+		//Instantiates the array which contains all of the entryButtons which serve to access an entry in the survival guide.
+		profileButtons = new Array<TextButton>();
+		
+		//Creates the table which contains the profile buttons to be displayed in a list.
+		profileButtonTable = new Table();
+		
+		//Creates a ButtonListener which will listen to any button clicks coming from the entry buttons.
+		buttonListener = new ButtonListener();
+		
 		//Stores the amount of profiles that the user has.
 		int len = profileManager.getNumProfiles();
-		//Creates a new array of strings containing each item in the list. Each item is a string. We need 'len' strings; one for every profile.
-		listItems = new String[len];
 		
 		//Cycles through all the profiles contained by the profile manager.
 		for(int i = 0; i < len; i++)
@@ -225,25 +245,63 @@ public class WorldSelectScreen extends Screen
 			//Stores the profile with the given index.
 			Profile profile = profileManager.getProfile(i);
 			
-			//If the profile does not exist, it means that no save file exists for the world. So, say you need to create a new world.
+			//If the profile does not exist, throw an exception
 			if(profile == null)
 			{
-				//Makes the item say you need to create a new world. This is because the profile for the given index doesn't exist.
-				listItems[i] = "Create New";
+				throw new RuntimeException("The profile with index " + i + " is null inside the profileManager. Thus, the world select list can't be created.");
 			}
 			//Else, if the profile exists, populate the list item with a string representation of the profile.
 			else
 			{
-				//Populate the item with a string containing the date last modified of the profile.
-				listItems[i] = profile.toString();
+				//Create a profile button for the profile we are cycling through so that it can be shown in the profile list.
+				TextButton profileButton = createProfileButton(i);
+				//Adds the created profileButton to the list of profile buttons.
+				profileButtons.add(profileButton);
+				
+				//Adds the button to the entry button table.
+				profileButtonTable.add(profileButton).width(WORLD_LIST_WIDTH).height(profileButton.getHeight()).row();
 			}
+		}
+	}
+	
+	/** Creates and returns a profile button which displays the information about a profile. Such a button is placed in the profile list. */
+	private TextButton createProfileButton(int profileId)
+	{
+		//Retrieves the Profile for which the button has to be created.
+		Profile profile = profileManager.getProfile(profileId);
+		
+		//Creates a button which displays information about the profile. Created with a pre-determined ButtonStyle.
+		TextButton button = new TextButton(profile.toString(), assets.mainMenuListButtonStyle);
+		
+		//Ensures that the button always spans the same width as the list which contains it.
+		button.setWidth(WORLD_LIST_WIDTH);
+		
+		//Sets the profileId of the button as its user object. Allows the button to know which profile it should load when selected.
+		button.setUserObject(new Integer(profileId));
+		
+		//Returns the created profile button.
+		return button;
+	}
+	
+	/** Registers the profile buttons which were clicked. */
+	private class ButtonListener extends ClickListener
+	{
+		/** Delegated when the user clicks a button. */
+		@Override
+		public void clicked(InputEvent event, float x, float y)
+		{
+			//Retrieves the profile button which was pressed. Since the label on the button can delegate this method call, the label's parent will be the TextButton itself.
+			TextButton entryButton = (TextButton)event.getTarget().getParent();
+			
+			//Grabs the user object of the button, which is the id of the profile which should be loaded when the button is pressed. 
+			selectedProfileId = (Integer)entryButton.getUserObject();
 		}
 	}
 	
 	/** Deletes the profile with the given index. The index corresponds to the item chosen in the world select list. */
 	private void deleteProfile(int index)
 	{
-		//Deletes the profile with the given index from the hard drive.
+		/*//Deletes the profile with the given index from the hard drive.
 		profileManager.deleteProfile(index);
 		
 		//Re-populates the 'listItems:String[]' array in order to remove the deleted profile from the world select list. 
@@ -256,14 +314,14 @@ public class WorldSelectScreen extends Screen
 		worldSelectList.setSelectedIndex(index);
 		
 		//Hide the delete button since the selected profile no longer exists, and thus cannot be deleted.
-		deleteButton.setVisible(false);
+		deleteButton.setVisible(false);*/
 	}
 	
 	/** Updates the position of the delete button to be right next to the currently-selected item of the world list. The selected
 	 * index is the index chosen in the world select list.*/
 	private void updateDeleteButton(int selectedIndex)
 	{
-		//If the selected profile doesn't already exist on the hard drive
+		/*//If the selected profile doesn't already exist on the hard drive
 		//if(profileManager.getProfile(selectedIndex) == null)
 			//Hide the deleteButton, since the selected profile is a "Create New" profile, and thus cannot be deleted
 			deleteButton.setVisible(false);
@@ -281,7 +339,7 @@ public class WorldSelectScreen extends Screen
 		deleteButton.setX(stage.getWidth()/2 + WORLD_LIST_WIDTH/2 + DELETE_BUTTON_OFFSET);
 		//Sets the y-position of the delete button to the at the center of the currently selected item in the list.
 		deleteButton.setY(topListY - deleteButton.getHeight()/2 - labelHeight/2
-							- (selectedIndex * labelHeight));
+							- (selectedIndex * labelHeight));*/
 	}
 	
 	/** Called when the world select screen is created. Called to place the delete button at the position of the first item in the list. */
@@ -366,7 +424,7 @@ public class WorldSelectScreen extends Screen
 	/** Called when either the visual BACK button is pressed, or when the Android BACK button is pressed. Move the user back to the main menu, */
 	public void backPressed()
 	{
-		//Return to the main menu once the "Back" button is pressed.
-		game.setScreen(new MainMenuScreen(game));
+		//Return to the game selection screen once the "Back" button is pressed.
+		game.setScreen(new GameSelectScreen(game));
 	}
 }

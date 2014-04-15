@@ -95,8 +95,8 @@ public class MainMenuScreen extends Screen
 			{
 				//Play a click sound effect when the "Play" button is pressed.
 				//soundManager.play(assets.buttonClick);
-				//Switch to a new world select screen once the play button is pressed.
-				game.setScreen(new WorldSelectScreen(game));
+				//Switch to a new game select screen once the play button is pressed.
+				game.setScreen(new GameSelectScreen(game));
 			}
 		});
 		

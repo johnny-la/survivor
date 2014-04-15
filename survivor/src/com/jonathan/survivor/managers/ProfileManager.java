@@ -74,9 +74,13 @@ public class ProfileManager
 	 */
 	public Profile getProfile(int profileId, boolean createNew)
 	{
-		//If the profile id is out of range of the profiles array, throw an exception.
-		if(profileId < 0 || profileId >= numProfiles)
-			throw new IllegalArgumentException("Invalid profileId: " + profileId);
+		//If the profile id is less than zero
+		if(profileId < 0)
+			throw new IllegalArgumentException("The profile with profileId: " + profileId + " cannot be retrieved because it is less than zero");
+		
+		//If the profile id is greater than the last index of the profiles:Array<Profile> array, and the user doesn't want to create a new profile, throw an exception
+		if(profileId >= numProfiles && !createNew)
+			throw new IllegalArgumentException("The profile with profileId: " + profileId + " cannot be retrieved because it is greater than " + numProfiles);
 		
 		//If the profile has already been saved inside the profiles:Profile[] array
 		if(profiles.get(profileId) != null)
@@ -126,17 +130,20 @@ public class ProfileManager
 	}
 	
 	/** Creates a profile with the given profile ID, and saves it to the hard drive. Also sets the created profile to be the current user profile. */
-	private void createProfile(int profileId)
+	public Profile createProfile(int profileId)
 	{
 		//Create a new profile with the given id passed as a parameter. Sets it as the current profile being used by the user.
 		currentProfile = new Profile(profileId);
-		//Stores the profile we just created in the correct index of the profiles:Profile[] array.
-		profiles.set(profileId, currentProfile);
+		//Adds the created profile to the list of all profiles 
+		profiles.add(currentProfile);
 		//Saves the profile we just created to the hard drive as a JSON file.
 		saveProfile(profiles.get(profileId));
 		
 		//Increments the amount of profiles the user has created. Note that this must be done since the user has created a new profile on the hard drive.
 		numProfiles++;
+		
+		//Returns the created profile.
+		return currentProfile;
 	}
 	
 	/** Saves the profile to the hard drive. The file name depends on the ID of the profile passed as a parameter. */
