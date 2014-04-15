@@ -59,7 +59,7 @@ public class ConfirmDialog extends Dialog
 		yesButton.addListener(clickListener);
 		
 		//Defines the fade duration in seconds of the dialog when it appears and disappears.
-		fadeDuration = 0.01f;
+		fadeDuration = 0.09f;
 		
 		//Adds the 'Yes' and the 'No' button to be displayed in the confirmation dialog.
 		button(yesButton);

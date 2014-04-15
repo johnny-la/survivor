@@ -241,7 +241,7 @@ public class ZombieManager
 		//Generate a random number to choose the next move.
 		float randomFloat = (float)Math.random();
 		
-		if(randomFloat < 0.3f)
+		if(randomFloat < 0.5f)
 		{
 			//Make the zombie charge towards the player.
 			charge(zombie);

@@ -36,7 +36,7 @@ public class Player extends Human
 	public static final float FALL_SPEED = -5;
 	
 	/** Holds the amount of damage delivered to a zombie when it is stomped on the head by the player. */
-	private static final float HEAD_STOMP_DAMAGE = 20;
+	private static final float HEAD_STOMP_DAMAGE = 25;
 	
 	/** Stores the speed at which the player jumps after hitting the zombie's head. */
 	private static final float HEAD_STOMP_JUMP_SPEED = 15;

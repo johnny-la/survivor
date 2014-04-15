@@ -181,6 +181,19 @@ public class CombatHud extends Hud
 				//Make the player fire his ranged weapon, if he has one equipped.
 				world.getPlayer().fire();
 			}
+			//Else, if the jump button was released
+			if(event.getTarget() == jumpButton || event.getTarget() == jumpButton.getImage())
+			{
+				//Gets the player controlled by the user in the world.
+				Player player = world.getPlayer();
+				
+				//Only let the player jump if he isn't playing his ENTER_COMBAT animation.
+				if(player.getState() != State.ENTER_COMBAT)
+				{
+					//Make the player jump.
+					world.getPlayer().jump();
+				}
+			}
 		}
 
 	}
@@ -199,6 +212,27 @@ public class CombatHud extends Hud
 		//Anchor the melee and fire buttons to the bottom right of the screen using the given offset constants.
 		meleeButton.setPosition(stage.getWidth() - meleeButton.getWidth() - MELEE_BUTTON_X_OFFSET, MELEE_BUTTON_Y_OFFSET);	
 		fireButton.setPosition(stage.getWidth() - fireButton.getWidth() - FIRE_BUTTON_X_OFFSET, FIRE_BUTTON_Y_OFFSET);	
+		
+		//If the player does not have a melee weapon equipped
+		if(!world.getPlayer().hasMeleeWeapon())
+		{
+			//Disable the melee button so that the user can't press it.
+			meleeButton.setDisabled(true);
+			
+			//Make the melee button gray to inform the player that he can't press the melee button.
+			meleeButton.setColor(Color.DARK_GRAY);
+			meleeButton.getImage().setColor(Color.GRAY);
+		}
+		//If the player has no ranged weapon equipped
+		if(!world.getPlayer().hasRangedWeapon())
+		{
+			//Disable the fire button so that the user can't press it.
+			fireButton.setDisabled(true);
+			
+			//Make the melee button gray to inform the player that he can't press the fire button.
+			fireButton.setColor(Color.DARK_GRAY);
+			fireButton.getImage().setColor(Color.GRAY);
+		}
 		
 		//Anchors the pause button to the top right of the screen, and offsets it according to the pre-defined constants.
 		pauseButton.setPosition(stage.getWidth() - pauseButton.getWidth() - PAUSE_BUTTON_X_OFFSET, stage.getHeight() - pauseButton.getHeight() - PAUSE_BUTTON_Y_OFFSET);

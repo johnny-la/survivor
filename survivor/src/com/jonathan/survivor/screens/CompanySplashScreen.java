@@ -15,6 +15,12 @@ public class CompanySplashScreen extends Screen
 	private static final float TIME_SHOWN = 1.5f;
 	/** The amount of time it takes for the splash screen to fade out. */
 	private static final float FADE_TIME = 0.5f;
+	
+	/** True if the splash screen has started fading. */
+	private boolean fading = false;
+	/** Holds the time in seconds at which the splash screen has started fading. */
+	private float fadeStartTime; 
+	
 	/** Stores the time elapsed since the splash screen started showing. */
 	private float timeElapsed;
 	
@@ -61,11 +67,20 @@ public class CompanySplashScreen extends Screen
 		//If the splash screen has been shown for a time greater than the maximum time it should be shown, switch to the loading screen.
 		if(timeElapsed > TIME_SHOWN || game.DEBUG_MODE)
 		{
+			//If the splash screen has not yet started to fade, make it fade, since enough time has passed.
+			if(!fading)
+			{
+				//Stores the time at which the splash screen has started fading. Allows the splash screen to know how many seconds have passed since it started to fade.
+				fadeStartTime = timeElapsed;
+				//Tell the splash screen that it has begun fading. The splash screen will continue fading until FADE_TIME seconds have passed.
+				fading = true;
+			}
+			
 			//Fade the splash screen widgets.
 			fadeWidgets();
 			
 			//If the splash screen has finished fading 
-			if(timeElapsed > TIME_SHOWN + FADE_TIME)
+			if(timeElapsed >= fadeStartTime + FADE_TIME)
 			{
 				//Switch to the loading screen.
 				game.setScreen(new LoadingScreen(game));
@@ -89,7 +104,12 @@ public class CompanySplashScreen extends Screen
 	private void fadeWidgets() 
 	{
 		//Stores a normalized value between 0 and 1 determining the alpha of the widgets. If alpha=0, FADE_TIME seconds have passed since starting to fade the widgets.
-		float alpha = 1 - (timeElapsed - TIME_SHOWN)/FADE_TIME;
+		float alpha = 1 - (timeElapsed - fadeStartTime)/FADE_TIME;
+		
+		//Clamp the computed alpha so that it doesn't drop below zero. Otherwise, the splash screen would blink after fading.
+		if(alpha < 0)
+			alpha = 0;
+		
 		//Applies the transparency to each of the widgets in the splash screen.
 		assets.companyLogo.setColor(1,1,1,alpha);
 		assets.mugishaLogo.setColor(1,1,1,alpha);

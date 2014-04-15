@@ -2,3 +2,5 @@
 1396791501972	Rename resource 'uml.ucls'
 1396791645548	Delete element
 1396892412254	Rename field 'loadingTextStyle'
+1397252706202	Rename field 'fadeTimeStart'
+1397263724639	Encapsulate field 'firstTimeCreate'

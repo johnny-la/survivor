@@ -58,8 +58,6 @@ public class Assets
 	/** Stores an AssetManager instance. This allows for loading on a separate thread from the render thread. All assets are loaded through object.*/
 	private AssetManager manager = new AssetManager();	
 	
-	public Thread loadingThread;
-	
 	/** Stores a file extension (i.e., "@4x", "@2x", "")  telling us which atlases to load depending on screen size. */
 	public final String scaleExtension;	
 	/** Stores the scale of the textures relative to the @1x textures (i.e., 4, 2, or 1). We downscale the sprites by this scale so that they take the same space as the @1x textures, to 
@@ -138,6 +136,7 @@ public class Assets
 	public LabelStyle hudHeaderStyle;
 	public LabelStyle hudLabelStyle;
 	public LabelStyle smallLabelStyle;
+	public LabelStyle gameOverLabelStyle;
 	
 	public TextureAtlas versusAnimAtlas;
 	public SkeletonJson versusAnimSkeletonJson;
@@ -274,8 +273,6 @@ public class Assets
 			scaleFactor = 1;
 		}
 		
-		loadingThread = new Thread();
-		
 		//Queue all of the assets for loading. We have to queue assets inside the AssetManager instance before actually loading them.
 		queueAssetsForLoading();
 	}
@@ -397,19 +394,6 @@ public class Assets
 		return loadingComplete;
 	}
 	
-	private class LoadingRunnable implements Runnable
-	{
-		boolean complete = false;
-		
-		@Override
-		public void run() 
-		{
-			loadExtraAssets();
-			complete = true;
-		}
-		
-	}
-	
 	/** Stores the assets loaded from the AssetManager into their respective member variables. Like this, any class with access to the singleton can easily access the assets
 	 *  loaded from this class. */
 	private void storeLoadedAssets()
@@ -436,8 +420,7 @@ public class Assets
 		swoosh = manager.get("sound/sfx/ui/Swoosh.ogg", Sound.class);
 		
 		/* Loads any assets that couldn't be loaded using the AssetManager. */
-		//loadExtraAssets();	
-		loadingThread.run();
+		loadExtraAssets();	
 	}
 	
 	/** Loads any extra assets that couldn't be loaded using the AssetManager. */
@@ -659,6 +642,11 @@ public class Assets
 		smallLabelStyle.font = sanchezRegular_17;
 		smallLabelStyle.fontColor = Color.BLACK;
 		
+		//Creates the style which dictates the look of the "Game Over" label in the GameOverHud.
+		gameOverLabelStyle = new LabelStyle();
+		gameOverLabelStyle.font = moonFlowerBold_54;
+		gameOverLabelStyle.fontColor = Color.WHITE;
+
 		//Sets up the Spine data used to display the portion of the UI used to show the versus Hud.
 		versusAnimSkeletonJson = new SkeletonJson(versusAnimAtlas);
 		versusAnimSkeletonJson.setScale(VERSUS_ANIM_SKELETON_SCALE);	//Re-scale the skeleton to fit world-units. 

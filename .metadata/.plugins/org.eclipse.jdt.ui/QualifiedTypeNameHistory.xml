@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="com.esotericsoftware.spine.Animation"/>
-<fullyQualifiedTypeName name="com.esotericsoftware.spine.Event"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.Stage"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.entity.Human"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.InputListener"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.InputProcessor"/>
@@ -56,8 +52,12 @@
 <fullyQualifiedTypeName name="com.jonathan.survivor.math.Vector2"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.Assets"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.graphics.g2d.Sprite"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.Gdx"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Label"/>
 <fullyQualifiedTypeName name="com.esotericsoftware.spine.Skeleton"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.utils.Pool.Poolable"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.Input.Keys"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.Gdx"/>
+<fullyQualifiedTypeName name="java.util.Collections"/>
+<fullyQualifiedTypeName name="com.jonathan.survivor.World.WorldState"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Label"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle"/>
 </qualifiedTypeNameHistroy>

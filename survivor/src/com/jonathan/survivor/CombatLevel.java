@@ -273,5 +273,25 @@ public class CombatLevel implements Level
 	public void setZombie(Zombie zombie) {
 		this.zombie = zombie;
 	}
+
+	/** Gets the player's x-position before entering the combat level. */
+	public float getPreviousPlayerX() {
+		return previousPlayerX;
+	}
+
+	/** Sets the player's x-position before entering the combat level. */
+	public void setPreviousPlayerX(float previousPlayerX) {
+		this.previousPlayerX = previousPlayerX;
+	}
+
+	/** Gets the zombie's x-position before entering the combat level. */
+	public float getPreviousZombieX() {
+		return previousZombieX;
+	}
+
+	/** Sets the zombie's x-position before entering the combat level. */
+	public void setPreviousZombieX(float previousZombieX) {
+		this.previousZombieX = previousZombieX;
+	}
 	
 }

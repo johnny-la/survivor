@@ -16,8 +16,12 @@ import com.jonathan.survivor.math.Rectangle;
 public class Zombie extends Human implements Clickable
 {
 	/** Stores the width and height of the zombie's rectangle collider in world units. */
-	public static final float COLLIDER_WIDTH = 1.56f;
+	public static final float COLLIDER_WIDTH = 1.50f;	//Default: 1.56f
 	public static final float COLLIDER_HEIGHT = 2.5f;
+	
+	/** Stores the width and height of the zombie's charge collider in world units. The charge collider dictates the region where the zombie can hit the player while charging. */
+	public static final float CHARGE_COLLIDER_WIDTH = 4f;
+	public static final float CHARGE_COLLIDER_HEIGHT = 1.8f;
 	
 	/** Stores the walk speed of the zombie in the horizontal direction. */
 	public static final float NORMAL_WALK_SPEED = 2.2f;
@@ -53,10 +57,6 @@ public class Zombie extends Human implements Clickable
 	
 	/** Stores true if the Zombie is being targetted by the player, and the player is trying to walk towards it. */
 	private boolean targetted;
-	
-	/** Stores the width and height of the zombie's charge collider in world units. The charge collider dictates the region where the zombie can hit the player while charging. */
-	public static final float CHARGE_COLLIDER_WIDTH = 4f;
-	public static final float CHARGE_COLLIDER_HEIGHT = 1.8f;
 	
 	/** Stores the collider which goes around the zombie when he's charging. Determines if the zombie has hit the player. */
 	private Rectangle chargeCollider;

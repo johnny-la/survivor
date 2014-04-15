@@ -1,6 +1,9 @@
 package com.jonathan.survivor.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -18,24 +21,41 @@ import com.jonathan.survivor.hud.ConfirmDialog;
 
 public class WorldSelectScreen extends Screen
 {
-	private Stage stage;	//Stores the stage used as a container for the UI widgets. It is essentially the camera that draws the widgets.
-	private Table table;	//Stores the table actor. This simply arranges the widgets at the center of the screen in a grid fashion.
+	/** Stores the stage used as a container for the UI widgets. It is essentially the camera that draws the widgets. */
+	private Stage stage;	
 	
-	private Label header;	//Stores the label displaying the header.
+	/** InputListener which receives an event when the BACK button is pressed on Android devices. Allows the user to switch back to the main menu. */
+	private InputListener inputListener;
+	
+	/** Class allowing us to set multiple instance of InputListeners to receive input events. */
+	private InputMultiplexer inputMultiplexer;
+	
+	/** Stores the table actor. This actor arranges the widgets at the center of the screen in a grid-like fashion. */
+	private Table table;	
+	
+	/** Stores the label displaying the header. */
+	private Label header;
 	
 	/** Stores the horizontal offset between the delete button and the profile selected in the list. */
 	private static final float DELETE_BUTTON_OFFSET = 10f;
 	
-	private TextButton startButton;	//Holds the "Start" button
-	private TextButton backButton;	//Holds the "Back" button
-	private Button deleteButton;	//Store the button to delete a profile.
+	/** Holds the "Start" button */
+	private TextButton startButton;	
+	/** Holds the "Back" button */
+	private TextButton backButton;
+	/** Stores the button used to delete a profile. */
+	private Button deleteButton;	
 	
-	private ConfirmDialog confirmDialog;	//Holds the confirm dialog shown when the user presses the 'delete' button.
+	/** Holds the confirm dialog shown when the user presses the 'delete' button. */
+	private ConfirmDialog confirmDialog;	
 	
-	private String[] listItems;	//Stores the items shown by the world selection list.
-	private List worldSelectList;	//Stores the list for world selection.
+	/** Stores the items shown by the world selection list. */
+	private String[] listItems;	
+	/** Stores the list which allows the user to choose a world. */
+	private List worldSelectList;	
 	
-	private final static float WORLD_LIST_WIDTH = 280f;	//Stores the list of the world selection list; the width of the blue bar in pixels for the target resolution (Usually 480x320).
+	/** Holds the width of the world selection list. That is, the width of the blue bar in pixels for the target resolution (480x320). */
+	private final static float WORLD_LIST_WIDTH = 280f;	
 
 	public WorldSelectScreen(Survivor game)
 	{
@@ -48,8 +68,19 @@ public class WorldSelectScreen extends Screen
 		//Create a stage used to draw the UI widgets.
 		stage = new Stage();
 		
-		//Sets the stage to handle any touch/mouse input. Tells the widgets that they can receive touch events.
-		Gdx.input.setInputProcessor(stage);
+		//Creates the InputListener which receives an event when the Android BACK button is pressed. Allows the user to transition back to the main menu.
+		inputListener = new InputListener();
+		
+		//Creates the multiplexer to allows several classes to receive touch input and keyboard input. 
+		inputMultiplexer = new InputMultiplexer();
+
+		//Allows the stage to handle any touch/mouse input. Tells the widgets that they can receive touch events.
+		inputMultiplexer.addProcessor(stage);
+		//Allows the inputListener to receive input events, for instance when the Android BACK button is pressed. 
+		inputMultiplexer.addProcessor(inputListener);
+		
+		//Registers all the input processors from the multiplexer to receive input events.
+		Gdx.input.setInputProcessor(inputMultiplexer);
 		
 		//Creates a table using the main menu Skin. This table places widgets in grid-like fashion. Why the skin is passed is unknown.
 		table = new Table(assets.mainMenuSkin);
@@ -105,8 +136,8 @@ public class WorldSelectScreen extends Screen
 			{
 				//Play the "swoosh" sound effect when the "Back" button is pressed.
 				//soundManager.play(assets.swoosh);
-				//Return to the main menu once the "Back" button is pressed.
-				game.setScreen(new MainMenuScreen(game));
+				//Return the user back to the main menu.
+				backPressed();
 			}
 		});
 		
@@ -309,5 +340,30 @@ public class WorldSelectScreen extends Screen
 	@Override
 	public void resume() 
 	{
+	}
+	
+	/** Receives input-related events, such as the user pressing the BACK button on his Android device. */
+	private class InputListener extends InputAdapter
+	{
+		/** Called when a key is pressed. */
+		@Override
+		public boolean keyDown(int keycode)
+		{
+			//If the Android BACK button has been pressed
+			if(keycode == Keys.BACK)
+			{
+				//Lets the WorldSelectScreen know that the user should be brought back to the main menu
+				backPressed();
+			}
+			
+			return false;
+		}
+	}
+	
+	/** Called when either the visual BACK button is pressed, or when the Android BACK button is pressed. Move the user back to the main menu, */
+	public void backPressed()
+	{
+		//Return to the main menu once the "Back" button is pressed.
+		game.setScreen(new MainMenuScreen(game));
 	}
 }

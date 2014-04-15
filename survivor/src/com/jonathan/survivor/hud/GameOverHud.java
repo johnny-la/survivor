@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.jonathan.survivor.World;
 
@@ -21,8 +23,8 @@ public class GameOverHud extends Hud
 	/** Stores how long the GameOverHud is displayed for before being brought back to the main menu. */
 	public static final float DISPLAY_TIME = 3;
 	
-	/** Stores the image which displays "Game Over". */
-	private Image gameOverText;
+	/** Stores the text which displays "Game Over". */
+	private Label gameOverLabel;
 	
 	/** Stores the listener used to listen for events from the arrow buttons. */
 	private ButtonListener buttonListener;
@@ -35,12 +37,9 @@ public class GameOverHud extends Hud
 	public GameOverHud(Stage stage, World world)
 	{
 		super(stage, world);
-		
-		//Creates the "Game Over" text image from a pre-defined TextureRegion instance.
-		gameOverText = new Image(assets.gameOverTextRegion);
-		
-		//Resizes the image to ensure that, no matter which atlas size was chosen, the image will occupy the same size on screen.
-		gameOverText.setSize(gameOverText.getWidth() / assets.scaleFactor, gameOverText.getHeight() / assets.scaleFactor);
+	
+		//Creates the "Game Over" label from a pre-defined LabelStyle.
+		gameOverLabel = new Label("Game Over", assets.gameOverLabelStyle);
 		
 		//Creates a new listener for the buttons
 		buttonListener = new ButtonListener();
@@ -92,10 +91,10 @@ public class GameOverHud extends Hud
 		//Clears the stage and all its widgets to re-purpose the stage to draw the exploration HUD.
 		stage.clear();
 		
-		//Sets the bottom-left position of the gameOverText so that the image is display at the center of the stage.
-		gameOverText.setPosition(stage.getWidth()/2 - gameOverText.getWidth()/2, stage.getHeight()/2 - gameOverText.getHeight()/2);
+		//Sets the bottom-left position of the gameOverLabel so that the label is displayed at the center of the stage.
+		gameOverLabel.setPosition(stage.getWidth()/2 - gameOverLabel.getWidth()/2, stage.getHeight()/2 - gameOverLabel.getHeight()/2);
 		
-		//Adds the "Game Over" image to the stage.
-		stage.addActor(gameOverText);
+		//Adds the "Game Over" label to the stage.
+		stage.addActor(gameOverLabel);
 	}	
 }

@@ -1,5 +1,6 @@
 package com.jonathan.survivor;
 
+import com.jonathan.survivor.World.WorldState;
 import com.jonathan.survivor.managers.ProfileManager;
 
 public class Settings 
@@ -44,8 +45,38 @@ public class Settings
 		profile.setTerrainRowOffset(world.getTerrainLevel().getBottomLeftRow());
 		profile.setTerrainColOffset(world.getTerrainLevel().getBottomLeftCol());
 		
+		//Saves the last x-position of the player relative to his layer inside the profile.
+		saveLastXPos();
+		
 		//Saves the profile to the hard drive.
 		profileManager.saveProfile(profile);
+	}
+
+	/** Saves the last x-position of the player before saving the profile. Note that this position is relative to the layer where he currently resides. */
+	private void saveLastXPos() 
+	{
+		//Stores the last x-position of the player before saving the profile, relative to the layer where he currently resides.
+		float lastXPos = 0;
+		
+		//Stores the left-most x-position of the layer where the player resides. Note that the player always resides on the center-most layer of the TerrainLevel.
+		float layerLeftXPos = world.getTerrainLevel().getCenterLayer().getLeftPoint().x;
+		
+		//If the player is currently in exploration state, traversing the world
+		if(world.getWorldState() == WorldState.EXPLORING)
+		{
+			//The last x-position of the player is his current x-position, minus the left-most x-position of the layer where he resides ('lastXPos' is relative to the layer's x-position).
+			lastXPos = world.getPlayer().getX() - layerLeftXPos;
+		}
+		//If the player and the world were in COMBAT state upon saving settings, the player's last x-position must be computed a different way
+		if(world.getWorldState() == WorldState.COMBAT)
+		{
+			//The player's last x-position in the world is stored in the 'previousPlayerX' member variable of the CombatLevel. This is subtracted by the left-most x-position of the
+			//layer where the player resides, since the 'lastXPos' position is relative to the position of the layer where the player resides.
+			lastXPos = world.getCombatLevel().getPreviousPlayerX() - layerLeftXPos;
+		}
+		
+		//Stores the x-position of the player relative to his layer upon saving the profile. Allows the player to respawn at the same place on profile load.
+		profile.setLastXPos(lastXPos);
 	}
 
 	/** Retrieves the profile where the Settings instance saves player data. */

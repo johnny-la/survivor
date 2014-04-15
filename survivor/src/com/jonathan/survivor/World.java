@@ -1,5 +1,6 @@
 package com.jonathan.survivor;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -126,7 +127,7 @@ public class World
 	
 	/** Called every frame to update the world and its GameObjects. */
 	public void update(float deltaTime)
-	{
+	{		
 		//Updates the player, his movement, and his game logic.
 		updatePlayer(deltaTime);
 		//Updates the GameObjects contained by the world's level, such as trees.
@@ -654,6 +655,18 @@ public class World
 		//If the currently-active level is a TerrainLevel
 		if(level instanceof TerrainLevel)
 		{
+			//If the given GameObject is out of bounds of the level
+			if(terrainLevel.outOfBounds(gameObject))
+			{
+				//If it is a zombie which is out of bounds of the level
+				if(gameObject instanceof Zombie)
+					//Remove the zombie from its current TerrainLayer. Removes the zombie from the game. Otherwise, the zombie would move outside the bounds of the level.
+					terrainLevel.removeGameObject(gameObject);
+				
+				//Return the method to avoid any further operations on the GameObject, which would cause null pointer exceptions.
+				return;
+			}
+			
 			//Find the TerrainLayer where the GameObject resides using a layer lookup based on the GameObject's terrain cell.
 			TerrainLayer terrainLayer = terrainLevel.getTerrainLayer(gameObject.getTerrainCell());
 			
@@ -754,57 +767,62 @@ public class World
 		//Interactive GameObject.
 		Set<Class> keys = itemProbabilityMap.keySet();
 		
-		//Cycles through each possible item type that can be dropped from the scavenged GameObject.
-		for(Class key:keys)
-		{						
-			//Check if a random number is less than the probability of the item dropping. The probability of the item to drop is stored in the key of the HashMap,
-			//where the key is the Item subclass that has a probability of being dropped. Note that the value of the key can be between 0 and 1, where 1 means that
-			//the item will be dropped no matter the circumstances.
-			if(Math.random() < itemProbabilityMap.get(key))
-			{
-				//Stores the ItemObject spawned in the world.
-				ItemObject itemObject = null;
-				
-				//The Class.newInstance() method may cause an exception.
-				try 
+		keys = Collections.synchronizedSet(keys);
+		
+		synchronized(keys)
+		{
+			//Cycles through each possible item type that can be dropped from the scavenged GameObject.
+			for(Class key:keys)
+			{						
+				//Check if a random number is less than the probability of the item dropping. The probability of the item to drop is stored in the key of the HashMap,
+				//where the key is the Item subclass that has a probability of being dropped. Note that the value of the key can be between 0 and 1, where 1 means that
+				//the item will be dropped no matter the circumstances.
+				if(Math.random() < itemProbabilityMap.get(key))
 				{
-					//Spawns an ItemObject at the position of the destroyed GameObject. The first two arguments indicate the (x,y) position where the items will be
-					//spawned. Third argument is a velocity multiplier, allowing items to fly further depending on how many items have already been spawned. Last 
-					//argument specifies that the items should fly the same direction that the player is facing.
-					itemObject = goManager.spawnItemObject(gameObject.getPosition().x, gameObject.getPosition().y, 1 + itemsSpawned*0.6f, player.getDirection());
+					//Stores the ItemObject spawned in the world.
+					ItemObject itemObject = null;
 					
-					//Stores the previous Item instance held by the ItemObject. This is because ItemObjects are pooled, and thus may have an old Item instance.
-					Item previousItem = itemObject.getItem();
-					
-					//If the ItemObject's previous item is not null
-					if(previousItem != null)
+					//The Class.newInstance() method may cause an exception.
+					try 
 					{
-						//Free the item back into the itemManager's pools for later reuse. Prevents the previous item from being garbage collected.
-						itemManager.freeItem(previousItem);
+						//Spawns an ItemObject at the position of the destroyed GameObject. The first two arguments indicate the (x,y) position where the items will be
+						//spawned. Third argument is a velocity multiplier, allowing items to fly further depending on how many items have already been spawned. Last 
+						//argument specifies that the items should fly the same direction that the player is facing.
+						itemObject = goManager.spawnItemObject(gameObject.getPosition().x, gameObject.getPosition().y, 1 + itemsSpawned*0.6f, player.getDirection());
+						
+						//Stores the previous Item instance held by the ItemObject. This is because ItemObjects are pooled, and thus may have an old Item instance.
+						Item previousItem = itemObject.getItem();
+						
+						//If the ItemObject's previous item is not null
+						if(previousItem != null)
+						{
+							//Free the item back into the itemManager's pools for later reuse. Prevents the previous item from being garbage collected.
+							itemManager.freeItem(previousItem);
+						}
+						
+						//Obtains a new item of the given class from the itemManager, and sets it as the item the ItemObject represents.
+						itemObject.setItem(itemManager.obtainItem(key));
+					}
+					catch (Exception ex) 
+					{
+						ex.printStackTrace();
 					}
 					
-					//Obtains a new item of the given class from the itemManager, and sets it as the item the ItemObject represents.
-					itemObject.setItem(itemManager.obtainItem(key));
+					//Tells the ItemObject that it is on the same TerrainCell as the GameObject which dropped this item. Allows the object to know which TerrainLayer it 
+					//belongs to.
+					itemObject.setTerrainCell(gameObject.getTerrainCell().getRow(), gameObject.getTerrainCell().getCol());
+					
+					//Adds the spawned ItemObject to the list of ItemObjects inside the level. It is added to the correct TerrainLayer if the user is on a TerrainLevel.
+					level.addGameObject(itemObject);
+					
+					//Increments the amount of items that have been spawned at the GameObject.
+					itemsSpawned++;
+					
+					//If the GameObject has spawned three or more items already
+					if(itemsSpawned >= 3)
+						//Return the method. A GameObject can spawn a maximum of three items.
+						return;
 				}
-				catch (Exception ex) 
-				{
-					ex.printStackTrace();
-				}
-				
-				//Tells the ItemObject that it is on the same TerrainCell as the GameObject which dropped this item. Allows the object to know which TerrainLayer it 
-				//belongs to.
-				itemObject.setTerrainCell(gameObject.getTerrainCell().getRow(), gameObject.getTerrainCell().getCol());
-				
-				//Adds the spawned ItemObject to the list of ItemObjects inside the level. It is added to the correct TerrainLayer if the user is on a TerrainLevel.
-				level.addGameObject(itemObject);
-				
-				//Increments the amount of items that have been spawned at the GameObject.
-				itemsSpawned++;
-				
-				//If the GameObject has spawned three or more items already
-				if(itemsSpawned >= 3)
-					//Return the method. A GameObject can spawn a maximum of three items.
-					return;
 			}
 		}
 	}

@@ -8,6 +8,7 @@ import com.jonathan.survivor.Profile;
 import com.jonathan.survivor.Survivor;
 import com.jonathan.survivor.World;
 import com.jonathan.survivor.WorldListener;
+import com.jonathan.survivor.World.WorldState;
 import com.jonathan.survivor.entity.Human.State;
 import com.jonathan.survivor.hud.BackpackHud;
 import com.jonathan.survivor.hud.CombatHud;
@@ -20,6 +21,7 @@ import com.jonathan.survivor.hud.PauseMenuHud;
 import com.jonathan.survivor.hud.SurvivalGuideHud;
 import com.jonathan.survivor.managers.GestureManager;
 import com.jonathan.survivor.managers.InputManager;
+import com.jonathan.survivor.managers.InputManager.InputListener;
 import com.jonathan.survivor.managers.ItemManager;
 import com.jonathan.survivor.renderers.WorldRenderer;
 
@@ -83,6 +85,8 @@ public class GameScreen extends Screen
 	
 	/** Stores the UiListener which receives all events related to the UI or the HUD. Used to react appropriately to button presses. */
 	private UiListener uiListener;
+	/** The listener which receives events fired from the InputManager class. For instance, the GameScreen is informed through this listener when the BACK key is pressed. */
+	private InputGestureListener inputListener;
 	
 	/** Creates a game screen. The profile used to create the screen must be specified to load the user's previous save information and update it. */
 	public GameScreen(Survivor game, Profile profile)
@@ -147,6 +151,11 @@ public class GameScreen extends Screen
 		
 		//Creates the UiListener instance which will receive all events related to the UI and its button presses. 
 		uiListener = new UiListener();
+		//Creates the InputGestureListener instance which listens to all events fired from the InputManager, such as when the BACK key is pressed.
+		inputListener = new InputGestureListener();
+		
+		//Registers the inputListener to the InputManager. Like this, the InputManager will call the inputListener's methods whenever an event is dispatched.
+		inputManager.setInputListener(inputListener);
 		
 		//Adds the UiListener instance to each Hud instance. Like this, the GameScreen is informed about button touches in the UI. Used to react appropriately to a button press.
 		explorationHud.addHudListener(uiListener);
@@ -322,9 +331,26 @@ public class GameScreen extends Screen
 		}
 	}
 	
+	/** Receives events from the InputManager class regarding input. */
+	private class InputGestureListener implements InputListener
+	{
+		/** Delegated when the BACK button is pressed on Android devices. */
+		@Override
+		public void onBack()
+		{
+			//Inform the GameScreen that the Back button has been pressed, so that the user can go back one UI layer.
+			backPressed();
+		}
+	}
+	
+	/** Called every frame to update game logic and render all game entities. */
 	@Override 
 	public void render(float deltaTime)
 	{
+		//Cap the deltaTime to 0.1f to avoid entities from teleporting from one place to another. If deltaTime were greater than 0.1, then there might have been a lag spike.
+		if(deltaTime > 0.1f)
+			deltaTime = 0.1f;
+		
 		//Updates the world.
 		update(deltaTime);
 		//Draws the world, along with the UI.
@@ -373,12 +399,27 @@ public class GameScreen extends Screen
 		if(gameState == GameState.BACKPACK)
 		{
 			//If the player is in the survival guide or the crafting menu, return to the backpack menu
-			if(hud instanceof SurvivalGuideHud || hud instanceof CraftingHud)
+			if(hud instanceof CraftingHud)
 			{
 				//Return to the backpack menu by changing the active HUD.
 				hud = backpackHud;
 				//Reset the hud to ensure the backpack menu's widgets are placed correctly on screen.
 				hud.reset(guiWidth, guiHeight);
+			}
+			//Else, if the user was in the Survival Guide HUD
+			else if(hud instanceof SurvivalGuideHud)
+			{
+				//Tells the SurvivalGuideHud that the back button was pressed. If the method returns true, the GameScreen should revert back to the backpack screen.
+				boolean revertToBackpack = ((SurvivalGuideHud)hud).backPressed();
+				
+				//If the user must revert to the backpack HUD upon pressing the BACK button
+				if(revertToBackpack)
+				{
+					//Return to the backpack menu by changing the active HUD.
+					hud = backpackHud;
+					//Reset the hud to ensure the backpack menu's widgets are placed correctly on screen.
+					hud.reset(guiWidth, guiHeight);
+				}
 			}
 			//Else, if the player was in the BackpackMenu, return to the game upon pressing the back button
 			else
@@ -390,8 +431,20 @@ public class GameScreen extends Screen
 		}
 		//Else, if the back button was pressed in the pause menu
 		else if(gameState == GameState.PAUSED)
+		{
 			//Resumes the game at its previous game state before being paused. Takes care of changing the game state.
 			resumeGame();
+		}
+		//Else, if the player is in the midst of gameplay, either exploring or fighting, pause the game when the back button is pressed.
+		else if(gameState == GameState.EXPLORING || gameState == GameState.COMBAT)
+		{
+			//The world must also be in either the EXPLORING or COMBAT state before the game is paused. Otherwise, the game could be paused when the versus animation is playing.
+			if(world.getWorldState() == WorldState.EXPLORING || world.getWorldState() == WorldState.COMBAT)
+			{
+				//Pause the game and switch the player to the pause menu.
+				pauseGame(GameState.PAUSED);
+			}
+		}
 	}
 	
 	/** Sets the GameState. Updates the hudRenderer to draw the correct HUD. */

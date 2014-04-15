@@ -1,9 +1,10 @@
 package com.jonathan.survivor.managers;
 
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
-import com.jonathan.survivor.Survivor;
 import com.jonathan.survivor.World;
 
 public class InputManager implements InputProcessor
@@ -13,6 +14,9 @@ public class InputManager implements InputProcessor
 	
 	/** Stores the worldCamera, used to convert touch points to world coordinates. */
 	private OrthographicCamera worldCamera;
+	
+	/** The InputListener which delegates events to the GameScreen. Allows the GameScreen to know about certain input events. */
+	private InputListener inputListener;
 	
 	/** Helper Vector3 used to store the latest touch point. */
 	private Vector3 touchPoint;
@@ -65,14 +69,38 @@ public class InputManager implements InputProcessor
 		paused = false;
 	}
 	
+	/** Called when a key has been pressed. */
 	@Override
 	public boolean keyDown(int keycode) {
-		/*if(Survivor.DEBUG_MODE && keycode == Keys.DEL)
+		//If the BACK key has been pressed on Android devices
+		if(keycode == Keys.BACK)
 		{
-			profileManager.deleteAllProfiles();
-			System.out.println("Deleted all profiles inside InputManager.keyDown()");
-		}*/
+			//Lets the GameScreen know that the BACK button was pressed.
+			inputListener.onBack();
+		}
+		
 		return false;
+	}
+	
+	/** Registers the given InputListener to this InputManager instance. The InputManager will then call method from the given listener. */
+	public void setInputListener(InputListener listener)
+	{
+		this.inputListener = listener;
+	}
+	
+	/** Returns the InputListener instance whose methods are delegated by this InputManager instance. */
+	public InputListener getInputListener()
+	{
+		return this.inputListener;
+	}
+	
+	/** Listener which allows the GameScreen to receive any events coming from this class. For instance, when the BACK key is pressed, the GameScreen can know about it through
+	 *  this interface.
+	 */
+	public interface InputListener 
+	{
+		/** Called when the BACK button is pressed on Android devices. Allows the GameScreen to know to go back from wherever the user is. */
+		void onBack();
 	}
 	
 	/* ..................UNUSED................................ */

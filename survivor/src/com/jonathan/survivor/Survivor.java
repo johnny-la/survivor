@@ -1,6 +1,7 @@
 package com.jonathan.survivor;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.esotericsoftware.spine.Slot;
 import com.jonathan.survivor.managers.MusicManager;
@@ -43,10 +44,8 @@ public class Survivor extends Game
 	/** Stores the Settings instance used to save the user's profile. */
 	private Settings settings;
 	
-	private Slot slot;
-	
 	/** Stores whether or not we are in debug mode */
-	public static final boolean DEBUG_MODE = false;
+	public static final boolean DEBUG_MODE = true;
 	/** Logs the framerate to the console */
 	private FPSLogger fpsCounter = new FPSLogger();
 	
@@ -65,6 +64,9 @@ public class Survivor extends Game
 		
 		//Creates a settings instance that will be used to save the player's profile. The passed ProfileManager will be used to save the profile to the hard drive.
 		settings = new Settings(profileManager);
+		
+		//Allows the touchDown() methods of InputProcessors to be called when the BACK button is pressed on Android devices.
+		Gdx.input.setCatchBackKey(true);
 		
 		//Set the starting screen of the application to the CompanySplashScreen. This is done through the Game.setScreen(Screen) method.
 		setScreen(new CompanySplashScreen(this));

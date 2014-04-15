@@ -135,18 +135,8 @@ public class SurvivalGuideHud extends Hud
 			@Override
 			public void clicked(InputEvent event, float x, float y)
 			{
-				//If the survival guide is currently showing an entry description.
-				if(displayingDescription)
-				{
-					//Revert back to the list of entry names
-					showEntryList();
-				}
-				//Else, if the list of entry names is being shown
-				else
-				{
-					//Tell the game screen to revert back to the backpack hud.
-					hudListener.onBack();
-				}
+				//Tell the game screen that the Back button was pressed. In turn, the GameScreen will call this class's backButton() method.
+				hudListener.onBack();
 			}
 		});
 		
@@ -284,5 +274,28 @@ public class SurvivalGuideHud extends Hud
 		table.setX(SCROLL_PANE_WIDTH/2 - LIST_X_OFFSET);
 		//Sets the y-position of the table so that the top of the text inside the guide is always at the same height relative to screen's center.
 		table.setY(LIST_Y_OFFSET - SCROLL_PANE_HEIGHT/2);
+	}
+	
+	/** Called by the GameScreen when the BACK key is pressed. If the survival guide is showing the description to an entry, the guide reverts back to the entry list. 
+	 * @return Returns true if the survival guide was displaying the list of entries. If so, upon pressing the back button, the GameScreen is told that the user should
+	 * be reverted back to the Backpack HUD.
+	 * */
+	public boolean backPressed()
+	{
+		//If the survival guide is currently showing an entry description.
+		if(displayingDescription)
+		{
+			//Revert back to the list of entry names
+			showEntryList();
+		}
+		//Else, if the SurvivalGuideHud was displaying the list of entries before the BACK button was pressed
+		else 
+		{
+			//Return true. This tells the GameScreen, which calls this method, that the user should go to the backpack HUD, since pressing back makes the user leave the survival guide.
+			return true;
+		}
+		
+		//If this statement is reached, the user should stay in the survival guide, despite pressing the Back button. Return false, telling the GameScreen not to switch to the backpack.
+		return false;
 	}
 }

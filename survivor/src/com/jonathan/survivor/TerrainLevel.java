@@ -25,6 +25,9 @@ public class TerrainLevel implements Level
 	public static final float START_X_POS = 0;//(-TerrainLayer.LAYER_WIDTH * (NUM_LAYER_COLS / 2)) - (TerrainLayer.LAYER_WIDTH/2);
 	public static final float START_Y_POS = 0;//(-TerrainLayer.LAYER_HEIGHT * (NUM_LAYER_ROWS / 2)) - (TerrainLayer.LAYER_HEIGHT/2);
 	
+	/** Stores the Profile instance used to create the TerrainLevel. This profile dictates where the player should start, and where the TerrainLevel last left off. */
+	private Profile profile;
+	
 	/** Holds arrays containing the different types of GameObjects on the layer. */
 	private Array<Tree> trees = new Array<Tree>();
 	private Array<Box> boxes = new Array<Box>();
@@ -44,13 +47,16 @@ public class TerrainLevel implements Level
 	/** Creates a terrain level given a profile, which dictates how the terrainLayers should be generated.*/
 	public TerrainLevel(Profile profile, GameObjectManager goManager)
 	{		
+		//Stores the given constructor arguments in their respective member variables.
+		this.profile = profile;
+		
 		//Generate the level's terrain layers out of the profile, which indicates how the layers should be laid out, along with the gameObjectManager.
-		generateLayers(profile, goManager);
+		generateLayers(goManager);
 	}
 	
-	/** Generates the TerrainLayers for the level to display. Accepts the profile to populate generate the layers the way they were before application quit. Also accepts the
+	/** Generates the TerrainLayers for the level to display. The profile member variable populates generate the layers the way they were before application quit. Accepts the
 	 *  GameObjectManager used by the world. This allows each TerrainLayer to populate itself with pooled GameObjects. */
-	public void generateLayers(Profile profile, GameObjectManager goManager)
+	public void generateLayers(GameObjectManager goManager)
 	{		
 		//Creates the 2d array of TerrainLayers to store the level geometry.
 		layers = new TerrainLayer[NUM_LAYER_ROWS][NUM_LAYER_COLS];
@@ -267,6 +273,7 @@ public class TerrainLevel implements Level
 		
 		//Tells the level that its gameObjects:Array<GameObject> has to be re-populated since a new GameObject has been added to a layer.
 		gameObjectsStored = false;
+		
 		//Add the GameObject to the list of GameObjects contained inside the Level. Otherwise, the World won't know it exists.
 		//gameObjects.add(gameObject);
 	}
@@ -279,6 +286,7 @@ public class TerrainLevel implements Level
 		
 		//Tells the level that its gameObjects:Array<GameObject> has to be re-populated since a new GameObject has been removed from a layer.
 		gameObjectsStored = false;
+		
 		//Removes the GameObject from the list of GameObjects contained inside the Level. Like this, the GameObject will no longer be rendered or updated by the World.
 		//gameObjects.removeValue(gameObject, true);
 	}
@@ -365,6 +373,26 @@ public class TerrainLevel implements Level
 		return getTerrainLayer(gameObject.getTerrainCell().getRow(), gameObject.getTerrainCell().getCol());
 	}
 	
+	/** Returns true if the given GameObject is out of bounds of the level. That is, if the GameObject is outside the TerrainLayers of the level, the object is out of bounds.
+	 *  Note that this method only checks if the x-position of the GameObject is out of bounds of the level. This is because the x-position of the GameObject is the only one
+	 *  which should dictate whether the GameObject is out of bounds of the level or not. */
+	public boolean outOfBounds(GameObject gameObject) 
+	{
+		//Stores the bottom-left and top-right layers of the level.
+		TerrainLayer bottomLeftLayer = getBottomLeftLayer();
+		TerrainLayer topRightLayer = getTopRightLayer();
+		
+		//If the GameObject is outside the x-bounds of the level
+		if(gameObject.getX() > topRightLayer.getRightPoint().x || gameObject.getX() < bottomLeftLayer.getLeftPoint().x)
+		{
+			//Return true, since the GameObject is out of bounds of the level.
+			return true;
+		}
+		
+		//If this statement is reached, return false, since the given GameObjects is within the bounds of the level.
+		return false;
+	}
+	
 	/** Returns the TerrainLayer at the center of the level. This is the layer where the player resides. */
 	public TerrainLayer getCenterLayer()
 	{
@@ -385,6 +413,13 @@ public class TerrainLevel implements Level
 	{
 		//The bottom-left layer will always be at the zero indices of the layers:TerrainLayer[][] array.
 		return layers[0][0];
+	}
+	
+	/** Gets the top-right-most layer which visible in the level. */
+	private TerrainLayer getTopRightLayer() 
+	{
+		//The top-right layer, which is always be at the last row, and last column of the layers:TerrainLayer[][] array.
+		return layers[NUM_LAYER_ROWS-1][NUM_LAYER_COLS-1];
 	}
 	
 	/** Returns the height of the ground at a given x-position. We retrieve the height of the ground for the center layer, since none are specified. */
@@ -426,8 +461,19 @@ public class TerrainLevel implements Level
 	@Override
 	public float getPlayerStartX()
 	{
-		//The player should spawn at center layer of the TerrainLevel. We want him to spawn in the middle x-position of this layer, found using TerrainLayer.getCenterX().
-		return getCenterLayer().getCenterX();
+		//If the profile has just been created, it is impossible to extract the player's spawn position. Therefore, make the player spawn at the center of the level.
+		if(profile.isFirstTimeCreate())
+		{
+			//If the profile has just been created, the player should spawn at the center x-position of the center-most layer in the level.
+			return getCenterLayer().getCenterX();
+		}
+		//Else, if the profile used to create the level is old. That is, if the profile has been loaded from a save file, the spawn position of the player is stored in the profile.
+		else
+		{
+			//The player should spawn where he last left off when saving the profile. The last x-position of the player is stored in Profile.getLastXPos():float. However, this
+			//position is relative to the left x-point of the layer where the player last resided, which is the center layer of the level.
+			return getCenterLayer().getLeftPoint().x + profile.getLastXPos();
+		}
 	}
 	
 	/** Returns the y-position where the user should spawn when he is first dropped in the level. In this case, the center layer of the level. */

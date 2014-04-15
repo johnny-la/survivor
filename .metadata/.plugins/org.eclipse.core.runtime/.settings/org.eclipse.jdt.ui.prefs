@@ -9,8 +9,8 @@ content_assist_disabled_computers=org.eclipse.jdt.ui.javaAllProposalCategory\u00
 content_assist_fill_method_arguments=true
 content_assist_guess_method_arguments=false
 content_assist_insert_completion=true
-content_assist_lru_history=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?><history maxLHS\="100" maxRHS\="10"><lhs name\="java.lang.Enum"><rhs name\="com.badlogic.gdx.graphics.Texture$TextureFilter"/><rhs name\="com.jonathan.survivor.entity.Human$State"/><rhs name\="com.jonathan.survivor.entity.Human$Mode"/></lhs><lhs name\="com.jonathan.survivor.entity.Human$State"><rhs name\="com.jonathan.survivor.entity.Human$State"/></lhs><lhs name\="com.badlogic.gdx.graphics.Color"><rhs name\="com.badlogic.gdx.graphics.Color"/></lhs><lhs name\="com.jonathan.survivor.entity.Human$Mode"><rhs name\="com.jonathan.survivor.entity.Human$Mode"/></lhs></history>
-content_assist_number_of_computers=12
+content_assist_lru_history=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?><history maxLHS\="100" maxRHS\="10"><lhs name\="java.lang.Enum"><rhs name\="com.badlogic.gdx.graphics.Texture$TextureFilter"/><rhs name\="com.jonathan.survivor.entity.Human$State"/><rhs name\="com.jonathan.survivor.entity.Human$Mode"/><rhs name\="com.jonathan.survivor.World$WorldState"/></lhs><lhs name\="com.jonathan.survivor.entity.Human$State"><rhs name\="com.jonathan.survivor.entity.Human$State"/></lhs><lhs name\="com.badlogic.gdx.graphics.Color"><rhs name\="com.badlogic.gdx.graphics.Color"/></lhs><lhs name\="com.jonathan.survivor.entity.Human$Mode"><rhs name\="com.jonathan.survivor.entity.Human$Mode"/></lhs><lhs name\="com.jonathan.survivor.World$WorldState"><rhs name\="com.jonathan.survivor.World$WorldState"/></lhs></history>
+content_assist_number_of_computers=16
 content_assist_prefix_completion=false
 content_assist_proposals_background=255,255,255
 content_assist_proposals_foreground=0,0,0

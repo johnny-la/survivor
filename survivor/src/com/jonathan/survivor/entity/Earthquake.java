@@ -14,7 +14,7 @@ public class Earthquake extends Projectile
 	public static final float FIRE_VELOCITY_Y = 0;
 	
 	/** Stores the amount of damage dealt by the Earthquake when hitting a Human. */
-	public static final float DAMAGE = 50;
+	public static final float DAMAGE = 30;
 	
 	/** Creates a default Earthquake instance at bottom-center position (0,0). */
 	public Earthquake()

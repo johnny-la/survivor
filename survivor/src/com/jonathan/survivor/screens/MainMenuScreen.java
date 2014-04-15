@@ -1,6 +1,9 @@
 package com.jonathan.survivor.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -11,18 +14,32 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.jonathan.survivor.TerrainLevel;
 import com.jonathan.survivor.Survivor;
+import com.jonathan.survivor.hud.ConfirmDialog;
 
 public class MainMenuScreen extends Screen
 {
-	private Stage stage;	//Stores the stage used as a container for the UI widgets. It is essentially the camera that draws the widgets.
-	private Table table;	//Stores the table actor. This simply arranges the widgets at the center of the screen in a grid fashion.
+	/** Stores the stage used as a container for the UI widgets. It is essentially the camera that draws the widgets. */
+	private Stage stage;	
 	
-	private TextButton playButton;	//Stores the play button.
-	private TextButton optionsButton;	//Stores the options button.
+	/** InputListener which receives an event when the BACK button is pressed on Android devices. Allows the user to exit the game on back press. */
+	private InputListener inputListener;
 	
-	private LabelStyle labelStyle;	//Stores the LabelStyle instance. This is used to define the font and color used by the labels.
+	/** Class allowing us to set multiple instance of InputListeners to receive input events. */
+	private InputMultiplexer inputMultiplexer;
 	
-	private Image logoImage;	//Stores the image for the logo, displayed at the center of the screen.
+	/** Stores the table actor. This simply arranges the widgets at the center of the screen in a grid fashion. */
+	private Table table;	
+	
+	/** Stores the play button. */
+	private TextButton playButton;	
+	/** Holds the options button instance. */
+	private TextButton optionsButton;	
+	
+	/** Stores the image for the logo, displayed at the center of the screen. */
+	private Image logoImage;	
+	
+	/** Holds the confirm dialog shown when the user presses the Android 'back' button, and wants to quit the game. */
+	private ConfirmDialog quitConfirmDialog;	
 	
 	public MainMenuScreen(Survivor game)
 	{
@@ -35,8 +52,19 @@ public class MainMenuScreen extends Screen
 		//Create a stage used to draw the UI widgets.
 		stage = new Stage();
 		
-		//Sets the stage to handle any touch/mouse input. Tells the widgets that they can receive touch events.
-		Gdx.input.setInputProcessor(stage);
+		//Creates the InputListener which receives an event when the Android BACK button is pressed. Allows the user to transition out of the game.
+		inputListener = new InputListener();
+		
+		//Creates the multiplexer to allows several classes to receive touch input and keyboard input. 
+		inputMultiplexer = new InputMultiplexer();
+
+		//Allows the stage to handle any touch/mouse input. Tells the widgets that they can receive touch events.
+		inputMultiplexer.addProcessor(stage);
+		//Allows the inputListener to receive input events, for instance when the Android BACK button is pressed. 
+		inputMultiplexer.addProcessor(inputListener);
+		
+		//Registers all the input processors from the multiplexer to receive input events.
+		Gdx.input.setInputProcessor(inputMultiplexer);
 		
 		//Creates a table out of the skin. Why the skin is passed is unknown. However, this table is used to organize the widgets in a grid fashion.
 		table = new Table(assets.mainMenuSkin);
@@ -83,8 +111,20 @@ public class MainMenuScreen extends Screen
 		optionsButton.setWidth(optionsButton.getWidth() / assets.scaleFactor);
 		optionsButton.setHeight(optionsButton.getHeight() / assets.scaleFactor);
 		
-		//Creates a new LabelStyle. This will be used to define the labels drawn on top of the buttons.
-		labelStyle = new LabelStyle(assets.moonFlowerBold_54, Color.WHITE);
+		//Creates the confirmation dialog which opens when the Android 'back' button is pressed. Constructor accepts title of dialog, along with ClickListener 
+		//which gets its clicked() method called when the 'Yes' button is pressed.
+		quitConfirmDialog = new ConfirmDialog("Are you sure you want\nto exit?", new ClickListener() {
+			//Called when the "Yes" button is clicked.
+			@Override
+			public void clicked(InputEvent event, float x, float y)
+			{
+				//Hide the confirm dialog right after the 'Yes' button is pressed. Otherwise, the dialog would flash on and off when the Gdx.app.exit() method is called.
+				quitConfirmDialog.hide();
+
+				//Exit the game if the 'Yes' button is pressed.
+				Gdx.app.exit();
+			}
+		});
 		
 		//Adds the logoImage to the top of the table. We make it span two columns so that it is display at the center of the two buttons below.
 		table.add(logoImage).colspan(/*2*/1).width(logoImage.getWidth()).height(logoImage.getHeight()).padBottom(5);
@@ -157,6 +197,31 @@ public class MainMenuScreen extends Screen
 	@Override
 	public void resume() 
 	{
+	}
+	
+	/** Receives input-related events, such as the user pressing the BACK button on his Android device. */
+	private class InputListener extends InputAdapter
+	{
+		/** Called when a key is pressed. */
+		@Override
+		public boolean keyDown(int keycode)
+		{
+			//If the Android BACK button has been pressed
+			if(keycode == Keys.BACK)
+			{
+				//Lets the MainMenuScreen know that the user should exit out of the game.
+				backPressed();
+			}
+			
+			return false;
+		}
+	}
+	
+	/** Called when either the visual BACK button is pressed, or when the Android BACK button is pressed. Move the user back to the main menu, */
+	public void backPressed()
+	{
+		//Show the confirm dialog which asks the user if he wants to exit the game. If the 'Yes' button is pressed, the game automatically quits.
+		quitConfirmDialog.show(stage);
 	}
 	
 }
