@@ -93,6 +93,12 @@ public class Profile implements Serializable
 		inventory = new Inventory();
 	}
 	
+	/** Returns the date at which the profile was last modified and saved to the hard drive. Note that the Date object's time is mutable. */
+	public Date getDateLastModified()
+	{
+		return dateLastModified;
+	}
+	
 	/** Sets the profile Id of the profile. */
 	public void setProfileId(int profileId)
 	{
@@ -160,8 +166,6 @@ public class Profile implements Serializable
 	/** Called when this profile has been saved from the hard drive. In this case, we update its date of modification. */
 	private void profileSaved()
 	{
-		//Update the profile's date of modification to the current time of the system, since the profile was just saved.
-		dateLastModified.setTime(TimeUtils.millis());
 	}
 	
 	/** Returns a string representation for the profile, used for each item of the world selection list from the world select screen. */
@@ -169,7 +173,7 @@ public class Profile implements Serializable
 	{
 		//Returns the profileId, followed by the date the profile was last modified. We get it in a readable format using 'SimpleDateFormatter.format(Date):String'.
 		//Note that profileId is incremented by one since it is zero-based.
-		return (profileId+1) + "- " + dateFormatter.format(dateLastModified);
+		return (profileId) + "- " + dateFormatter.format(dateLastModified);
 	}
 
 	/* Methods implemented from Serializable */

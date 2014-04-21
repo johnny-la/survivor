@@ -13,16 +13,16 @@
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="getPlayer" key="selection"/>
+		<item value="mp3" key="selection"/>
 		<list key="findhistory">
+			<item value="mp3"/>
+			<item value="numProfiles"/>
+			<item value="profileSaved"/>
+			<item value="settings"/>
+			<item value="toString"/>
+			<item value="scrollPaneTable"/>
+			<item value="blue"/>
 			<item value="getplayer"/>
-			<item value="getstart"/>
-			<item value="get"/>
-			<item value="reset"/>
-			<item value="player"/>
-			<item value="inventory"/>
-			<item value="itemMap"/>
-			<item value="pose"/>
 		</list>
 		<list key="replacehistory">
 			<item value="camera"/>

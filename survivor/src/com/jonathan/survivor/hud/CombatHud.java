@@ -213,6 +213,24 @@ public class CombatHud extends Hud
 		meleeButton.setPosition(stage.getWidth() - meleeButton.getWidth() - MELEE_BUTTON_X_OFFSET, MELEE_BUTTON_Y_OFFSET);	
 		fireButton.setPosition(stage.getWidth() - fireButton.getWidth() - FIRE_BUTTON_X_OFFSET, FIRE_BUTTON_Y_OFFSET);	
 		
+		//Disable any buttons that the user cannot press, such as the meleeButton if he has no melee weapon.
+		disableUselessButtons();
+		
+		//Anchors the pause button to the top right of the screen, and offsets it according to the pre-defined constants.
+		pauseButton.setPosition(stage.getWidth() - pauseButton.getWidth() - PAUSE_BUTTON_X_OFFSET, stage.getHeight() - pauseButton.getHeight() - PAUSE_BUTTON_Y_OFFSET);
+		
+		//Add the widgets to the stage.
+		stage.addActor(jumpButton);
+		stage.addActor(meleeButton);
+		stage.addActor(fireButton);
+		
+		//Adds the pause button to the stage.
+		stage.addActor(pauseButton);
+	}
+	
+	/** Disable any buttons which the user cannot press, such as the meleeButton, if the user has no melee weapon equipped. */
+	private void disableUselessButtons() 
+	{
 		//If the player does not have a melee weapon equipped
 		if(!world.getPlayer().hasMeleeWeapon())
 		{
@@ -233,19 +251,8 @@ public class CombatHud extends Hud
 			fireButton.setColor(Color.DARK_GRAY);
 			fireButton.getImage().setColor(Color.GRAY);
 		}
-		
-		//Anchors the pause button to the top right of the screen, and offsets it according to the pre-defined constants.
-		pauseButton.setPosition(stage.getWidth() - pauseButton.getWidth() - PAUSE_BUTTON_X_OFFSET, stage.getHeight() - pauseButton.getHeight() - PAUSE_BUTTON_Y_OFFSET);
-		
-		//Add the widgets to the stage.
-		stage.addActor(jumpButton);
-		stage.addActor(meleeButton);
-		stage.addActor(fireButton);
-		
-		//Adds the pause button to the stage.
-		stage.addActor(pauseButton);
 	}
-	
+
 	/** Resizes all of the buttons that need resizing. Ensures that the buttons' contents are all well scaled with no deformities. */
 	private void resizeButtons() 
 	{

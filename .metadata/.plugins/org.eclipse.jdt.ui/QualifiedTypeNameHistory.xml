@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="com.jonathan.survivor.entity.Human"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.InputListener"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.InputProcessor"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.math.Cell"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.graphics.OrthographicCamera"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.entity.Clickable"/>
@@ -25,24 +22,20 @@
 <fullyQualifiedTypeName name="java.util.Map"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.List"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Dialog"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Button"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.TextButton"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Skin"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.entity.Box"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.utils.reflect.ReflectionException"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.utils.reflect.Constructor"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.ScrollPane"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.graphics.Color"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.managers.CraftingManager"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.managers.CraftingManager.Item"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.entity.Human.Mode"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.CombatLevel"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.math.Line"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.inventory.Bullet"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Image"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.inventory.Rifle"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.entity.Human.State"/>
-<fullyQualifiedTypeName name="com.badlogic.gdx.utils.Array"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.hud.CraftingHud.ButtonListener"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.entity.Human.Direction"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.entity.Projectile"/>
@@ -60,4 +53,11 @@
 <fullyQualifiedTypeName name="com.jonathan.survivor.World.WorldState"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Label"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Button"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Image"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.utils.Array"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.graphics.Color"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.actions.Actions"/>
+<fullyQualifiedTypeName name="com.badlogic.gdx.math.Interpolation"/>
 </qualifiedTypeNameHistroy>

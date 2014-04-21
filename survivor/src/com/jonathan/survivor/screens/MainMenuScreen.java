@@ -5,8 +5,10 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -15,9 +17,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.jonathan.survivor.TerrainLevel;
 import com.jonathan.survivor.Survivor;
 import com.jonathan.survivor.hud.ConfirmDialog;
+import com.jonathan.survivor.hud.TiledImage;
 
 public class MainMenuScreen extends Screen
-{
+{	
 	/** Stores the stage used as a container for the UI widgets. It is essentially the camera that draws the widgets. */
 	private Stage stage;	
 	
@@ -30,13 +33,21 @@ public class MainMenuScreen extends Screen
 	/** Stores the table actor. This simply arranges the widgets at the center of the screen in a grid fashion. */
 	private Table table;	
 	
+	/** Stores the number of pixels that the buttons are offset down-wards. This offset ensures that the buttons are below the game's logo. */
+	private static final float BUTTON_Y_OFFSET = 200;
+	
 	/** Stores the play button. */
 	private TextButton playButton;	
 	/** Holds the options button instance. */
 	private TextButton optionsButton;	
 	
-	/** Stores the image for the logo, displayed at the center of the screen. */
-	private Image logoImage;	
+	/** Stores the x-offset of the background relative to the center of the stage. */
+	private static final float BACKGROUND_X_OFFSET = -15;
+	/** Stores the y-offset of the background relative to the center of the stage. */
+	private static final float BACKGROUND_Y_OFFSET = -20;
+	
+	/** Holds the background for the MainMenuScreen. This background is formed by a tiles of two images. */
+	private TiledImage mainMenuBackground;
 	
 	/** Holds the confirm dialog shown when the user presses the Android 'back' button, and wants to quit the game. */
 	private ConfirmDialog quitConfirmDialog;	
@@ -69,18 +80,13 @@ public class MainMenuScreen extends Screen
 		//Creates a table out of the skin. Why the skin is passed is unknown. However, this table is used to organize the widgets in a grid fashion.
 		table = new Table(assets.mainMenuSkin);
 		
-		//Stores and loads the logo image. Note that the logo image is retrieved from the main menu atlas using skin.getDrawable("Sprite Name").
-		logoImage = new Image(assets.mainMenuSkin.getDrawable("Logo"));
-		//Resize the logo image according to the scale factor. The scale factor is either 4, 2, or 1, depending on which texture size we are using. If we are
-		//using @2x size textures, we need to shrink the label to half its orginal size. Like this, the labels are always the same size, no matter which texture
-		//atlas is used. This allows the stage to keep a constant size no matter the texture size.
-		logoImage.setWidth(logoImage.getWidth()/assets.scaleFactor);
-		logoImage.setHeight(logoImage.getHeight()/assets.scaleFactor);
+		//Instantiates a TiledImage formed by two consecutive images which form the background for the screen. Note: the background was too large to fit into a single atlas.
+		mainMenuBackground = new TiledImage(assets.mainMenuBgRegion_0, assets.mainMenuBgRegion_1);
 
 		//Create the play button using the main menu button style. This gives the button the desired image.
 		playButton = new TextButton("PLAY", assets.mainMenuButtonStyle);
 		//Set the color of the button to red.
-		playButton.setColor(Color.RED);
+		playButton.setColor(new Color(0.923f, 0.282f, 0.225f, 1));	//Automn red: (0.863f, 0.352f, 0.225f, 1)
 		
 		//Resize the play button according to the scale factor. The scale factor is either 4, 2, or 1, depending on which texture size we are using. If we are
 		//using @2x size textures, we need to shrink the button to half its orginal size. Like this, the buttons are always the same size, no matter which texture
@@ -126,13 +132,11 @@ public class MainMenuScreen extends Screen
 			}
 		});
 		
-		//Adds the logoImage to the top of the table. We make it span two columns so that it is display at the center of the two buttons below.
-		table.add(logoImage).colspan(/*2*/1).width(logoImage.getWidth()).height(logoImage.getHeight()).padBottom(5);
-		//Skip a row
-		table.row();
-		//Add the play button to the table, make it right aligned, and give it a 10 pixel blank space to the right. We set the width and height to the button's 
+		//Add the mainMenuBackground to the stage so that it can be rendered before each UI element. 
+		mainMenuBackground.addToStage(stage);
+		//Add the play button to the table, make it right aligned, and give it a 'BUTTON_Y_OFFSET' pixel blank space at the top. We set the width and height to the button's 
 		//width and height to ensure that the button is not scaled when added to the table.
-		table.add(playButton)/*.right().pad(10)*/.width(playButton.getWidth()).height(playButton.getHeight());
+		table.add(playButton).padTop(BUTTON_Y_OFFSET).bottom().width(playButton.getWidth()).height(playButton.getHeight());
 		//Add the options button to the table, make it left aligned, and give it a 10 pixel blank space to the left. We set the width and height to the button's 
 		//width and height to ensure that the button is not scaled when added to the table.
 		//table.add(optionsButton).left().pad(10).width(optionsButton.getWidth()).height(optionsButton.getHeight());
@@ -144,13 +148,42 @@ public class MainMenuScreen extends Screen
 		//Add the table to the stage, telling the stage to draw all of the widgets inside the table when stage.draw() is called.
 		stage.addActor(table);
 		
+		//Plays the animations of the buttons and the widgets fading in.
+		fadeIn();
+		
+		//Plays the main menu theme. The music is automatically stopped and resumed when the player leaves or reenters the application. The music persists until changed or stopped.
+		//musicManager.play(assets.mainMenuMusic);
+		
 	}
 	
+	/** Plays the animations of the widgets fading in to the screen. */
+	private void fadeIn() 
+	{
+		//Makes sure that the table is transparent before making it fade in
+		table.setColor(Color.CLEAR);
+		//Make the table fade in
+		table.addAction(Actions.fadeIn(0.5f));
+		//Move the table down
+		table.addAction(Actions.moveBy(0, -100));
+		//Move the table back up in the given amount of time
+		table.addAction(Actions.moveBy(0, 100, 0.75f, Interpolation.exp5Out));
+	}
+	
+	/** Make the UI elements fade out once one of the buttons are pressed. */
+	private void fadeOut()
+	{
+		//Make the widgets in the table fade out
+		table.addAction(Actions.fadeOut(0.5f));
+		
+		//Move the table down to add a downward animation
+		table.addAction(Actions.moveBy(0, -100, 0.75f, Interpolation.exp5In));
+	}
+
 	@Override
 	public void render(float deltaTime)
 	{
-		//Sets the screen to be cleared with white
-		Gdx.gl.glClearColor(1,1,1,1);
+		//Sets the screen to be cleared with black
+		Gdx.gl.glClearColor(0,0,0,1);
 		//Clears the screen.
 		super.render(deltaTime);
 		
@@ -177,6 +210,9 @@ public class MainMenuScreen extends Screen
 		stage.setViewport(guiWidth, guiHeight);
 		//Sets the bounds of the table. This is essentially the largest the table can be. We set it to the full width of the GUI for the table to fill the screen.
 		table.setBounds(0, 0, guiWidth, guiHeight);
+		
+		//Positions the background at the center of the stage, using the given constants as offsets. Note that the background's position is denoted by its bottom-left corner.
+		mainMenuBackground.setPosition(stage.getWidth()/2 - mainMenuBackground.getWidth()/2 + BACKGROUND_X_OFFSET, BACKGROUND_Y_OFFSET);
 	}
 	
 	@Override

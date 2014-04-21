@@ -80,10 +80,10 @@ public class ProfileManager
 		
 		//If the profile id is greater than the last index of the profiles:Array<Profile> array, and the user doesn't want to create a new profile, throw an exception
 		if(profileId >= numProfiles && !createNew)
-			throw new IllegalArgumentException("The profile with profileId: " + profileId + " cannot be retrieved because it is greater than " + numProfiles);
+			throw new IllegalArgumentException("The profile with profileId: " + profileId + " cannot be retrieved because it is greater than or equal to " + numProfiles);
 		
 		//If the profile has already been saved inside the profiles:Profile[] array
-		if(profiles.get(profileId) != null)
+		if(profileId < profiles.size  && profiles.get(profileId) != null)
 		{
 			//Get the profile from the profile array, and set it as the current profile being used by the user, since it was the last one read.
 			currentProfile = profiles.get(profileId);
@@ -107,8 +107,8 @@ public class ProfileManager
 				
 				//Converts the text into a Profile object using Json.fromJson(class, fileText):Profile. Stores the new profile as the current profile.
 				currentProfile = json.fromJson(Profile.class, text);
-				//Stores the profile just created into the correct index (profileId) of the profiles array.
-				profiles.set(profileId, currentProfile);
+				//Add the profile just created into the profiles array.
+				profiles.insert(profileId, currentProfile);
 			}
 			catch(Exception ex)
 			{
@@ -205,9 +205,24 @@ public class ProfileManager
 			//Move the profile to its new target file, effectively shifting the profiles to the left on the hard drive.
 			oldProfileFile.copyTo(targetProfileFile);
 			
+			//Delete the old profile which was shifted to the left by one file.
+			oldProfileFile.delete();
+			
+			//Retrieves the profile that has been shifted back one index
+			Profile profile = profiles.get(i);
+			
+			//Update the profileId of the profile so that it shifts one value down.
+			profile.setProfileId(i-1);
+			
 			//Shift the profile one index to the left in order to fill up the spot of the deleted profile.
-			profiles.set(i-1, profiles.get(i));
+			profiles.set(i-1, profile);
+			
+			//Save the profile on the hard drive, so that the profileId change gets recorded on the JSON file.
+			saveProfile(profile);
 		}
+		
+		//Remove the last profile in the profile array, since it contains a duplicate profile which was shifted to index 'numProfiles-2'.
+		profiles.removeIndex(numProfiles-1);
 		
 	}
 

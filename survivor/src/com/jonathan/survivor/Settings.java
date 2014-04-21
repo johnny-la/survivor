@@ -1,5 +1,6 @@
 package com.jonathan.survivor;
 
+import com.badlogic.gdx.utils.TimeUtils;
 import com.jonathan.survivor.World.WorldState;
 import com.jonathan.survivor.managers.ProfileManager;
 
@@ -40,6 +41,12 @@ public class Settings
 	{
 		if(profile == null || profileManager == null || world == null)
 			throw new RuntimeException("The Settings instance could not save the profile. Either the profile, profileManager, or world was not registered to this instance.");
+		
+		//The profile is no longer new, as it has just been saved. As such, the profile will know that it has no longer just been created.
+		profile.setFirstTimeCreate(false);
+		
+		//Update the profile's date of modification to the current time of the system, since the profile was just saved.
+		profile.getDateLastModified().setTime(TimeUtils.millis());
 		
 		//Updates the profile's cell offset. The TerrainLevel's bottom-left layer coordinate is given, as the level expects this cell coordinate when being re-created.
 		profile.setTerrainRowOffset(world.getTerrainLevel().getBottomLeftRow());

@@ -10,8 +10,8 @@ import com.jonathan.survivor.inventory.Item;
 public class ItemObject extends GameObject implements Poolable
 {
 	/** Stores the width and height of an item GameObject's collider. This is the touchable region of the item. All Item GameObjects have the same collider size. */
-	private static final float COLLIDER_WIDTH = 45 * Survivor.WORLD_SCALE;
-	private static final float COLLIDER_HEIGHT = 45 * Survivor.WORLD_SCALE;
+	private static final float COLLIDER_WIDTH = 50 * Survivor.WORLD_SCALE;
+	private static final float COLLIDER_HEIGHT = 50 * Survivor.WORLD_SCALE;
 	
 	/** Holds the minimum and maximum y-velocity of the Item GameObject when it is spawned. */
 	private static final float MIN_Y_SPAWN_VELOCITY = 2.5f, MAX_Y_SPAWN_VELOCITY = 2.5f; 

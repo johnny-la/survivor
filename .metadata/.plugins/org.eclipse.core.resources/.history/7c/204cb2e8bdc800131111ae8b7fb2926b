@@ -1,0 +1,11 @@
+game_select_bg_atlas_1@4x.png
+format: RGB888
+filter: Linear,Linear
+repeat: none
+GameSelect_BG
+  rotate: false
+  xy: 8, 8
+  size: 1172, 1456
+  orig: 1170, 1455
+  offset: 0, -1
+  index: 0

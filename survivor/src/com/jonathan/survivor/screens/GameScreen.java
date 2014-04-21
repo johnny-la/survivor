@@ -253,6 +253,8 @@ public class GameScreen extends Screen
 			//Resume the game so that the player can play his winning animation.
 			resumeGame();
 			
+			//Make the player stop moving before playing his TELEPORT animation.
+			world.stopMoving(world.getPlayer());
 			//Tell the player to play the animation where he enters the teleporter.
 			world.getPlayer().setState(State.TELEPORT);		
 			

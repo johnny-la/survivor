@@ -59,10 +59,14 @@ public class PreferencesManager
 	 */
 	public void newProfileCreated(int profileId) 
 	{
-		//Increments the amount of profiles created by the player.
-		setAmountProfiles(getAmountProfiles()+1);
 		//Sets the profile to be loaded when the player presses the "Continue" button in the GameSelectScreen.
 		setLastProfile(profileId);
+		
+		//Increments the amount of profiles created by the player.
+		setAmountProfiles(getAmountProfiles()+1);
+		
+		//Saves the changes made to the preferences.
+		savePreferences();
 	}
 	
 	/** Called when a profile is loaded. Accepts the id of the loaded profile. The given profile will be loaded the next time the user presses "Continue". */
@@ -73,10 +77,36 @@ public class PreferencesManager
 	}
 	
 	/** Called when a profile is deleted. Decrements the amount of saved profiles by one to ensure that the manager keeps track of the amount of
-	 * profiles the user has saved. */
-	public void profileDeleted()
+	 * profiles the user has saved. 
+	 * @param profileId The ID of the profile that was deleted. If this profile is the one that is supposed to be loaded when "Continue" is pressed,
+	 * the PreferencesManager changes the profile that will be loaded when "Continue" is pressed. */
+	public void profileDeleted(int profileId)
 	{
 		//Decrements the amount of profiles that the user has saved so that the ProfileManager knows how many profiles to load
 		setAmountProfiles(getAmountProfiles()-1);
+		
+		//If the profile that was deleted is the one that was last loaded by the player, the deleted profile is the one that is loaded when the "Continue" button is pressed.
+		if(profileId == getLastProfile())
+		{
+			//Make it so that the profile that will be loaded when the "Continue" button is pressed is the first profile in the profileManager.
+			setLastProfile(0);
+		}
+		//Else, if the id of the deleted profile is less than the ID of the last profile that was loaded
+		else if(profileId < getLastProfile())
+		{
+			//The id of the profile which was last loaded by the user has decremented by one, in order to make up for the profile that was deleted. Therefore, decrement the 
+			//lastProfile's id to make up for the fact that it has been shifted back by one by the ProfileManager.shiftProfiles() method.
+			setLastProfile(getLastProfile()-1);
+		}
+		
+		//Saves the changes made to the preferences.
+		savePreferences();
+	}
+	
+	/** Saves the preferences to the hard drive. */
+	public void savePreferences()
+	{
+		//Ensures that the preferences are saved to the hard drive.
+		getPrefs().flush();
 	}
 }

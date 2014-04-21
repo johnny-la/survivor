@@ -378,7 +378,7 @@ public class World
 		human.setVelocityX(0);
 		
 		//Only set the human to idle state if he is not jumping or falling. Otherwise, he will be set to IDLE whilst jumping/falling, causing glitches.
-		//Regardless, the human will be set to IDLE once he lands his jump/fall. Or, if the human is in COMBAT mode, the JUMP/FALL state can be interrupted.
+		//Regardless, the human will be set to IDLE once he lands his jump/fall. However, if the human is in COMBAT mode, the JUMP/FALL state can be interrupted.
 		if((human.getState() != State.JUMP && human.getState() != State.FALL) || human.getMode() == Mode.COMBAT)
 		{
 			//Set the human's y-velocity to zero in the case that he was jumping or falling. Ensures that the human completely stops moving.

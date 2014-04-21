@@ -14,15 +14,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.spine.Animation;
 import com.esotericsoftware.spine.SkeletonData;
 import com.esotericsoftware.spine.SkeletonJson;
@@ -95,6 +94,12 @@ public class Assets
 	
 	//Stores the assets used by the main menu screen.
 	public TextureAtlas mainMenuAtlas;
+	public TextureAtlas mainMenuBgAtlas_0;	//The backgrounds are split into two different atlases.
+	public TextureAtlas mainMenuBgAtlas_1;
+	public TextureAtlas gameSelectBgAtlas_0; //Stores the background for the GameSelectScreen
+	public TextureAtlas gameSelectBgAtlas_1;
+	public TextureAtlas worldSelectBgAtlas_0; //Stores the background for the WorldSelectScreen
+	public TextureAtlas worldSelectBgAtlas_1;
 	private FreeTypeFontGenerator moonFlowerBoldGenerator;
 	public BitmapFont moonFlowerBold_54;
 	public BitmapFont moonFlowerBold_38;
@@ -103,11 +108,21 @@ public class Assets
 	
 	public Skin mainMenuSkin;	//We register an atlas to this skin (the main menu atlas). This lets us retrieve sprites from the atlas to use with 2D widgets.
 	public TextButtonStyle mainMenuButtonStyle;	//Defines the look of main menu buttons
-	public TextButtonStyle gameSelectButtonStyle;	//Defines the look of the buttons in the GameSelectScreen.
+	public ImageButtonStyle gameSelectButtonStyle;	//Defines the look of the backgrounds of the buttons in the GameSelectScreen.
+	public ImageButtonStyle continueButtonStyle;
+	public ImageButtonStyle newGameButtonStyle;
+	public ImageButtonStyle loadButtonStyle;
 	public ButtonStyle deleteButtonStyle;	//Holds the ButtonStyle used to dictate the look of the delete button in the WorldSelectScreen.
 	public LabelStyle mainMenuHeaderStyle;	//Defines the look of the headers in the main menu.
 	public TextButtonStyle mainMenuListButtonStyle;	//Defines the look of the buttons in the world selection list in the WorldSelectScreen.
-	public ScrollPaneStyle mainMenuScrollPaneStyle;	//Defines the look of the scroll pane in the WorldSelectMenu
+	public ScrollPaneStyle mainMenuScrollPaneStyle;	//Defines the look of the scroll pane in the WorldSelectMenu. Note: The inventoryScrollPaneStyle is used instead.
+	
+	public TextureRegion mainMenuBgRegion_0;	//Stores the two TextureRegions which form the MainMenuScreen's background.
+	public TextureRegion mainMenuBgRegion_1;
+	public TextureRegion gameSelectBgRegion_0;	//Stores the two TextureRegions which form the GameSelectScreen's background.
+	public TextureRegion gameSelectBgRegion_1;
+	public TextureRegion worldSelectBgRegion_0;	//Stores the two TextureRegions which form the WorldSelectScreen's background.
+	public TextureRegion worldSelectBgRegion_1;
 	
 	public NinePatch confirmDialogNinePatch;	//Stores the 9-patch used as the background for a confirm dialog.
 	public WindowStyle confirmDialogWindowStyle;	//Needed for the constructor of the Dialog superclass. Does not define the look of the confirmDialog, but is nevertheless required.
@@ -348,10 +363,18 @@ public class Assets
 	public void queueMainMenuAssets()
 	{
 		//Put all assets to queue for loading using the AssetManager.load("fileName", class) method.
-		manager.load("ui/main menu/atlas/main/main_menu_atlas" + scaleExtension + ".pack", TextureAtlas.class);
+		manager.load("ui/main menu/atlas/general/main_menu_atlas" + scaleExtension + ".pack", TextureAtlas.class);
+		
+		//Put the background atlases to queue for loading.
+		manager.load("ui/main menu/atlas/main_menu_bg/main_menu_bg_atlas_0" + scaleExtension + ".txt", TextureAtlas.class);
+		manager.load("ui/main menu/atlas/main_menu_bg/main_menu_bg_atlas_1" + scaleExtension + ".txt", TextureAtlas.class);
+		manager.load("ui/main menu/atlas/game_select_bg/game_select_bg_atlas_0" + scaleExtension + ".txt", TextureAtlas.class);
+		manager.load("ui/main menu/atlas/game_select_bg/game_select_bg_atlas_1" + scaleExtension + ".txt", TextureAtlas.class);
+		manager.load("ui/main menu/atlas/world_select_bg/world_select_bg_atlas_0" + scaleExtension + ".txt", TextureAtlas.class);
+		manager.load("ui/main menu/atlas/world_select_bg/world_select_bg_atlas_1" + scaleExtension + ".txt", TextureAtlas.class);
 		
 		//Puts music assets to queue inside the AssetManager using AssetManager.load("fileName", class).
-		//manager.load("sound/music/Ashton Manor.mp3", Music.class);
+		manager.load("sound/music/Main Menu Theme.ogg", Music.class);
 		
 		//Puts sound assets to queue for loading inside the AssetManager using AssetManager.load("fileName", class).
 		manager.load("sound/sfx/ui/ButtonClick.ogg", Sound.class);
@@ -403,7 +426,13 @@ public class Assets
 		/* Retrieve the loaded assets from the AssetManager using AssetManager.get("fileName"):class. */
 		
 		//Retrieves the assets for the main menu.
-		mainMenuAtlas = manager.get("ui/main menu/atlas/main/main_menu_atlas" + scaleExtension + ".pack");
+		mainMenuAtlas = manager.get("ui/main menu/atlas/general/main_menu_atlas" + scaleExtension + ".pack");
+		mainMenuBgAtlas_0 = manager.get("ui/main menu/atlas/main_menu_bg/main_menu_bg_atlas_0" + scaleExtension + ".txt");
+		mainMenuBgAtlas_1 = manager.get("ui/main menu/atlas/main_menu_bg/main_menu_bg_atlas_1" + scaleExtension + ".txt");
+		gameSelectBgAtlas_0 = manager.get("ui/main menu/atlas/game_select_bg/game_select_bg_atlas_0" + scaleExtension + ".txt");
+		gameSelectBgAtlas_1 = manager.get("ui/main menu/atlas/game_select_bg/game_select_bg_atlas_1" + scaleExtension + ".txt");
+		worldSelectBgAtlas_0 = manager.get("ui/main menu/atlas/world_select_bg/world_select_bg_atlas_0" + scaleExtension + ".txt");
+		worldSelectBgAtlas_1 = manager.get("ui/main menu/atlas/world_select_bg/world_select_bg_atlas_1" + scaleExtension + ".txt");
 		
 		//Retrieves the assets for the game.
 		zombieAtlas = manager.get("game/zombie/atlas/zombie_atlas" + scaleExtension + ".txt");
@@ -415,7 +444,7 @@ public class Assets
 		koAnimAtlas = manager.get("ui/hud/ko_hud/atlas/ko_hud_atlas" + scaleExtension + ".txt");
 		
 		//Retrieves the music files.
-		//mainMenuMusic = manager.get("sound/music/Ashton Manor.mp3");
+		mainMenuMusic = manager.get("sound/music/Main Menu Theme.ogg");
 		
 		//Retrieves sound files
 		buttonClick = manager.get("sound/sfx/ui/ButtonClick.ogg", Sound.class);
@@ -460,11 +489,23 @@ public class Assets
 		mainMenuButtonStyle.font = moonFlowerBold_54;
 
 		//Creates the TextButtonStyle which dictates the look of the "New Game", "Continue", and "Load" buttons in the GameSelectScreen.
-		gameSelectButtonStyle = new TextButtonStyle();
-		gameSelectButtonStyle.up = mainMenuSkin.getDrawable("ClickButton_Up");	//Sets the sprite for the 'up' state of the main menu buttons
-		gameSelectButtonStyle.down = mainMenuSkin.getDrawable("ClickButton_Down");	//Sets the sprite for the 'down' state of the main menu buttons
-		gameSelectButtonStyle.font = moonFlowerBold_54;
-		gameSelectButtonStyle.fontColor = Color.WHITE;
+		gameSelectButtonStyle = new ImageButtonStyle();
+		gameSelectButtonStyle.up = mainMenuSkin.getDrawable("GameSelectButton");	//Sets the sprite for the 'up' state of the main menu buttons
+		gameSelectButtonStyle.down = mainMenuSkin.getDrawable("GameSelectButton");	//Sets the sprite for the 'down' state of the main menu buttons
+		gameSelectButtonStyle.pressedOffsetX = 2.0f;
+		gameSelectButtonStyle.pressedOffsetY = -2.0f;
+		
+		//Instantiates the ImageButtonStyle used to dictate the look of the "Continue" button in the GameSelectScreen. Uses the already-created gameSelectButtonStyle as a template.
+		continueButtonStyle = new ImageButtonStyle(gameSelectButtonStyle);
+		continueButtonStyle.imageUp = continueButtonStyle.imageDown = mainMenuSkin.getDrawable("Continue");
+		
+		//Instantiates the ImageTextButtonStyle used to dictate the look of the "New Game" button in the GameSelectScreen. Uses the already-created gameSelectButtonStyle as a template.
+		newGameButtonStyle = new ImageButtonStyle(gameSelectButtonStyle);
+		newGameButtonStyle.imageUp = newGameButtonStyle.imageDown = mainMenuSkin.getDrawable("NewGame");
+		
+		//Instantiates the ImageTextButtonStyle used to dictate the look of the "Load" button in the GameSelectScreen. Uses the already-created gameSelectButtonStyle as a template.
+		loadButtonStyle = new ImageButtonStyle(gameSelectButtonStyle);
+		loadButtonStyle.imageUp = loadButtonStyle.imageDown = mainMenuSkin.getDrawable("Load");
 		
 		//Instantiates the ButtonStyle instance used to display the delete button in the WorldSelectMenu.
 		deleteButtonStyle = new ButtonStyle();
@@ -477,16 +518,24 @@ public class Assets
 		//Creates the button style used by the profile buttons in the WorldSelectScreen's list.
 		mainMenuListButtonStyle = new TextButtonStyle();
 		mainMenuListButtonStyle.font = moonFlowerBold_38;
-		mainMenuListButtonStyle.fontColor = new Color(0.5f, 0.5f, 0.5f, 1);	//If unselected, the text for the item in the world selection list will be light gray.
+		mainMenuListButtonStyle.fontColor = mainMenuListButtonStyle.downFontColor =  new Color(0.5f, 0.5f, 0.5f, 1);	//The text for the item in the world selection list is light gray.
 		mainMenuListButtonStyle.checkedFontColor = Color.WHITE;	//If selected, the button text will be white.
-		mainMenuListButtonStyle.checked = mainMenuSkin.getDrawable("ListSelection"); //The background of the button when it is selected
-		mainMenuListButtonStyle.pressedOffsetX = 1.5f;
-		mainMenuListButtonStyle.pressedOffsetX = -2;
+		Sprite listSelectionBox = mainMenuAtlas.createSprite("ListSelection");	//Creates the sprite that will be displayed over the selected profile button in the world select list.
+		listSelectionBox.setColor(new Color(0.0f, 0.53f, 1.0f, 1));	//Makes the list selection box blue.
+		mainMenuListButtonStyle.checked = mainMenuListButtonStyle.checkedOver = new SpriteDrawable(listSelectionBox); //The background of the button when it is selected
 		
-		//Instantiates the ScrollPaneStyle which dictates the background and scrolling knob images used by the world list in the WorldSelectMenu.
+		//Instantiates the ScrollPaneStyle which dictates the background and scrolling knob images used by the world list in the WorldSelectMenu. NOT YET USED
 		mainMenuScrollPaneStyle = new ScrollPaneStyle();
 		//mainMenuScrollPaneStyle.background = hudSkin.getDrawable("List_Background");
 		//mainMenuScrollPaneStyle.vScrollKnob = hudSkin.getDrawable("ScrollKnob");
+		
+		//Retrieves the TextureRegions which form the background for the screens in the main menu.
+		mainMenuBgRegion_0 = mainMenuBgAtlas_1.findRegion("MainMenu_BG");	//"_#" removed by TexturePacker from the end of the name.
+		mainMenuBgRegion_1 = mainMenuBgAtlas_0.findRegion("MainMenu_BG"); //Note: TexturePacker puts the second image in atlas 0 automatically.
+		gameSelectBgRegion_0 = gameSelectBgAtlas_1.findRegion("GameSelect_BG");	//"_#" removed after the name by TexturePacker.
+		gameSelectBgRegion_1 = gameSelectBgAtlas_0.findRegion("GameSelect_BG"); //Note: TexturePacker puts the second image in atlas 0 automatically.
+		worldSelectBgRegion_0 = worldSelectBgAtlas_1.findRegion("WorldSelect_BG");	//"_#" removed after the name by TexturePacker.
+		worldSelectBgRegion_1 = worldSelectBgAtlas_0.findRegion("WorldSelect_BG"); //Note: TexturePacker puts the second image in atlas 0 automatically.
 		
 		//Retrieves the 9-patch from the main menu atlas used to display the confirm dialog's background
 		confirmDialogNinePatch = mainMenuSkin.getPatch("ConfirmDialog");

@@ -32,8 +32,15 @@ public class CraftingManager
 		
 		//Creates all of the different crafting combinations in the game.
 		axe = new Combination();
-		axe.addItem(Iron.class, 1);
-		axe.addItem(Wood.class, 1);
+		if(!Survivor.DEBUG_MODE)
+		{
+			axe.addItem(Iron.class, 5);
+			axe.addItem(Wood.class, 10);
+		}
+		else
+		{
+			axe.addItem(Sulfur.class, 1);
+		}
 		axe.setResult(Axe.class, 1);
 		
 		rifle = new Combination();
@@ -44,8 +51,7 @@ public class CraftingManager
 		}
 		else
 		{
-			rifle.addItem(Iron.class, 2);
-			rifle.addItem(Wood.class, 2);
+			rifle.addItem(Charcoal.class, 1);
 		}
 		rifle.setResult(Rifle.class, 1);
 		
