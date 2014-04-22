@@ -38,14 +38,14 @@ public class TerrainRenderer
 		
 		//Helper rectangle used to test if a TerrainLayer is viewable by the world camera.
 		lineBounds = new Rectangle(); 
-		
-		//Enables OpenGL ES to draw smooth lines to ensure level geometry looks anti-aliased.
-		Gdx.gl.glEnable(GL10.GL_LINE_SMOOTH);
 	}
 	
 	/** Creates a matrix of TerrainLayerRenderers, each of which is used to draw a specific TerrainLayer in the given level. */
 	private void createLayerRenderers(TerrainLevel level) 
 	{
+		//Stores the TerrainLevel which is meant to be drawn by the TerrainRenderer. Allows the renderer to know which TerrainLevel it is currently rendering.
+		terrainLevel = level;
+		
 		//Creates the TerrainLayerRenderers used to draw each individual TerrainLayer in the TerrainLevel. Note that its size is identical to the amount of layers in the TerrainLevel.
 		layerRenderers = new TerrainLayerRenderer[TerrainLevel.NUM_LAYER_ROWS][TerrainLevel.NUM_LAYER_COLS];
 		
@@ -70,38 +70,41 @@ public class TerrainRenderer
 	/** Renders the terrainLevel's geometry using lines of sprites. */
 	public void render(TerrainLevel level)
 	{
-		//Retrieves the TerrainLayers contained by the level. They are stored in a 2D array. These are the only layers that are visible to the user.
-		TerrainLayer[][] layers = level.getTerrainLayers();
-		
-		//Sets the projection matrix of the ShapeRenderer to the world camera's, so that the shapes get rendered relative to world coordinates.
-		shapeRenderer.setProjectionMatrix(worldCamera.combined);
-
-		//Begins the shape rendering batch. We specify to draw lines.
-		shapeRenderer.begin(ShapeType.Line);
-		//Sets the line to be black.
-		shapeRenderer.setColor(Color.LIGHT_GRAY);
-		
-		//Cycles through the rows of TerrainLayers
-		for(int i = 0; i < layers.length; i++)
+		//If the level that needs to be rendered is not the same level that the renderer is currently rendering
+		if(level != terrainLevel)
 		{
-			//Cycles through the columns of the TerrainLayers array.
-			for(int j = 0; j < layers[i].length; j++)
+			//Update the TerrainLayerRenderers so that they render the TerrainLayers that belong to the given level.
+			createLayerRenderers(level);
+		}
+		
+		//Sets the projection matrix of the SpriteBatch to the world camera's, so that the sprites get rendered relative to world coordinates.
+		batcher.setProjectionMatrix(worldCamera.combined);
+
+		//Begins the sprite rendering batch.
+		batcher.begin();
+		
+		//Cycles through the rows of TerrainLayerRenderers
+		for(int i = 0; i < layerRenderers.length; i++)
+		{
+			//Cycles through the columns of the TerrainLayerRenderers array.
+			for(int j = 0; j < layerRenderers[i].length; j++)
 			{
-				//Stores the TerrainLayer instance that is being cycled through
-				TerrainLayer layer = layers[i][j];
+				//Stores the TerrainLayerRenderer instance that is being cycled through
+				TerrainLayerRenderer layerRenderer = layerRenderers[i][j];
 				
-				//If the line is not inside the camera's viewable region, don't draw it.
-				if(!isInCamera(layer))
+				//If the TerrainLayer that the renderer draws is not visible
+				if(!isInCamera(layerRenderer.getTerrainLayer()))
 				{
 					continue;
 				}
 				
-				
+				//Draws the TerrainLayer represented by the TerrainLayerRenderer, using the SpriteBatch instance.
+				layerRenderer.draw(batcher);
 			}
 		}
 		
-		//Commits the lines to the ShapeRenderer and draws them to the screen.
-		shapeRenderer.end();
+		//Commits the sprites to the SpriteBatch instance and draws them to the screen.
+		batcher.end();
 	}
 	
 	/** Returns true if the given layer is inside the viewable region of the world's camera. */

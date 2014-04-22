@@ -863,16 +863,16 @@ public class Assets
 		//rifleSprite.setRotation(15);
 		
 		//Creates the template sprites for the background tiles.
-		/**snow1 = interactableObjectAtlas.createSprite("Snow0001");
-		snow2 = interactableObjectAtlas.createSprite("Snow0002");
-		snow3 = interactableObjectAtlas.createSprite("Snow0003");
-		snow4 = interactableObjectAtlas.createSprite("Snow0004");
+		snow1 = itemAtlas.createSprite("Snow0001");
+		snow2 = itemAtlas.createSprite("Snow0002");
+		snow3 = itemAtlas.createSprite("Snow0003");
+		snow4 = itemAtlas.createSprite("Snow0004");
 		
 		//Resizes the background sprites so that they are the same size no matter the scale of the atlas. Note that multiplying by BACKGROUND_TILE_SCALE converts their scale to world units.
 		snow1.setSize(BACKGROUND_TILE_SCALE * snow1.getWidth()/scaleFactor, BACKGROUND_TILE_SCALE * snow1.getHeight()/scaleFactor);
 		snow2.setSize(BACKGROUND_TILE_SCALE * snow2.getWidth()/scaleFactor, BACKGROUND_TILE_SCALE * snow2.getHeight()/scaleFactor);
 		snow3.setSize(BACKGROUND_TILE_SCALE * snow3.getWidth()/scaleFactor, BACKGROUND_TILE_SCALE * snow3.getHeight()/scaleFactor);
-		snow4.setSize(BACKGROUND_TILE_SCALE * snow4.getWidth()/scaleFactor, BACKGROUND_TILE_SCALE * snow4.getHeight()/scaleFactor);*/
+		snow4.setSize(BACKGROUND_TILE_SCALE * snow4.getWidth()/scaleFactor, BACKGROUND_TILE_SCALE * snow4.getHeight()/scaleFactor);
 	}
 	
 	/** Returns the loading progress for the assets. Note that this method will return zero if the updateLoading() method has not been called yet. 
