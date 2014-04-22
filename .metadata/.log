@@ -8667,3 +8667,13 @@ java.lang.NullPointerException
 
 !ENTRY com.android.ide.eclipse.adt 1 0 2014-04-21 20:40:37.884
 !MESSAGE com.android.ide.eclipse.adt
+!SESSION 2014-04-22 06:31:21.050 -----------------------------------------------
+eclipse.buildId=M20120208-0800
+java.version=1.7.0_45
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=fr_FR
+Framework arguments:  -product org.eclipse.epp.package.java.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.java.product
+
+!ENTRY com.android.ide.eclipse.adt 1 0 2014-04-22 06:34:31.542
+!MESSAGE com.android.ide.eclipse.adt
