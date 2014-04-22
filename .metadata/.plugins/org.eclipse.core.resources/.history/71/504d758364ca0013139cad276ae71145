@@ -125,9 +125,7 @@ public class TerrainLayerRenderer
 			float segmentHeight = y2-y1;
 
 			//Finds the angle of the segment by calculating the arctangent of the segment height over the segment width.
-			float angle = (float)Math.atan(segmentHeight/segmentLength) * Vector2.TO_DEGREES;
-			
-			
+			float angle = (float)Math.atan(segmentHeight/segmentLength);
 			
 			//Draws a segment of the bottom of the cosine function. Renders a line going from the left-end segment to the right-end. Note that the y-value
 			//of the segment is found using 'TerrainLayer.getBottomLayerHeight()'. We take the bottom height since we are drawing the bottom layer portion.
