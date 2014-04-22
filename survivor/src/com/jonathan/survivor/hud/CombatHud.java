@@ -260,7 +260,7 @@ public class CombatHud extends Hud
 		Sprite gunImage = assets.hudSkin.getSprite("Gun");
 		Sprite circleButtonImage = assets.hudSkin.getSprite("CircleButton");
 		
-		//Ensures the fire button's button does not scale up according to the size of the gun image. Otherwise, the circle button would warp weirdly.
+		//Ensures the fire button does not scale up according to the size of the gun image. Otherwise, the circle button would warp weirdly.
 		fireButton.setSize(assets.hudSkin.getSprite("CircleButton").getWidth() / assets.scaleFactor,assets.hudSkin.getSprite("CircleButton").getHeight() / assets.scaleFactor);
 		//Ensures the gun image on the button is the same size as the original gun image. Also adds padding to better position the gun on the button.
 		fireButton.getImageCell().width(gunImage.getWidth()/assets.scaleFactor).height(gunImage.getHeight()).padLeft(2).padBottom(5);

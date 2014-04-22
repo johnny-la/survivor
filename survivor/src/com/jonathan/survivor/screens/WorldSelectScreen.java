@@ -157,8 +157,10 @@ public class WorldSelectScreen extends Screen
 				//Tell the PreferencesManager that the selected profile was loaded. This profile will be registered as the player's last used profile.
 				prefsManager.profileLoaded(selectedProfileId);
 				
-				//Disposes of the assets used by the loading and company splash screen to free up system resources.
+				//Disposes of the assets used by the loading and company splash screen in order to free up system resources.
 				assets.disposeInitialAssets();
+				//Disposes of all the heavy assets used only by the main menu. Allows the game to free up heavy system resources when the user enters the game.
+				assets.disposeMainMenuAssets();
 				
 				//Switch the GameScreen, passing in the chosen profile as a second argument.
 				game.setScreen(new GameScreen(game, profile));

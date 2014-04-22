@@ -28,6 +28,9 @@ public class TerrainRenderer
 	/** Stores the ShapeRenderer instance used to draw the level geometry. */
 	private ShapeRenderer shapeRenderer;
 	
+	/** Holds renderer the used to place and render the terrain fragments individually. */
+	private TerrainSpriteRenderer terrainSpriteRenderer;
+	
 	/** Accepts the camera where the terrain lines will be drawn. */
 	public TerrainRenderer(OrthographicCamera worldCamera)
 	{
@@ -36,6 +39,9 @@ public class TerrainRenderer
 		
 		//Creates the ShapeRenderer instance used to draw the level geometry with lines.
 		shapeRenderer = new ShapeRenderer();
+		
+		//Creates the TerrainRenderer instance used to draw the individual snow fragments which form the TerrainLevel.
+		terrainSpriteRenderer = new TerrainSpriteRenderer();
 		
 		lineBounds = new Rectangle();
 		
@@ -70,8 +76,8 @@ public class TerrainRenderer
 				Vector2 leftEndPoint = layer.getLeftPoint();
 				Vector2 rightEndPoint = layer.getRightPoint();
 				
-				//If the line is not inside the camera's viewable region, don't draw it. If the layer is a COSINE, camera culling is done for each individual line segment.
-				if(!isInCamera(leftEndPoint.x, leftEndPoint.y, rightEndPoint.x, rightEndPoint.y) && layer.getTerrainType() != TerrainType.COSINE)
+				//If the line is not inside the camera's viewable region, don't draw it.
+				if(!isInCamera(layer))
 				{
 					continue;
 				}
@@ -114,10 +120,10 @@ public class TerrainRenderer
 						float y2 = layers[i][j].getBottomLayerHeight(x2);
 						
 						//If the line is not inside the camera's viewable region, don't draw it. The two-end points of the line are accepted as arguments.
-						if(!isInCamera(x1, y1, x2, y2))
+						/*if(!isInCamera(x1, y1, x2, y2))
 						{
 							continue;
-						}
+						}*/
 
 						//Draws a segment of the bottom of the cosine function. Renders a line going from the left-end segment to the right-end. Note that the y-value
 						//of the segment is found using 'TerrainLayer.getBottomLayerHeight()'. We take the bottom height since we are drawing the bottom layer portion.
@@ -139,9 +145,22 @@ public class TerrainRenderer
 		shapeRenderer.end();
 	}
 	
-	/** Returns true if the given line is inside the viewable region of the camera. Note: The order of the points does not matter. */
-	public boolean isInCamera(float x1, float y1, float x2, float y2)
-	{
+	/** Returns true if the given layer is inside the viewable region of the world's camera. */
+	public boolean isInCamera(TerrainLayer layer)
+	{	
+		//Stores the end-points of the rectangle which encompasses the TerrainLayer, found using the right and left end points of the layer.
+		float x1 = layer.getLeftPoint().x;
+		float y1 = layer.getLeftPoint().y;
+		float x2 = layer.getRightPoint().x;
+		float y2 = layer.getRightPoint().y;
+
+		//If the given TerrainLayer is a cosine function, the height of the center of the wave has to be taken into account.
+		if(layer.getTerrainType() == TerrainType.COSINE)
+		{
+			//Re-define the second y-value of the rectangle encompassing the layer to be the center y-value of the cosine function.
+			y2 = layer.getBottomLayerHeight(layer.getCenterX());
+		}
+		
 		//Sets the bottom left-point of the rectangle to the bottom-left point of the line.
 		lineBounds.setPosition(Math.min(x1, x2), Math.min(y1, y2));
 		//Finds the size the line would encapsulate as a rectangle. We denote the points as the diagonal intersector of the rectangle.

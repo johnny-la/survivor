@@ -18,22 +18,31 @@ public class LoadingScreen extends Screen
 	/** Holds the left-center position of the player relative to the center of the screen. Note that this measurement is in meters, not in pixels, and is thus much smaller. */
 	private static final float PLAYER_X = -0.1f, PLAYER_Y = 0.05f;
 	
-	private static final float HINT_DISPLAY_TIME = 2;	//Holds the amount of time a hint is displayed before switching.
+	/** Holds the amount of time a hint is displayed before switching to the next hint. */
+	private static final float HINT_DISPLAY_TIME = 2;	
 	
-	private OrthographicCamera guiCamera;	//Stores the camera displaying the loading screen's GUI.
+	/** Stores the camera displaying the loading screen's GUI. */
+	private OrthographicCamera guiCamera;
 	
-	private Label progressLabel; 	//Holds the label showing a percentage of loading progress.
-	private Label hintLabel; 	//Holds the label showing hints which let the user pass time.
+	/** Holds the label showing a percentage of loading progress. */
+	private Label progressLabel;
+	/** Holds the label showing hints which let the user pass time. */
+	private Label hintLabel; 	
 	
-	private Skeleton playerSkeleton;	//Stores the skeleton instance which draws the player to the screen.
+	/** Stores the skeleton instance which draws the player to the screen. */
+	private Skeleton playerSkeleton;
 	
-	private String[] hints = {"Loading worlds...", "Loading zombies...", "Loading the mentally challenged..."};	//Stores the list of all possible hints.
+	/** Stores the list of all possible hints shown in the loading screen. */
+	private String[] hints = {"Loading worlds..."};	
 	
-	private int hintTime = 0;	//Stores the amount of time a hint has been showing.
-	private float playerStateTime;	//Holds the amount of time the player has been playing his current animation. Used to tell Spine which time in the animation to play.
-	private float displayTime = 0; //Stores the amount of time the loading screen has been displayed.
+	/** Stores the amount of time the current hint has been showing. */
+	private int hintTime = 0;
+	/** Holds the amount of time the player has been playing his current animation. Used to tell Spine which time in the animation to play. */
+	private float playerStateTime;	
+	/** Stores the amount of time the loading screen has been displayed. */
+	private float displayTime = 0; 
 	
-	//Helper Array that's passed to the Animation.set() method when the player plays an animation.
+	/** Helper Array that's passed to the Animation.set() method when the player plays an animation. */
 	private Array<Event> events = new Array<Event>();
 	
 	public LoadingScreen(Survivor game)
@@ -81,10 +90,6 @@ public class LoadingScreen extends Screen
 		{
 			//Load the profiles saved inside the hard drive. This must be done here because the AssetsManager class from the Assets singleton can't load JSON files.
 			profileManager.loadProfiles();
-			
-			//Loads all the assets needed for the main menu and the game which were not loaded automatically by the Assets class with the updateLoading() method.
-			/*assets.loadMainMenuAssets();
-			assets.loadGameAssets();*/
 			
 			//Switch to the main menu screen
 			game.setScreen(new MainMenuScreen(game));

@@ -152,7 +152,7 @@ public class MainMenuScreen extends Screen
 		fadeIn();
 		
 		//Plays the main menu theme. The music is automatically stopped and resumed when the player leaves or reenters the application. The music persists until changed or stopped.
-		//musicManager.play(assets.mainMenuMusic);
+		musicManager.play(assets.mainMenuMusic);
 		
 	}
 	

@@ -204,6 +204,7 @@ public class Assets
 	public Animation zombieDead;
 	
 	public TextureAtlas interactableObjectAtlas;
+	public TextureAtlas itemAtlas;
 	public SkeletonJson treeSkeletonJson;
 	public SkeletonData treeSkeletonData;
 	public Animation treeIdle;
@@ -326,6 +327,7 @@ public class Assets
 		playerSkeletonJson.setScale(PLAYER_SKELETON_UI_SCALE);	//Re-scale the skeleton to fit GUI camera units. 
 		playerSkeletonData_UI = playerSkeletonJson.readSkeletonData(Gdx.files.internal("game/player/skeleton/player_skeleton.json"));		
 		//Stores the player's animations which are needed for the loading screen.
+		playerIdle = playerSkeletonData_UI.findAnimation("Combat_Idle");
 		playerSleep = playerSkeletonData_UI.findAnimation("Sleep");
 		playerSleep_Alert = playerSkeletonData_UI.findAnimation("Sleep_Alert");
 
@@ -350,6 +352,9 @@ public class Assets
 	 */
 	private void queueAssetsForLoading()
 	{
+		//Queues the general assets for loading. These are the assets that need to persist through the entire game's life-cycle.
+		queueGeneralAssets();
+		
 		//Queues the main menu's assets for loading.
 		queueMainMenuAssets();
 		
@@ -357,14 +362,20 @@ public class Assets
 		queueGameAssets();
 	}
 	
+	/** Queues general assets for loading. Loading is performed every time the updateLoading() method is called. Before calling updateLoading(), the AssetManager needs to
+	 *  know which assets to load. This method puts all the general assets which persist throughout the game's entire life-cycle to queue inside the AssetManager instance.
+	 */
+	private void queueGeneralAssets()
+	{
+		//Put all assets to queue for loading using the AssetManager.load("fileName", class) method.
+		manager.load("ui/main menu/atlas/general/main_menu_atlas" + scaleExtension + ".pack", TextureAtlas.class);
+	}
+
 	/** Queues the main menu's assets for loading. Loading is performed every time the updateLoading() method is called. Before calling updateLoading(), the AssetManager
 	 *  which assets to load. This method puts all main menu assets assets to queue inside the AssetManager instance.
 	 */
 	public void queueMainMenuAssets()
 	{
-		//Put all assets to queue for loading using the AssetManager.load("fileName", class) method.
-		manager.load("ui/main menu/atlas/general/main_menu_atlas" + scaleExtension + ".pack", TextureAtlas.class);
-		
 		//Put the background atlases to queue for loading.
 		manager.load("ui/main menu/atlas/main_menu_bg/main_menu_bg_atlas_0" + scaleExtension + ".txt", TextureAtlas.class);
 		manager.load("ui/main menu/atlas/main_menu_bg/main_menu_bg_atlas_1" + scaleExtension + ".txt", TextureAtlas.class);
@@ -389,6 +400,7 @@ public class Assets
 		//Put all assets to queue for loading using the AssetManager.load("fileName", class) method.
 		manager.load("game/zombie/atlas/zombie_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		manager.load("game/interactable_objects/atlas/interactable_objects_atlas" + scaleExtension + ".txt", TextureAtlas.class);
+		manager.load("game/item/atlas/item_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		manager.load("ui/hud/general/atlas/hud_atlas" + scaleExtension + ".pack", TextureAtlas.class);
 		manager.load("ui/hud/backpack_bg/atlas/backpack_bg_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		manager.load("ui/hud/survivalguide_bg/atlas/survivalguide_bg_atlas" + scaleExtension + ".txt", TextureAtlas.class);
@@ -425,7 +437,31 @@ public class Assets
 	{
 		/* Retrieve the loaded assets from the AssetManager using AssetManager.get("fileName"):class. */
 		
-		//Retrieves the assets for the main menu.
+		//Stores the general assets loaded by the AssetManager which persist through the game's entire life-cycle.
+		storeGeneralAssets();
+		
+		//Stores the main menu assets loaded by the AssetManager.
+		storeMainMenuAssets();
+		
+		//Stores the game assets loaded by the AssetManager inside the appropriate member variables.
+		storeGameAssets();
+		
+		/* Loads any assets that couldn't be loaded using the AssetManager. */
+		loadExtraAssets();	
+	}
+
+	/** Stores all of the general assets loaded by the AssetManager which are used in several different screens, and persist throughout the game's entire life-cycle. */
+	private void storeGeneralAssets() 
+	{
+		//Retrieves all of the general atlases loaded by the AssetManager inside 'Assets.update()'. These assets are used in several different screens.
+		mainMenuAtlas = manager.get("ui/main menu/atlas/general/main_menu_atlas" + scaleExtension + ".pack");
+	}
+
+	/** Stores all of the heavy assets used only by the main menu screens, which were loaded by the AssetManager. Note that these assets will be disposed of when the user exits
+	 *  the main menu screen and enters the game. */
+	public void storeMainMenuAssets() 
+	{
+		//Retrieves all of the main menu atlases loaded by the AssetManager inside 'Assets.update()'
 		mainMenuAtlas = manager.get("ui/main menu/atlas/general/main_menu_atlas" + scaleExtension + ".pack");
 		mainMenuBgAtlas_0 = manager.get("ui/main menu/atlas/main_menu_bg/main_menu_bg_atlas_0" + scaleExtension + ".txt");
 		mainMenuBgAtlas_1 = manager.get("ui/main menu/atlas/main_menu_bg/main_menu_bg_atlas_1" + scaleExtension + ".txt");
@@ -434,29 +470,34 @@ public class Assets
 		worldSelectBgAtlas_0 = manager.get("ui/main menu/atlas/world_select_bg/world_select_bg_atlas_0" + scaleExtension + ".txt");
 		worldSelectBgAtlas_1 = manager.get("ui/main menu/atlas/world_select_bg/world_select_bg_atlas_1" + scaleExtension + ".txt");
 		
+		//Retrieves the music files.
+		mainMenuMusic = manager.get("sound/music/Main Menu Theme.ogg");
+		
+		//Retrieves sound files loaded from the AssetManager
+		buttonClick = manager.get("sound/sfx/ui/ButtonClick.ogg", Sound.class);
+		swoosh = manager.get("sound/sfx/ui/Swoosh.ogg", Sound.class);
+	}
+	
+	/** Retrieves and stores all of the assets used by the GameScreen which were loaded by the AssetManager inside the Assets.update() method. */
+	private void storeGameAssets() 
+	{
 		//Retrieves the assets for the game.
 		zombieAtlas = manager.get("game/zombie/atlas/zombie_atlas" + scaleExtension + ".txt");
 		interactableObjectAtlas = manager.get("game/interactable_objects/atlas/interactable_objects_atlas" + scaleExtension + ".txt");
+		itemAtlas = manager.get("game/item/atlas/item_atlas" + scaleExtension + ".txt");
 		hudAtlas = manager.get("ui/hud/general/atlas/hud_atlas" + scaleExtension + ".pack");
 		backpackBgAtlas = manager.get("ui/hud/backpack_bg/atlas/backpack_bg_atlas" + scaleExtension + ".txt");
 		survivalGuideBgAtlas = manager.get("ui/hud/survivalguide_bg/atlas/survivalguide_bg_atlas" + scaleExtension + ".txt");
 		versusAnimAtlas = manager.get("ui/hud/versus_hud/atlas/versus_hud_atlas" + scaleExtension + ".txt");
 		koAnimAtlas = manager.get("ui/hud/ko_hud/atlas/ko_hud_atlas" + scaleExtension + ".txt");
-		
-		//Retrieves the music files.
-		mainMenuMusic = manager.get("sound/music/Main Menu Theme.ogg");
-		
-		//Retrieves sound files
-		buttonClick = manager.get("sound/sfx/ui/ButtonClick.ogg", Sound.class);
-		swoosh = manager.get("sound/sfx/ui/Swoosh.ogg", Sound.class);
-		
-		/* Loads any assets that couldn't be loaded using the AssetManager. */
-		loadExtraAssets();	
 	}
 	
 	/** Loads any extra assets that couldn't be loaded using the AssetManager. */
 	private void loadExtraAssets()
 	{
+		//Loads the general assets which couldn't be loaded by the AssetManager, but which are used by every screen in the game.
+		loadGeneralAssets();
+		
 		//Loads the assets used by the main menu which couldn't be loaded by an AssetManager.
 		loadMainMenuAssets();
 		
@@ -464,9 +505,8 @@ public class Assets
 		loadGameAssets();
 	}
 	
-	/** Loads the assets used by the main menu which can't be loaded by the Asset Manager in the updateLoading() method, such as TTF fonts or button styles. MUST be called after
-	 *  loading in the loading screen is complete, and and after updateLoading() returns true. */
-	public void loadMainMenuAssets()
+	/** Loads and stores the general assets used by most screens in the game. Loads the assets which couldn't be loaded with the AssetManager. */
+	public void loadGeneralAssets()
 	{
 		//Creates the Moon Flower Bold 54pt font. This must be done after the loading is finished because AssetManagers can't load FreeTypeFontGenerators.
 		moonFlowerBoldGenerator = new FreeTypeFontGenerator(Gdx.files.internal("ui/fonts/moon flower bold/Moon Flower Bold.ttf"));
@@ -521,6 +561,7 @@ public class Assets
 		mainMenuListButtonStyle.fontColor = mainMenuListButtonStyle.downFontColor =  new Color(0.5f, 0.5f, 0.5f, 1);	//The text for the item in the world selection list is light gray.
 		mainMenuListButtonStyle.checkedFontColor = Color.WHITE;	//If selected, the button text will be white.
 		Sprite listSelectionBox = mainMenuAtlas.createSprite("ListSelection");	//Creates the sprite that will be displayed over the selected profile button in the world select list.
+		listSelectionBox.setSize(listSelectionBox.getWidth() / scaleFactor, listSelectionBox.getHeight() / scaleFactor);	//Scale down the box according to the scaleFactor of the assets.
 		listSelectionBox.setColor(new Color(0.0f, 0.53f, 1.0f, 1));	//Makes the list selection box blue.
 		mainMenuListButtonStyle.checked = mainMenuListButtonStyle.checkedOver = new SpriteDrawable(listSelectionBox); //The background of the button when it is selected
 		
@@ -529,6 +570,17 @@ public class Assets
 		//mainMenuScrollPaneStyle.background = hudSkin.getDrawable("List_Background");
 		//mainMenuScrollPaneStyle.vScrollKnob = hudSkin.getDrawable("ScrollKnob");
 		
+		//Retrieves the 9-patch from the main menu atlas used to display the confirm dialog's background
+		confirmDialogNinePatch = mainMenuSkin.getPatch("ConfirmDialog");
+		
+		//Creates the WindowStyle used to define the look of the confirm dialog. The only useful argument is the last, which defines the background of the dialog.
+		confirmDialogWindowStyle = new WindowStyle(moonFlowerBold_54, new Color(0.2941f, 0.3216f, 0.2316f, 1f), new NinePatchDrawable(confirmDialogNinePatch));
+	}
+	
+	/** Loads the assets used only by the main menu which can't be loaded by the Asset Manager in the updateLoading() method, such as TTF fonts or button styles. MUST be called after
+	 *  loading in the loading screen is complete, and and after updateLoading() returns true. These assets will be disposed of when the user exits the main menu screens. */
+	public void loadMainMenuAssets()
+	{		
 		//Retrieves the TextureRegions which form the background for the screens in the main menu.
 		mainMenuBgRegion_0 = mainMenuBgAtlas_1.findRegion("MainMenu_BG");	//"_#" removed by TexturePacker from the end of the name.
 		mainMenuBgRegion_1 = mainMenuBgAtlas_0.findRegion("MainMenu_BG"); //Note: TexturePacker puts the second image in atlas 0 automatically.
@@ -536,12 +588,6 @@ public class Assets
 		gameSelectBgRegion_1 = gameSelectBgAtlas_0.findRegion("GameSelect_BG"); //Note: TexturePacker puts the second image in atlas 0 automatically.
 		worldSelectBgRegion_0 = worldSelectBgAtlas_1.findRegion("WorldSelect_BG");	//"_#" removed after the name by TexturePacker.
 		worldSelectBgRegion_1 = worldSelectBgAtlas_0.findRegion("WorldSelect_BG"); //Note: TexturePacker puts the second image in atlas 0 automatically.
-		
-		//Retrieves the 9-patch from the main menu atlas used to display the confirm dialog's background
-		confirmDialogNinePatch = mainMenuSkin.getPatch("ConfirmDialog");
-		
-		//Creates the WindowStyle used to define the look of the confirm dialog. The only useful argument is the last, which defines the background of the dialog.
-		confirmDialogWindowStyle = new WindowStyle(moonFlowerBold_54, new Color(0.2941f, 0.3216f, 0.2316f, 1f), new NinePatchDrawable(confirmDialogNinePatch));
 	}
 	
 	/** Loads the assets used in-game which couldn't be loaded by the Asset Manager in the updateLoading() method, such as SkeletonJson files. MUST be called after
@@ -784,7 +830,7 @@ public class Assets
 		boxScavenged = boxSkeletonData.findAnimation("Scavenged");
 		
 		//Sets up the skeleton used by the item GameObjects the user collects on the ground. 
-		itemSkeletonJson = new SkeletonJson(interactableObjectAtlas);
+		itemSkeletonJson = new SkeletonJson(itemAtlas);
 		itemSkeletonJson.setScale(ITEM_SKELETON_SCALE);
 		itemSkeletonData = itemSkeletonJson.readSkeletonData(Gdx.files.internal("game/item/skeleton/item_skeleton.json"));
 		//Stores the animations of an item's skeleton.
@@ -800,24 +846,24 @@ public class Assets
 		projectileIdle = projectileSkeletonData.findAnimation("Idle");
 		
 		//Creates the sprites displayed in the inventory for each item. These are template sprites which are copied to be placed inside pools.
-		woodSprite = interactableObjectAtlas.createSprite("Wood");
-		ironSprite = interactableObjectAtlas.createSprite("Iron");
-		waterSprite = interactableObjectAtlas.createSprite("Water");
-		charcoalSprite = interactableObjectAtlas.createSprite("Charcoal");
-		saltpeterSprite = interactableObjectAtlas.createSprite("Saltpeter");
-		sulfurSprite = interactableObjectAtlas.createSprite("Sulfur");
-		gunpowderSprite = interactableObjectAtlas.createSprite("Gunpowder");
-		bulletSprite = interactableObjectAtlas.createSprite("Bullet");
-		teleporterSprite = interactableObjectAtlas.createSprite("Teleporter");
+		woodSprite = itemAtlas.createSprite("Wood");
+		ironSprite = itemAtlas.createSprite("Iron");
+		waterSprite = itemAtlas.createSprite("Water");
+		charcoalSprite = itemAtlas.createSprite("Charcoal");
+		saltpeterSprite = itemAtlas.createSprite("Saltpeter");
+		sulfurSprite = itemAtlas.createSprite("Sulfur");
+		gunpowderSprite = itemAtlas.createSprite("Gunpowder");
+		bulletSprite = itemAtlas.createSprite("Bullet");
+		teleporterSprite = itemAtlas.createSprite("Teleporter");
 		axeSprite = playerAtlas.createSprite(Axe.WEAPON_ATTACHMENT_NAME);	//The name of the sprite in the atlas is the same as the name of the axe's attachment.
 		axeSprite.setSize(axeSprite.getWidth()/2, axeSprite.getHeight()/2);	//Resizes the axe sprite to fit an inventory box.
-		rifleSprite = interactableObjectAtlas.createSprite(Rifle.WEAPON_ATTACHMENT_NAME);	//Grabs the rifle sprite from the player's atlas.
+		rifleSprite = itemAtlas.createSprite(Rifle.WEAPON_ATTACHMENT_NAME);	//Grabs the rifle sprite from the player's atlas.
 		//rifleSprite.setSize(rifleSprite.getWidth()/5, rifleSprite.getHeight()/5);	//Resizes the sprite to fit an inventory box.
 		//rifleSprite.setOrigin(rifleSprite.getWidth()/2, 0);
 		//rifleSprite.setRotation(15);
 		
 		//Creates the template sprites for the background tiles.
-		snow1 = interactableObjectAtlas.createSprite("Snow0001");
+		/**snow1 = interactableObjectAtlas.createSprite("Snow0001");
 		snow2 = interactableObjectAtlas.createSprite("Snow0002");
 		snow3 = interactableObjectAtlas.createSprite("Snow0003");
 		snow4 = interactableObjectAtlas.createSprite("Snow0004");
@@ -826,7 +872,7 @@ public class Assets
 		snow1.setSize(BACKGROUND_TILE_SCALE * snow1.getWidth()/scaleFactor, BACKGROUND_TILE_SCALE * snow1.getHeight()/scaleFactor);
 		snow2.setSize(BACKGROUND_TILE_SCALE * snow2.getWidth()/scaleFactor, BACKGROUND_TILE_SCALE * snow2.getHeight()/scaleFactor);
 		snow3.setSize(BACKGROUND_TILE_SCALE * snow3.getWidth()/scaleFactor, BACKGROUND_TILE_SCALE * snow3.getHeight()/scaleFactor);
-		snow4.setSize(BACKGROUND_TILE_SCALE * snow4.getWidth()/scaleFactor, BACKGROUND_TILE_SCALE * snow4.getHeight()/scaleFactor);
+		snow4.setSize(BACKGROUND_TILE_SCALE * snow4.getWidth()/scaleFactor, BACKGROUND_TILE_SCALE * snow4.getHeight()/scaleFactor);*/
 	}
 	
 	/** Returns the loading progress for the assets. Note that this method will return zero if the updateLoading() method has not been called yet. 
@@ -845,10 +891,35 @@ public class Assets
 		//Disposes of the assets used by the loading screen and the company splash screen.
 		loadingScreenAtlas.dispose();
 		
+		//Nullify the references to the assets which are no longer needed for the splash screen.
 		companyLogo = null;
 		mugishaLogo = null;
 		loadingBackground = null;
-		loadingLabelStyle = null;
+		//loadingLabelStyle = null;	//This LabelStyle is used by the MainMenuLoadingScreen.
+	}
+	
+	/** Dispose all of the heavy assets needed only by the main menu and all its associated screens. Called when the user leaves the main menu in order 
+	 *  to free up resources for the GameScreen. */
+	public void disposeMainMenuAssets()
+	{
+		//Unloads and disposes of all of the background atlases used by the main menu in order to free up system resources when the player leaves the main menu.
+		manager.unload("ui/main menu/atlas/main_menu_bg/main_menu_bg_atlas_0" + scaleExtension + ".txt");
+		manager.unload("ui/main menu/atlas/main_menu_bg/main_menu_bg_atlas_1" + scaleExtension + ".txt");
+		manager.unload("ui/main menu/atlas/game_select_bg/game_select_bg_atlas_0" + scaleExtension + ".txt");
+		manager.unload("ui/main menu/atlas/game_select_bg/game_select_bg_atlas_1" + scaleExtension + ".txt");
+		manager.unload("ui/main menu/atlas/world_select_bg/world_select_bg_atlas_0" + scaleExtension + ".txt");
+		manager.unload("ui/main menu/atlas/world_select_bg/world_select_bg_atlas_1" + scaleExtension + ".txt");
+		
+		//Unloads the main menu music from memory.
+		manager.unload("sound/music/Main Menu Theme.ogg");
+		
+		//Dispose of the assets that only the main menu uses.
+		mainMenuBgRegion_0 = null;
+		mainMenuBgRegion_1 = null;
+		gameSelectBgRegion_0 = null;
+		gameSelectBgRegion_1 = null;
+		worldSelectBgRegion_0 = null;
+		worldSelectBgRegion_1 = null;
 	}
 	
 	/** Called on application quit inside the Survivor class. Frees any audio/visual resources used by the application. */

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
+import com.jonathan.survivor.Assets;
 
 public class TiledImage 
 {
@@ -42,6 +43,9 @@ public class TiledImage
 	{
 		//Creates a new Image instance from the given TextureRegion. 
 		Image image = new Image(region);
+		
+		//Scale down the image if a @2x or @4x atlas was chosen so that the image occupies the same amount of space, no matter the screen size.
+		image.setSize(image.getWidth() / Assets.instance.scaleFactor, image.getHeight() / Assets.instance.scaleFactor);
 		
 		//Add the image's width to the total width of the TiledImage.
 		width += image.getWidth();
@@ -85,7 +89,7 @@ public class TiledImage
 				Image previousImage = images.get(i-1);
 				
 				//Place the created image right next to the previous image.
-				image.setX(previousImage.getX() + previousImage.getWidth()-1.5f);
+				image.setX(previousImage.getX() + previousImage.getWidth());
 				//Places the image at the same y-position as the previous image.
 				image.setY(previousImage.getY());
 			}

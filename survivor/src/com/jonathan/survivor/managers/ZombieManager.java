@@ -277,6 +277,10 @@ public class ZombieManager
 
 		//Gets the Player being controlled in the world for collision checking.
 		Player player = world.getPlayer();
+		
+		//If the player and the zombie are in different terrain rows, return this method, since the zombie cannot collide with the zombie whilst in EXPLORING mode.
+		if(player.getTerrainCell().getRow() != zombie.getTerrainCell().getRow())
+			return;
 
 		//If the zombie has intersected with the player
 		if(zombie.getCollider().intersects(player.getCollider()))

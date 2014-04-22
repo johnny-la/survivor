@@ -43,7 +43,7 @@ public class BackgroundRenderer
 		batcher.begin();
 		
 		//Draws the Background to the screen.
-		//draw(deltaTime);
+		draw(deltaTime);
 
 		//Commit the background sprites and draw them on-screen.
 		batcher.end();

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -116,6 +117,7 @@ public class GameSelectScreen extends Screen
 		//Scales the continue Button down so that according to the scaleFactor of the assets. This way, no matter the size of the atlases
 		//chosen, the buttons are the same size.
 		continueButton.setSize(continueButton.getWidth() / assets.scaleFactor, continueButton.getHeight() / assets.scaleFactor);
+
 		
 		//Creates the button which allows the player to create a new world.
 		newGameButton = new ImageButton(assets.newGameButtonStyle);
@@ -194,6 +196,8 @@ public class GameSelectScreen extends Screen
 		//Creates a new label which says "Load", and which is placed under the loadButton.
 		loadLabel = new Label("Load", assets.hudLabelStyle);
 		
+		//Resizes the buttons to ensure that they are the same size, no matter the size of the screen.
+		resizeButtons();
 		//Disables the continueButton and the loadButton if the user has no saved profiles on his hard drive.
 		disableUselessButtons();
 		
@@ -229,25 +233,6 @@ public class GameSelectScreen extends Screen
 		fadeIn();
 		
 	}
-	
-	/** Disables the continueButton and the loadButton if the user has no saved profiles on his hard drive. */
-	private void disableUselessButtons() 
-	{
-		//If the player has no profiles saved on the hard drive, disable the "Continue" and the "Load" buttons.
-		if(profileManager.isEmpty())
-		{
-			//Disable the continue and the load buttons.
-			continueButton.setDisabled(true);
-			loadButton.setDisabled(true);
-			
-			//Change the colour of the disabled buttons and their images to ensure that the player knows he can't press them.
-			continueButton.setColor(BUTTON_DISABLED_COLOR);
-			continueButton.getImage().setColor(BUTTON_DISABLED_COLOR);
-			loadButton.setColor(BUTTON_DISABLED_COLOR);
-			loadButton.getImage().setColor(BUTTON_DISABLED_COLOR);
-		}
-		
-	}
 
 	/** Creates a new profile, and runs the game using that profile. */
 	private void newGame()
@@ -255,15 +240,16 @@ public class GameSelectScreen extends Screen
 		//Stores the profileId for the profile we want to create. We want the profile to be placed after the last created profile, which has id=getNumProfiles()-1,
 		//since profileIds are zero-based.
 		int newProfileId = profileManager.getNumProfiles();
-		System.out.println("Create profile with id = " + newProfileId);
 		//Creates a new profile in the profileManager and saves it to the hard drive.
 		Profile profile = profileManager.createProfile(newProfileId);
 		
 		//Tell the PreferencesManager that a new profile was created with the given Id. Makes it so that this profile will be loaded when "Continue" is pressed.
 		prefsManager.newProfileCreated(newProfileId);
 		
-		//Disposes of the assets used by the loading and company splash screen to free up system resources.
+		//Disposes of the assets used by the loading and company splash screen, in order to free up system resources.
 		assets.disposeInitialAssets();
+		//Disposes of all the heavy assets used only by the main menu. Allows the game to free up heavy system resources when the user enters the game.
+		assets.disposeMainMenuAssets();
 		
 		//Switch the GameScreen, passing in the chosen profile as a second argument.
 		game.setScreen(new GameScreen(game, profile));
@@ -274,7 +260,6 @@ public class GameSelectScreen extends Screen
 	{
 		//Gets the profileId of the last profile which was loaded by the player. This is the profile that the player should continue playing on.
 		int lastProfileId = prefsManager.getLastProfile();
-		System.out.println("Profile to load: " + lastProfileId);
 		
 		//Retrieves the profile which the player has to continue playing on.
 		Profile profile = profileManager.getProfile(lastProfileId);
@@ -282,8 +267,10 @@ public class GameSelectScreen extends Screen
 		//Tell the PreferencesManager that the given profile was loaded.
 		prefsManager.profileLoaded(lastProfileId);
 		
-		//Disposes of the assets used by the loading and company splash screen to free up system resources.
+		//Disposes of the assets used by the loading and company splash screen, in order to free up system resources.
 		assets.disposeInitialAssets();
+		//Disposes of all the heavy assets used only by the main menu. Allows the game to free up heavy system resources when the user enters the game.
+		assets.disposeMainMenuAssets();
 		
 		//Switch the GameScreen, passing in the chosen profile as a second argument.
 		game.setScreen(new GameScreen(game, profile));
@@ -324,6 +311,38 @@ public class GameSelectScreen extends Screen
 		//Offset the table's y-position so that the buttons are centered at the screen.
 		table.setY(TABLE_Y_OFFSET);
 		
+	}
+	
+	/** Disables the continueButton and the loadButton if the user has no saved profiles on his hard drive. */
+	private void disableUselessButtons() 
+	{
+		//If the player has no profiles saved on the hard drive, disable the "Continue" and the "Load" buttons.
+		if(profileManager.isEmpty())
+		{
+			//Disable the continue and the load buttons.
+			continueButton.setDisabled(true);
+			loadButton.setDisabled(true);
+			
+			//Change the colour of the disabled buttons and their images to ensure that the player knows he can't press them.
+			continueButton.setColor(BUTTON_DISABLED_COLOR);
+			continueButton.getImage().setColor(BUTTON_DISABLED_COLOR);
+			loadButton.setColor(BUTTON_DISABLED_COLOR);
+			loadButton.getImage().setColor(BUTTON_DISABLED_COLOR);
+		}	
+	}
+	
+	/** Resizes all of the buttons on the screen to ensure that their proportions are the same, no matter the size of the screen. */
+	private void resizeButtons() 
+	{
+		//Retrieves the original images which are placed on each one of the buttons.
+		Sprite continueImage = assets.mainMenuSkin.getSprite("Continue");
+		Sprite newGameImage = assets.mainMenuSkin.getSprite("NewGame");
+		Sprite loadImage = assets.mainMenuSkin.getSprite("Load");
+		
+		//Ensures that the images on top of the buttons are the same size, no matter the atlas size chosen. This is done by taking the original size of the images, divided by 'scaleFactor'.
+		continueButton.getImageCell().width(continueImage.getWidth()/assets.scaleFactor).height(continueImage.getHeight());
+		newGameButton.getImageCell().width(newGameImage.getWidth()/assets.scaleFactor).height(newGameImage.getHeight());
+		loadButton.getImageCell().width(loadImage.getWidth()/assets.scaleFactor).height(loadImage.getHeight());
 	}
 	
 	/** Plays a fade in animation when the user enters this screen. */

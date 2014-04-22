@@ -1,2 +1,10 @@
 1398022706968	Rename method 'disableButtons'
 1398026315363	Rename method 'playAnimations'
+1398122814868	Delete element
+1398122861557	Copy compilation unit
+1398127028402	Rename type 'TerrainRenderer'
+1398127208849	Rename type 'TerrainRenderer'
+1398127228969	Rename type 'TerrainLayerRenderer'
+1398127238346	Rename type 'TerrainLevelRenderer'
+1398127242246	Rename field 'terrainRenderer'
+1398127378222	Rename local variable 'tile'

@@ -65,7 +65,7 @@ public class CompanySplashScreen extends Screen
 		timeElapsed += deltaTime;
 		
 		//If the splash screen has been shown for a time greater than the maximum time it should be shown, switch to the loading screen.
-		if(timeElapsed > TIME_SHOWN || game.DEBUG_MODE)
+		if(timeElapsed > TIME_SHOWN || (game.DEBUG_MODE && frameCount > 2))
 		{
 			//If the splash screen has not yet started to fade, make it fade, since enough time has passed.
 			if(!fading)

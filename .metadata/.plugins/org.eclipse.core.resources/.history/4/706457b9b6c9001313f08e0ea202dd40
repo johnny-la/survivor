@@ -1,0 +1,735 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.4" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
+  associations="false" dependencies="false" nesting-relationships="true">  
+  <class id="1" language="java" name="com.jonathan.survivor.inventory.Teleporter" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/inventory/Teleporter.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="135" width="190" x="7320" y="1584"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="2" language="java" name="com.jonathan.survivor.managers.InputManager" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/managers/InputManager.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="333" width="230" x="340" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="3" language="java" name="com.jonathan.survivor.managers.TreePool" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/managers/TreePool.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="99" width="148" x="610" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="4" language="java" name="com.jonathan.survivor.managers.ProfileManager" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/managers/ProfileManager.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="333" width="164" x="798" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="5" language="java" name="com.jonathan.survivor.screens.GameScreen.GameListener" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/screens/GameScreen.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="189" width="160" x="9390" y="1584"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="6" language="java" name="com.jonathan.survivor.managers.BoxPool" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/managers/BoxPool.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="99" width="148" x="1229" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="7" language="java" name="com.jonathan.survivor.inventory.Wood" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/inventory/Wood.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="135" width="190" x="7550" y="1584"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="8" language="java" name="com.jonathan.survivor.managers.GestureManager" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/managers/GestureManager.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="189" width="154" x="1417" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="9" language="java" name="com.jonathan.survivor.inventory.Item" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/inventory/Item.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="261" width="174" x="8240" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="10" language="java" name="com.jonathan.survivor.renderers.InteractiveObjectRenderer" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/renderers/InteractiveObjectRenderer.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="225" width="216" x="1611" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="11" language="java" name="com.jonathan.survivor.screens.BackpackHud" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/screens/BackpackHud.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="351" width="187" x="1002" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="12" language="java" name="com.jonathan.survivor.inventory.Gunpowder" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/inventory/Gunpowder.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="135" width="190" x="8010" y="1584"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="13" language="java" name="com.jonathan.survivor.inventory.Iron" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/inventory/Iron.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="135" width="190" x="7780" y="1584"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="14" language="java" name="com.jonathan.survivor.renderers.ZombieRenderer" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/renderers/ZombieRenderer.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="351" width="226" x="8984" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="15" language="java" name="com.jonathan.survivor.renderers.ItemObjectRenderer" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/renderers/ItemObjectRenderer.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="189" width="185" x="1867" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="16" language="java" name="com.jonathan.survivor.managers.ItemManager.ItemPool" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/managers/ItemManager.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="117" width="165" x="10912" y="761"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="17" language="java" name="com.jonathan.survivor.math.Collider" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/math/Collider.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="207" width="250" x="3306" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="18" language="java" name="com.jonathan.survivor.inventory.MeleeWeapon" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/inventory/MeleeWeapon.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="243" width="209" x="6789" y="1584"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="19" language="java" name="com.jonathan.survivor.renderers.ProjectileRenderer" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/renderers/ProjectileRenderer.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="171" width="178" x="2092" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="20" language="java" name="com.jonathan.survivor.renderers.LevelRenderer" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/renderers/LevelRenderer.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="207" width="264" x="2310" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="21" language="java" name="com.jonathan.survivor.inventory.Weapon" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/inventory/Weapon.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="243" width="195" x="7038" y="761"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="22" language="java" name="com.jonathan.survivor.managers.ItemObjectPool" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/managers/ItemObjectPool.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="99" width="148" x="2614" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="23" language="java" name="com.jonathan.survivor.renderers.TerrainLevelRenderer" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/renderers/TerrainLevelRenderer.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="225" width="221" x="2802" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <enumeration id="24" language="java" name="com.jonathan.survivor.screens.GameScreen.GameState" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/screens/GameScreen.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="171" width="150" x="9590" y="1584"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </enumeration>  
+  <class id="25" language="java" name="com.jonathan.survivor.screens.GameScreen" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/screens/GameScreen.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="783" width="203" x="9390" y="761"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="26" language="java" name="com.jonathan.survivor.managers.ZombieManager" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/managers/ZombieManager.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="495" width="203" x="3063" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="27" language="java" name="com.jonathan.survivor.inventory.Craftable" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/inventory/Craftable.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="81" width="147" x="8240" y="761"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="28" language="java" name="com.jonathan.survivor.screens.WorldSelectScreen" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/screens/WorldSelectScreen.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="477" width="181" x="9633" y="761"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="29" language="java" name="com.jonathan.survivor.renderers.AnimationRenderer" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/renderers/AnimationRenderer.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="189" width="316" x="3596" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="30" language="java" name="com.jonathan.survivor.screens.GameScreen.UiListener" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/screens/GameScreen.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="243" width="168" x="9780" y="1584"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="31" language="java" name="com.jonathan.survivor.inventory.Bullet" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/inventory/Bullet.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="135" width="190" x="8240" y="1584"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="32" language="java" name="com.jonathan.survivor.math.Line" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/math/Line.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="351" width="165" x="3952" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="33" language="java" name="com.jonathan.survivor.math.Rectangle" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/math/Rectangle.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="333" width="240" x="3306" y="761"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="34" language="java" name="com.jonathan.survivor.renderers.WorldRenderer" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/renderers/WorldRenderer.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="333" width="237" x="4157" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="35" language="java" name="com.jonathan.survivor.managers.CraftingManager.Item" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/managers/CraftingManager.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="243" width="148" x="10503" y="761"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="36" language="java" name="com.jonathan.survivor.inventory.Inventory" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/inventory/Inventory.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="189" width="231" x="4434" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="37" language="java" name="com.jonathan.survivor.math.Cell" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/math/Cell.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="297" width="128" x="4705" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="38" language="java" name="com.jonathan.survivor.screens.BackpackHud.ButtonListener" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/screens/BackpackHud.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="117" width="257" x="1002" y="761"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="39" language="java" name="com.jonathan.survivor.renderers.PlayerRenderer" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/renderers/PlayerRenderer.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="585" width="331" x="4873" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="40" language="java" name="com.jonathan.survivor.managers.MusicManager" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/managers/MusicManager.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="207" width="148" x="5244" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="41" language="java" name="com.jonathan.survivor.managers.CraftingManager.Combination" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/managers/CraftingManager.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="207" width="181" x="10691" y="761"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="42" language="java" name="com.jonathan.survivor.inventory.Rifle" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/inventory/Rifle.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="189" width="213" x="7040" y="1921"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="43" language="java" name="com.jonathan.survivor.screens.CompanySplashScreen" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/screens/CompanySplashScreen.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="225" width="188" x="9854" y="761"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="44" language="java" name="com.jonathan.survivor.screens.Screen" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/screens/Screen.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="387" width="177" x="9854" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="45" language="java" name="com.jonathan.survivor.inventory.Axe" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/inventory/Axe.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="207" width="213" x="6787" y="1921"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="46" language="java" name="com.jonathan.survivor.managers.CraftingManager" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/managers/CraftingManager.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="225" width="192" x="10597" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="47" language="java" name="com.jonathan.survivor.renderers.ZombieRenderer.ZombieAnimationListener" 
+    project="survivor" file="/survivor/src/com/jonathan/survivor/renderers/ZombieRenderer.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="171" width="190" x="8984" y="761"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="48" language="java" name="com.jonathan.survivor.managers.ItemManager.SpritePool" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/managers/ItemManager.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="117" width="148" x="11117" y="761"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="49" language="java" name="com.jonathan.survivor.renderers.EffectRenderer" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/renderers/EffectRenderer.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="171" width="298" x="5432" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="50" language="java" name="com.jonathan.survivor.inventory.Sulfur" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/inventory/Sulfur.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="135" width="190" x="8470" y="1584"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="51" language="java" name="com.jonathan.survivor.managers.GameObjectManager" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/managers/GameObjectManager.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="243" width="285" x="5770" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="52" language="java" name="com.jonathan.survivor.inventory.RangedWeapon" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/inventory/RangedWeapon.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="297" width="242" x="7038" y="1584"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="53" language="java" name="com.jonathan.survivor.screens.LoadingScreen" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/screens/LoadingScreen.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="243" width="183" x="10082" y="761"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="54" language="java" name="com.jonathan.survivor.inventory.Loadout" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/inventory/Loadout.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="225" width="226" x="6095" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="55" language="java" name="com.jonathan.survivor.inventory.Charcoal" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/inventory/Charcoal.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="135" width="190" x="8700" y="1584"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="56" language="java" name="com.jonathan.survivor.renderers.GameObjectRenderer" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/renderers/GameObjectRenderer.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="279" width="328" x="6361" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="57" language="java" name="com.jonathan.survivor.inventory.Water" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/inventory/Water.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="135" width="190" x="8930" y="1584"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="58" language="java" name="com.jonathan.survivor.managers.SoundManager" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/managers/SoundManager.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="189" width="148" x="6729" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="59" language="java" name="com.jonathan.survivor.managers.ItemManager" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/managers/ItemManager.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="207" width="252" x="11013" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="60" language="java" name="com.jonathan.survivor.managers.ZombiePool" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/managers/ZombiePool.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="99" width="148" x="6917" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="61" language="java" name="com.jonathan.survivor.screens.MainMenuScreen" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/screens/MainMenuScreen.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="297" width="158" x="10305" y="761"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="62" language="java" name="com.jonathan.survivor.renderers.CombatRenderer" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/renderers/CombatRenderer.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="153" width="215" x="7402" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="63" language="java" name="com.jonathan.survivor.renderers.CrosshairRenderer" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/renderers/CrosshairRenderer.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="225" width="257" x="7105" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="64" language="java" name="com.jonathan.survivor.managers.EarthquakePool" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/managers/EarthquakePool.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="99" width="148" x="7657" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="65" language="java" name="com.jonathan.survivor.managers.GameObjectPool" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/managers/GameObjectPool.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="99" width="154" x="7845" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="66" language="java" name="com.jonathan.survivor.inventory.Saltpeter" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/inventory/Saltpeter.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="135" width="190" x="9160" y="1584"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="67" language="java" name="com.jonathan.survivor.math.Vector2" project="survivor" 
+    file="/survivor/src/com/jonathan/survivor/math/Vector2.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="495" width="161" x="8039" y="136"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <generalization id="68">    
+    <end type="SOURCE" refId="27"/>    
+    <end type="TARGET" refId="9"/>  
+  </generalization>  
+  <generalization id="69">    
+    <end type="SOURCE" refId="28"/>    
+    <end type="TARGET" refId="44"/>  
+  </generalization>  
+  <nesting id="70">    
+    <end type="SOURCE" refId="59"/>    
+    <end type="TARGET" refId="48"/>  
+  </nesting>  
+  <generalization id="71">    
+    <end type="SOURCE" refId="18"/>    
+    <end type="TARGET" refId="21"/>  
+  </generalization>  
+  <generalization id="72">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="27"/>  
+  </generalization>  
+  <generalization id="73">    
+    <end type="SOURCE" refId="57"/>    
+    <end type="TARGET" refId="27"/>  
+  </generalization>  
+  <nesting id="74">    
+    <end type="SOURCE" refId="25"/>    
+    <end type="TARGET" refId="5"/>  
+  </nesting>  
+  <generalization id="75">    
+    <end type="SOURCE" refId="13"/>    
+    <end type="TARGET" refId="27"/>  
+  </generalization>  
+  <generalization id="76">    
+    <end type="SOURCE" refId="50"/>    
+    <end type="TARGET" refId="27"/>  
+  </generalization>  
+  <generalization id="77">    
+    <end type="SOURCE" refId="61"/>    
+    <end type="TARGET" refId="44"/>  
+  </generalization>  
+  <generalization id="78">    
+    <end type="SOURCE" refId="31"/>    
+    <end type="TARGET" refId="27"/>  
+  </generalization>  
+  <generalization id="79">    
+    <end type="SOURCE" refId="42"/>    
+    <end type="TARGET" refId="52"/>  
+  </generalization>  
+  <nesting id="80">    
+    <end type="SOURCE" refId="25"/>    
+    <end type="TARGET" refId="30"/>  
+  </nesting>  
+  <generalization id="81">    
+    <end type="SOURCE" refId="21"/>    
+    <end type="TARGET" refId="9"/>  
+  </generalization>  
+  <nesting id="82">    
+    <end type="SOURCE" refId="46"/>    
+    <end type="TARGET" refId="35"/>  
+  </nesting>  
+  <generalization id="83">    
+    <end type="SOURCE" refId="66"/>    
+    <end type="TARGET" refId="27"/>  
+  </generalization>  
+  <generalization id="84">    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="27"/>  
+  </generalization>  
+  <nesting id="85">    
+    <end type="SOURCE" refId="25"/>    
+    <end type="TARGET" refId="24"/>  
+  </nesting>  
+  <generalization id="86">    
+    <end type="SOURCE" refId="33"/>    
+    <end type="TARGET" refId="17"/>  
+  </generalization>  
+  <nesting id="87">    
+    <end type="SOURCE" refId="14"/>    
+    <end type="TARGET" refId="47"/>  
+  </nesting>  
+  <generalization id="88">    
+    <end type="SOURCE" refId="43"/>    
+    <end type="TARGET" refId="44"/>  
+  </generalization>  
+  <generalization id="89">    
+    <end type="SOURCE" refId="25"/>    
+    <end type="TARGET" refId="44"/>  
+  </generalization>  
+  <generalization id="90">    
+    <end type="SOURCE" refId="53"/>    
+    <end type="TARGET" refId="44"/>  
+  </generalization>  
+  <nesting id="91">    
+    <end type="SOURCE" refId="46"/>    
+    <end type="TARGET" refId="41"/>  
+  </nesting>  
+  <nesting id="92">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="38"/>  
+  </nesting>  
+  <generalization id="93">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="27"/>  
+  </generalization>  
+  <generalization id="94">    
+    <end type="SOURCE" refId="52"/>    
+    <end type="TARGET" refId="21"/>  
+  </generalization>  
+  <generalization id="95">    
+    <end type="SOURCE" refId="45"/>    
+    <end type="TARGET" refId="18"/>  
+  </generalization>  
+  <generalization id="96">    
+    <end type="SOURCE" refId="55"/>    
+    <end type="TARGET" refId="27"/>  
+  </generalization>  
+  <nesting id="97">    
+    <end type="SOURCE" refId="59"/>    
+    <end type="TARGET" refId="16"/>  
+  </nesting>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true" static="true"/>    
+    <operations public="true" package="true" protected="true" private="true" static="true"/>  
+  </classifier-display>  
+  <association-display labels="false" multiplicity="false"/>
+</class-diagram>

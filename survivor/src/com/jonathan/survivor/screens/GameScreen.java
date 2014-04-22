@@ -570,8 +570,8 @@ public class GameScreen extends Screen
 	/** Transitions to the MainMenuScreen. */
 	private void goToMainMenu() 
 	{
-		//Transitions to the main menu.
-		game.setScreen(new MainMenuScreen(game));
+		//Transitions to the loading screen which loads the main menu's assets, and then switches to the main menu.
+		game.setScreen(new MainMenuLoadingScreen(game));
 	}
 	
 	@Override

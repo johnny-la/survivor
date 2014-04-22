@@ -167,7 +167,7 @@ public class TerrainLayer
 		//Gets a random float from [0,1] to define the type of the terrain.
 		float randType = terrainRand.nextFloat();
 		//If the random number is above this value
-		if(randType > 1.0f) //Original: 0.5f
+		if(randType > 0.5f) //Original: 0.5f
 		{
 			//Make the terrain layer have a COSINE geometry by setting its type to COSINE.
 			terrainType = TerrainType.COSINE;

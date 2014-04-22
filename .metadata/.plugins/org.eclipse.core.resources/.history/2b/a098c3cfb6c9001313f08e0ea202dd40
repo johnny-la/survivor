@@ -1,0 +1,21 @@
+package com.jonathan.survivor.renderers;
+
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
+/** 
+ * Stores a pool of sprites which forms the shape of the TerrainLevel.
+ *
+ */
+
+public class TerrainSpriteRenderer 
+{
+	private Pool<Sprite> spritePool;
+	
+	
+	public TerrainSpriteRenderer()
+	{
+		
+	}
+	
+	private class SpritePool extends Pool
+}

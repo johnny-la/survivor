@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workbench progressCount="34" version="2.0">
+<workbench progressCount="33" version="2.0">
 <workbenchAdvisor/>
 <window height="768" maximized="true" width="1024" x="125" y="125">
 <fastViewData fastViewLocation="1024"/>
@@ -27,7 +27,7 @@
 <coolItem id="org.eclipse.ui.DefaultTextEditor" itemType="typePlaceholder" x="-1" y="-1"/>
 <coolItem id="com.android.ide.eclipse.editors.CommonXmlEditor" itemType="typePlaceholder" x="-1" y="-1"/>
 <coolItem id="com.objectaid.uml.ClassDiagramEditor" itemType="typePlaceholder" x="79" y="22"/>
-<coolItem id="org.eclipse.jdt.ui.ClassFileEditor" itemType="typePlaceholder" x="-1" y="-1"/>
+<coolItem id="org.eclipse.jdt.ui.ClassFileEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
 <coolItem id="org.eclipse.jdt.ui.CompilationUnitEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
 <coolItem id="group.help" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.help" itemType="typeToolBarContribution" x="-1" y="-1"/>
@@ -46,7 +46,7 @@
 <part id="5"/>
 <part id="7"/>
 <part id="8"/>
-<part id="98"/>
+<part id="96"/>
 <part id="9"/>
 <part id="10"/>
 <part id="11"/>
@@ -62,25 +62,27 @@
 <part id="21"/>
 <part id="22"/>
 <part id="23"/>
+<part id="94"/>
 <part id="24"/>
 <part id="25"/>
 <part id="26"/>
 <part id="27"/>
 <part id="28"/>
 <part id="29"/>
+<part id="39"/>
 <part id="30"/>
 <part id="31"/>
-<part id="41"/>
+<part id="40"/>
 <part id="32"/>
 <part id="33"/>
-<part id="42"/>
 <part id="34"/>
+<part id="101"/>
 <part id="35"/>
 <part id="36"/>
 <part id="37"/>
 <part id="38"/>
-<part id="39"/>
-<part id="40"/>
+<part id="41"/>
+<part id="42"/>
 <part id="43"/>
 <part id="44"/>
 <part id="45"/>
@@ -90,8 +92,8 @@
 <part id="49"/>
 <part id="50"/>
 <part id="51"/>
-<part id="52"/>
 <part id="53"/>
+<part id="54"/>
 <part id="55"/>
 <part id="56"/>
 <part id="57"/>
@@ -102,14 +104,14 @@
 <part id="62"/>
 <part id="63"/>
 <part id="64"/>
+<part id="6"/>
 <part id="65"/>
 <part id="66"/>
-<part id="6"/>
 <part id="67"/>
 <part id="68"/>
+<part id="52"/>
 <part id="69"/>
 <part id="70"/>
-<part id="54"/>
 <part id="71"/>
 <part id="72"/>
 <part id="73"/>
@@ -133,12 +135,15 @@
 <part id="91"/>
 <part id="92"/>
 <part id="93"/>
-<part id="94"/>
 <part id="95"/>
-<part id="96"/>
 <part id="97"/>
+<part id="98"/>
 <part id="99"/>
 <part id="100"/>
+<part id="102"/>
+<part id="103"/>
+<part id="104"/>
+<part id="105"/>
 </presentation>
 </folder>
 </info>
@@ -153,11 +158,11 @@
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="TerrainLayer.java" partName="TerrainLayer.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/TerrainLayer.java" title="TerrainLayer.java" tooltip="survivor/src/com/jonathan/survivor/TerrainLayer.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/TerrainLayer.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="8551" selectionTopPixel="2471"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="8597" selectionTopPixel="2336"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="TerrainRenderer.java" partName="TerrainRenderer.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/renderers/TerrainRenderer.java" title="TerrainRenderer.java" tooltip="survivor/src/com/jonathan/survivor/renderers/TerrainRenderer.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/renderers/TerrainRenderer.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1759" selectionTopPixel="555"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1909" selectionTopPixel="165"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="GameObjectPool.java" partName="GameObjectPool.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/managers/GameObjectPool.java" title="GameObjectPool.java" tooltip="survivor/src/com/jonathan/survivor/managers/GameObjectPool.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/managers/GameObjectPool.java"/>
@@ -169,7 +174,7 @@
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="PlayerRenderer.java" partName="PlayerRenderer.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/renderers/PlayerRenderer.java" title="PlayerRenderer.java" tooltip="survivor/src/com/jonathan/survivor/renderers/PlayerRenderer.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/renderers/PlayerRenderer.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="4362" selectionTopPixel="1211"/>
+<editorState selectionHorizontalPixel="0" selectionLength="17" selectionOffset="18266" selectionTopPixel="5520"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Tree.java" partName="Tree.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/entity/Tree.java" title="Tree.java" tooltip="survivor/src/com/jonathan/survivor/entity/Tree.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/entity/Tree.java"/>
@@ -177,11 +182,7 @@
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="WorldSelectScreen.java" partName="WorldSelectScreen.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/screens/WorldSelectScreen.java" title="WorldSelectScreen.java" tooltip="survivor/src/com/jonathan/survivor/screens/WorldSelectScreen.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/screens/WorldSelectScreen.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="14108" selectionTopPixel="3885"/>
-</editor>
-<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="MainMenuScreen.java" partName="MainMenuScreen.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/screens/MainMenuScreen.java" title="MainMenuScreen.java" tooltip="survivor/src/com/jonathan/survivor/screens/MainMenuScreen.java" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/screens/MainMenuScreen.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="7781" selectionTopPixel="1917"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1759" selectionTopPixel="378"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Human.java" partName="Human.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/entity/Human.java" title="Human.java" tooltip="survivor/src/com/jonathan/survivor/entity/Human.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/entity/Human.java"/>
@@ -197,7 +198,7 @@
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="LevelRenderer.java" partName="LevelRenderer.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/renderers/LevelRenderer.java" title="LevelRenderer.java" tooltip="survivor/src/com/jonathan/survivor/renderers/LevelRenderer.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/renderers/LevelRenderer.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1757" selectionTopPixel="432"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="663" selectionTopPixel="80"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Clickable.java" partName="Clickable.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/entity/Clickable.java" title="Clickable.java" tooltip="survivor/src/com/jonathan/survivor/entity/Clickable.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/entity/Clickable.java"/>
@@ -245,15 +246,11 @@
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="LoadingScreen.java" partName="LoadingScreen.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/screens/LoadingScreen.java" title="LoadingScreen.java" tooltip="survivor/src/com/jonathan/survivor/screens/LoadingScreen.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/screens/LoadingScreen.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="6083" selectionTopPixel="147"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2791" selectionTopPixel="660"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="HudListener.java" partName="HudListener.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/renderers/HudListener.java" title="HudListener.java" tooltip="survivor/src/com/jonathan/survivor/renderers/HudListener.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/renderers/HudListener.java"/>
 <editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="144" selectionTopPixel="0"/>
-</editor>
-<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="BackpackHud.java" partName="BackpackHud.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/screens/BackpackHud.java" title="BackpackHud.java" tooltip="survivor/src/com/jonathan/survivor/screens/BackpackHud.java" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/screens/BackpackHud.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="409" selectionOffset="2250" selectionTopPixel="488"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Item.java" partName="Item.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/inventory/Item.java" title="Item.java" tooltip="survivor/src/com/jonathan/survivor/inventory/Item.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/inventory/Item.java"/>
@@ -293,13 +290,13 @@
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Assets.java" partName="Assets.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/Assets.java" title="Assets.java" tooltip="survivor/src/com/jonathan/survivor/Assets.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/Assets.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="26286" selectionTopPixel="6628"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="51111" selectionTopPixel="12300"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="World.java" partName="World.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/World.java" title="World.java" tooltip="survivor/src/com/jonathan/survivor/World.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/World.java"/>
 <editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="15461" selectionTopPixel="5490"/>
 </editor>
-<editor activePart="true" focus="true" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ItemObject.java" partName="ItemObject.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/entity/ItemObject.java" title="ItemObject.java" tooltip="survivor/src/com/jonathan/survivor/entity/ItemObject.java" workbook="DefaultEditorWorkbook">
+<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ItemObject.java" partName="ItemObject.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/entity/ItemObject.java" title="ItemObject.java" tooltip="survivor/src/com/jonathan/survivor/entity/ItemObject.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/entity/ItemObject.java"/>
 <editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1058" selectionTopPixel="15"/>
 </editor>
@@ -353,7 +350,7 @@
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ZombieManager.java" partName="ZombieManager.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/managers/ZombieManager.java" title="ZombieManager.java" tooltip="survivor/src/com/jonathan/survivor/managers/ZombieManager.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/managers/ZombieManager.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="9009" selectionTopPixel="3372"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="10355" selectionTopPixel="3867"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ExplorationHud.java" partName="ExplorationHud.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/hud/ExplorationHud.java" title="ExplorationHud.java" tooltip="survivor/src/com/jonathan/survivor/hud/ExplorationHud.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/hud/ExplorationHud.java"/>
@@ -365,7 +362,7 @@
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Survivor.java" partName="Survivor.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/Survivor.java" title="Survivor.java" tooltip="survivor/src/com/jonathan/survivor/Survivor.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/Survivor.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="4457" selectionTopPixel="792"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="4570" selectionTopPixel="792"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Level.java" partName="Level.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/Level.java" title="Level.java" tooltip="survivor/src/com/jonathan/survivor/Level.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/Level.java"/>
@@ -465,11 +462,11 @@
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="CompanySplashScreen.java" partName="CompanySplashScreen.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/screens/CompanySplashScreen.java" title="CompanySplashScreen.java" tooltip="survivor/src/com/jonathan/survivor/screens/CompanySplashScreen.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/screens/CompanySplashScreen.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2375" selectionTopPixel="855"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="4054" selectionTopPixel="1035"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="BackgroundRenderer.java" partName="BackgroundRenderer.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/renderers/BackgroundRenderer.java" title="BackgroundRenderer.java" tooltip="survivor/src/com/jonathan/survivor/renderers/BackgroundRenderer.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/renderers/BackgroundRenderer.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1716" selectionTopPixel="462"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1714" selectionTopPixel="210"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="BackpackHud.java" partName="BackpackHud.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/hud/BackpackHud.java" title="BackpackHud.java" tooltip="survivor/src/com/jonathan/survivor/hud/BackpackHud.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/hud/BackpackHud.java"/>
@@ -525,18 +522,18 @@
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="GameScreen.java" partName="GameScreen.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/screens/GameScreen.java" title="GameScreen.java" tooltip="survivor/src/com/jonathan/survivor/screens/GameScreen.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/screens/GameScreen.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="6004" selectionTopPixel="1335"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="24080" selectionTopPixel="7380"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="CombatHud.java" partName="CombatHud.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/hud/CombatHud.java" title="CombatHud.java" tooltip="survivor/src/com/jonathan/survivor/hud/CombatHud.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/hud/CombatHud.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="9825" selectionTopPixel="3252"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="755" selectionTopPixel="0"/>
 </editor>
 <editor id="com.android.ide.eclipse.editors.manifest.ManifestEditor" name="AndroidManifest.xml" partName="survivor-android Manifest" path="C:/Users/Clementine/Documents/survivor/survivor-android/AndroidManifest.xml" title="survivor-android Manifest" tooltip="survivor-android/AndroidManifest.xml" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor-android/AndroidManifest.xml"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="GameSelectScreen.java" partName="GameSelectScreen.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/screens/GameSelectScreen.java" title="GameSelectScreen.java" tooltip="survivor/src/com/jonathan/survivor/screens/GameSelectScreen.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/screens/GameSelectScreen.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="12672" selectionTopPixel="3345"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="5957" selectionTopPixel="1470"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="PreferencesManager.java" partName="PreferencesManager.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/managers/PreferencesManager.java" title="PreferencesManager.java" tooltip="survivor/src/com/jonathan/survivor/managers/PreferencesManager.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/managers/PreferencesManager.java"/>
@@ -544,18 +541,46 @@
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="TiledImage.java" partName="TiledImage.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/hud/TiledImage.java" title="TiledImage.java" tooltip="survivor/src/com/jonathan/survivor/hud/TiledImage.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/hud/TiledImage.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2560" selectionTopPixel="1002"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2667" selectionTopPixel="1017"/>
+</editor>
+<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Main.java" partName="Main.java" path="C:/Users/Clementine/Documents/survivor/survivor-desktop/src/com/jonathan/survivor/Main.java" title="Main.java" tooltip="survivor-desktop/src/com/jonathan/survivor/Main.java" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor-desktop/src/com/jonathan/survivor/Main.java"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="395" selectionTopPixel="0"/>
+</editor>
+<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="MainMenuScreen.java" partName="MainMenuScreen.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/screens/MainMenuScreen.java" title="MainMenuScreen.java" tooltip="survivor/src/com/jonathan/survivor/screens/MainMenuScreen.java" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/screens/MainMenuScreen.java"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="0" selectionTopPixel="0"/>
+</editor>
+<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="MainMenuLoadingScreen.java" partName="MainMenuLoadingScreen.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/screens/MainMenuLoadingScreen.java" title="MainMenuLoadingScreen.java" tooltip="survivor/src/com/jonathan/survivor/screens/MainMenuLoadingScreen.java" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/screens/MainMenuLoadingScreen.java"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="5759" selectionTopPixel="1617"/>
+</editor>
+<editor id="org.eclipse.jdt.ui.ClassFileEditor" name="LwjglApplication.class" partName="LwjglApplication.class" title="LwjglApplication.class" tooltip="com.badlogic.gdx.backends.lwjgl.LwjglApplication" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.jdt.ui.ClassFileEditorInputFactory" org.eclipse.jdt.ui.ClassFileIdentifier="=survivor-desktop/libs\/gdx-backend-lwjgl.jar&lt;com.badlogic.gdx.backends.lwjgl(LwjglApplication.class"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="4483" selectionTopPixel="1515"/>
+</editor>
+<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="SkeletonJson.java" partName="SkeletonJson.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/esotericsoftware/spine/SkeletonJson.java" title="SkeletonJson.java" tooltip="survivor/src/com/esotericsoftware/spine/SkeletonJson.java" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/esotericsoftware/spine/SkeletonJson.java"/>
+<editorState selectionHorizontalPixel="0" selectionLength="71" selectionOffset="6579" selectionTopPixel="1920"/>
+</editor>
+<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Background.java" partName="Background.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/entity/Background.java" title="Background.java" tooltip="survivor/src/com/jonathan/survivor/entity/Background.java" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/entity/Background.java"/>
+<editorState selectionHorizontalPixel="0" selectionLength="854" selectionOffset="2744" selectionTopPixel="885"/>
+</editor>
+<editor activePart="true" focus="true" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="TerrainSpriteRenderer.java" partName="TerrainSpriteRenderer.java" path="C:/Users/Clementine/Documents/survivor/survivor/src/com/jonathan/survivor/renderers/TerrainSpriteRenderer.java" title="TerrainSpriteRenderer.java" tooltip="survivor/src/com/jonathan/survivor/renderers/TerrainSpriteRenderer.java" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/survivor/src/com/jonathan/survivor/renderers/TerrainSpriteRenderer.java"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1256" selectionTopPixel="0"/>
 </editor>
 </editors>
 <views>
 <view id="com.android.ide.eclipse.ddms.views.DeviceView" partName="Devices">
 <viewState/>
 </view>
-<view id="org.eclipse.debug.ui.DebugView" partName="Debug">
-<viewState/>
-</view>
 <view id="org.eclipse.jdt.callhierarchy.view" partName="Call Hierarchy">
 <viewState search_scope_type="1"/>
+</view>
+<view id="org.eclipse.debug.ui.DebugView" partName="Debug">
+<viewState/>
 </view>
 <view id="com.android.ide.eclipse.ddms.views.ThreadView" partName="Threads">
 <viewState/>
@@ -664,7 +689,7 @@
 <viewState/>
 </view>
 </views>
-<perspectives activePart="org.eclipse.jdt.ui.CompilationUnitEditor" activePerspective="org.eclipse.jdt.ui.JavaPerspective">
+<perspectives activePart="org.eclipse.jdt.ui.PackageExplorer" activePerspective="org.eclipse.jdt.ui.JavaPerspective">
 <perspective editorAreaTrimState="2" editorAreaVisible="1" fixed="0" version="0.016">
 <descriptor class="org.eclipse.jdt.internal.ui.JavaPerspectiveFactory" id="org.eclipse.jdt.ui.JavaPerspective" label="Java"/>
 <alwaysOnActionSet id="org.eclipse.mylyn.context.ui.actionSet"/>
@@ -803,7 +828,7 @@
 </folder>
 </info>
 <info folder="true" part="org.eclipse.ui.internal.ViewStack@2296c0e5" ratio="0.6802575" ratioLeft="634" ratioRight="298" relationship="4" relative="org.eclipse.ui.editorss">
-<folder activePageID="org.eclipse.ui.console.ConsoleView" appearance="2" expanded="2">
+<folder activePageID="com.android.ide.eclipse.ddms.views.LogCatView" appearance="2" expanded="2">
 <page content="org.eclipse.ui.views.ProblemView" label="Problems"/>
 <page content="org.eclipse.jdt.ui.JavadocView" label="Javadoc"/>
 <page content="org.eclipse.jdt.ui.SourceView" label="Declaration"/>
@@ -888,7 +913,7 @@
 </folder>
 </info>
 <info folder="true" part="logcat" ratio="0.6502146" ratioLeft="606" ratioRight="326" relationship="4" relative="devices">
-<folder activePageID="org.eclipse.ui.console.ConsoleView" appearance="2" expanded="2">
+<folder activePageID="com.android.ide.eclipse.ddms.views.LogCatView" appearance="2" expanded="2">
 <page content="com.android.ide.eclipse.ddms.views.LogCatView" label="LogCat"/>
 <page content="org.eclipse.ui.console.ConsoleView" label="Console"/>
 <page content="com.android.ide.eclipse.ddms.views.LogCatView:*" label="LabelNotFound"/>
@@ -1062,168 +1087,172 @@
 <workingSets/>
 <navigationHistory>
 <editors>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/screens/WorldSelectScreen.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/screens/GameSelectScreen.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/managers/ProfileManager.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/Profile.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/Settings.java"/>
-<editor factoryID="org.eclipse.jdt.ui.ClassFileEditorInputFactory" id="org.eclipse.jdt.ui.ClassFileEditor" org.eclipse.jdt.ui.ClassFileIdentifier="=survivor-desktop/libs\/gdx-backend-lwjgl.jar&lt;com.badlogic.gdx.backends.lwjgl(LwjglApplication.class"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/Survivor.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/managers/PreferencesManager.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/hud/CombatHud.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/managers/CraftingManager.java"/>
-<editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.android.ide.eclipse.traceview.editors.TraceviewEditor" uri="file:/C:/Users/CLEMEN~1/AppData/Local/Temp/ddms2627270571864838107.trace"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/screens/LoadingScreen.java"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/Assets.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/entity/ItemObject.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor-desktop/src/com/jonathan/survivor/Main.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/screens/GameSelectScreen.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/screens/MainMenuLoadingScreen.java"/>
+<editor factoryID="org.eclipse.jdt.ui.ClassFileEditorInputFactory" id="org.eclipse.jdt.ui.ClassFileEditor" org.eclipse.jdt.ui.ClassFileIdentifier="=survivor/libs\/gdx.jar&lt;com.badlogic.gdx.assets(AssetManager.class"/>
+<editor factoryID="org.eclipse.jdt.ui.ClassFileEditorInputFactory" id="org.eclipse.jdt.ui.ClassFileEditor" org.eclipse.jdt.ui.ClassFileIdentifier="=survivor/libs\/gdx.jar&lt;com.badlogic.gdx.utils(ObjectMap.class"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/screens/GameScreen.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/esotericsoftware/spine/SkeletonJson.java"/>
+<editor factoryID="org.eclipse.jdt.ui.ClassFileEditorInputFactory" id="org.eclipse.jdt.ui.ClassFileEditor" org.eclipse.jdt.ui.ClassFileIdentifier="=survivor/libs\/gdx.jar&lt;com.badlogic.gdx.graphics.g2d(Sprite.class"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/entity/Background.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/renderers/BackgroundRenderer.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/renderers/LevelRenderer.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/renderers/TerrainRenderer.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/renderers/TerrainLevelRenderer.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/renderers/TerrainLayerRenderer.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/survivor/src/com/jonathan/survivor/renderers/TerrainSpriteRenderer.java"/>
 </editors>
-<item historyLabel="ProfileManager.java" index="2">
-<position info="not_deleted" x="6631" y="13"/>
+<item historyLabel="Assets.java" index="1">
+<position info="not_deleted" x="17656" y="8"/>
 </item>
-<item historyLabel="ProfileManager.java" index="2">
-<position info="not_deleted" x="7005" y="0"/>
+<item historyLabel="MainMenuLoadingScreen.java" index="3">
+<position info="not_deleted" x="6925" y="0"/>
 </item>
-<item historyLabel="ProfileManager.java" index="2">
-<position info="not_deleted" x="7935" y="0"/>
+<item historyLabel="GameScreen.java" index="6">
+<position info="not_deleted" x="24080" y="0"/>
 </item>
-<item historyLabel="Settings.java" index="4">
-<position info="not_deleted" x="1355" y="0"/>
+<item historyLabel="Assets.java" index="1">
+<position info="not_deleted" x="17108" y="0"/>
 </item>
-<item historyLabel="GameSelectScreen.java" index="1">
-<position info="not_deleted" x="13121" y="0"/>
+<item historyLabel="LoadingScreen.java" index="0">
+<position info="not_deleted" x="2791" y="0"/>
 </item>
-<item historyLabel="WorldSelectScreen.java" index="0">
-<position info="not_deleted" x="8806" y="0"/>
+<item historyLabel="GameSelectScreen.java" index="2">
+<position info="not_deleted" x="5957" y="0"/>
 </item>
-<item historyLabel="Settings.java" index="4">
-<position info="not_deleted" x="1355" y="0"/>
+<item historyLabel="MainMenuLoadingScreen.java" index="3">
+<position info="not_deleted" x="5759" y="0"/>
 </item>
-<item historyLabel="Profile.java" index="3">
-<position info="not_deleted" x="4676" y="0"/>
+<item historyLabel="LoadingScreen.java" index="0">
+<position info="not_deleted" x="2791" y="0"/>
 </item>
-<item historyLabel="ProfileManager.java" index="2">
-<position info="not_deleted" x="7935" y="0"/>
+<item historyLabel="Assets.java" index="1">
+<position info="not_deleted" x="53633" y="0"/>
 </item>
-<item historyLabel="Profile.java" index="3">
-<position info="not_deleted" x="7420" y="0"/>
+<item historyLabel="ObjectMap.class" index="5">
+<position info="not_deleted" x="8593" y="32"/>
 </item>
-<item historyLabel="GameSelectScreen.java" index="1">
-<position info="not_deleted" x="13121" y="0"/>
+<item historyLabel="AssetManager.class" index="4">
+<position info="not_deleted" x="4906" y="73"/>
 </item>
-<item historyLabel="Settings.java" index="4">
-<position info="not_deleted" x="1147" y="0"/>
+<item historyLabel="Assets.java" index="1">
+<position info="not_deleted" x="28612" y="0"/>
 </item>
-<item historyLabel="ProfileManager.java" index="2">
-<position info="not_deleted" x="9442" y="0"/>
+<item historyLabel="SkeletonJson.java" index="7">
+<position info="not_deleted" x="7851" y="107"/>
 </item>
-<item historyLabel="GameSelectScreen.java" index="1">
-<position info="not_deleted" x="13009" y="0"/>
+<item historyLabel="SkeletonJson.java" index="7">
+<position info="not_deleted" x="6579" y="71"/>
 </item>
-<item historyLabel="ProfileManager.java" index="2">
-<position info="not_deleted" x="7192" y="11"/>
+<item historyLabel="Assets.java" index="1">
+<position info="not_deleted" x="28781" y="0"/>
 </item>
-<item historyLabel="LwjglApplication.class" index="5">
-<position info="not_deleted" x="4907" y="0"/>
+<item historyLabel="Assets.java" index="1">
+<position info="not_deleted" x="51111" y="0"/>
 </item>
-<item historyLabel="ProfileManager.java" index="2">
-<position info="not_deleted" x="748" y="0"/>
+<item historyLabel="Sprite.class" index="8">
+<position info="not_deleted" x="4996" y="83"/>
 </item>
-<item historyLabel="GameSelectScreen.java" index="1">
-<position info="not_deleted" x="13009" y="0"/>
+<item historyLabel="Sprite.class" index="8">
+<position info="not_deleted" x="4868" y="14"/>
 </item>
-<item historyLabel="Survivor.java" index="6">
-<position info="not_deleted" x="4540" y="0"/>
+<item historyLabel="Background.java" index="9">
+<position info="not_deleted" x="3243" y="44"/>
 </item>
-<item historyLabel="Survivor.java" index="6">
-<position info="not_deleted" x="4304" y="0"/>
+<item historyLabel="Background.java" index="9">
+<position info="not_deleted" x="2333" y="31"/>
 </item>
-<item historyLabel="PreferencesManager.java" index="7">
-<position info="not_deleted" x="4524" y="0"/>
+<item historyLabel="Background.java" index="9">
+<position info="not_deleted" x="3243" y="44"/>
 </item>
-<item historyLabel="GameSelectScreen.java" index="1">
-<position info="not_deleted" x="13009" y="0"/>
+<item historyLabel="SkeletonJson.java" index="7">
+<position info="not_deleted" x="6579" y="71"/>
 </item>
-<item historyLabel="Survivor.java" index="6">
-<position info="not_deleted" x="4457" y="0"/>
+<item historyLabel="BackgroundRenderer.java" index="10">
+<position info="not_deleted" x="1714" y="0"/>
 </item>
-<item historyLabel="Profile.java" index="3">
-<position info="not_deleted" x="7420" y="0"/>
+<item historyLabel="BackgroundRenderer.java" index="10">
+<position info="not_deleted" x="1299" y="0"/>
 </item>
-<item historyLabel="Profile.java" index="3">
-<position info="not_deleted" x="4925" y="0"/>
+<item historyLabel="BackgroundRenderer.java" index="10">
+<position info="not_deleted" x="2078" y="49"/>
 </item>
-<item historyLabel="Profile.java" index="3">
-<position info="not_deleted" x="3675" y="0"/>
-</item>
-<item historyLabel="Settings.java" index="4">
-<position info="not_deleted" x="1147" y="0"/>
-</item>
-<item historyLabel="ProfileManager.java" index="2">
-<position info="not_deleted" x="748" y="0"/>
-</item>
-<item historyLabel="Settings.java" index="4">
-<position info="not_deleted" x="1147" y="0"/>
-</item>
-<item historyLabel="Settings.java" index="4">
-<position info="not_deleted" x="2009" y="0"/>
-</item>
-<item historyLabel="GameSelectScreen.java" index="1">
-<position info="not_deleted" x="12981" y="0"/>
-</item>
-<item historyLabel="ProfileManager.java" index="2">
-<position info="not_deleted" x="906" y="0"/>
-</item>
-<item historyLabel="WorldSelectScreen.java" index="0">
-<position info="not_deleted" x="8806" y="0"/>
-</item>
-<item historyLabel="WorldSelectScreen.java" index="0">
-<position info="not_deleted" x="14630" y="0"/>
-</item>
-<item historyLabel="WorldSelectScreen.java" index="0">
-<position info="not_deleted" x="14108" y="0"/>
-</item>
-<item historyLabel="GameSelectScreen.java" index="1">
-<position info="not_deleted" x="12672" y="0"/>
-</item>
-<item historyLabel="ProfileManager.java" index="2">
-<position info="not_deleted" x="906" y="0"/>
-</item>
-<item historyLabel="ProfileManager.java" index="2">
-<position info="not_deleted" x="10790" y="0"/>
-</item>
-<item historyLabel="CombatHud.java" index="8">
-<position info="not_deleted" x="8221" y="0"/>
-</item>
-<item historyLabel="CraftingManager.java" index="9">
-<position info="not_deleted" x="2061" y="0"/>
-</item>
-<item historyLabel="CraftingManager.java" index="9">
-<position info="not_deleted" x="1522" y="0"/>
-</item>
-<item historyLabel="Settings.java" index="4">
-<position info="not_deleted" x="1454" y="0"/>
-</item>
-<item historyLabel="CombatHud.java" index="8">
-<position info="not_deleted" x="8221" y="0"/>
-</item>
-<item historyLabel="CombatHud.java" index="8">
-<position info="not_deleted" x="9676" y="0"/>
-</item>
-<item historyLabel="ddms2627270571864838107.trace" index="10"/>
-<item historyLabel="CombatHud.java" index="8">
-<position info="not_deleted" x="9676" y="0"/>
-</item>
-<item historyLabel="Assets.java" index="11">
-<position info="not_deleted" x="6612" y="0"/>
-</item>
-<item historyLabel="ItemObject.java" index="12">
-<position info="not_deleted" x="377" y="0"/>
-</item>
-<item historyLabel="Main.java" index="13">
-<position info="not_deleted" x="454" y="0"/>
-</item>
-<item active="true" historyLabel="ItemObject.java" index="12">
+<item historyLabel="LevelRenderer.java" index="11">
 <position info="not_deleted" x="663" y="0"/>
+</item>
+<item historyLabel="TerrainRenderer.java" index="12">
+<position info="not_deleted" x="8222" y="0"/>
+</item>
+<item historyLabel="TerrainRenderer.java" index="12">
+<position info="not_deleted" x="589" y="0"/>
+</item>
+<item historyLabel="TerrainLevelRenderer.java" index="13">
+<position info="not_deleted" x="586" y="0"/>
+</item>
+<item historyLabel="TerrainLevelRenderer.java" index="13">
+<position info="not_deleted" x="2391" y="0"/>
+</item>
+<item historyLabel="TerrainRenderer.java" index="12">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="TerrainRenderer.java" index="12">
+<position info="not_deleted" x="277" y="0"/>
+</item>
+<item historyLabel="TerrainRenderer.java" index="12">
+<position/>
+</item>
+<item historyLabel="TerrainLayerRenderer.java" index="14">
+<position/>
+</item>
+<item historyLabel="TerrainSpriteRenderer.java" index="15">
+<position info="not_deleted" x="712" y="0"/>
+</item>
+<item historyLabel="TerrainLevelRenderer.java" index="13">
+<position info="not_deleted" x="2403" y="0"/>
+</item>
+<item historyLabel="TerrainLevelRenderer.java" index="13">
+<position/>
+</item>
+<item historyLabel="TerrainRenderer.java" index="12">
+<position info="not_deleted" x="1462" y="0"/>
+</item>
+<item historyLabel="TerrainRenderer.java" index="12">
+<position info="not_deleted" x="1909" y="0"/>
+</item>
+<item historyLabel="TerrainSpriteRenderer.java" index="15">
+<position info="not_deleted" x="712" y="0"/>
+</item>
+<item historyLabel="TerrainSpriteRenderer.java" index="15">
+<position info="not_deleted" x="702" y="0"/>
+</item>
+<item historyLabel="TerrainSpriteRenderer.java" index="15">
+<position info="not_deleted" x="1327" y="4"/>
+</item>
+<item historyLabel="TerrainSpriteRenderer.java" index="15">
+<position info="not_deleted" x="1466" y="0"/>
+</item>
+<item historyLabel="Background.java" index="9">
+<position info="not_deleted" x="2744" y="854"/>
+</item>
+<item historyLabel="TerrainSpriteRenderer.java" index="15">
+<position info="not_deleted" x="1466" y="0"/>
+</item>
+<item historyLabel="TerrainSpriteRenderer.java" index="15">
+<position info="not_deleted" x="1196" y="0"/>
+</item>
+<item historyLabel="TerrainSpriteRenderer.java" index="15">
+<position info="not_deleted" x="716" y="0"/>
+</item>
+<item historyLabel="TerrainSpriteRenderer.java" index="15">
+<position/>
+</item>
+<item historyLabel="TerrainSpriteRenderer.java" index="15">
+<position info="not_deleted" x="716" y="0"/>
+</item>
+<item active="true" historyLabel="TerrainSpriteRenderer.java" index="15">
+<position info="not_deleted" x="1045" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
@@ -1243,44 +1272,50 @@
 </trimLayout>
 </window>
 <mruList>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.systemExternalEditor" name="Ashton Manor.mp3" tooltip="survivor-android/assets/sound/music/Ashton Manor.mp3">
-<persistable path="/survivor-android/assets/sound/music/Ashton Manor.mp3"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="TerrainRenderer.java" tooltip="survivor/src/com/jonathan/survivor/renderers/TerrainRenderer.java">
+<persistable path="/survivor/src/com/jonathan/survivor/renderers/TerrainRenderer.java"/>
 </file>
-<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.android.ide.eclipse.traceview.editors.TraceviewEditor" name="ddms2627270571864838107.trace" tooltip="C:\Users\CLEMEN~1\AppData\Local\Temp\ddms2627270571864838107.trace">
-<persistable uri="file:/C:/Users/CLEMEN~1/AppData/Local/Temp/ddms2627270571864838107.trace"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Background.java" tooltip="survivor/src/com/jonathan/survivor/entity/Background.java">
+<persistable path="/survivor/src/com/jonathan/survivor/entity/Background.java"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.systemExternalEditor" name="profile_1.json" tooltip="survivor-desktop/data/profile_1.json">
-<persistable path="/survivor-desktop/data/profile_1.json"/>
+<file factoryID="org.eclipse.jdt.ui.ClassFileEditorInputFactory" id="org.eclipse.jdt.ui.ClassFileEditor" name="Sprite.class" tooltip="com.badlogic.gdx.graphics.g2d.Sprite">
+<persistable org.eclipse.jdt.ui.ClassFileIdentifier="=survivor/libs\/gdx.jar&lt;com.badlogic.gdx.graphics.g2d(Sprite.class"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.systemExternalEditor" name="profile_3.json" tooltip="survivor-desktop/data/profile_3.json">
-<persistable path="/survivor-desktop/data/profile_3.json"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="SkeletonJson.java" tooltip="survivor/src/com/esotericsoftware/spine/SkeletonJson.java">
+<persistable path="/survivor/src/com/esotericsoftware/spine/SkeletonJson.java"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.systemExternalEditor" name="profile_0.json" tooltip="survivor-desktop/data/profile_0.json">
-<persistable path="/survivor-desktop/data/profile_0.json"/>
+<file factoryID="org.eclipse.jdt.ui.ClassFileEditorInputFactory" id="org.eclipse.jdt.ui.ClassFileEditor" name="AssetManager.class" tooltip="com.badlogic.gdx.assets.AssetManager">
+<persistable org.eclipse.jdt.ui.ClassFileIdentifier="=survivor/libs\/gdx.jar&lt;com.badlogic.gdx.assets(AssetManager.class"/>
+</file>
+<file factoryID="org.eclipse.jdt.ui.ClassFileEditorInputFactory" id="org.eclipse.jdt.ui.ClassFileEditor" name="ObjectMap.class" tooltip="com.badlogic.gdx.utils.ObjectMap">
+<persistable org.eclipse.jdt.ui.ClassFileIdentifier="=survivor/libs\/gdx.jar&lt;com.badlogic.gdx.utils(ObjectMap.class"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.systemExternalEditor" name="interactable_objects_atlas.png" tooltip="survivor-android/assets/game/interactable_objects/atlas/interactable_objects_atlas.png">
+<persistable path="/survivor-android/assets/game/interactable_objects/atlas/interactable_objects_atlas.png"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.systemExternalEditor" name="gdx.jar" tooltip="survivor/libs/gdx.jar">
+<persistable path="/survivor/libs/gdx.jar"/>
 </file>
 <file factoryID="org.eclipse.jdt.ui.ClassFileEditorInputFactory" id="org.eclipse.jdt.ui.ClassFileEditor" name="LwjglApplication.class" tooltip="com.badlogic.gdx.backends.lwjgl.LwjglApplication">
 <persistable org.eclipse.jdt.ui.ClassFileIdentifier="=survivor-desktop/libs\/gdx-backend-lwjgl.jar&lt;com.badlogic.gdx.backends.lwjgl(LwjglApplication.class"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.systemExternalEditor" name="profile_2.json" tooltip="survivor-desktop/data/profile_2.json">
-<persistable path="/survivor-desktop/data/profile_2.json"/>
+<file factoryID="org.eclipse.jdt.ui.ClassFileEditorInputFactory" id="org.eclipse.jdt.ui.ClassFileEditor" name="Label.class" tooltip="com.badlogic.gdx.scenes.scene2d.ui.Label">
+<persistable org.eclipse.jdt.ui.ClassFileIdentifier="=survivor/libs\/gdx.jar&lt;com.badlogic.gdx.scenes.scene2d.ui(Label.class"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.systemExternalEditor" name="profile_7.json" tooltip="survivor-desktop/data/profile_7.json">
-<persistable path="/survivor-desktop/data/profile_7.json"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="MainMenuLoadingScreen.java" tooltip="survivor/src/com/jonathan/survivor/screens/MainMenuLoadingScreen.java">
+<persistable path="/survivor/src/com/jonathan/survivor/screens/MainMenuLoadingScreen.java"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.DefaultTextEditor" name="main_menu_bg_atlas_0.txt" tooltip="survivor-android/assets/ui/main menu/atlas/main_menu_bg/main_menu_bg_atlas_0.txt">
-<persistable path="/survivor-android/assets/ui/main menu/atlas/main_menu_bg/main_menu_bg_atlas_0.txt"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="MainMenuScreen.java" tooltip="survivor/src/com/jonathan/survivor/screens/MainMenuScreen.java">
+<persistable path="/survivor/src/com/jonathan/survivor/screens/MainMenuScreen.java"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.DefaultTextEditor" name="game_select_bg_atlas_0.txt" tooltip="survivor-android/assets/ui/main menu/atlas/game_select_bg/game_select_bg_atlas_0.txt">
-<persistable path="/survivor-android/assets/ui/main menu/atlas/game_select_bg/game_select_bg_atlas_0.txt"/>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.android.ide.eclipse.traceview.editors.TraceviewEditor" name="ddms2186110611037533193.trace" tooltip="C:\Users\CLEMEN~1\AppData\Local\Temp\ddms2186110611037533193.trace">
+<persistable uri="file:/C:/Users/CLEMEN~1/AppData/Local/Temp/ddms2186110611037533193.trace"/>
 </file>
-<file factoryID="org.eclipse.jdt.ui.ClassFileEditorInputFactory" id="org.eclipse.jdt.ui.ClassFileEditor" name="Image.class" tooltip="com.badlogic.gdx.scenes.scene2d.ui.Image">
-<persistable org.eclipse.jdt.ui.ClassFileIdentifier="=survivor/libs\/gdx.jar&lt;com.badlogic.gdx.scenes.scene2d.ui(Image.class"/>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="com.android.ide.eclipse.traceview.editors.TraceviewEditor" name="ddms2883789512565485828.trace" tooltip="C:\Users\CLEMEN~1\AppData\Local\Temp\ddms2883789512565485828.trace">
+<persistable uri="file:/C:/Users/CLEMEN~1/AppData/Local/Temp/ddms2883789512565485828.trace"/>
 </file>
-<file factoryID="org.eclipse.jdt.ui.ClassFileEditorInputFactory" id="org.eclipse.jdt.ui.ClassFileEditor" name="TextureRegionDrawable.class" tooltip="com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable">
-<persistable org.eclipse.jdt.ui.ClassFileIdentifier="=survivor/libs\/gdx.jar&lt;com.badlogic.gdx.scenes.scene2d.utils(TextureRegionDrawable.class"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.systemExternalEditor" name="game_select_bg_atlas_1@4x.png" tooltip="survivor-android/assets/ui/main menu/atlas/game_select_bg/game_select_bg_atlas_1@4x.png">
-<persistable path="/survivor-android/assets/ui/main menu/atlas/game_select_bg/game_select_bg_atlas_1@4x.png"/>
+<file factoryID="org.eclipse.jdt.ui.ClassFileEditorInputFactory" id="org.eclipse.jdt.ui.ClassFileEditor" name="Game.class" tooltip="com.badlogic.gdx.Game">
+<persistable org.eclipse.jdt.ui.ClassFileIdentifier="=survivor/libs\/gdx.jar&lt;com.badlogic.gdx(Game.class"/>
 </file>
 </mruList>
 </workbench>

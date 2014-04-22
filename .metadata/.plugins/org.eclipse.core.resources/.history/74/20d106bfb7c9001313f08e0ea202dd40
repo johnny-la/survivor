@@ -1,0 +1,67 @@
+package com.jonathan.survivor.renderers;
+
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
+import com.jonathan.survivor.Assets;
+
+/** 
+ * Stores and positions pools of sprites which forms the shape of the TerrainLevel.
+ *
+ */
+
+public class TerrainSpriteRenderer 
+{
+	/** Holds the TerrainSpritePool which pools all of the unused sprites which render the shape of a TerrainLayer. */
+	private TerrainSpritePool spritePool;
+	
+	/** Stores the array of all the sprites which are currently being rendered by this instance. These are the sprites which are used to draw the TerrainLayers of the level. */
+	private Array<Sprite> sprites;
+	
+	/** Creates the TerrainSpriteRenderer used to position and pool sprites used to form the ground of the TerrainLayers. */
+	public TerrainSpriteRenderer()
+	{
+		//Creates a new TerrainSpritePool, which pools all of the sprites which will be re-cycled when needed.
+		spritePool = new TerrainSpritePool();
+	}
+	
+	/** A pool which holds Sprites used to draw the layers in a TerrainLevel. */
+	private class TerrainSpritePool extends Pool<Sprite>
+	{
+
+		/** Returns a random new sprite when none are free in the pool. */
+		@Override
+		protected Sprite newObject() 
+		{
+			//Stores the Sprite which will be created and returned by this method.
+			Sprite sprite = null;
+		
+			//Creates a random number between 0 and 3 to determine the look of the tile.
+			int type = (int)(Math.random()*4);
+			
+			//Switches the type of sprite to choose. Allows the TerrainLevel's groud sprites to look different. Uses template sprites from the Assets singleton.
+			switch(type)
+			{
+			case 0:
+				sprite = new Sprite(Assets.instance.snow1);
+				break;
+			case 1:
+				sprite = new Sprite(Assets.instance.snow2);
+				break;
+			case 2:
+				sprite = new Sprite(Assets.instance.snow3);
+				break;
+			case 3:
+				sprite = new Sprite(Assets.instance.snow4);
+				break;
+			default:
+				sprite = new Sprite(Assets.instance.snow4);
+				break;
+			}
+			
+			//Returns the created tile sprite.
+			return sprite;
+		}
+		
+	}
+}

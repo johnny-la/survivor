@@ -1,0 +1,397 @@
+package com.jonathan.survivor.screens;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.jonathan.survivor.Profile;
+import com.jonathan.survivor.Survivor;
+import com.jonathan.survivor.hud.TiledImage;
+
+public class GameSelectScreen extends Screen
+{
+	/** Stores the x-offset of the background relative to the center of the stage. */
+	private static final float BACKGROUND_X_OFFSET = -15;
+	/** Stores the y-offset of the background relative to the center of the stage. */
+	private static final float BACKGROUND_Y_OFFSET = -20;
+	
+	/** Holds the amount that the table is offset in the y-axis. */
+	private static final float TABLE_Y_OFFSET = -8;
+	
+	/** Stores the horizontal offset between each of the three main buttons on the screen. */
+	private static final float BUTTON_X_OFFSET = 30f;
+	
+	/** Holds the color of the buttons when they are disabled. */
+	private static final Color BUTTON_DISABLED_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.6f);
+	
+	/** Stores the x-offset used to anchor the back button to the bottom-right of the screen with a certain padding. */
+	public static final float BACK_BUTTON_X_OFFSET = 10;
+	/** Stores the y-offset used to anchor the back button to the bottom-right of the screen with a certain padding. */
+	public static final float BACK_BUTTON_Y_OFFSET = 7;
+	
+	/** Stores the stage used as a container for the UI widgets. It is essentially the camera that draws the widgets. */
+	private Stage stage;	
+	
+	/** InputListener which receives an event when the BACK button is pressed on Android devices. Allows the user to switch back to the main menu. */
+	private InputListener inputListener;
+	
+	/** Class allowing us to set multiple instance of InputListeners to receive input events. */
+	private InputMultiplexer inputMultiplexer;
+	
+	/** Stores the table actor. This actor arranges the widgets at the center of the screen in a grid-like fashion. */
+	private Table table;	
+	
+	/** Holds the background for the GameSelectScreen, which is formed by a tiles of two images. */
+	private TiledImage gameSelectBackground;
+	
+	/** Stores the label displaying the header. */
+	private Label header;
+	
+	/** Stores the button used to continue the game from the player's last profile. */
+	private ImageButton continueButton;	
+	/** Holds the "New Game" button */
+	private ImageButton newGameButton;	
+	/** Stores the button used to load one of the player's saved profiles. */
+	private ImageButton loadButton;	
+	
+	/** Stores the label below the "Continue" button used to indicate its name. */
+	private Label continueLabel;
+	/** Stores the label below the "New Game" button used to indicate its name. */
+	private Label newGameLabel;
+	/** Stores the label below the "Load" button used to indicate its name. */
+	private Label loadLabel;
+	
+	/** Holds the "Back" button */
+	private Button backButton;
+	
+	/** Holds the width of the world selection list. That is, the width of the blue bar in pixels for the target resolution (480x320). */
+	private final static float WORLD_LIST_WIDTH = 280f;	
+
+	public GameSelectScreen(Survivor game)
+	{
+		super(game);
+	}
+	
+	@Override
+	public void show()
+	{
+		//Create a stage used to draw the UI widgets.
+		stage = new Stage();
+		
+		//Creates the InputListener which receives an event when the Android BACK button is pressed. Allows the user to transition back to the main menu.
+		inputListener = new InputListener();
+		
+		//Creates the multiplexer to allows several classes to receive touch input and keyboard input. 
+		inputMultiplexer = new InputMultiplexer();
+
+		//Allows the stage to handle any touch/mouse input. Tells the widgets that they can receive touch events.
+		inputMultiplexer.addProcessor(stage);
+		//Allows the inputListener to receive input events, for instance when the Android BACK button is pressed. 
+		inputMultiplexer.addProcessor(inputListener);
+		
+		//Registers all the input processors from the multiplexer to receive input events.
+		Gdx.input.setInputProcessor(inputMultiplexer);
+		
+		//Creates a table using the main menu Skin. This table places widgets in grid-like fashion. Why the skin is passed is unknown.
+		table = new Table(assets.mainMenuSkin);
+		
+		//Instantiates a TiledImage formed by two consecutive images which form the background for the screen. Note: the background was too large to fit in a single atlas.
+		gameSelectBackground = new TiledImage(assets.gameSelectBgRegion_0, assets.gameSelectBgRegion_1);
+		
+		//Creates a label displaying the header. We pass in the mainMenuHeaderStyle as the LabelStyle. This tells the label which font/color to choose.
+		header = new Label("CHOOSE WORLD", assets.mainMenuHeaderStyle);
+		
+		//Creates the continue button which prompts the user to start the game from his last saved profile.
+		continueButton = new ImageButton(assets.continueButtonStyle);
+		//Scales the continue Button down so that according to the scaleFactor of the assets. This way, no matter the size of the atlases
+		//chosen, the buttons are the same size.
+		continueButton.setSize(continueButton.getWidth() / assets.scaleFactor, continueButton.getHeight() / assets.scaleFactor);
+
+		
+		//Creates the button which allows the player to create a new world.
+		newGameButton = new ImageButton(assets.newGameButtonStyle);
+		//Resize the new game button according to the scale factor. The scale factor is either 4, 2, or 1, depending on which texture size we are using. If we are
+		//using @2x size textures, we need to shrink the button to half its orginal size. Like this, the buttons are always the same size, no matter which texture
+		//atlas is used. This allows the stage to keep a constant size no matter the texture size.
+		newGameButton.setSize(newGameButton.getWidth()/assets.scaleFactor, newGameButton.getHeight()/assets.scaleFactor);
+		
+		//Creates the load button which prompts the user to load a previously-saved profile.
+		loadButton = new ImageButton(assets.loadButtonStyle);
+		//Scales the load button down so that according to the scaleFactor of the assets. This way, no matter the size of the atlases
+		//chosen, the buttons are the same size.
+		loadButton.setSize(loadButton.getWidth() / assets.scaleFactor, loadButton.getHeight() / assets.scaleFactor);
+		
+		//Create the options button using the pre-define back button style.
+		backButton = new Button(assets.backButtonStyle);
+		//Resize the back button according to the scale factor. The scale factor is either 4, 2, or 1, depending on which texture size we are using. If we are
+		//using @2x size textures, we need to shrink the button to half its orginal size. Like this, the buttons are always the same size, no matter which texture
+		//atlas is used. This allows the stage to keep a constant size no matter the texture size.
+		backButton.setSize(backButton.getWidth()/assets.scaleFactor, backButton.getHeight()/assets.scaleFactor);
+		
+		//Add a click listener to the continue button
+		continueButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y)
+			{
+				//Ignore the click event if the continueButton is disabled. The continueButton can't be clicked when disabled. 
+				if(continueButton.isDisabled())
+					return;
+				
+				//Loads the last world used by the player.
+				continueGame();
+			}
+		});
+		
+		//Add a click listener to the new game button
+		newGameButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y)
+			{
+				//Create a new profile and start the game with that profile.
+				newGame();
+			}
+		});
+		
+		//Add a click listener to the load button
+		loadButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y)
+			{
+				//Ignore the click event if the loadButton is disabled. The loadButton can't be clicked when disabled. 
+				if(loadButton.isDisabled())
+					return;
+				
+				//Move to the WorldSelectScreen to allow the player to load an already-created profile.
+				game.setScreen(new WorldSelectScreen(game));
+			}
+		});
+		
+		//Add a click listener to the back button
+		backButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y)
+			{
+				//Play the "swoosh" sound effect when the "Back" button is pressed.
+				//soundManager.play(assets.swoosh);
+				//Return the user back to the main menu.
+				backPressed();
+			}
+		});
+		
+		//Creates a new label which says "Continue", and is placed under the continueButton.
+		continueLabel = new Label("Continue", assets.hudLabelStyle);
+		//Creates a new label which says "New Game", and is placed under the newGameButton.
+		newGameLabel = new Label("New Game", assets.hudLabelStyle);
+		//Creates a new label which says "Load", and which is placed under the loadButton.
+		loadLabel = new Label("Load", assets.hudLabelStyle);
+		
+		//Resizes the buttons to ensure that they are the same size, no matter the size of the screen.
+		resizeButtons();
+		//Disables the continueButton and the loadButton if the user has no saved profiles on his hard drive.
+		disableUselessButtons();
+		
+		//Add the header to the top of the table, make it span two columns, skip a row, and pad the edged by 10 units.
+		//table.add(header).colspan(4).pad(10).row();
+		
+		//Add the continue button to the table, and give it a blank space of size BUTTON_X_OFFSET to the right. We set the width and height of the table's cell to the button's width
+		//and height to ensure that the button is not scaled when added to the table.
+		table.add(continueButton).width(continueButton.getWidth()).height(continueButton.getHeight()).padRight(BUTTON_X_OFFSET);
+		//Add the new game button to the table, and give it a blank space of size BUTTON_X_OFFSET to the right. We set the width and height of the table's cell to the button's width
+		//and height to ensure that the button is not scaled when added to the table.
+		table.add(newGameButton).width(newGameButton.getWidth()).height(newGameButton.getHeight()).padRight(BUTTON_X_OFFSET);
+		//Add the load button to the table. We set the width and height of the table's cell to the button's width and height to ensure that the button is not scaled when added to the
+		//table.
+		table.add(loadButton).width(loadButton.getWidth()).height(loadButton.getHeight());
+		//Skip a row
+		table.row();
+		//Adds the label which says "Continue" under the continueButton and centers it in its column.
+		table.add(continueLabel).left();
+		//Adds the label which says "New Game" under the newGameButton and centers it in its column.
+		table.add(newGameLabel).left();
+		//Adds the label which says "Load" under the loadButton and centers it in its column.
+		table.add(loadLabel).center();
+		
+		//Add the gameSelectBackground to the stage so that it can be rendered under each UI element. 
+		gameSelectBackground.addToStage(stage);
+		//Add the table to the stage, telling the stage to draw all of the widgets inside the table when stage.draw() is called.
+		stage.addActor(table);
+		//Adds the back button to be rendered on the stage at the position set above
+		stage.addActor(backButton);
+		
+		//Make the UI widgets in the table fade in.
+		fadeIn();
+		
+	}
+	
+	/** Resizes all of the buttons on the screen to ensure that their proportions are the same, no matter the size of the screen. */
+	private void resizeButtons() 
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	/** Disables the continueButton and the loadButton if the user has no saved profiles on his hard drive. */
+	private void disableUselessButtons() 
+	{
+		//If the player has no profiles saved on the hard drive, disable the "Continue" and the "Load" buttons.
+		if(profileManager.isEmpty())
+		{
+			//Disable the continue and the load buttons.
+			continueButton.setDisabled(true);
+			loadButton.setDisabled(true);
+			
+			//Change the colour of the disabled buttons and their images to ensure that the player knows he can't press them.
+			continueButton.setColor(BUTTON_DISABLED_COLOR);
+			continueButton.getImage().setColor(BUTTON_DISABLED_COLOR);
+			loadButton.setColor(BUTTON_DISABLED_COLOR);
+			loadButton.getImage().setColor(BUTTON_DISABLED_COLOR);
+		}
+		
+	}
+
+	/** Creates a new profile, and runs the game using that profile. */
+	private void newGame()
+	{
+		//Stores the profileId for the profile we want to create. We want the profile to be placed after the last created profile, which has id=getNumProfiles()-1,
+		//since profileIds are zero-based.
+		int newProfileId = profileManager.getNumProfiles();
+		System.out.println("Create profile with id = " + newProfileId);
+		//Creates a new profile in the profileManager and saves it to the hard drive.
+		Profile profile = profileManager.createProfile(newProfileId);
+		
+		//Tell the PreferencesManager that a new profile was created with the given Id. Makes it so that this profile will be loaded when "Continue" is pressed.
+		prefsManager.newProfileCreated(newProfileId);
+		
+		//Disposes of the assets used by the loading and company splash screen to free up system resources.
+		assets.disposeInitialAssets();
+		
+		//Switch the GameScreen, passing in the chosen profile as a second argument.
+		game.setScreen(new GameScreen(game, profile));
+	}
+	
+	/** Continues the game from the last profile that the user saved. */
+	private void continueGame() 
+	{
+		//Gets the profileId of the last profile which was loaded by the player. This is the profile that the player should continue playing on.
+		int lastProfileId = prefsManager.getLastProfile();
+		System.out.println("Profile to load: " + lastProfileId);
+		
+		//Retrieves the profile which the player has to continue playing on.
+		Profile profile = profileManager.getProfile(lastProfileId);
+		
+		//Tell the PreferencesManager that the given profile was loaded.
+		prefsManager.profileLoaded(lastProfileId);
+		
+		//Disposes of the assets used by the loading and company splash screen to free up system resources.
+		assets.disposeInitialAssets();
+		
+		//Switch the GameScreen, passing in the chosen profile as a second argument.
+		game.setScreen(new GameScreen(game, profile));
+	}
+	
+	@Override
+	public void render(float deltaTime)
+	{
+		//Sets OpenGL to clear the screen with white.
+		Gdx.gl.glClearColor(1,1,1,1);
+		//Clear the screen.
+		super.render(deltaTime);
+		
+		//Prepare the widgets inside the stage to be drawn.
+		stage.act(deltaTime);
+		//Draw the stage, effectively drawing all the 2D widgets to the screen.
+		stage.draw();
+	}
+	
+	@Override
+	public void resize(int width, int height)
+	{
+		//Re-compute the value of the guiWidth and guiHeight superclass variables to ensure that the gui fits the new aspect ratio of the screen.
+		super.resize(width, height);
+		
+		//Set the viewport of the stage to the guiWidth/Height member variables. This ensures that the viewable area of the stage is the desired width and height
+		//of the GUI. Note that these variables were defined in the superclass to be the desired default width and height of a GUI. However, the smallest dimension
+		//is resized to fit the screen's aspect ratio to avoid uneven stretching. If the device's screen is guiWidth x guiHeight, the GUI is pixel perfect.
+		stage.setViewport(guiWidth, guiHeight);
+		//Sets the bounds of the table. This is essentially the largest the table can be. We set it to the full width of the GUI for the table to fill the screen.
+		table.setBounds(0, 0, guiWidth, guiHeight);
+		
+		//Positions the background at the center of the stage, using the given constants as offsets. Note that the background's position is denoted by its bottom-left corner.
+		gameSelectBackground.setPosition(stage.getWidth()/2 - gameSelectBackground.getWidth()/2 + BACKGROUND_X_OFFSET, BACKGROUND_Y_OFFSET);
+		//Anchors the back button to the bottom-right of the screen, using the given offsets. Note that button positions are the bottom-left of the buttons.
+		backButton.setPosition(stage.getWidth() - backButton.getWidth() - BACK_BUTTON_X_OFFSET, BACK_BUTTON_Y_OFFSET);
+		
+		//Offset the table's y-position so that the buttons are centered at the screen.
+		table.setY(TABLE_Y_OFFSET);
+		
+	}
+	
+	/** Plays a fade in animation when the user enters this screen. */
+	public void fadeIn()
+	{
+		//Makes sure that the table is transparent before making it fade in
+		table.setColor(Color.CLEAR);
+		//Make the table fade in
+		table.addAction(Actions.fadeIn(0.5f));
+		//Move the table down
+		table.addAction(Actions.moveBy(0, -40));
+		//Move the table back up in the given amount of time
+		table.addAction(Actions.moveBy(0, 40, 0.75f, Interpolation.exp5Out));
+	}
+
+	@Override
+	public void dispose()
+	{
+		//Disposes of the SpriteBatcher in the superclass.
+		super.dispose();
+		
+		//Dispose of any resources used by the MainMenuScreen.
+		stage.dispose();
+	}
+	
+	@Override
+	public void pause() 
+	{
+	}
+
+	@Override
+	public void resume() 
+	{
+	}
+
+	
+	/** Receives input-related events, such as the user pressing the BACK button on his Android device. */
+	private class InputListener extends InputAdapter
+	{
+		/** Called when a key is pressed. */
+		@Override
+		public boolean keyDown(int keycode)
+		{
+			//If the Android BACK button has been pressed
+			if(keycode == Keys.BACK)
+			{
+				//Lets the WorldSelectScreen know that the user should be brought back to the main menu
+				backPressed();
+			}
+			
+			return false;
+		}
+	}
+	
+	/** Called when either the visual BACK button is pressed, or when the Android BACK button is pressed. Move the user back to the main menu, */
+	public void backPressed()
+	{
+		//Return to the main menu once the "Back" button is pressed.
+		game.setScreen(new MainMenuScreen(game));
+	}
+}
