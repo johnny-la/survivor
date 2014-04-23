@@ -1,5 +1,6 @@
 package com.jonathan.survivor.renderers;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
@@ -15,7 +16,10 @@ import com.jonathan.survivor.math.Vector2;
  */
 
 public class TerrainLayerRenderer 
-{
+{	
+	/** Stores the color of transparent TerrainLayer sprites. */
+	private static final Color TRANSPARENT_COLOR = new Color(0.8f, 0.8f, 0.8f, 0.3f);
+	
 	/** Holds the TerrainLayer instance which this renderer is assigned to draw. */
 	private TerrainLayer terrainLayer;
 	
@@ -24,6 +28,9 @@ public class TerrainLayerRenderer
 	
 	/** Holds the TerrainSpritePool which pools all of the unused sprites which render the shape of a TerrainLayer. */
 	private SpritePool spritePool;
+	
+	/** Helper Color instance used to color the TerrainLayer sprites and avoid creating new color instances. */
+	private Color workingColor;
 	
 	/** Creates the TerrainSpriteRenderer used to position and pool sprites used to form the ground of the TerrainLayers. */
 	public TerrainLayerRenderer(TerrainLayer terrainLayer)
@@ -34,6 +41,9 @@ public class TerrainLayerRenderer
 		//Creates a new TerrainSpritePool, which pools all of the sprites which will be re-cycled when needed.
 		spritePool = new SpritePool();
 		
+		//Helper Color instance used to avoid instantiation. Defaults to white.
+		workingColor = new Color(Color.WHITE);
+		
 		//Update the renderer to form the line used to model the given Terrainlayer.
 		update(terrainLayer);
 	}
@@ -41,11 +51,22 @@ public class TerrainLayerRenderer
 	/** Draws the TerrainLayer using the given SpriteBatch instance. Draws each individual sprite stored in the renderer, which ultimately form the line of the TerrainLayer
 	 *  the Renderer is supposed to draw. 
 	 */
-	public void draw(SpriteBatch batcher)
+	public void draw(SpriteBatch batcher, boolean drawTransparent)
 	{
+		//Reset the workingColor to WHITE and apply color changes from there
+		workingColor.set(Color.WHITE);
+		
+		//If the TerrainLayer is supposed to be drawn transparent
+		if(drawTransparent)
+			//Multiply the working color by the TRANSPARENT_COLOR constant. This working color will then be applied to each individual TerrainLayer sprite.
+			workingColor.mul(TRANSPARENT_COLOR);
+		
 		//Cycles through each sprite that is currently assigned to the renderer in order to draw the assigned TerrainLayer. 
 		for(int i = 0; i < sprites.size; i++)
 		{
+			//Apply the workingColor to each TerrainLayer sprite. The workingColor stores the color that should be applied to each sprite.
+			sprites.get(i).setColor(workingColor);
+				
 			//Draws each sprite to the screen using the given batcher.
 			sprites.get(i).draw(batcher);
 		}
@@ -127,11 +148,8 @@ public class TerrainLayerRenderer
 			//Finds the angle of the segment by calculating the arctangent of the segment height over the segment width.
 			float angle = (float)Math.atan(segmentHeight/segmentLength) * Vector2.TO_DEGREES;
 			
-			
-			
-			//Draws a segment of the bottom of the cosine function. Renders a line going from the left-end segment to the right-end. Note that the y-value
-			//of the segment is found using 'TerrainLayer.getBottomLayerHeight()'. We take the bottom height since we are drawing the bottom layer portion.
-			sprite.setPosition(x1, y1-sprite.getHeight());
+			//Sets the sprites left-center position at (x1,y1), so that it's left-center position starts at the left-end of the segment.
+			sprite.setPosition(x1, y1-sprite.getHeight()/2);
 			
 			//Allows the sprite to rotate around its left end-point.
 			sprite.setOrigin(0, 0);

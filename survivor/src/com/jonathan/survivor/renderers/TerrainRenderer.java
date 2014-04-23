@@ -92,14 +92,21 @@ public class TerrainRenderer
 				//Stores the TerrainLayerRenderer instance that is being cycled through
 				TerrainLayerRenderer layerRenderer = layerRenderers[i][j];
 				
+				//Retrieves the TerrainLayer that this TerrainLayerRenderer is assigned to draw.
+				TerrainLayer layer = layerRenderer.getTerrainLayer();
+				
 				//If the TerrainLayer that the renderer draws is not visible
-				if(!isInCamera(layerRenderer.getTerrainLayer()))
+				if(!isInCamera(layer))
 				{
+					//Skip rendering this TerrainLayer, since it cannot be seen.
 					continue;
 				}
 				
-				//Draws the TerrainLayer represented by the TerrainLayerRenderer, using the SpriteBatch instance.
-				layerRenderer.draw(batcher);
+				//If the TerrainLayer is not on the same row as the player, draw the TerrainLayer transparent to differentiate between the active and inactive TerrainLayers.
+				boolean transparent = layer.getRow() != terrainLevel.getCenterRow();
+				
+				//Draws the TerrainLayer represented by the TerrainLayerRenderer. Accepts whether or not the TerrainLayer should be drawn transparently.
+				layerRenderer.draw(batcher, transparent);
 			}
 		}
 		

@@ -42,9 +42,9 @@ public class MainMenuScreen extends Screen
 	private TextButton optionsButton;	
 	
 	/** Stores the x-offset of the background relative to the center of the stage. */
-	private static final float BACKGROUND_X_OFFSET = -15;
+	private static final float BACKGROUND_X_OFFSET = -15.5f;
 	/** Stores the y-offset of the background relative to the center of the stage. */
-	private static final float BACKGROUND_Y_OFFSET = -20;
+	private static final float BACKGROUND_Y_OFFSET = 2f;
 	
 	/** Holds the background for the MainMenuScreen. This background is formed by a tiles of two images. */
 	private TiledImage mainMenuBackground;
@@ -212,7 +212,8 @@ public class MainMenuScreen extends Screen
 		table.setBounds(0, 0, guiWidth, guiHeight);
 		
 		//Positions the background at the center of the stage, using the given constants as offsets. Note that the background's position is denoted by its bottom-left corner.
-		mainMenuBackground.setPosition(stage.getWidth()/2 - mainMenuBackground.getWidth()/2 + BACKGROUND_X_OFFSET, BACKGROUND_Y_OFFSET);
+		mainMenuBackground.setPosition(stage.getWidth()/2 - mainMenuBackground.getWidth()/2 + BACKGROUND_X_OFFSET, 
+									   stage.getHeight()/2 - mainMenuBackground.getHeight()/2 + BACKGROUND_Y_OFFSET);
 	}
 	
 	@Override

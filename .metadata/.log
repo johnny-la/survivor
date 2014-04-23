@@ -8765,3 +8765,16 @@ java.lang.ArrayIndexOutOfBoundsException: 1034
 	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:584)
 	at org.eclipse.equinox.launcher.Main.run(Main.java:1438)
 	at org.eclipse.equinox.launcher.Main.main(Main.java:1414)
+!SESSION 2014-04-23 07:31:27.405 -----------------------------------------------
+eclipse.buildId=M20120208-0800
+java.version=1.7.0_45
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=fr_FR
+Framework arguments:  -product org.eclipse.epp.package.java.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.java.product
+
+!ENTRY org.eclipse.core.resources 2 10035 2014-04-23 07:31:29.721
+!MESSAGE The workspace exited with unsaved changes in the previous session; refreshing workspace to recover changes.
+
+!ENTRY com.android.ide.eclipse.ddms 4 0 2014-04-23 07:31:39.813
+!MESSAGE DDMS files not found: C:\Android\adt-bundle-windows-x86_64-20130917\sdk\platform-tools\adb.exe C:\Android\adt-bundle-windows-x86_64-20130917\sdk\tools\hprof-conv.exe C:\Android\adt-bundle-windows-x86_64-20130917\sdk\tools\traceview.bat 

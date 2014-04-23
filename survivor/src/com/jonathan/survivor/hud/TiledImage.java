@@ -12,9 +12,9 @@ public class TiledImage
 	private Array<Image> images;
 	
 	/** Stores the number of rows of images in the TimeImage. */
-	private int rows;
+	private int rows = 1;
 	/** Holds the number of columns in which the images are laid out in the TileImage. */
-	private int cols;
+	private int cols = 1;
 	
 	/** Stores the total width of the TiledImage. */
 	private float width;
@@ -47,7 +47,7 @@ public class TiledImage
 		//Scale down the image if a @2x or @4x atlas was chosen so that the image occupies the same amount of space, no matter the screen size.
 		image.setSize(image.getWidth() / Assets.instance.scaleFactor, image.getHeight() / Assets.instance.scaleFactor);
 		
-		//Add the image's width to the total width of the TiledImage.
+		//Add the image's width and height to the total width and height of the TiledImage.
 		width += image.getWidth();
 		
 		//Adds the image to the list of images in the TiledImage.
@@ -119,7 +119,12 @@ public class TiledImage
 
 	/** Retrieves the total height of the TiledImage. */
 	public float getHeight() {
-		return height;
+		//If there is only one row in the TiledImage
+		if(rows == 1)
+			//The height of the image is the height of the image in the first column of the first row.
+			return images.get(1).getHeight();
+		
+		throw new RuntimeException("TiledImage.getHeight(): Must implement the getHeight() method when there is more than one row in the TiledImage");
 	}
 
 	/** Sets the total height of the TiledImage. */
