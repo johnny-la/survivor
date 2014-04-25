@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.jonathan.survivor.SoundListener.Sound;
 import com.jonathan.survivor.World;
 import com.jonathan.survivor.entity.Human.State;
 import com.jonathan.survivor.entity.Player;
@@ -130,6 +131,9 @@ public class CombatHud extends Hud
 			{
 				//Make the player perform a melee attack
 				world.getPlayer().melee();
+				
+				//Play the axe-swinging sound.
+				world.playSound(Sound.PLAYER_AXE_SWING);
 			}
 			//Else, if the pause button was pressed
 			else if(event.getTarget() == pauseButton)
@@ -180,6 +184,9 @@ public class CombatHud extends Hud
 			{
 				//Make the player fire his ranged weapon, if he has one equipped.
 				world.getPlayer().fire();
+				
+				//Play the gun firing sound.
+				world.playSound(Sound.PLAYER_FIRE);
 			}
 			//Else, if the jump button was released
 			if(event.getTarget() == jumpButton || event.getTarget() == jumpButton.getImage())

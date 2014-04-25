@@ -5,10 +5,11 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.jonathan.survivor.Profile;
+import com.jonathan.survivor.SoundListener;
 import com.jonathan.survivor.Survivor;
 import com.jonathan.survivor.World;
-import com.jonathan.survivor.WorldListener;
 import com.jonathan.survivor.World.WorldState;
+import com.jonathan.survivor.WorldListener;
 import com.jonathan.survivor.entity.Human.State;
 import com.jonathan.survivor.hud.BackpackHud;
 import com.jonathan.survivor.hud.CombatHud;
@@ -87,6 +88,8 @@ public class GameScreen extends Screen
 	private UiListener uiListener;
 	/** The listener which receives events fired from the InputManager class. For instance, the GameScreen is informed through this listener when the BACK key is pressed. */
 	private InputGestureListener inputListener;
+	/** Holds the listener which receives events whenever a particular sound needs to be played. */
+	private SfxListener sfxListener;
 	
 	/** Creates a game screen. The profile used to create the screen must be specified to load the user's previous save information and update it. */
 	public GameScreen(Survivor game, Profile profile)
@@ -153,9 +156,14 @@ public class GameScreen extends Screen
 		uiListener = new UiListener();
 		//Creates the InputGestureListener instance which listens to all events fired from the InputManager, such as when the BACK key is pressed.
 		inputListener = new InputGestureListener();
+		//Instantiates the SfxListener, which is registered to the World and receives events whenever a sound effect needs to be played.
+		sfxListener = new SfxListener();
 		
 		//Registers the inputListener to the InputManager. Like this, the InputManager will call the inputListener's methods whenever an event is dispatched.
 		inputManager.setInputListener(inputListener);
+		
+		//Registers the sfxListener to the world, so that the world can delegate events to the sfxListener whenever a sound effect needs to be played.
+		world.setSoundListener(sfxListener);
 		
 		//Adds the UiListener instance to each Hud instance. Like this, the GameScreen is informed about button touches in the UI. Used to react appropriately to a button press.
 		explorationHud.addHudListener(uiListener);
@@ -342,6 +350,17 @@ public class GameScreen extends Screen
 		{
 			//Inform the GameScreen that the Back button has been pressed, so that the user can go back one UI layer.
 			backPressed();
+		}
+	}
+	
+	/** Receives events whenever a sound effect needs to be played. */
+	private class SfxListener implements SoundListener
+	{
+		/** Called when a particular sound needs to be played. */
+		@Override
+		public void play(Sound sound)
+		{
+
 		}
 	}
 	

@@ -72,57 +72,44 @@ public class TerrainLayerRenderer
 		}
 	}
 	
-	/** Makes the sprites in this renderer update to form the shape of the given TerrainLayer. */
-	public void update(TerrainLayer layer)
-	{		
-		//Stores the TerrainLayer this renderer is assigned to draw. Used for future reference, in order to update the renderers if the TerrainLevel shifted.
-		terrainLayer = layer;
+	/** Updates the sprites in this renderer to form the shape of the TerrainLayer stored as a member variable of the object. */
+	public void update(TerrainLayer terrainLayer)
+	{	
+		//Updates the terrainLayer which this renderer is assigned to draw.	
+		this.terrainLayer = terrainLayer;
 		
-		//If the TerrainType of the layer is not COSINE, the layer type is either CONSTANT or LINEAR. That means that the layer's geometry can be modeled 
-		//using a straight line. Thus, form a straight line with sprites.
-		if(layer.getTerrainType() != TerrainType.COSINE)
-		{
-			//Update the sprites of this renderer so that they form a linear line following the shape of the given TerrainLayer.
-			updateCosine(layer);
-		}
-		//Else, if we are here, the TerrainLayer has the geometry of a cosine function. Thus, draw the layer using a series of lines to model a cosine function.
-		else
-		{
-			//Makes the sprites of this renderer take the shape of the given cosine layer.
-			updateCosine(layer);
-		}
-	}
-
-	/** Update the sprites of this renderer so that they form a linear line following the shape of the given TerrainLayer. */
-	private void updateLinear(TerrainLayer layer) 
-	{
-		//Stores the bottom left and right end-points of the TerrainLayer using the methods TerrainLayer.getLeft/RightPoint():Vector2.
-		/*Vector2 leftEndPoint = layer.getLeftPoint();
-		Vector2 rightEndPoint = layer.getRightPoint();
-		
-		//Draw a straight line going from the right end point to the left end point of the TerrainLayer. This draws the bottom portion of the layer since
-		//the end points specify the position for the bottom of the layer.
-		shapeRenderer.line(rightEndPoint.x, rightEndPoint.y, leftEndPoint.x, leftEndPoint.y);
-		
-		//If we are cycling through the last row of the layers array, we have reached the top-most layer. Thus, draw the top portion of the layer. It wasn't
-		//necessary to do so before because the top-portion of the previous layers were drawn by the bottom portions of the next layers.
-		if(i == layers.length-1)
-			//Draws the top portion of the layer by drawing a line from the left end point to the right end point and off-setting it up by the layer height.
-			shapeRenderer.line(rightEndPoint.x, rightEndPoint.y + TerrainLayer.LAYER_HEIGHT, leftEndPoint.x, leftEndPoint.y + TerrainLayer.LAYER_HEIGHT);*/
+		//Updates the renderer to ensure that its sprites are placed so as to render the given TerrainLayer.
+		update();
 	}
 	
-	/** Updates the sprites in this renderer to follow the shape of the given COSINE TerrainLayer. */
-	private void updateCosine(TerrainLayer layer)
+	/** Updates the sprites in this renderer to follow the shape of the TerrainLayer stored as a member variable. */
+	public void update()
 	{		
 		//Stores the bottom left and right end-points of the TerrainLayer using the methods TerrainLayer.getLeft/RightPoint():Vector2.
-		Vector2 leftEndPoint = layer.getLeftPoint();
-		Vector2 rightEndPoint = layer.getRightPoint();
+		Vector2 leftEndPoint = terrainLayer.getLeftPoint();
+		Vector2 rightEndPoint = terrainLayer.getRightPoint();
+		
+		//Stores the index of the sprite in the sprites:Array<Sprite> array that is being placed in the renderer.
+		int spriteIndex = 0;
 		
 		//Cycles from the x-position of the layer's left end-point, to the right-most x-position of the layer. 
 		for(float x = leftEndPoint.x; x < rightEndPoint.x; )
 		{
-			//Retrieves a sprite from the SpritePool used to draw the segment of the layer we are cycling through.
-			Sprite sprite = spritePool.obtain();
+			//Stores the sprite that will be placed on the renderer in order to draw the TerrainLayer.
+			Sprite sprite = null;
+			
+			//If the index of the sprite that has to be placed already exists in the sprites<Array>, simply re-use that sprite.
+			if(spriteIndex < sprites.size && sprites.get(spriteIndex) != null)
+			{
+				//Re-use the sprite that was previously placed in the sprites:Array<Sprite> array in order to model the previous TerrainLayer.
+				sprite = sprites.get(spriteIndex);
+			}
+			//Else, if no more sprites in the sprites:Array<Sprite> can be reused
+			else
+			{
+				//Retrieves a sprite from the SpritePool used to draw the segment of the layer we are cycling through.
+				sprite = spritePool.obtain();
+			}
 			
 			//The length of the segment is equal to the length of the sprite used to model this segment.
 			float segmentLength = sprite.getWidth();
@@ -130,7 +117,7 @@ public class TerrainLayerRenderer
 			//Stores the x-position of left-end of the segment. This is the x-position that the outer 'for' loop is cycling through.
 			float x1 = x;
 			//Stores the y-position of the left-end of the segment. Found by finding the height of the bottom of the layer at the point's x-position.
-			float y1 = layer.getBottomLayerHeight(x1);
+			float y1 = terrainLayer.getBottomLayerHeight(x1);
 			
 			//Finds the x-position of the right-end of the segment simply by adding a segment width to the left-end's x-position.
 			float x2 = x1 + segmentLength;
@@ -140,7 +127,7 @@ public class TerrainLayerRenderer
 				break;
 			
 			//Stores the y-position of the right-end of the segment. Found by finding the height of the bottom of the layer at the point's x-position.
-			float y2 = layer.getBottomLayerHeight(x2);
+			float y2 = terrainLayer.getBottomLayerHeight(x2);
 			
 			//Calculates the height of the segment we are modeling in this 'for' loop iteration. It is simply the subtraction of the height of each end of the segment.
 			float segmentHeight = y2-y1;
@@ -156,11 +143,23 @@ public class TerrainLayerRenderer
 			//Rotates the sprite at the angle of the line segment it models.
 			sprite.setRotation(angle);
 			
-			//Add the sprite into the list of sprites used to model the line segments of the given TerrainLayer.
-			sprites.add(sprite);
+			//If the index of the sprite which was placed already exists within the bounds of the sprites:Array<Sprite> array, it does not need to be re-placed into the array.
+			//The sprite was taken from the array in the first place.
+			if(spriteIndex < sprites.size)
+			{
+			}
+			//Else, if the sprite being placed is out of bounds of the sprites:Array<Sprite>, add it to the array.
+			else
+			{
+				//Add the sprite into the list of sprites used to model the line segments of the given TerrainLayer.
+				sprites.add(sprite);
+			}
 			
 			//Increment the x-value that the 'for' loop is cycling through, so that the next segment starts at the end of the last one.
 			x += segmentLength;
+			
+			//Next iteration, the sprite in the next index of the sprites:Array<Sprite> array will be placed on the renderer.
+			spriteIndex++;
 			
 			//If we are cycling through the last row of the layers array, we have reached the top-most layer. Thus, draw the top portion of cosine function.
 			//It wasn't necessary to do so before because the top-portion of the previous layers were drawn by the bottom portions of the next layers.
@@ -172,9 +171,8 @@ public class TerrainLayerRenderer
 		}
 	}
 	
-	/** Called when the renderer is assigned to draw a new TerrainLayer. The currently used sprites must be freed back into the pools in order to be recycled to 
-	 *  draw another TerrainLayer. */
-	private void freeSprites()
+	/** Recycles he currently used sprites, and frees them back into the pools of sprites. CURRENTLY NOT USED */
+	public void freeSprites()
 	{
 		//Cycles through each sprite that is currently assigned to draw a TerrainLayer. 
 		for(int i = 0; i < sprites.size; i++)
@@ -241,5 +239,11 @@ public class TerrainLayerRenderer
 	/** Returns the TerrainLayer which this renderer draws to the screen. */
 	public TerrainLayer getTerrainLayer() {
 		return terrainLayer;
+	}
+	
+	/** Sets the TerrainLayer which this renderer draws to the screen. The update() method must be called to ensure that the sprites are re-positioned to model this new layer. */
+	public void setTerrainLayer(TerrainLayer layer)
+	{
+		this.terrainLayer = terrainLayer;
 	}
 }

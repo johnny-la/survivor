@@ -1,0 +1,10 @@
+package com.jonathan.survivor;
+
+/**
+ * Sends events to the GameScreen whenever a particular sound has 
+ *
+ */
+
+public class SoundListener {
+
+}

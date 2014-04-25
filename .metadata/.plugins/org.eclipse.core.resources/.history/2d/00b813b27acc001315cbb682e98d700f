@@ -1,0 +1,248 @@
+package com.jonathan.survivor.renderers;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.jonathan.survivor.TerrainLayer;
+import com.jonathan.survivor.TerrainLayer.TerrainDirection;
+import com.jonathan.survivor.TerrainLayer.TerrainType;
+import com.jonathan.survivor.TerrainLevel;
+import com.jonathan.survivor.math.Rectangle;
+
+public class TerrainRenderer 
+{		
+	/** Stores the SpriteBatch instance used to draw the sprites which form the terrain geometry. */
+	private SpriteBatch batcher;
+	
+	/** Stores the camera where the terrain is drawn. In this case, the world camera. */
+	private OrthographicCamera worldCamera;
+	
+	/** Holds the TerrainLevel instance that the renderer is assigned to draw. */
+	private TerrainLevel terrainLevel;
+	
+	/** Holds the layer renderers used to render each individual TerrainLayer. Note that the array is shaped exactly like the 'layers[][]' array in the TerrainLevel. */
+	private TerrainLayerRenderer[][] layerRenderers;
+	
+	/** Helper Rectangle instance used to test whether or not a certain TerrainLayer is viewable by the world camera. */
+	private Rectangle lineBounds;
+	
+	/** Accepts the camera where the terrain lines will be drawn. */
+	public TerrainRenderer(SpriteBatch batcher, OrthographicCamera worldCamera)
+	{
+		//Stores the SpriteBatch instance used to draw a TerrainLevel instance.
+		this.batcher = batcher;
+		//Stores the camera where the terrain lines will be drawn.
+		this.worldCamera = worldCamera;
+		
+		//Helper rectangle used to test if a TerrainLayer is viewable by the world camera.
+		lineBounds = new Rectangle(); 
+	}
+	
+	/** Creates a matrix of TerrainLayerRenderers, each of which is used to draw a specific TerrainLayer in the given level. */
+	private void createLayerRenderers(TerrainLevel level) 
+	{
+		//Stores the TerrainLevel which is meant to be drawn by the TerrainRenderer. Allows the renderer to know which TerrainLevel it is currently rendering.
+		terrainLevel = level;
+		
+		//Creates the TerrainLayerRenderers used to draw each individual TerrainLayer in the TerrainLevel. Note that its size is identical to the amount of layers in the TerrainLevel.
+		layerRenderers = new TerrainLayerRenderer[TerrainLevel.NUM_LAYER_ROWS][TerrainLevel.NUM_LAYER_COLS];
+		
+		//Retrieves the TerrainLayers contained by the level. They are stored in a 2D array. These are the only layers that are visible to the user.
+		TerrainLayer[][] layers = level.getTerrainLayers();
+		
+		//Cycles through the rows of TerrainLayers stored in the level.
+		for(int i = 0; i < layers.length; i++)
+		{
+			//Cycles through the columns of the TerrainLayers array.
+			for(int j = 0; j < layers[i].length; j++)
+			{
+				//Stores the TerrainLayer instance that is being cycled through
+				TerrainLayer layer = layers[i][j];
+				
+				//Creates a new TerrainLayerRenderer which will be used to render the TerrainLayer we are cycling through. 
+				layerRenderers[i][j] = new TerrainLayerRenderer(layer);
+			}
+		}
+	}
+
+	/** Renders the terrainLevel's geometry using lines of sprites. */
+	public void render(TerrainLevel level)
+	{
+		//If the level that needs to be rendered is not the same level that the renderer is currently rendering
+		if(level != terrainLevel)
+		{
+			//Update the TerrainLayerRenderers so that they render the TerrainLayers that belong to the given level.
+			createLayerRenderers(level);
+		}
+		
+		//Update the TerrainLayerRenderers in case the player switches layers.
+		update();
+		//Draws the TerrainLayers to the screen.
+		draw();
+		
+		
+	}
+	
+	/** Updates the TerrainLayerRenderers to match the TerrainLayer matrix of the TerrainLevel. Essentially ensures that the TerrainLayerRenderers 
+	 *  draw the correct set of TerrainLayers. */
+	private void update() 
+	{
+		//Retrieves the bottom-left-most TerrainLayer in the level to test if the player has switched layers.
+		TerrainLayer bottomLeftLayer = terrainLevel.getBottomLeftLayer();
+		
+		//Gets the TerrainLayer that the bottom-left-most TerrainLayerRenderer is drawing. Used to test if the player switched layers
+		TerrainLayer currentLayer = layerRenderers[0][0].getTerrainLayer();
+		
+		//If the player has moved one layer up from the previous time this update() method was called
+		if(bottomLeftLayer.getRow() > currentLayer.getRow())
+		{
+			//Shift the TerrainLayerRenderers up by one row so that they correspond to the TerrainLevel's layer matrix
+			shiftLayersUp();
+		}
+		//Else, if the player has moved down a layer since the last time this update() method was called
+		else if(bottomLeftLayer.getRow() < currentLayer.getRow())
+		{
+			//Shift the TerrainLayerRenderers down a row so they correspond to the TerrainLevel's layer matrix
+			shiftLayersDown();
+		}
+		
+	}
+	
+	/** Shift the TerrainLayerRenderers up a row, so that they draw TerrainLayers one row higher. Called when the player jumps.
+	private void shiftLayersUp() 
+	{
+		//Stores the bottom TerrainLayers, stored in the first row of the layers:TerrainLayer[][] array.
+		TerrainLayer[] bottomLayers = layers[0];
+		//Computes the new row for the bottom layers. We choose the row of the top layers, plus one.
+		int newRow = layers[layers.length-1][0].getRow()+1;
+		//Finds the new y position for the left-most layer. We choose the top-left layer's bottom-left y-position, plus the height of a layer, to offset the bottom layers
+		//above the old ones.
+		float newYPos = layers[layers.length-1][0].getLeftPoint().y + TerrainLayer.LAYER_HEIGHT;
+		
+		//Shifts the layers down a row in the array to make way for the bottom layers.
+		for(int i = 0; i < layers.length-1; i++)
+			layers[i] = layers[i+1];
+		
+		//Update the last row of the layers:TerrainLayer[][] array to hold the bottom layers.
+		layers[layers.length-1] = bottomLayers;
+		
+		//Cycles through the TerrainLayers we just shifted to the top of the level
+		for(int i = 0; i < bottomLayers.length; i++)
+		{
+			//Stores the layer
+			TerrainLayer layer = bottomLayers[i];
+			//Sets the row of the layer to its new row.
+			layer.setRow(newRow);
+			//Sets the start position of the layer to its old x-position, as it has not changed, and the new y-position. This specifies the bottom-left (x,y) coordinate
+			//of the layer. Therefore, we set the last argument to RIGHT to tell the method that the layer is going from left to right.
+			layer.setStartPosition(layer.getLeftPoint().x, newYPos, TerrainDirection.RIGHT);
+			//Frees the GameObjects belonging to the layer back into their respective pools so that they can be reused after.
+			layer.freeGameObjects();
+			//Resets the layer so that its geometry and GameObjects match its new row.
+			layer.resetLayer();
+			
+			//Update the y-position of the next layer to start at the right end-point of the old layer.
+			newYPos = layer.getRightPoint().y;
+		}
+		
+		//Tells the level that its gameObjects:Array<GameObject> has to be re-populated since the top layers have different GameObjects now.
+		gameObjectsStored = false;
+		
+	}
+
+	/** Draws the TerrainLevel stored as a member variable to the screen. */
+	private void draw() 
+	{
+		//Sets the projection matrix of the SpriteBatch to the world camera's, so that the sprites get rendered relative to world coordinates.
+		batcher.setProjectionMatrix(worldCamera.combined);
+
+		//Begins the sprite rendering batch.
+		batcher.begin();
+		
+		//Cycles through the rows of TerrainLayerRenderers
+		for(int i = 0; i < layerRenderers.length; i++)
+		{
+			//Cycles through the columns of the TerrainLayerRenderers array.
+			for(int j = 0; j < layerRenderers[i].length; j++)
+			{
+				//Stores the TerrainLayerRenderer instance that is being cycled through
+				TerrainLayerRenderer layerRenderer = layerRenderers[i][j];
+				
+				//Retrieves the TerrainLayer that this TerrainLayerRenderer is assigned to draw.
+				TerrainLayer layer = layerRenderer.getTerrainLayer();
+				
+				//If the TerrainLayer that the renderer draws is not visible
+				if(!isInCamera(layer))
+				{
+					//Skip rendering this TerrainLayer, since it cannot be seen.
+					continue;
+				}
+				
+				//If the TerrainLayer is not on the same row as the player, draw the TerrainLayer transparent to differentiate between the active and inactive TerrainLayers.
+				boolean transparent = layer.getRow() != terrainLevel.getCenterRow();
+				
+				//Draws the TerrainLayer represented by the TerrainLayerRenderer. Accepts whether or not the TerrainLayer should be drawn transparently.
+				layerRenderer.draw(batcher, transparent);
+			}
+		}
+		
+		//Commits the sprites to the SpriteBatch instance and draws them to the screen.
+		batcher.end();
+		
+	}
+	
+	/** Returns true if the given layer is inside the viewable region of the world's camera. */
+	public boolean isInCamera(TerrainLayer layer)
+	{	
+		//Stores the end-points of the rectangle which encompasses the TerrainLayer, found using the right and left end points of the layer.
+		float x1 = layer.getLeftPoint().x;
+		float y1 = layer.getLeftPoint().y;
+		float x2 = layer.getRightPoint().x;
+		float y2 = layer.getRightPoint().y;
+
+		//If the given TerrainLayer is a cosine function, the height of the center of the wave has to be taken into account.
+		if(layer.getTerrainType() == TerrainType.COSINE)
+		{
+			//Re-define the second y-value of the rectangle encompassing the layer to be the center y-value of the cosine function.
+			y2 = layer.getBottomLayerHeight(layer.getCenterX());
+		}
+		
+		//Sets the bottom left-point of the rectangle to the bottom-left point of the line.
+		lineBounds.setPosition(Math.min(x1, x2), Math.min(y1, y2));
+		//Finds the size the line would encapsulate as a rectangle. We denote the points as the diagonal intersector of the rectangle.
+		lineBounds.setSize(Math.abs(x2 - x1), Math.abs(y2 - y1));
+		
+		//If the bounds of the line are inside the viewable region of the camera, return true
+		if(lineBounds.insideCamera(worldCamera))
+			return true;
+		
+		//Returns false if the line denoted as the diagonal intersector of a rectangle does not fall inside the camera.
+		return false;
+	}
+	
+	/** Called whenever the screen is resized. The argument contains the factor by which the screen had to be scaled to fit the device's screen
+	 *  We have to re-scale our lines by this factor for the lines to look the same size no matter the screen. */
+	public void resize(float screenScale)
+	{
+		//Sets the width of the OpenGL ES lines that will draw the level geometry. We take the default width at target resolution, and multiply it by the screen's scale.
+		//Gdx.gl10.glLineWidth(DEFAULT_LINE_WIDTH * screenScale);
+	}
+
+	/** Returns the TerrainLevel instance that this renderer is assigned to draw. */
+	public TerrainLevel getTerrainLevel() {
+		return terrainLevel;
+	}
+
+	/** Sets the TerrainLevel instance that this renderer will be assigned to draw. */
+	public void setTerrainLevel(TerrainLevel terrainLevel) 
+	{
+		//Stores the TerrainLevel that this renderer is assigned to draw.
+		this.terrainLevel = terrainLevel;
+		
+		//Creates the matrix of TerrainLayerRenderers, each of which is used to draw a specific TerrainLayer in the level. 
+		createLayerRenderers(terrainLevel);
+	}
+}

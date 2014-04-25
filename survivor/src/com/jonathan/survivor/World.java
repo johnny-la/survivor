@@ -6,8 +6,10 @@ import java.util.Set;
 
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.spine.Bone;
+import com.jonathan.survivor.SoundListener.Sound;
 import com.jonathan.survivor.entity.Box;
 import com.jonathan.survivor.entity.Clickable;
+import com.jonathan.survivor.entity.Earthquake;
 import com.jonathan.survivor.entity.GameObject;
 import com.jonathan.survivor.entity.Human;
 import com.jonathan.survivor.entity.Human.Direction;
@@ -16,7 +18,6 @@ import com.jonathan.survivor.entity.Human.State;
 import com.jonathan.survivor.entity.InteractiveObject;
 import com.jonathan.survivor.entity.ItemObject;
 import com.jonathan.survivor.entity.ItemObject.ItemState;
-import com.jonathan.survivor.entity.Earthquake;
 import com.jonathan.survivor.entity.Player;
 import com.jonathan.survivor.entity.PlayerListener;
 import com.jonathan.survivor.entity.Projectile;
@@ -26,7 +27,6 @@ import com.jonathan.survivor.inventory.Item;
 import com.jonathan.survivor.managers.GameObjectManager;
 import com.jonathan.survivor.managers.ItemManager;
 import com.jonathan.survivor.managers.ZombieManager;
-import com.jonathan.survivor.math.Rectangle;
 import com.jonathan.survivor.math.Vector2;
 
 public class World
@@ -75,6 +75,9 @@ public class World
 	
 	/** Listens to events delegated by the player. */
 	private EventListener eventListener;
+	
+	/** Sends events to the GameScreen whenever a sound effect needs to be played. */
+	private SoundListener soundListener;
 	
 	/** Helper Vector2 used to store the world coordinates of the last known touch. */
 	private Vector2 touchPoint;
@@ -477,6 +480,9 @@ public class World
 		stopMoving(player);
 		stopMoving(player.getZombieToFight());
 		
+		//Start playing the combat music.
+		playSound(Sound.COMBAT_MUSIC);
+		
 		//Tell the world to use the combat level. This level will now be rendered and used as the playing surface for all GameObjects.
 		setLevel(combatLevel);
 	}
@@ -518,6 +524,9 @@ public class World
 			//Spawn items next to the zombie.
 			spawnItems(player.getZombieToFight());
 		}
+		
+		//Play the exploration music after leaving combat mode.
+		playSound(Sound.EXPLORATION_MUSIC);
 	}
 	
 	/** Checks if the player is colliding with any GameObjects. */
@@ -934,6 +943,13 @@ public class World
 			return false;
 	}
 	
+	/** Plays the given sound. Delegates an event to the GameScreen through the soundListener to play the particular sound. */
+	public void playSound(Sound sound)
+	{
+		//Tells the GameScreen to play the given sound, since the soundListener is registered from the GameScreen
+		soundListener.play(sound);
+	}
+	
 	/** Returns the currently active level of the world used to dictate the walkable area the world. */
 	public Level getLevel()
 	{
@@ -1011,5 +1027,15 @@ public class World
 	/** Sets the WorldListener which delegates World events to the GameScreen. */
 	public void setWorldListener(WorldListener worldListener) {
 		this.worldListener = worldListener;
+	}
+
+	/** Returns the SoundListener which delegates events to the GameScreen whenever a sound effect needs to be played. */
+	public SoundListener getSoundListener() {
+		return soundListener;
+	}
+
+	/** Sets the SoundListener which delegates events to the GameScreen whenever a sound effect needs to be played. */
+	public void setSoundListener(SoundListener soundListener) {
+		this.soundListener = soundListener;
 	}	
 }
