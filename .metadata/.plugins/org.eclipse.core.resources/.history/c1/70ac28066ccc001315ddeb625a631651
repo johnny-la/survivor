@@ -22,9 +22,9 @@ import com.jonathan.survivor.hud.TiledImage;
 public class GameSelectScreen extends Screen
 {
 	/** Stores the x-offset of the background relative to the center of the stage. */
-	private static final float BACKGROUND_X_OFFSET = -15.5f;
+	private static final float BACKGROUND_X_OFFSET = -15;
 	/** Stores the y-offset of the background relative to the center of the stage. */
-	private static final float BACKGROUND_Y_OFFSET = 2;
+	private static final float BACKGROUND_Y_OFFSET = -20;
 	
 	/** Holds the amount that the table is offset in the y-axis. */
 	private static final float TABLE_Y_OFFSET = -8;

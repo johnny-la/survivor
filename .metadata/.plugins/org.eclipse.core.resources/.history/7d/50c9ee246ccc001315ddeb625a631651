@@ -589,7 +589,6 @@ public class Assets
 		worldSelectBgRegion_0 = worldSelectBgAtlas_1.findRegion("WorldSelect_BG");	//"_#" removed after the name by TexturePacker.
 		worldSelectBgRegion_1 = worldSelectBgAtlas_0.findRegion("WorldSelect_BG"); //Note: TexturePacker puts the second image in atlas 0 automatically.
 		
-		//Fix the bleeding on the backgrounds to ensure that no black pixels are visible at the edge of the images
 		SpriteUtils.fixBleeding(mainMenuBgRegion_0);
 		SpriteUtils.fixBleeding(mainMenuBgRegion_1);
 		SpriteUtils.fixBleeding(gameSelectBgRegion_0);

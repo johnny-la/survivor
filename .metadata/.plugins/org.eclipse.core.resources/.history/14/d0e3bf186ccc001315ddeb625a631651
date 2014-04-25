@@ -589,13 +589,12 @@ public class Assets
 		worldSelectBgRegion_0 = worldSelectBgAtlas_1.findRegion("WorldSelect_BG");	//"_#" removed after the name by TexturePacker.
 		worldSelectBgRegion_1 = worldSelectBgAtlas_0.findRegion("WorldSelect_BG"); //Note: TexturePacker puts the second image in atlas 0 automatically.
 		
-		//Fix the bleeding on the backgrounds to ensure that no black pixels are visible at the edge of the images
 		SpriteUtils.fixBleeding(mainMenuBgRegion_0);
 		SpriteUtils.fixBleeding(mainMenuBgRegion_1);
-		SpriteUtils.fixBleeding(gameSelectBgRegion_0);
-		SpriteUtils.fixBleeding(gameSelectBgRegion_1);
-		SpriteUtils.fixBleeding(worldSelectBgRegion_0);
-		SpriteUtils.fixBleeding(worldSelectBgRegion_1);
+		SpriteUtils.fixBleeding(mainMenuBgRegion_0);
+		SpriteUtils.fixBleeding(mainMenuBgRegion_1);
+		SpriteUtils.fixBleeding(mainMenuBgRegion_0);
+		SpriteUtils.fixBleeding(mainMenuBgRegion_1);
 	}
 	
 	/** Loads the assets used in-game which couldn't be loaded by the Asset Manager in the updateLoading() method, such as SkeletonJson files. MUST be called after

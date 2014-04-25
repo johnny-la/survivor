@@ -30,9 +30,9 @@ public class WorldSelectScreen extends Screen
 	private final static float WORLD_LIST_HEIGHT = 150f;
 	
 	/** Stores the x-offset of the background relative to the center of the stage. */
-	private static final float BACKGROUND_X_OFFSET = -15.5f;
+	private static final float BACKGROUND_X_OFFSET = -15;
 	/** Stores the y-offset of the background relative to the center of the stage. */
-	private static final float BACKGROUND_Y_OFFSET = 2;
+	private static final float BACKGROUND_Y_OFFSET = -20;
 	
 	/** Stores the offset used to anchor the back button to the bottom-right of the backpack background with a certain padding. */
 	public static final float BACK_BUTTON_X_OFFSET = 10;
@@ -270,6 +270,8 @@ public class WorldSelectScreen extends Screen
 		//Stores the amount of profiles that the user has.
 		int len = profileManager.getNumProfiles();
 		
+		System.out.println("WorldSelectScreen.createButtonList(): Number of buttons to create: " + len);
+		
 		//Cycles through all the profiles contained by the profile manager.
 		for(int i = 0; i < len; i++)
 		{
@@ -342,6 +344,8 @@ public class WorldSelectScreen extends Screen
 		//Deletes the profile that is currently being selected
 		profileManager.deleteProfile(selectedProfileId);
 		
+		System.out.println("WorldSelectScreen.deleteProfile(): Delete profile with index: " + selectedProfileId);
+		
 		//Re-create the GUI so that the profile list is re-created
 		this.show();
 		//Resizes the stage and the table containing all the widgets to ensure that all widgets are placed correctly. Passes in (guiWidth,guiHeight), the pre-calculated size of the GUI.
@@ -380,8 +384,7 @@ public class WorldSelectScreen extends Screen
 		table.setBounds(0, 0, guiWidth, guiHeight);	
 		
 		//Positions the background at the center of the stage, using the given constants as offsets. Note that the background's position is denoted by its bottom-left corner.
-		worldSelectBackground.setPosition(stage.getWidth()/2 - worldSelectBackground.getWidth()/2 + BACKGROUND_X_OFFSET, 
-										  stage.getHeight()/2 - worldSelectBackground.getHeight()/2 + BACKGROUND_Y_OFFSET);
+		worldSelectBackground.setPosition(stage.getWidth()/2 - worldSelectBackground.getWidth()/2 + BACKGROUND_X_OFFSET, BACKGROUND_Y_OFFSET);
 		
 		//Anchors the back button to the bottom-right of the screen, using the given offsets. Note that button positions are the bottom-left of the buttons.
 		backButton.setPosition(stage.getWidth() - backButton.getWidth() - BACK_BUTTON_X_OFFSET, BACK_BUTTON_Y_OFFSET);

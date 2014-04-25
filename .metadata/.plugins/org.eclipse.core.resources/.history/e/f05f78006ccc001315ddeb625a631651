@@ -22,9 +22,9 @@ import com.jonathan.survivor.hud.TiledImage;
 public class GameSelectScreen extends Screen
 {
 	/** Stores the x-offset of the background relative to the center of the stage. */
-	private static final float BACKGROUND_X_OFFSET = -15.5f;
+	private static final float BACKGROUND_X_OFFSET = -15;
 	/** Stores the y-offset of the background relative to the center of the stage. */
-	private static final float BACKGROUND_Y_OFFSET = 2;
+	private static final float BACKGROUND_Y_OFFSET = -20;
 	
 	/** Holds the amount that the table is offset in the y-axis. */
 	private static final float TABLE_Y_OFFSET = -8;
@@ -304,8 +304,8 @@ public class GameSelectScreen extends Screen
 		table.setBounds(0, 0, guiWidth, guiHeight);
 		
 		//Positions the background at the center of the stage, using the given constants as offsets. Note that the background's position is denoted by its bottom-left corner.
-		gameSelectBackground.setPosition(stage.getWidth()/2 - gameSelectBackground.getWidth()/2 + BACKGROUND_X_OFFSET, 
-										 stage.getHeight()/2 - gameSelectBackground.getHeight()/2 + BACKGROUND_Y_OFFSET);
+		gameSelectBackground.setPosition(stage.getWidth()/2 - worldSelectBackground.getWidth()/2 + BACKGROUND_X_OFFSET, 
+				  stage.getHeight()/2 - worldSelectBackground.getHeight()/2 + BACKGROUND_Y_OFFSET);
 		//Anchors the back button to the bottom-right of the screen, using the given offsets. Note that button positions are the bottom-left of the buttons.
 		backButton.setPosition(stage.getWidth() - backButton.getWidth() - BACK_BUTTON_X_OFFSET, BACK_BUTTON_Y_OFFSET);
 		

@@ -270,6 +270,8 @@ public class WorldSelectScreen extends Screen
 		//Stores the amount of profiles that the user has.
 		int len = profileManager.getNumProfiles();
 		
+		System.out.println("WorldSelectScreen.createButtonList(): Number of buttons to create: " + len);
+		
 		//Cycles through all the profiles contained by the profile manager.
 		for(int i = 0; i < len; i++)
 		{
