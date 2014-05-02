@@ -6,10 +6,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.esotericsoftware.spine.AnimationState;
 import com.esotericsoftware.spine.AnimationState.AnimationStateListener;
 import com.esotericsoftware.spine.AnimationStateData;
-import com.esotericsoftware.spine.Bone;
 import com.esotericsoftware.spine.Event;
 import com.esotericsoftware.spine.Skeleton;
 import com.jonathan.survivor.Assets;
+import com.jonathan.survivor.SoundListener.Sound;
 import com.jonathan.survivor.World;
 import com.jonathan.survivor.entity.Human.Direction;
 import com.jonathan.survivor.entity.Human.Mode;
@@ -69,6 +69,8 @@ public class ZombieRenderer
 		animStateData.setMix(assets.zombieWalk, assets.zombieIdle, 0.3f);
 		animStateData.setMix(assets.zombieIdle, assets.zombieWalk, 0.1f);
 		animStateData.setMix(assets.zombieIdle, assets.zombieAlerted, 0.1f);
+		animStateData.setMix(assets.zombieIdle, assets.zombieCharge_Start, 0.1f);
+		animStateData.setMix(assets.zombieIdle, assets.zombieSmash, 0.1f);
 		animStateData.setMix(assets.zombieAlerted, assets.zombieIdle, 0.1f);
 		animStateData.setMix(assets.zombieWalk, assets.zombieAlerted, 0.1f);
 		animStateData.setMix(assets.zombieAlerted, assets.zombieWalk, 0.1f);
@@ -105,6 +107,9 @@ public class ZombieRenderer
 			{
 				//Set the zombie to IDLE state so that the ZombieManager knows to make him follow the player.
 				zombie.setState(State.IDLE);
+				
+				//Remove the image of the yellow exclamation point on top of the zombie's head, since his ALERTED state is over, and he thus no longer requires it.
+				zombie.getSkeleton().setAttachment("Alarm", null);
 			}
 			//Else, if the ENTER_COMBAT animation has just finished playing
 			else if(zombie.getState() == State.ENTER_COMBAT)
@@ -121,6 +126,11 @@ public class ZombieRenderer
 			//Else, if the zombie has completed playing its SMASH animation
 			else if(zombie.getState() == State.SMASH)
 			{
+				if(Math.random() > 0.5f)
+				{
+					zombie.setPreviousState(State.IDLE);
+					zombie.setState(State.SMASH);
+				}
 				//Set the zombie back to IDLE state so that he chooses his next move.
 				zombie.setState(State.IDLE);
 			}
@@ -271,7 +281,13 @@ public class ZombieRenderer
 		else if(zombie.getState() == State.ALERTED)
 		{
 			//Plays the alerted animation. First argument is an arbitrary index, and third argument specifies to play the animation only one.
-			animationState.setAnimation(0, assets.zombieAlerted, false);			
+			animationState.setAnimation(0, assets.zombieAlerted, false);	
+			
+			//Display the image of the yellow exclamation point on top of the zombie's head, since he is in ALERTED state.
+			zombie.getSkeleton().setAttachment("Alarm", "AlarmSymbol");
+			
+			//Play the sound of the zombie starting to charge, which is simply a sound of a zombie growling.
+			world.playSound(Sound.ZOMBIE_CHARGE_START);
 		}
 		//Else, if the zombie has just entered combat
 		else if(zombie.getState() == State.ENTER_COMBAT)
@@ -284,36 +300,54 @@ public class ZombieRenderer
 		{
 			//Plays the CHARGE_START animation. First argument is an arbitrary index, and third argument specifies to loop the walk animation.
 			animationState.setAnimation(0, assets.zombieCharge_Start, true);
+			
+			//Play the sound of the zombie starting to charge.
+			world.playSound(Sound.ZOMBIE_CHARGE_START);
 		}
 		//Else, if the zombie is charging towards the player
 		else if(zombie.getState() == State.CHARGE)
 		{
 			//Plays the CHARGE animation. First argument is an arbitrary index, and third argument specifies to loop the walk animation.
 			animationState.setAnimation(0, assets.zombieCharge, true);
+			
+			//Play the sound of the zombie charging, since the zombie just started charging.
+			world.playSound(Sound.ZOMBIE_CHARGE);
 		}
 		//Else, if the zombie is performing a SMASH which will cause an earthquake
 		else if(zombie.getState() == State.SMASH)
 		{
 			//Play the zombie's SMASH animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
 			animationState.setAnimation(0, assets.zombieSmash, true);
+			
+			//Play the sound of the zombie starting to charge, which is simply a sound of a zombie growling.
+			world.playSound(Sound.ZOMBIE_CHARGE_START);
 		}
 		//Else, if the zombie was hit by the player
 		else if(zombie.getState() == State.HIT)
 		{
 			//Plays the HIT animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
 			animationState.setAnimation(0, assets.zombieHitHead, false);
+			
+			//Play the sound of the zombie getting hit.
+			world.playSound(Sound.ZOMBIE_HIT);
 		}
 		//Else, if the zombie was hit on the head by the player
 		else if(zombie.getState() == State.HIT_HEAD)
 		{
 			//Plays the HIT_HEAD animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
 			animationState.setAnimation(0, assets.zombieHitHead, false);
+			
+			//Play the sound of the zombie getting hit.
+			world.playSound(Sound.ZOMBIE_HIT);
 		}
 		//Else, if the zombie is dead
 		else if(zombie.getState() == State.DEAD)
 		{
 			//Plays the zombie's DEAD animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
 			animationState.setAnimation(0, assets.zombieDead, false);
+			
+			//Play the sound of the zombie getting hit.
+			world.playSound(Sound.ZOMBIE_HIT);
 		}
 		
 		//Updates the speed at which the zombie's animations play, depending on the zombie's current state.
@@ -323,7 +357,7 @@ public class ZombieRenderer
 	
 	/** Updates the attachments being rendered on the zombie. */
 	private void updateAttachments(Zombie zombie) 
-	{
+	{		
 		//Update the myriad extra colliders attached to the zombie.
 		zombie.updateColliders();
 	}
@@ -360,13 +394,33 @@ public class ZombieRenderer
 		//Stores the AnimationState used to change and control the zombie's animations.
 		AnimationState animationState = zombie.getAnimationState();
 		
-		//If the zombie is alerted
-		if(zombie.isAlerted())
-			//Make the animation go faster since the zombie is walking faster
-			animationState.setTimeScale(Zombie.ALERTED_ANIM_SPEED);
-		//Else, if the zombie is not aware of the palyer's presence
-		else 
-			//Make the zombie's animations go at normal speed if the zombie is not alerted of the player's presence.
-			animationState.setTimeScale(1);
+		//If the zombie is exploring the world, check his state to determine the speed of his animations.
+		if(zombie.getMode() == Mode.EXPLORING)
+		{
+			//If the zombie is alerted
+			if(zombie.isAlerted())
+				//Make the animation go faster since the zombie is walking faster
+				animationState.setTimeScale(Zombie.ALERTED_ANIM_SPEED);
+			//Else, if the zombie is not aware of the palyer's presence
+			else 
+				//Make the zombie's animations go at normal speed if the zombie is not alerted of the player's presence.
+				animationState.setTimeScale(1);
+		}
+		//If the zombie is in combat with the player, check his state to determine the speed of his animations.
+		else if(zombie.getMode() == Mode.COMBAT)
+		{
+			//If the player is walking, the speed of his animation should match the speed of his movements
+			if(zombie.getState() == State.WALK)
+			{
+				//Find the time scale of the zombie's animations by finding how much faster the zombie walks than usual.
+				animationState.setTimeScale(1);
+			}
+			//Else, if the zombie is not walking, set his time scale to default
+			else
+			{
+				//Make the zombie's animations go at normal speed if the zombie is not walking back to his original position
+				animationState.setTimeScale(1);
+			}
+		}
 	}
 }

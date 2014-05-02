@@ -40,7 +40,8 @@ public class MainMenuLoadingScreen extends Screen
 	private Skeleton playerSkeleton;
 	
 	/** Stores the list of all possible hints shown in the loading screen. */
-	private String[] hints = {"Hint: Your progress gets saved whenever\nyou quit the game", "Hint: Craft bullets and use them sparingly"};	
+	private String[] hints = {"Hint: Save regularly to avoid losing progress\nfrom unexpected zombie encounters", "Hint: Craft bullets and use them sparingly",
+							  "Hint: The axe is a fundamental survival tool.\nCraft it as soon as you find the necessary\nresources."};	
 	
 	/** Stores the amount of time the current hint has been showing. */
 	private int hintTime = 0;
@@ -77,12 +78,15 @@ public class MainMenuLoadingScreen extends Screen
 		
 		//Queues the main menu assets for loading. The assets are loaded in the render() method when assets.updateLoading() is called. 
 		assets.queueMainMenuAssets();
+		
+		//Stop the music whilst in the loading screen.
+		musicManager.stop();
 	}
 	
 	@Override
 	public void render(float deltaTime)
 	{
-		//Sets OpenGL to clear the screen with red.
+		//Sets OpenGL to clear the screen with blue.
 		Gdx.gl.glClearColor(0.1f, 0.2f, 0.3f, 1);
 		//Clears the screen.
 		super.render(deltaTime);
@@ -122,7 +126,7 @@ public class MainMenuLoadingScreen extends Screen
 		
 		//Apply the 'Idle' animation to the player's skeleton. Second and third arguments specify how much time the player has been playing his animation, third indicates we want to 
 		//loop the animation , and last is an array where any possible animation events are delegated.
-		assets.playerIdle.apply(playerSkeleton, playerStateTime, playerStateTime, true, events);
+		assets.playerIdle_Combat.apply(playerSkeleton, playerStateTime, playerStateTime, true, events);
 		
 		//Update the player's skeleton before drawing it.
 		playerSkeleton.update(deltaTime);

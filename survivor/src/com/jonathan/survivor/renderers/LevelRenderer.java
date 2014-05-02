@@ -35,8 +35,8 @@ public class LevelRenderer
 		//Instantiates the BackgroundRenderer, used to render the Background, and update it so that it follows the player's position.
 		//backgroundRenderer = new BackgroundRenderer(batcher, worldCamera);
 		
-		//Creates a TerrainRenderer used to draw terrain geometry. Passes the SpriteBatch used to draw the terrain, and the camera where the lines should be drawn.
-		terrainRenderer = new TerrainRenderer(batcher, worldCamera);
+		//Creates a TerrainRenderer used to draw terrain geometry. Passes the world camera, where the terrain's lines should be drawn.
+		terrainRenderer = new TerrainRenderer(worldCamera);
 		//Instantiates a CombatRenderer used to draw the terrain of a combat level. Passes the camera where the lines should be drawn.
 		combatRenderer = new CombatRenderer(worldCamera);
 	}

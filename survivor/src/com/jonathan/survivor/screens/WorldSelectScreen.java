@@ -81,7 +81,7 @@ public class WorldSelectScreen extends Screen
 	private ScrollPane scrollPane;
 	
 	/** Stores the id of the selected profile in the profile list. */
-	private int selectedProfileId;
+	private int selectedProfileId = 0;
 
 	public WorldSelectScreen(Survivor game)
 	{
@@ -156,6 +156,9 @@ public class WorldSelectScreen extends Screen
 				
 				//Tell the PreferencesManager that the selected profile was loaded. This profile will be registered as the player's last used profile.
 				prefsManager.profileLoaded(selectedProfileId);
+				
+				//Save the preferences in order to keep track of the profile that was just loaded, and to load it the next time 'Continue' is pressed.
+				prefsManager.savePreferences();
 				
 				//Disposes of the assets used by the loading and company splash screen in order to free up system resources.
 				assets.disposeInitialAssets();

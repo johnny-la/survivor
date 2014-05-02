@@ -18,6 +18,9 @@ public interface Level
 	/** Returns the y-position of the ground in world coordinates at the specified x-position of the layer in world coordinates. */
 	float getGroundHeight(float xPos);
 	
+	/** Returns true if the given GameObject is out of bounds of the level. */
+	boolean outOfBounds(GameObject gameObject);
+	
 	/** Adds the given GameObject to the level. Like this, the level will be aware that it contains this GameObject, and this GameObject will be drawn to the screen. */
 	void addGameObject(GameObject go);
 	
@@ -26,4 +29,5 @@ public interface Level
 	
 	/** Returns all the GameObjects contained by the level */
 	Array<GameObject> getGameObjects();
+
 }

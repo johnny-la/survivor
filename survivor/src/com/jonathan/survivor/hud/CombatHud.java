@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.jonathan.survivor.SoundListener.Sound;
+import com.jonathan.survivor.World.WorldState;
 import com.jonathan.survivor.World;
 import com.jonathan.survivor.entity.Human.State;
 import com.jonathan.survivor.entity.Player;
@@ -131,12 +132,9 @@ public class CombatHud extends Hud
 			{
 				//Make the player perform a melee attack
 				world.getPlayer().melee();
-				
-				//Play the axe-swinging sound.
-				world.playSound(Sound.PLAYER_AXE_SWING);
 			}
-			//Else, if the pause button was pressed
-			else if(event.getTarget() == pauseButton)
+			//Else, if the pause button was pressed, and the KO animation isn't playing
+			else if(event.getTarget() == pauseButton && world.getWorldState() != WorldState.KO_ANIMATION)
 			{
 				//Tell the GameScreen that the pause button has been pressed. Switches to the pause menu.
 				hudListener.onPauseButton();
@@ -185,8 +183,8 @@ public class CombatHud extends Hud
 				//Make the player fire his ranged weapon, if he has one equipped.
 				world.getPlayer().fire();
 				
-				//Play the gun firing sound.
-				world.playSound(Sound.PLAYER_FIRE);
+				//Disables the fireButton if the player has no more bullets.
+				disableUselessButtons();
 			}
 			//Else, if the jump button was released
 			if(event.getTarget() == jumpButton || event.getTarget() == jumpButton.getImage())
@@ -248,8 +246,16 @@ public class CombatHud extends Hud
 			meleeButton.setColor(Color.DARK_GRAY);
 			meleeButton.getImage().setColor(Color.GRAY);
 		}
-		//If the player has no ranged weapon equipped
-		if(!world.getPlayer().hasRangedWeapon())
+		//Else, if the player has a melee weapon equipped
+		else 
+		{
+			//Set the melee button and its overlaying image back to default color
+			meleeButton.setColor(MELEE_BUTTON_COLOR);
+			meleeButton.getImage().setColor(Color.WHITE);
+		}
+		
+		//If the player has no ranged weapon equipped, or has no bullets in his inventory, the fireButton is useless
+		if(!world.getPlayer().hasRangedWeapon() || !world.getPlayer().hasBullets())
 		{
 			//Disable the fire button so that the user can't press it.
 			fireButton.setDisabled(true);
@@ -257,6 +263,13 @@ public class CombatHud extends Hud
 			//Make the melee button gray to inform the player that he can't press the fire button.
 			fireButton.setColor(Color.DARK_GRAY);
 			fireButton.getImage().setColor(Color.GRAY);
+		}
+		//Else, if the player has a ranged weapon equipped
+		else 
+		{
+			//Set the fire button and its overlaying image back to default color
+			fireButton.setColor(FIRE_BUTTON_COLOR);
+			fireButton.getImage().setColor(Color.WHITE);
 		}
 	}
 

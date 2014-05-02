@@ -171,6 +171,7 @@ public class Assets
 	public SkeletonData playerSkeletonData_UI; //Stores the SkeletonData used for the player drawn in UIs. The only difference is that the skeleton is scaled in pixel units.
 	public Animation playerIdle;
 	public Animation playerIdle_Combat;
+	public Animation playerBlink;
 	public Animation playerWalk;
 	public Animation playerJump;
 	public Animation playerJump_Combat;
@@ -249,10 +250,29 @@ public class Assets
 	
 	//Stores the music used by the application.
 	public Music mainMenuMusic;
+	public Music exploringMusic;
+	public Music zombieAlertMusic;
+	public Music enterCombatMusic;
+	public Music combatMusic;
 	
 	//Stores the sounds used by the application.
 	public Sound buttonClick;
 	public Sound swoosh;
+	public Sound[] playerFootsteps;
+	public Sound jumpSound;
+	public Sound jumpCombatSound;
+	public Sound fallSound;
+	public Sound playerSwingSound;
+	public Sound hitTreeSound;
+	public Sound playerHitSound;
+	public Sound pullOutWeaponSound;
+	public Sound fireGunSound;
+	public Sound itemDropSound;
+	public Sound[] pickupSounds;
+	public Sound zombieHitSound;
+	public Sound zombieChargeStartSound;
+	public Sound zombieChargeSound;
+	public Sound earthquakeSound;
 	
 	
 	public Assets()
@@ -408,8 +428,32 @@ public class Assets
 		manager.load("ui/hud/ko_hud/atlas/ko_hud_atlas" + scaleExtension + ".txt", TextureAtlas.class);
 		
 		//Puts music assets to queue inside the AssetManager using AssetManager.load("fileName", class).
-		
+		manager.load("sound/music/Exploring Theme.ogg", Music.class);
+		manager.load("sound/music/Zombie Alert Music.ogg", Music.class);
+		manager.load("sound/music/Enter Combat Music.ogg", Music.class);
+		manager.load("sound/music/Combat Theme.ogg", Music.class);
+				
 		//Puts sound assets to queue for loading inside the AssetManager using AssetManager.load("fileName", class).
+		manager.load("sound/sfx/game/player/footsteps/footstep_01.ogg", Sound.class);
+		manager.load("sound/sfx/game/player/footsteps/footstep_02.ogg", Sound.class);
+		manager.load("sound/sfx/game/player/footsteps/footstep_03.ogg", Sound.class);
+		manager.load("sound/sfx/game/player/footsteps/footstep_04.ogg", Sound.class);
+		manager.load("sound/sfx/game/player/footsteps/footstep_05.ogg", Sound.class);
+		manager.load("sound/sfx/game/player/item_drop.ogg", Sound.class);
+		manager.load("sound/sfx/game/player/pickups/pickup_01.ogg", Sound.class);
+		manager.load("sound/sfx/game/player/pickups/pickup_02.ogg", Sound.class);
+		manager.load("sound/sfx/game/player/jump.ogg", Sound.class);
+		manager.load("sound/sfx/game/player/jump_combat.ogg", Sound.class);
+		manager.load("sound/sfx/game/player/fall.ogg", Sound.class);
+		manager.load("sound/sfx/game/player/player_swing.ogg", Sound.class);
+		manager.load("sound/sfx/game/player/hit_tree.ogg", Sound.class);
+		manager.load("sound/sfx/game/player/player_hit.ogg", Sound.class);
+		manager.load("sound/sfx/game/player/pull_out_weapon.ogg", Sound.class);
+		manager.load("sound/sfx/game/player/fire_gun.ogg", Sound.class);
+		manager.load("sound/sfx/game/zombie/zombie_hit.ogg", Sound.class);
+		manager.load("sound/sfx/game/zombie/zombie_charge_start.ogg", Sound.class);
+		manager.load("sound/sfx/game/zombie/zombie_charge.ogg", Sound.class);
+		manager.load("sound/sfx/game/zombie/earthquake.ogg", Sound.class);
 	}
 	
 	/** Call every frame inside a render() method to load the assets stored inside the AssetManager instance. This performs loading on a separate thread so that the render() 
@@ -433,7 +477,7 @@ public class Assets
 	
 	/** Stores the assets loaded from the AssetManager into their respective member variables. Like this, any class with access to the singleton can easily access the assets
 	 *  loaded from this class. */
-	private void storeLoadedAssets()
+	public void storeLoadedAssets()
 	{
 		/* Retrieve the loaded assets from the AssetManager using AssetManager.get("fileName"):class. */
 		
@@ -490,6 +534,36 @@ public class Assets
 		survivalGuideBgAtlas = manager.get("ui/hud/survivalguide_bg/atlas/survivalguide_bg_atlas" + scaleExtension + ".txt");
 		versusAnimAtlas = manager.get("ui/hud/versus_hud/atlas/versus_hud_atlas" + scaleExtension + ".txt");
 		koAnimAtlas = manager.get("ui/hud/ko_hud/atlas/ko_hud_atlas" + scaleExtension + ".txt");
+		
+		//Retrieves loaded music files.
+		exploringMusic = manager.get("sound/music/Exploring Theme.ogg");
+		zombieAlertMusic = manager.get("sound/music/Zombie Alert Music.ogg");
+		enterCombatMusic = manager.get("sound/music/Enter Combat Music.ogg");
+		combatMusic = manager.get("sound/music/Combat Theme.ogg");
+		
+		//Retrieves sound files loaded from the AssetManager
+		playerFootsteps = new Sound[5];
+		
+		playerFootsteps[0] = manager.get("sound/sfx/game/player/footsteps/footstep_01.ogg");
+		playerFootsteps[1] = manager.get("sound/sfx/game/player/footsteps/footstep_02.ogg");
+		playerFootsteps[2] = manager.get("sound/sfx/game/player/footsteps/footstep_03.ogg");
+		playerFootsteps[3] = manager.get("sound/sfx/game/player/footsteps/footstep_04.ogg");
+		playerFootsteps[4] = manager.get("sound/sfx/game/player/footsteps/footstep_05.ogg");
+		jumpSound = manager.get("sound/sfx/game/player/jump.ogg");
+		jumpCombatSound = manager.get("sound/sfx/game/player/jump_combat.ogg");
+		fallSound = manager.get("sound/sfx/game/player/fall.ogg");
+		playerSwingSound = manager.get("sound/sfx/game/player/player_swing.ogg");
+		hitTreeSound = manager.get("sound/sfx/game/player/hit_tree.ogg");
+		playerHitSound = manager.get("sound/sfx/game/player/player_hit.ogg");
+		pullOutWeaponSound = manager.get("sound/sfx/game/player/pull_out_weapon.ogg");
+		fireGunSound = manager.get("sound/sfx/game/player/fire_gun.ogg");
+		itemDropSound = manager.get("sound/sfx/game/player/item_drop.ogg");
+		pickupSounds = new Sound[1];
+		pickupSounds[0] = manager.get("sound/sfx/game/player/pickups/pickup_01.ogg");
+		zombieHitSound = manager.get("sound/sfx/game/zombie/zombie_hit.ogg");
+		zombieChargeStartSound = manager.get("sound/sfx/game/zombie/zombie_charge_start.ogg");
+		zombieChargeSound = manager.get("sound/sfx/game/zombie/zombie_charge.ogg");
+		earthquakeSound = manager.get("sound/sfx/game/zombie/earthquake.ogg");
 	}
 	
 	/** Loads any extra assets that couldn't be loaded using the AssetManager. */
@@ -527,13 +601,15 @@ public class Assets
 		mainMenuButtonStyle.up = mainMenuSkin.getDrawable("ClickButton_Up");	//Sets the sprite for the 'up' state of the main menu buttons
 		mainMenuButtonStyle.down = mainMenuSkin.getDrawable("ClickButton_Down");	//Sets the sprite for the 'down' state of the main menu buttons
 		mainMenuButtonStyle.font = moonFlowerBold_54;
+		mainMenuButtonStyle.fontColor = Color.WHITE;
+		mainMenuButtonStyle.downFontColor = Color.GRAY;
 
 		//Creates the TextButtonStyle which dictates the look of the "New Game", "Continue", and "Load" buttons in the GameSelectScreen.
 		gameSelectButtonStyle = new ImageButtonStyle();
 		gameSelectButtonStyle.up = mainMenuSkin.getDrawable("GameSelectButton");	//Sets the sprite for the 'up' state of the main menu buttons
 		gameSelectButtonStyle.down = mainMenuSkin.getDrawable("GameSelectButton");	//Sets the sprite for the 'down' state of the main menu buttons
-		gameSelectButtonStyle.pressedOffsetX = 2.0f;
-		gameSelectButtonStyle.pressedOffsetY = -2.0f;
+		gameSelectButtonStyle.pressedOffsetX = 3.0f;
+		gameSelectButtonStyle.pressedOffsetY = -1.5f;
 		
 		//Instantiates the ImageButtonStyle used to dictate the look of the "Continue" button in the GameSelectScreen. Uses the already-created gameSelectButtonStyle as a template.
 		continueButtonStyle = new ImageButtonStyle(gameSelectButtonStyle);
@@ -689,7 +765,7 @@ public class Assets
 		
 		
 		//Retrieves the TextureRegion for the backpack's backgrounds.
-		backpackBgRegion = backpackBgAtlas.findRegion("Backpack_BG");
+		backpackBgRegion = backpackBgAtlas.findRegion("Backpack_BG0001");
 		survivalGuideBgRegion = survivalGuideBgAtlas.findRegion("Backpack_BG0002");
 		
 		//Retrieves the TextureRegion to display the GameOver text in the GameOverHud
@@ -785,6 +861,7 @@ public class Assets
 		//Gets the player's animations from the Player's SkeletonData instance.
 		playerIdle = playerSkeletonData.findAnimation("Idle");
 		playerIdle_Combat = playerSkeletonData.findAnimation("Idle_Combat");
+		playerBlink = playerSkeletonData.findAnimation("Blink");
 		playerWalk = playerSkeletonData.findAnimation("Walk");
 		playerJump = playerSkeletonData.findAnimation("Jump");
 		playerJump_Combat = playerSkeletonData.findAnimation("Jump_Combat");
@@ -922,6 +999,12 @@ public class Assets
 		manager.unload("sound/music/Main Menu Theme.ogg");
 		
 		//Dispose of the assets that only the main menu uses.
+		mainMenuBgAtlas_0 = null;
+		mainMenuBgAtlas_1 = null;
+		gameSelectBgAtlas_0 = null;
+		gameSelectBgAtlas_1 = null;
+		worldSelectBgAtlas_0 = null;
+		worldSelectBgAtlas_1 = null;
 		mainMenuBgRegion_0 = null;
 		mainMenuBgRegion_1 = null;
 		gameSelectBgRegion_0 = null;

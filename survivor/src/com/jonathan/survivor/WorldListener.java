@@ -9,6 +9,9 @@ public interface WorldListener
 	/** Called when an animation plays which overlays the screen. In this case, the GameScreen will pause the game until the animation is done. */
 	public void onPlayAnimation();
 	
+	/** Pauses the currently-active Heads-up-display so that no buttons can be pressed.  */
+	void pauseGui();
+	
 	/** Called when an animation finishes playing. This is for overlay animations which fill the screen. When complete, the GameScreen knows to resume the game. */
 	public void onAnimationComplete();
 	

@@ -93,8 +93,9 @@ public class Player extends Human
 	/** Makes the player jump. */
 	public void jump() 
 	{
-		//If the player is already jumping, don't make him jump again. Or, if he is dead, he can't jump. Therefore, return the method.
-		if(getState() == State.JUMP || isDead())
+		//If the player is already jumping, don't make him jump again. Or, if his y-velocity is non-zero, he is in the air. Thus, he can't jump. Also,
+		//if he is dead, he can't jump. Therefore, return the method.
+		if(getState() == State.JUMP || getVelocity().y != 0 || isDead())
 			return;
 		
 		//If the player is in exploration mode, use a different jump speed.
@@ -308,7 +309,7 @@ public class Player extends Human
 	}
 	
 	/** Returns true if the player has bullets in his inventory. */
-	private boolean hasBullets() 
+	public boolean hasBullets() 
 	{
 		//If the value for the Bullet key inside the inventory is not null, the player has bullets in his inventory.
 		return inventory.getItemMap().get(Bullet.class) != null;

@@ -6,10 +6,12 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.jonathan.survivor.Profile;
 import com.jonathan.survivor.SoundListener;
+import com.jonathan.survivor.SoundListener.Sound;
 import com.jonathan.survivor.Survivor;
 import com.jonathan.survivor.World;
 import com.jonathan.survivor.World.WorldState;
 import com.jonathan.survivor.WorldListener;
+import com.jonathan.survivor.entity.Human.Mode;
 import com.jonathan.survivor.entity.Human.State;
 import com.jonathan.survivor.hud.BackpackHud;
 import com.jonathan.survivor.hud.CombatHud;
@@ -33,7 +35,7 @@ import com.jonathan.survivor.renderers.WorldRenderer;
 public class GameScreen extends Screen
 {
 	public enum GameState {
-		EXPLORING, COMBAT, BACKPACK, PAUSED, GAME_OVER, 
+		EXPLORING, COMBAT, BACKPACK, PAUSED, GAME_OVER, WIN //When in WIN state, the game is transitioned to the main menu once the render() method is finished
 	};
 	
 	/** Stores the state of the game, used to determine how to update the world, and how to draw the UI. */
@@ -177,6 +179,9 @@ public class GameScreen extends Screen
 		//The game always starts off in exploration mode. This tells the class to display the exploration UI for the game.
 		setGameState(GameState.EXPLORING);
 		
+		//Tell the SfxListener to play the exploration music when the game starts. The SfxListener is responsible for playing in-game sounds.
+		sfxListener.play(Sound.EXPLORATION_MUSIC);
+		
 	}
 	
 	/** Listens to any event that occurs in the HUD of the game. Allows the GameScreen to have knowledge about HUD button presses. */
@@ -220,13 +225,18 @@ public class GameScreen extends Screen
 				pauseInput();
 		}
 		
-		/** Called when the main menu button was pressed in the pause menu. */
+		/** Delegated when the player wants to save the game on his currently-loaded profile. Saves the player's information to the hard drive. */
+		@Override
+		public void saveGame()
+		{
+			//Tell the settings class to save the player's information in the profile that is currently loaded; the one used to display the world and build the GameScreen.
+			settings.save();
+		}
+		
+		/** Called when the quit button was pressed in the pause menu. */
 		@Override
 		public void switchToMainMenu()
-		{
-			//Saves the game
-			settings.save();
-			
+		{			
 			//Transitions the player to the main menu.
 			goToMainMenu();
 		}
@@ -261,8 +271,10 @@ public class GameScreen extends Screen
 			//Resume the game so that the player can play his winning animation.
 			resumeGame();
 			
-			//Make the player stop moving before playing his TELEPORT animation.
-			world.stopMoving(world.getPlayer());
+			//Make the player stops moving before playing his TELEPORT animation.
+			world.getPlayer().setVelocity(0, 0);
+			//Ensures that the player is on ground level when playing his teleporting animation.
+			world.lockToGround(world.getPlayer());
 			//Tell the player to play the animation where he enters the teleporter.
 			world.getPlayer().setState(State.TELEPORT);		
 			
@@ -275,12 +287,6 @@ public class GameScreen extends Screen
 		@Override
 		public void gameOverHudFinished() 
 		{
-			//Make the player lose all of his items.
-			world.getPlayer().loseLoot();			
-			
-			//Save the player's settings, such as his location and his items before switching to the main menu.
-			settings.save();
-			
 			//Switch to the main menu without saving the player's progress. Like this, the player will have to restart from his last save point.
 			goToMainMenu();
 		}
@@ -297,6 +303,15 @@ public class GameScreen extends Screen
 			pauseForAnimation();
 		}
 		
+		/** Pauses the currently-active Heads-up-display. For instance, called when the KO animation plays. Dissallows player from pressing any buttons when the animation is 
+		 * playing. */
+		@Override
+		public void pauseGui()
+		{
+			//Pause the currently-active HUD to prevent any buttons from being pressed
+			pauseHud();
+		}
+		
 		/** Called when an animation finishes playing. This is for overlay animations which fill the screen. When complete, the GameScreen knows to resume the game. */
 		@Override
 		public void onAnimationComplete()
@@ -311,6 +326,9 @@ public class GameScreen extends Screen
 		{
 			//Tells the GameScreen to display the Combat HUD.
 			setGameState(GameState.COMBAT);
+			
+			//Play the combat music once the player enters combat mode. Note that music is played using the sfxListener.
+			sfxListener.play(Sound.COMBAT_MUSIC);
 		}
 
 		/** Delegated after the KO animation plays in COMBAT mode. Switches the HUD back to the Exploration HUD. */
@@ -336,8 +354,8 @@ public class GameScreen extends Screen
 			//Save the player's settings, such as his location and his items before switching to the main menu.
 			settings.save();
 			
-			//Reverts the player back to the main menu.
-			goToMainMenu();
+			//Informs the GameScreen that the player has won. At the end of the GameScreen.render() method the player will be switched to the main menu.
+			setGameState(GameState.WIN);			
 		}
 	}
 	
@@ -360,7 +378,102 @@ public class GameScreen extends Screen
 		@Override
 		public void play(Sound sound)
 		{
-
+			if(sound == Sound.PLAYER_FOOTSTEP)
+			{
+				//Play a random footstep sound from the array of player footstep sounds.
+				soundManager.play(assets.playerFootsteps[(int)(Math.random()*assets.playerFootsteps.length)]);
+			}
+			//If jump or the falling sound is meant to play
+			else if(sound == Sound.PLAYER_JUMP) 
+			{
+				//If the player is exploring the world
+				if(world.getPlayer().getMode() == Mode.EXPLORING)
+				{
+					//Play the regular jumping sound
+					soundManager.play(assets.jumpSound);
+				}
+				//Else, if the player is in combat with a zombie
+				else if(world.getPlayer().getMode() == Mode.COMBAT)
+				{
+					//Play the combat jumping sound
+					soundManager.play(assets.jumpCombatSound);
+				}
+				
+			}
+			else if(sound == Sound.PLAYER_FALL)
+			{
+				soundManager.play(assets.fallSound);
+			}
+			else if(sound == Sound.PLAYER_SWING)
+			{
+				soundManager.play(assets.playerSwingSound);
+			}
+			else if(sound == Sound.PLAYER_HIT_TREE)
+			{
+				soundManager.play(assets.hitTreeSound);
+			}
+			else if(sound == Sound.PLAYER_HIT)	//If the player was hit by a zombie
+			{
+				soundManager.play(assets.playerHitSound);
+			}
+			else if(sound == Sound.PLAYER_PULL_OUT_WEAPON)
+			{
+				soundManager.play(assets.pullOutWeaponSound);
+			}
+			else if(sound == Sound.PLAYER_FIRE)
+			{
+				soundManager.play(assets.fireGunSound);
+			}
+			else if(sound == Sound.ITEM_DROP)
+			{
+				soundManager.play(assets.itemDropSound);
+			}
+			else if(sound == Sound.ITEM_PICKUP)
+			{
+				//Play a random item pickup sound
+				soundManager.play(assets.pickupSounds[(int)(Math.random() * assets.pickupSounds.length)]);
+			}
+			else if(sound == Sound.ZOMBIE_HIT)
+			{
+				soundManager.play(assets.zombieHitSound);
+			}
+			else if(sound == Sound.ZOMBIE_CHARGE_START)
+			{
+				soundManager.play(assets.zombieChargeStartSound);
+			}
+			else if(sound == Sound.ZOMBIE_CHARGE)
+			{
+				soundManager.play(assets.zombieChargeSound);
+			}
+			else if(sound == Sound.EARTHQUAKE)
+			{
+				soundManager.play(assets.earthquakeSound);
+			}
+			
+			//If the Exploration Music is the sound that is meant to be played
+			if(sound == Sound.EXPLORATION_MUSIC)
+			{
+				//Play the exploring music.
+				musicManager.play(assets.exploringMusic);
+			}
+			//Else, if a zombie has become alert, and the Zombie Alert Music has to to play
+			if(sound == Sound.ZOMBIE_ALERT_MUSIC)
+			{
+				//Play the zombie alert music.
+				musicManager.play(assets.zombieAlertMusic);
+			}
+			//Else, if the Enter Combat Music needs to be played
+			else if(sound == Sound.ENTER_COMBAT_MUSIC)
+			{
+				//Play the exploring music.
+				musicManager.play(assets.enterCombatMusic);
+			}
+			//Else, if the Combat Music needs to be played
+			else if(sound == Sound.COMBAT_MUSIC)
+			{
+				//Play the exploring music.
+				musicManager.play(assets.combatMusic);
+			}
 		}
 	}
 	
@@ -376,6 +489,11 @@ public class GameScreen extends Screen
 		update(deltaTime);
 		//Draws the world, along with the UI.
 		draw(deltaTime);
+		
+		//If the player has finished his TELEPORT animation, and has won the game
+		if(gameState == GameState.WIN)
+			//Revert the player back to the main menu. Must be done after the render method. Otherwise, statements would be executed while screens were being switched.
+			goToMainMenu();
 	}
 	
 	/** Updates the world and the world camera. */

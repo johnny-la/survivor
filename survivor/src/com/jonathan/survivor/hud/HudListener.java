@@ -14,6 +14,9 @@ public interface HudListener
 	/** Called when the user presses/releases a button on a HUD. Toggles input handling on/off. Allows/disallows input from changing the player's state. */ 
 	void toggleInput(boolean on);
 	
+	/** Delegates when the user presses the 'Save' button in the pause menu, and wants to save the game in his current profile. */
+	void saveGame();
+	
 	/** Called when the main menu button was pressed to transition to the main menu. */
 	void switchToMainMenu();
 

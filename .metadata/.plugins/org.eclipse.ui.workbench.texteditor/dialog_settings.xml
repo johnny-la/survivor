@@ -9,20 +9,20 @@
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="true" key="wrap"/>
-		<item value="false" key="casesensitive"/>
+		<item value="true" key="casesensitive"/>
 		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="switchTo" key="selection"/>
+		<item value="updatePlayer" key="selection"/>
 		<list key="findhistory">
-			<item value="switchTo"/>
-			<item value="mp3"/>
-			<item value="numProfiles"/>
-			<item value="profileSaved"/>
-			<item value="settings"/>
-			<item value="toString"/>
-			<item value="scrollPaneTable"/>
-			<item value="blue"/>
+			<item value="updatePlayer"/>
+			<item value="&gt; 2"/>
+			<item value="backpackBg"/>
+			<item value="backgroundBg"/>
+			<item value="Player"/>
+			<item value="TELEPORT"/>
+			<item value="teleport"/>
+			<item value="earthquake"/>
 		</list>
 		<list key="replacehistory">
 			<item value="camera"/>

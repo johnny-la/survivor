@@ -30,6 +30,22 @@ public class MusicManager
 		if(this.music == music)
 			return;
 		
+		//If a certain music is already playing
+		if(this.music != null)
+		{
+			try
+			{
+				//Stop the currently-playing music before playing the new song.
+				this.music.stop();
+			}
+			//The music.stop() statement can throw a NullPointerException if the music.dispose() was called, and the music member variable was not emptied
+			catch(NullPointerException ex)
+			{
+				//Nullify the reference to the disposed music instance.
+				this.music = null;
+			}
+		}
+		
 		//Store the new music instance in the MusicManager. This is the music the manager is set to play.
 		this.music = music;
 

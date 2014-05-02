@@ -20,14 +20,14 @@ public class Zombie extends Human implements Clickable
 	public static final float COLLIDER_HEIGHT = 2.5f;
 	
 	/** Stores the width and height of the zombie's charge collider in world units. The charge collider dictates the region where the zombie can hit the player while charging. */
-	public static final float CHARGE_COLLIDER_WIDTH = 4f;
+	public static final float CHARGE_COLLIDER_WIDTH = 3.5f;
 	public static final float CHARGE_COLLIDER_HEIGHT = 1.8f;
 	
 	/** Stores the walk speed of the zombie in the horizontal direction. */
 	public static final float NORMAL_WALK_SPEED = 2.2f;
 	
 	/** Stores the walk speed of the zombie in the horizontal direction when in COMBAT mode. */
-	public static final float COMBAT_WALK_SPEED = 2.5f;
+	public static final float COMBAT_WALK_SPEED = 8f;
 	
 	/** Holds the walking speed of the zombie when he is following the player. */
 	public static final float ALERTED_WALK_SPEED = 2.7f;
@@ -239,26 +239,23 @@ public class Zombie extends Human implements Clickable
 		//If the zombie is walking.
 		if(state == State.WALK)
 		{
-			//If the zombie is alerted, he walks faster
-			if(isAlerted())
-				//Set the zombie's walk speed to the correct pre-defined constant
-				setWalkSpeed(ALERTED_WALK_SPEED);
-			//Else, if the zombie is not alerted, and doesn't want to follow the player, his speed is different
-			else
+			//If the zombie is in EXPLORATION state
+			if(getMode() == Mode.EXPLORING)
 			{
-				//If the zombie is in EXPLORATION state
-				if(getMode() == Mode.EXPLORING)
-				{
+				//If the zombie is alerted, he walks faster
+				if(isAlerted())
+					//Set the zombie's walk speed to the correct pre-defined constant
+					setWalkSpeed(ALERTED_WALK_SPEED);
+				//Else, if the zombie is not alerted, set him to walk at regular speeds
+				else
 					//Set the zombie's walk speed to the correct, pre-defined constant
 					setWalkSpeed(NORMAL_WALK_SPEED);
-				}
-				//Else, if the zombie is in COMBAT state, he is trying to walk back to his starting point. Thus, his speed is faster.
-				else if(getMode() == Mode.COMBAT)
-				{
-					//Set the zombie's walk speed to the correct, pre-defined constant
-					setWalkSpeed(COMBAT_WALK_SPEED);
-				}
-				
+			}
+			//Else, if the zombie is in COMBAT state, he is trying to walk back to his starting point. Thus, his speed is faster.
+			else if(getMode() == Mode.COMBAT)
+			{
+				//Set the zombie's walk speed to the correct, pre-defined constant
+				setWalkSpeed(COMBAT_WALK_SPEED);
 			}
 		}
 		//Else, if the zombie is charging
@@ -374,6 +371,16 @@ public class Zombie extends Human implements Clickable
 	 *  and the float is the probability of it dropping from [0,1]. */
 	public void setItemProbabilityMap(HashMap<Class, Float> itemProbabilityMap) {
 		this.itemProbabilityMap = itemProbabilityMap;
+	}
+	
+	/** Called when the Zombie instance is put back into a pool. All his data fields must be reset to default. */
+	@Override 
+	public void reset()
+	{
+		//Resets the zombie's data fields to default
+		alerted = false;
+		targetted = false;
+		setHealth(DEFAULT_HEALTH);
 	}
 
 }

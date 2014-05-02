@@ -1,0 +1,25 @@
+loading_items_atlas@2x.png
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+Company Logo
+  rotate: true
+  xy: 718, 4
+  size: 702, 226
+  orig: 715, 270
+  offset: 4, 44
+  index: -1
+Loading Background
+  rotate: false
+  xy: 4, 4
+  size: 710, 340
+  orig: 710, 340
+  offset: 0, 0
+  index: -1
+Mugisha Logo
+  rotate: true
+  xy: 4, 348
+  size: 622, 154
+  orig: 686, 194
+  offset: 20, 4
+  index: -1

@@ -10,7 +10,7 @@ public class Axe extends MeleeWeapon
 	public static final String NAME = "Axe";
 	public static final String DESCRIPTION = "A weapon for the mightiest of lumberjacks";
 	public static final Sprite INVENTORY_SPRITE = Assets.instance.axeSprite;
-	public static final float DAMAGE = 30;
+	public static final float DAMAGE = 40;
 	public static final float REACH = 1;
 	
 	public static final String WEAPON_ATTACHMENT_NAME = "Axe0002";	//Stores the name of the image placed on the player in Spine which displays the Axe.

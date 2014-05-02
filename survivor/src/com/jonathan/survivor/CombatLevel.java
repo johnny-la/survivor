@@ -69,10 +69,6 @@ public class CombatLevel implements Level
 		player.setMode(Mode.COMBAT);
 		zombie.setMode(Mode.COMBAT);
 		
-		//Tells the player and the zombie to play their ENTER_COMBAT animations.
-		player.setState(State.ENTER_COMBAT);
-		zombie.setState(State.ENTER_COMBAT);
-		
 		//The player always starts by facing to the right, while the zombie always faces to the left.
 		player.setDirection(Direction.RIGHT);
 		zombie.setDirection(Direction.LEFT);
@@ -126,7 +122,7 @@ public class CombatLevel implements Level
 			//Set the player back to IDLE state for when he goes back into the TerrainLevel
 			player.setState(State.IDLE);
 			//Set the zombie's previous state to IDLE so that he will play his DEAD animation again once he enters the TerrainLevel.
-			zombie.setPreviousState(State.IDLE);
+			//zombie.setPreviousState(State.IDLE);
 			
 			//Regenerate the player back to default health.
 			player.regenerate();
@@ -161,6 +157,14 @@ public class CombatLevel implements Level
 	{
 		//Returns the ground height at the zombie's initial x-position.
 		return getGroundHeight(getZombieStartX());
+	}
+	
+	/** Returns true if the given GameObject has passed the left or right edge of the CombatLevel. */
+	@Override
+	public boolean outOfBounds(GameObject gameObject)
+	{
+		//If the gameObject has either passed the left or right edge of the level, it is out of bounds of the level.
+		return isPastLeftEdge(gameObject) || isPastRightEdge(gameObject);
 	}
 	
 	/** Returns true if the given GameObject is past the left edge of the level. */

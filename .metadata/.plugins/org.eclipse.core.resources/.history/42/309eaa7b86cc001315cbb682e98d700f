@@ -1,9 +1,0 @@
-package com.jonathan.survivor;
-
-/**
- * Sends events to the GameScreen whenever a particular sound needs to be played.
- */
-
-public interface SoundListener {
-
-}

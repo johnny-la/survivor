@@ -1,0 +1,307 @@
+package com.jonathan.survivor.hud;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.jonathan.survivor.SoundListener.Sound;
+import com.jonathan.survivor.World;
+import com.jonathan.survivor.entity.Human.State;
+import com.jonathan.survivor.entity.Player;
+
+/*
+ * An instance of this class will display the HUD whilst in EXPLORATION mode.
+ */
+
+public class CombatHud extends Hud
+{
+	/** Stores the offsets of the jump button. Used to anchor the button relative to the bottom-left of the screen. */
+	public static final float JUMP_BUTTON_X_OFFSET = 15f;
+	public static final float JUMP_BUTTON_Y_OFFSET = 10f;
+	
+	/** Stores the offsets of the melee button. Used to anchor the button relative to the bottom-right of the screen. */
+	public static final float MELEE_BUTTON_X_OFFSET = 95f;
+	public static final float MELEE_BUTTON_Y_OFFSET = 10f;
+	
+	/** Stores the offsets of the fire button. Used to anchor the button relative to the bottom-right of the screen. */
+	public static final float FIRE_BUTTON_X_OFFSET = 7f;
+	public static final float FIRE_BUTTON_Y_OFFSET = 32f;
+	
+	/** Stores the color of the buttons. */
+	public static final Color JUMP_BUTTON_COLOR = new Color(0.45f, 0.73f, 0.22f, 1);
+	public static final Color MELEE_BUTTON_COLOR = new Color(1f, 0.5f, 0.12f, 1);
+	public static final Color FIRE_BUTTON_COLOR = new Color(1f, 0.0f, 0.0f, 1);
+	
+	/** Stores the button used to make the player jump. */
+	private ImageButton jumpButton;
+	
+	/** Holds the button used to make the player melee with his weapon. */
+	private ImageButton meleeButton;
+	
+	/** Holds the button used to make the player fire his ranged weapon. */
+	private ImageButton fireButton;
+	
+	/** Stores the offset of the pause button. Used to anchor the button to the top-right corner of the screen with a given offset. */
+	public static final float PAUSE_BUTTON_X_OFFSET = 5;
+	public static final float PAUSE_BUTTON_Y_OFFSET = 5;
+	
+	/** Holds the scale of the pause button's hit box. Allows for easier clicking. */
+	public static final float PAUSE_HIT_BOX_SCALE = 2;
+	
+	/** Stores the Pause Button, used to pause the game. */
+	private Button pauseButton;
+	
+	/** Stores the listener used to listen for events from the arrow buttons. */
+	private ButtonListener buttonListener;
+	
+	/** Holds the ButtonTouchListener, used to recognize the button up and down events coming from the fire button. */
+	private ButtonTouchListener buttonTouchListener;
+	
+	/** Accepts the stage where 2d widgets will be drawn and placed, and the world, which will receive information about
+	 *  button presses. */
+	public CombatHud(Stage stage, World world)
+	{
+		super(stage, world);
+		
+		//Creates the buttons to control the player in combat.
+		jumpButton = new ImageButton(assets.jumpButtonStyle);
+		meleeButton = new ImageButton(assets.meleeButtonStyle);
+		fireButton = new ImageButton(assets.fireButtonStyle);
+
+		//Creates the pause button, which re-directs the player to the pause menu.
+		pauseButton = new Button(assets.pauseButtonStyle);
+
+		//Resize the buttons according to the scale factor of the screen so that every atlas size creates the button with the same size in world units.
+		jumpButton.setSize(jumpButton.getWidth() / assets.scaleFactor, jumpButton.getHeight() / assets.scaleFactor);
+		meleeButton.setSize(meleeButton.getWidth() / assets.scaleFactor, meleeButton.getHeight() / assets.scaleFactor);
+		fireButton.setSize(fireButton.getWidth() / assets.scaleFactor, fireButton.getHeight() / assets.scaleFactor);
+		
+		//Resizes the appropriate buttons so that they aren't scaled badly by the program.
+		resizeButtons();
+		
+		//Scales down the pause button by the scale factor of the assets singleton. Ensures that the button's sprites are scaled down if larger atlases were chosen.
+		pauseButton.setSize(pauseButton.getWidth() / assets.scaleFactor, pauseButton.getHeight() / assets.scaleFactor);
+		
+		//Scales the hit box of the pause button to give the user more room to click it.
+		scaleHitBox(pauseButton, PAUSE_HIT_BOX_SCALE);
+		
+		//Sets the colors of the buttons.
+		jumpButton.setColor(JUMP_BUTTON_COLOR);
+		meleeButton.setColor(MELEE_BUTTON_COLOR);
+		fireButton.setColor(FIRE_BUTTON_COLOR);
+		
+		//Adds transparency to the pause button.
+		pauseButton.setColor(new Color(1,1,1,0.7f));
+		
+		//Creates a new listener for the buttons
+		buttonListener = new ButtonListener();
+		//This listener listens to the button up and down events, instead of the clicked event. Used for the fire button
+		buttonTouchListener = new ButtonTouchListener();
+		
+		//Adds the listeners to the buttons to know when they are pressed.
+		jumpButton.addListener(buttonTouchListener);
+		meleeButton.addListener(buttonListener);
+		fireButton.addListener(buttonTouchListener);
+		
+		//Add the listeners to the pause button to register button clicks.
+		pauseButton.addListener(buttonListener);
+
+	}
+
+	@Override
+	public void draw(float deltaTime) 
+	{		
+		//Draws the widgets to the screen.
+		super.draw(deltaTime);
+	}
+	
+	class ButtonListener extends ClickListener
+	{
+		/** Delegates when a button is pressed. */
+		@Override
+		public void clicked(InputEvent event, float x, float y)
+		{		
+			//If the melee button was pressed
+			if(event.getTarget() == meleeButton || event.getTarget() == meleeButton.getImage())
+			{
+				//Make the player perform a melee attack
+				world.getPlayer().melee();
+				
+				//Play the axe-swinging sound.
+				world.playSound(Sound.PLAYER_AXE_SWING);
+			}
+			//Else, if the pause button was pressed
+			else if(event.getTarget() == pauseButton)
+			{
+				//Tell the GameScreen that the pause button has been pressed. Switches to the pause menu.
+				hudListener.onPauseButton();
+			}
+			
+		}
+	}
+	
+	/** Registers the touch down and up events for the HUD's buttons. */
+	class ButtonTouchListener extends InputListener
+	{
+		@Override
+		public boolean touchDown(InputEvent event, float x, float y, int pointer, int button)
+		{
+			//If the jump button was pressed
+			if(event.getTarget() == jumpButton || event.getTarget() == jumpButton.getImage())
+			{
+				//Gets the player controlled by the user in the world.
+				Player player = world.getPlayer();
+				
+				//Only let the player jump if he isn't playing his ENTER_COMBAT animation.
+				if(player.getState() != State.ENTER_COMBAT)
+				{
+					//Make the player jump.
+					world.getPlayer().jump();
+				}
+			}
+			//Else, if the fire button was pressed, make the player charge his gun.
+			else if(event.getTarget() == fireButton || event.getTarget() == fireButton.getImage())
+			{
+				//Make the player start to charge his gun
+				world.getPlayer().charge();
+			}
+			
+			//Return false, so that other classes can also receive the touchDown event.
+			return true;
+		}
+		
+		/** Called when the user releases a press anywhere on the screen. */
+		@Override
+		public void touchUp(InputEvent event, float x, float y, int pointer, int button)
+		{
+			//If the fire button was released, make the player fire his gun.
+			if(event.getTarget() == fireButton || event.getTarget() == fireButton.getImage())
+			{
+				//Make the player fire his ranged weapon, if he has one equipped.
+				world.getPlayer().fire();
+				
+				//Play the gun firing sound.
+				world.playSound(Sound.PLAYER_FIRE);
+			}
+			//Else, if the jump button was released
+			if(event.getTarget() == jumpButton || event.getTarget() == jumpButton.getImage())
+			{
+				//Gets the player controlled by the user in the world.
+				Player player = world.getPlayer();
+				
+				//Only let the player jump if he isn't playing his ENTER_COMBAT animation.
+				if(player.getState() != State.ENTER_COMBAT)
+				{
+					//Make the player jump.
+					world.getPlayer().jump();
+				}
+			}
+		}
+
+	}
+
+	/** Called when the stage must be reset to draw the widgets contained in this class. Used when the stage needs to be re-purposed. Also called when the
+	 *  screen is resized to re-place the widgets. */
+	@Override
+	public void reset(float guiWidth, float guiHeight) 
+	{
+		//Clears the stage and all its widgets to re-purpose the stage to draw the exploration HUD.
+		stage.clear();
+		
+		//Anchor the jump button to the bottom left of the screen using the offset constants.
+		jumpButton.setPosition(JUMP_BUTTON_X_OFFSET, JUMP_BUTTON_Y_OFFSET);
+		
+		//Anchor the melee and fire buttons to the bottom right of the screen using the given offset constants.
+		meleeButton.setPosition(stage.getWidth() - meleeButton.getWidth() - MELEE_BUTTON_X_OFFSET, MELEE_BUTTON_Y_OFFSET);	
+		fireButton.setPosition(stage.getWidth() - fireButton.getWidth() - FIRE_BUTTON_X_OFFSET, FIRE_BUTTON_Y_OFFSET);	
+		
+		//Disable any buttons that the user cannot press, such as the meleeButton if he has no melee weapon.
+		disableUselessButtons();
+		
+		//Anchors the pause button to the top right of the screen, and offsets it according to the pre-defined constants.
+		pauseButton.setPosition(stage.getWidth() - pauseButton.getWidth() - PAUSE_BUTTON_X_OFFSET, stage.getHeight() - pauseButton.getHeight() - PAUSE_BUTTON_Y_OFFSET);
+		
+		//Add the widgets to the stage.
+		stage.addActor(jumpButton);
+		stage.addActor(meleeButton);
+		stage.addActor(fireButton);
+		
+		//Adds the pause button to the stage.
+		stage.addActor(pauseButton);
+	}
+	
+	/** Disable any buttons which the user cannot press, such as the meleeButton, if the user has no melee weapon equipped. */
+	private void disableUselessButtons() 
+	{
+		//If the player does not have a melee weapon equipped
+		if(!world.getPlayer().hasMeleeWeapon())
+		{
+			//Disable the melee button so that the user can't press it.
+			meleeButton.setDisabled(true);
+			
+			//Make the melee button gray to inform the player that he can't press the melee button.
+			meleeButton.setColor(Color.DARK_GRAY);
+			meleeButton.getImage().setColor(Color.GRAY);
+		}
+		//Else, if the player has a melee weapon equipped
+		else 
+		{
+			//Set the melee button and its overlaying image back to default color
+			meleeButton.setColor(Color.WHITE);
+			meleeButton.getImage().setColor(Color.WHITE);
+		}
+		
+		//If the player has no ranged weapon equipped
+		if(!world.getPlayer().hasRangedWeapon())
+		{
+			//Disable the fire button so that the user can't press it.
+			fireButton.setDisabled(true);
+			
+			//Make the melee button gray to inform the player that he can't press the fire button.
+			fireButton.setColor(Color.DARK_GRAY);
+			fireButton.getImage().setColor(Color.GRAY);
+		}
+		//Else, if the player has a ranged weapon equipped
+		else 
+		{
+			//Set the melee button and its overlaying image back to default color
+			fireButton.setColor(Color.WHITE);
+			fireButton.getImage().setColor(Color.WHITE);
+		}
+	}
+
+	/** Resizes all of the buttons that need resizing. Ensures that the buttons' contents are all well scaled with no deformities. */
+	private void resizeButtons() 
+	{
+		//Grabs the gun and circle button sprites from the hud atlas.
+		Sprite gunImage = assets.hudSkin.getSprite("Gun");
+		Sprite circleButtonImage = assets.hudSkin.getSprite("CircleButton");
+		
+		//Ensures the fire button does not scale up according to the size of the gun image. Otherwise, the circle button would warp weirdly.
+		fireButton.setSize(assets.hudSkin.getSprite("CircleButton").getWidth() / assets.scaleFactor,assets.hudSkin.getSprite("CircleButton").getHeight() / assets.scaleFactor);
+		//Ensures the gun image on the button is the same size as the original gun image. Also adds padding to better position the gun on the button.
+		fireButton.getImageCell().width(gunImage.getWidth()/assets.scaleFactor).height(gunImage.getHeight()).padLeft(2).padBottom(5);
+		
+	}
+	
+	/** Scales the bounds of the actor by the given amount. Allows to re-scale the bounding boxes of a button. Note that the 
+	 *  re-scaled bounds are centered on the actor. */
+	private void scaleHitBox(Actor actor, float scale)
+	{
+		//Retrieves the width and height of the actor
+		float width = actor.getWidth();
+		float height = actor.getHeight();
+		
+		//Sets the origin of the actor at the correct position so that the hit box is scaled relative to the center of the button.
+		actor.setOrigin(((width * scale) - width)/2, ((height * scale) - height)/2);
+
+		//Scales the actor by the given scalar quantity.
+		actor.setScale(actor.getScaleX()*scale);
+	}
+	
+}

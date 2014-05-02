@@ -1,0 +1,46 @@
+interactable_objects_atlas.png
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+Middle_Layer
+  rotate: false
+  xy: 2, 154
+  size: 67, 75
+  orig: 67, 75
+  offset: 0, 0
+  index: -1
+Trunk
+  rotate: false
+  xy: 78, 39
+  size: 28, 51
+  orig: 28, 51
+  offset: 0, 0
+  index: -1
+Top_Layer
+  rotate: false
+  xy: 78, 2
+  size: 37, 35
+  orig: 37, 35
+  offset: 0, 0
+  index: -1
+Bottom_Layer
+  rotate: false
+  xy: 2, 2
+  size: 74, 83
+  orig: 74, 83
+  offset: 0, 0
+  index: -1
+Box_Base
+  rotate: false
+  xy: 2, 87
+  size: 73, 33
+  orig: 73, 33
+  offset: 0, 0
+  index: -1
+Box_Lid
+  rotate: false
+  xy: 2, 122
+  size: 73, 30
+  orig: 73, 30
+  offset: 0, 0
+  index: -1

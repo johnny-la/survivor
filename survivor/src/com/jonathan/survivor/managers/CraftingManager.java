@@ -85,9 +85,9 @@ public class CraftingManager
 		if(!Survivor.DEBUG_MODE)
 		{
 			teleporter.addItem(Saltpeter.class, 40);
-			teleporter.addItem(Wood.class, 120);
+			teleporter.addItem(Wood.class, 50);
 			teleporter.addItem(Sulfur.class, 40);
-			teleporter.addItem(Iron.class, 100);
+			teleporter.addItem(Iron.class, 30);
 		}
 		else
 		{

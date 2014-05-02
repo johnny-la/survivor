@@ -11,7 +11,7 @@ public class Rifle extends RangedWeapon
 	public static final String DESCRIPTION = "A weapon for the mightiest of hunters";
 	public static final float DAMAGE = 70;
 	public static final float RANGE = 15f;
-	public static final float CHARGE_TIME = 2.8f;
+	public static final float CHARGE_TIME = 2.2f;
 	
 	public static final String WEAPON_ATTACHMENT_NAME = "Rifle";	//Stores the name of the image placed on the player in Spine which displays the Rifle.
 	

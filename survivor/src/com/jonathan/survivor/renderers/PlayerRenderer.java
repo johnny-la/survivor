@@ -70,6 +70,7 @@ public class PlayerRenderer
 	/** Stores the integers assigned to each event in Spine. Used to indicate which event was caught in the AnimationStateListener. */
 	private static final int HIT_TREE = 0;
 	private static final int HIT_ZOMBIE = 1;
+	private static final int SOUND_FOOTSTEP = 2;
 	
 	/** Accepts the player GameObject to render, the world whose methods are called on animation events, the SpriteBatch used to draw the player, and the world 
 	 * camera where the player is drawn. */
@@ -137,6 +138,9 @@ public class PlayerRenderer
 				{
 					//Deal damage to the tree the player is chopping.
 					player.hitTree();
+					
+					//Play the HIT_TREE sound since the player just started hit a tree
+					world.playSound(Sound.PLAYER_HIT_TREE);
 				}
 				//Else, if the player's MELEE animation is playing, and the HIT_ZOMBIE event was fired
 				else if(event.getInt() == HIT_ZOMBIE)
@@ -144,15 +148,26 @@ public class PlayerRenderer
 					//Deal damage to the zombie that the player is fighting. If the weapon does not hit the zombie, the method simply returns.
 					player.meleeHit(player.getZombieToFight());
 				}
+				//Else, if the player's footstep sound should play
+				else if(event.getInt() == SOUND_FOOTSTEP)
+				{
+					//Play the player's footstep sound.
+					world.playSound(Sound.PLAYER_FOOTSTEP);
+				}
 				
 			}
 
 			@Override
 			public void complete(int trackIndex, int loopCount) 
 			{
-				//If the player is double jumping
+				//If the track index of the completed animation is ONE, then the Blink animation just completed. Thus, this method should not perform any actions.
+				if(trackIndex == 1)
+					return;
+				
+				//If the player has finished his double jumping animation
 				if(player.getState() == State.DOUBLE_JUMP)
 				{
+					System.out.println("Double Jump Complete");
 					//Set the player back to IDLE state so that he switches to IDLE state after double jumping.
 					player.setState(State.IDLE);
 				}
@@ -200,6 +215,7 @@ public class PlayerRenderer
 				{
 					//Inform the World that the player has won the game.
 					world.winGame();
+					return;
 				}
 				
 			}
@@ -223,6 +239,9 @@ public class PlayerRenderer
 		
 		//Register the AnimationStateListener to the player's AnimationState. This will delegate player animation events to the listener.
 		animationState.addListener(animationListener);
+		
+		//Loop the blinking animation on track index one, so that it doesn't interrupt any other animations.
+		animationState.setAnimation(1, assets.playerBlink, true);
 	}
 	
 	/** Draws the player using his Spine skeleton, which stores his animations, sprites, and everything needed to draw the player. */
@@ -305,7 +324,7 @@ public class PlayerRenderer
 			//If the player is in EXPLORATION mode
 			if(player.getMode() == Mode.EXPLORING)
 			{
-				//Plays the default jump animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
+				//Plays the regular jump animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
 				animationState.setAnimation(0, assets.playerJump, false);
 			}
 			//Else, if the player is in COMBAT mode
@@ -315,7 +334,7 @@ public class PlayerRenderer
 				animationState.setAnimation(0, assets.playerJump_Combat, false);
 			}
 			
-			//Play the jump sound.
+			//Play the jump sound since the player just started jumping
 			world.playSound(Sound.PLAYER_JUMP);
 		}
 		//Else, if the player is double jumping
@@ -325,13 +344,16 @@ public class PlayerRenderer
 			animationState.setAnimation(0, assets.playerJump_Combat, false);
 			
 			//Play the hitting head sound.
-			world.playSound(Sound.ZOMBIE_HIT_HEAD);
+			world.playSound(Sound.PLAYER_JUMP);
 		}
 		//Else, if the player is falling from one layer to the next
 		else if(player.getState() == State.FALL)
 		{
 			//Plays the player's fall animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
 			animationState.setAnimation(0, assets.playerFall, false);
+			
+			//Play the falling sound since the player just started falling
+			world.playSound(Sound.PLAYER_FALL);
 		}
 		//Else, if the player is melee-ing
 		else if(player.getState() == State.CHOP_TREE)
@@ -356,12 +378,18 @@ public class PlayerRenderer
 			//Queues the IDLE animation to play right after the MELEE animation. First argument is an arbitrary index, and third argument specifies to loop the animation.
 			//Last zero specifies that the IDLE should play right after the MELEE animation.
 			animationState.addAnimation(0, assets.playerIdle_Combat, true, 0);
+			
+			//Plays the sound of the player swinging to perform a melee attack.
+			world.playSound(Sound.PLAYER_SWING);
 		}
 		//Else, if the player is pulling out his gun before charging it.
 		else if(player.getState() == State.CHARGE_START)
 		{
 			//Play the player's CHARGE_START animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
 			animationState.setAnimation(0, assets.playerCharge_Start, false);
+			
+			//Play the sound of the player pulling out his weapon, since the player just started to pull out his weapon to charge his gun.
+			world.playSound(Sound.PLAYER_PULL_OUT_WEAPON);
 		}
 		//Else, if the player is charging his gun
 		else if(player.getState() == State.CHARGE)
@@ -374,18 +402,27 @@ public class PlayerRenderer
 		{
 			//Play the player's FIRE animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
 			animationState.setAnimation(0, assets.playerFire, false);
+			
+			//Play the sound of the player firing his gun.
+			world.playSound(Sound.PLAYER_FIRE);
 		}
 		//Else, if the player was hit by a zombie
 		else if(player.getState() == State.HIT)
 		{
 			//Play the player's HIT animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
 			animationState.setAnimation(0, assets.playerHit, false);
+			
+			//Plays the sound of the player hit, since the player was just hit if this statement is reached.
+			world.playSound(Sound.PLAYER_HIT);
 		}
 		//Else, if the player is dead
 		else if(player.getState() == State.DEAD)
 		{
 			//Play his DEAD animation. First argument is an arbitrary index, and third argument specifies to play the animation only once.
 			animationState.setAnimation(0, assets.playerDead, false);
+			
+			//Plays the sound of the player hit, since the player just died if this statement is reached.
+			world.playSound(Sound.PLAYER_HIT);
 		}
 		//Else, if the player has won the game and is teleporting out of the world
 		else if(player.getState() == State.TELEPORT)
@@ -434,7 +471,7 @@ public class PlayerRenderer
 		}
 		
 		//If the player has a ranged weapon and the player is playing an animation which requires his gun to be shown, make his weapon visible.
-		if(rangedWeapon != null && (player.getState() == State.CHARGE_START || player.getState() == State.CHARGE || player.getState() == State.FIRE))
+		if(rangedWeapon != null && (player.hasRangedWeaponOut()))
 		{
 			//Tell the player to display the image of his equipped ranged weapon. An attachment is an image on the player's skeleton. It is mapped to the ranged weapon slot.
 			rangedWeaponSlot.setAttachment(rifleAttachment);

@@ -26,7 +26,7 @@ public class ZombieManager
 	private static final float ZOMBIE_BACK_VIEW = 2.5f;
 	
 	/** Stores the amount of time the zombie stays idle before choosing a move to attack the player (in COMBAT mode). */
-	private static final float IDLE_TIME_COMBAT = 3;
+	private static final float IDLE_TIME_COMBAT = 1;
 	
 	/** Holds the World instance that the zombies are a part of. Used to access the convenience methods created for the player and needed for the zombies. */
 	private World world;
@@ -45,8 +45,12 @@ public class ZombieManager
 	{
 		//If the player won the game, the zombies don't need to be updated anymore
 		if(world.getPlayer().didWin())
+		{
+			//Ensure that every zombie is in IDLE state when the player wins, so that the zombies can't move.
+			zombie.setState(State.IDLE);
 			//Therefore, return the method.
 			return;
+		}
 		
 		//If the zombie is in EXPLORATION mode
 		if(zombie.getMode() == Mode.EXPLORING)
@@ -73,10 +77,7 @@ public class ZombieManager
 
 	/** Updates the game logic of the given zombie when he is in EXPLORING state. */
 	private void updateExploring(Zombie zombie, float deltaTime) 
-	{
-		//Check collisions with the zombie.
-		checkCollisions(zombie);
-		
+	{		
 		//If the zombie is in idle state
 		if(zombie.getState() == State.IDLE)
 		{
@@ -102,9 +103,14 @@ public class ZombieManager
 			//Checks if the zombie switched layers by either moving to the right or left of his current layer. If so, we move the zombie over by a cell.
 			world.checkForLayerSwitch(zombie);
 			
-			//Ensures the zombie is always at ground height.
-			world.lockToGround(zombie);
+			//If the zombie is not out of bounds of the world, run the next statement. If the zombie is out of bounds of the TerrainLevel, the next method would cause an exception.
+			if(!world.outOfBounds(zombie))
+				//Ensures the zombie is always at ground height.
+				world.lockToGround(zombie);
 		}
+		
+		//Check collisions with the zombie.
+		checkCollisions(zombie);
 		
 	}
 	
@@ -142,8 +148,8 @@ public class ZombieManager
 		//If the zombie is currently walking
 		if(zombie.getState() == State.WALK)
 		{
-			//If the zombie is close to the edge of his TerrainLayer, and has been walking for more than one second (Assures that the zombie doesn't stop walking)
-			if(world.closeToLayerEdge(zombie) && zombie.getStateTime() > 1f)
+			//If the zombie is close to the edge of his TerrainLayer, and has been walking for more than second second (Assures that the zombie doesn't stop walking)
+			if(world.closeToLayerEdge(zombie) && zombie.getStateTime() > 2f)
 			{
 				//Tell the zombie to stop walking. We want the zombie to stay within the confines of his designated layer.
 				world.stopMoving(zombie);

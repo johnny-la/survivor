@@ -65,20 +65,24 @@ public class SurvivalGuideHud extends Hud
 	private final String[] entryNames = new String[]{"Exploration Tutorial", "Combat tutorial", "Crafting Tutorial", "How to Escape", "Recipes"}; 
 	/** Holds the description of every entry in the survival guide. */
 	private final String[] entries = new String[]{"To move left or right, press the directional arrows on the bottom of the screen.\n\n" +
+											      "Swipe up to move up a layer, and swipe down to move down a layer.\nn" + 
 												  "Press any object in the world to walk towards it and interact with it.\n",
 												  
-												  "To enter combat with a zombie, simply come into contact with a zombie in the world.\n\n" +
-												  "To jump, press the green button on the bottom-left.\n\n" +
-												  "By hitting the zombie on the head, you can deal damage to him.\n\n" +
-												  "To melee the zombie, press the orange button on the bottom-right.\n\n" +
-												  "To fire your ranged weapon, press the red button on the bottom-right of the screen.\n\n" +
+												  "To enter combat with a zombie, collide with a zombie in the world.\n\n" +
+												  "Whilst in combat mode:" +
+												  "\nnTo jump, press the green button on the bottom-left.\n\n" +
+												  "By hitting the zombie on the head whilst jumping, you deal damage to him.\n\n" +
+												  "To melee the zombie when he comes close, press the orange button on the bottom-right.\n\n" +
+												  "To fire your ranged weapon, PRESS and HOLD the red button on the bottom-right of the screen.\n\n" +
 												  "(Note: each shot requires one bullet)",
 												  
-												  "Click an item in the left-hand list to add it to the crafting table. \n\nEvery time an item is pressed, " +
-												  "one instance of that item is transfered to the crafting table. \n\nTo remove the item from the crafting table, " +
-												  "press on the item in the crafting table. \n\nIf the crafting table contains a combination of items in the right " +
-												  "quantities, an item will appear below the arrow sign. \n\nTo craft this item and add it to the inventory, press " +
-												  "the 'Craft' button.",
+												  "To enter the crafting menu, press the 'Crafting' button in the backpack menu.\nn" +
+												  "When in the menu, click an item in the left-hand list to add it to the crafting table. " +
+												  "\n\nNote that every time an item is pressed, one instance of that item is transfered to the crafting table. " +
+												  "\n\nTo remove the item from the crafting table, press on the desired item in the crafting table. " +
+												  "\n\nIf the crafting table contains a combination of items in the right quantities, an item will appear " +
+												  "below the arrow sign. " +
+												  "\n\nTo craft this item and add it to the inventory, press the 'Craft' button.",
 			
 												  "Build a Teleporter\n" +
 												  "- 40 sulfur + 120 wood\n + 100 iron + 40 saltpeter", 
@@ -88,9 +92,9 @@ public class SurvivalGuideHud extends Hud
 											      "Rifle:\n" +
 											      " 15 wood + 10 iron\n\n" +
 											      "Bullets:\n" +
-											      " 4 gunpowder + 2 iron\n\n" +
+											      " 4 gunpowder + 2 iron\n\n" /*+
 											      "Gunpowder:\n" +
-											      " 6 sulfur + 4 water + 8 charcoal\n + 12 saltpeter\n\n"};
+											      " 6 sulfur + 4 water + 8 charcoal\n + 12 saltpeter\n\n" Player should not know this-- tests his chemistry knowledge.*/};
 	
 	/** Stores the back button, used to exit out of the backpack hud. */
 	private Button backButton;
