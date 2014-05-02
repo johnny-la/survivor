@@ -43,7 +43,6 @@
 <fullyQualifiedTypeName name="com.badlogic.gdx.Input.Keys"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.Gdx"/>
 <fullyQualifiedTypeName name="java.util.Collections"/>
-<fullyQualifiedTypeName name="com.jonathan.survivor.World.WorldState"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Label"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup"/>
@@ -60,4 +59,5 @@
 <fullyQualifiedTypeName name="com.jonathan.survivor.SoundListener.Sound"/>
 <fullyQualifiedTypeName name="com.badlogic.gdx.audio.Music"/>
 <fullyQualifiedTypeName name="com.jonathan.survivor.Assets"/>
+<fullyQualifiedTypeName name="com.jonathan.survivor.World.WorldState"/>
 </qualifiedTypeNameHistroy>

@@ -11,15 +11,10 @@ import java.util.Set;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializable;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.jonathan.survivor.entity.GameObject;
-import com.jonathan.survivor.inventory.Charcoal;
 import com.jonathan.survivor.inventory.Inventory;
-import com.jonathan.survivor.inventory.Iron;
 import com.jonathan.survivor.inventory.Loadout;
-import com.jonathan.survivor.inventory.Saltpeter;
-import com.jonathan.survivor.inventory.Sulfur;
-import com.jonathan.survivor.inventory.Water;
-import com.jonathan.survivor.inventory.Wood;
 
 public class Profile implements Serializable
 {
@@ -105,7 +100,7 @@ public class Profile implements Serializable
 			inventory.addItem(Water.class, 200);
 			inventory.addItem(Sulfur.class, 200);
 			inventory.addItem(Saltpeter.class, 200);
-			inventory.addItem(Charcoal.class, 200);
+			inventory.addItem(Saltpeter.class, 200);
 		}
 	}
 	

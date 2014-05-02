@@ -65,7 +65,7 @@ public class SurvivalGuideHud extends Hud
 	private final String[] entryNames = new String[]{"Exploration Tutorial", "Combat tutorial", "Crafting Tutorial", "How to Escape", "Recipes"}; 
 	/** Holds the description of every entry in the survival guide. */
 	private final String[] entries = new String[]{"To move left or right, press the directional arrows on the bottom of the screen.\n\n" +
-											      "Swipe up to move up a layer, and swipe down to move down a layer.\n\n" + 
+											      "Swipe up to move up a layer, and swipe down to move down a layer.\nn" + 
 												  "Press any object in the world to walk towards it and interact with it.\n",
 												  
 												  "To enter combat with a zombie, collide with a zombie in the world.\n\n" +

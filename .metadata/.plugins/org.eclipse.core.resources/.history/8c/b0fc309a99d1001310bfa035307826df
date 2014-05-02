@@ -11,15 +11,10 @@ import java.util.Set;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializable;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.jonathan.survivor.entity.GameObject;
-import com.jonathan.survivor.inventory.Charcoal;
 import com.jonathan.survivor.inventory.Inventory;
-import com.jonathan.survivor.inventory.Iron;
 import com.jonathan.survivor.inventory.Loadout;
-import com.jonathan.survivor.inventory.Saltpeter;
-import com.jonathan.survivor.inventory.Sulfur;
-import com.jonathan.survivor.inventory.Water;
-import com.jonathan.survivor.inventory.Wood;
 
 public class Profile implements Serializable
 {
@@ -77,6 +72,11 @@ public class Profile implements Serializable
 		//Populate the id variable of the Profile.
 		this.profileId = id;
 		
+		if(profileId == 1)
+		{
+			
+		}
+		
 		//Since this constructor is called when the profile has just been created from a new world, this is the first time the profile is created.
 		firstTimeCreate = true;
 		
@@ -96,17 +96,6 @@ public class Profile implements Serializable
 		
 		//Creates an empty inventory for the player, since the player just created the world.
 		inventory = new Inventory();
-		
-		
-		if(profileId == 1)
-		{
-			inventory.addItem(Wood.class, 200);
-			inventory.addItem(Iron.class, 200);
-			inventory.addItem(Water.class, 200);
-			inventory.addItem(Sulfur.class, 200);
-			inventory.addItem(Saltpeter.class, 200);
-			inventory.addItem(Charcoal.class, 200);
-		}
 	}
 	
 	/** Returns the date at which the profile was last modified and saved to the hard drive. Note that the Date object's time is mutable. */
