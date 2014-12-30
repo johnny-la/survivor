@@ -1,3 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;survivor-android/assets/game/projectiles&apos; to &apos;projectile&apos;" description="Rename resource &apos;projectiles&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="assets/game/projectiles" name="projectile" stamp="1396564659979" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;survivor-android/assets/ui/fonts/new taie lue&apos; to &apos;sanchez regular&apos;" description="Rename resource &apos;new taie lue&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="assets/ui/fonts/new taie lue" name="sanchez regular" stamp="1396606589669" updateReferences="true"/>
-</session>
