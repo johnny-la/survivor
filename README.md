@@ -1,10 +1,10 @@
 Free the Bob
 ========
 
-->![project-banner](https://cloud.githubusercontent.com/assets/10332234/5574662/284a9868-8f94-11e4-9c3f-b819cc3004d4.png)<-
+![freethebob-banner](https://cloud.githubusercontent.com/assets/10332234/5578811/04ddecd6-8ffd-11e4-81c4-e1f9c7883374.jpg)
 
 Free the Bob is a survival game built for Android devices. You play Bob, a gamer stuck in a virtual reality. As the
-player, your only task is to gather resources and craft weapons in order to survive in a forest infested by zombies. 
+player, your task is to gather resources and craft weapons in order to survive in a forest infested by zombies. 
 
 ### Try it
   * [Windows](http://cs.mcgill.ca/~jlucui/free_the_bob/FreeTheBob.jar)
@@ -19,8 +19,8 @@ Features
 -----
 
 ### Combat
-Free the Bob features simple turn-based combat, wherein the player can choose
-to either <b>jump</b>, <b>melee</b>, or <b>fire</b>. Watch out, however - you
+Free the Bob features simple turn-based combat, wherein the player can either choose
+to <b>jump</b>, <b>melee</b>, or <b>fire</b>. Watch out, however - you
 have to craft either an axe or a rifle and bullets before you can use 
 the <b>melee</b> or <b>fire</b> buttons.
 
@@ -53,4 +53,5 @@ Code
 The game is coded using Java and the LibGDX framework. It leverages the Android's touch capabilities and is built from the
 ground up with a touch-screen in mind.
 
-->![bob-sleeping](https://cloud.githubusercontent.com/assets/10332234/5578681/fb3f47c2-8ff9-11e4-8c21-b886b0c9346e.png)<-
+![bob-sleeping](https://cloud.githubusercontent.com/assets/10332234/5578796/ae6a42dc-8ffc-11e4-84cd-c43989d7f257.jpg)
+
