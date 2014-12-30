@@ -1,0 +1,11 @@
+backpack_bg_atlas@4x.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Backpack_BG
+  rotate: false
+  xy: 8, 8
+  size: 1880, 1256
+  orig: 1880, 1256
+  offset: 0, 0
+  index: -1

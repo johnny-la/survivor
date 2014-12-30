@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename field &apos;entries&apos; in &apos;com.jonathan.survivor.hud.SurvivalGuideHud&apos; to &apos;entryNames&apos;&#x0D;&#x0A;- Original project: &apos;survivor&apos;&#x0D;&#x0A;- Original element: &apos;com.jonathan.survivor.hud.SurvivalGuideHud.entries&apos;&#x0D;&#x0A;- Renamed element: &apos;com.jonathan.survivor.hud.SurvivalGuideHud.entryNames&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" delegate="false" deprecate="false" description="Rename field &apos;entries&apos;" flags="589826" getter="false" id="org.eclipse.jdt.ui.rename.field" input="/src&lt;com.jonathan.survivor.hud{SurvivalGuideHud.java[SurvivalGuideHud^entries" name="entryNames" references="true" setter="false" stamp="1392378834702" textual="false" version="1.0"/>
+</session>

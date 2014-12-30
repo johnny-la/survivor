@@ -1,0 +1,9 @@
+1397569379468	Delete element
+1397569795256	Copy compilation unit
+1397572233746	Rename method 'getNumProfiles'
+1397576297864	Rename field 'mainMenuListStyle'
+1397778699631	Rename field 'prefsManager'
+1397779387912	Rename method 'populateWorldList'
+1397783242200	Rename local variable 'oldProfile'
+1397852608211	Encapsulate field 'width'
+1397852611334	Encapsulate field 'height'

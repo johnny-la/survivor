@@ -1,0 +1,27 @@
+package com.jonathan.survivor;
+
+//MUST IMPORT FOR FREE TYPE FONTS TO WORK ON ANDROID
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import android.os.Bundle;
+import android.view.WindowManager;
+
+import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+
+public class MainActivity extends AndroidApplication {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
+        cfg.useAccelerometer = false;
+        cfg.useCompass = false;
+        cfg.useGL20 = false;
+        
+        //MUST IMPORT com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator for Free-type fonts.
+        
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        
+        initialize(new Survivor(), cfg);
+    }
+}

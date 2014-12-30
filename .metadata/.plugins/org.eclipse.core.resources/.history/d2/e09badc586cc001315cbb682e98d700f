@@ -1,0 +1,15 @@
+package com.jonathan.survivor;
+
+/**
+ * Sends events to the GameScreen whenever a particular sound needs to be played.
+ */
+
+public interface SoundListener 
+{
+	public enum Sound {
+		PLAYER_FOOTSTEP, PLAYER_JUMP, PLAYER_SWING, PLAYER_HEAD_HIT, PLAYER_AXE_HIT
+	}
+	
+	/** Sends an event to the GameScreen to play the given sound. */
+	void play(Sound sound);
+}

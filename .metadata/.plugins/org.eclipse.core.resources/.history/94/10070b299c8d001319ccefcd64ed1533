@@ -1,0 +1,10 @@
+package com.jonathan.survivor.inventory;
+
+/*
+ * Holds all of the items belonging to the player.
+ */
+
+public class Inventory 
+{
+
+}
