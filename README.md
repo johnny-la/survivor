@@ -20,9 +20,9 @@ Features
 
 ### Combat
 Free the Bob features simple turn-based combat, wherein the player can choose
-to either <b>jump</b>, <b>melee</b>, or <b>fire</b>. Watch out - you
-must craft the necessary weapons first before using using the <b>melee</b> or
-<b>fire</b> buttons.
+to either <b>jump</b>, <b>melee</b>, or <b>fire</b>. Watch out, however - you
+have to craft either an axe or a rifle and bullets first before you can use 
+the <b>melee</b> or<b>fire</b> buttons.
 
 If you don't have any weapons in your arsenal, jumping on a zombie's head
 is the only way to damage his health.
@@ -42,9 +42,7 @@ necessary to create them.
 The terrain in Free the Bob is procedurally-generated at run-time, updating dynamically as the player walks around the terrain.
 The worlds are infinite and created using a world seed which spawns objects and defines the terrain's geometry.  
 
-![terrain-showcase](https://cloud.githubusercontent.com/assets/10332234/5574659/13af02fe-8f94-11e4-8226-889b804916fd.jpg)
-
-### Forest Creation Algorithm
+![terrain-showcase](https://cloud.githubusercontent.com/assets/10332234/5574696/050ca782-8f95-11e4-9ac4-4d9c51fa7962.jpg)
 
 The forest is stored as a matrix of TerrainLayer objects. Each layer is defined by either a constant, linear, or trigonometric
 curve which the player can walk accross using the directional buttons.
