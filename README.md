@@ -1,10 +1,10 @@
 Free the Bob
 ========
 
-![project-banner](https://cloud.githubusercontent.com/assets/10332234/5574662/284a9868-8f94-11e4-9c3f-b819cc3004d4.png)
+->![project-banner](https://cloud.githubusercontent.com/assets/10332234/5574662/284a9868-8f94-11e4-9c3f-b819cc3004d4.png)<-
 
-Free the Bob is a survival game built for Android devices. You play Bob, a gamer stuck in a virtual game world. His only task is to
-to gather resources and craft weapons in order to survive in a forest infested by zombies. 
+Free the Bob is a survival game built for Android devices. You play Bob, a gamer stuck in a virtual reality. As the
+player, your only task is to gather resources and craft weapons in order to survive in a forest infested by zombies. 
 
 ### Try it
   * [Windows](http://cs.mcgill.ca/~jlucui/free_the_bob/FreeTheBob.jar)
@@ -12,7 +12,7 @@ to gather resources and craft weapons in order to survive in a forest infested b
   
 Controls
 -----
-  * <strong>Touch objects</strong> to interact with them
+  * <strong>Touch</strong> to interact with objects (Note: can't chop trees unless you craft an axe)
   * <strong>Swipe up/down</strong> - Jump up/down a layer
   
 Features
@@ -21,11 +21,11 @@ Features
 ### Combat
 Free the Bob features simple turn-based combat, wherein the player can choose
 to either <b>jump</b>, <b>melee</b>, or <b>fire</b>. Watch out, however - you
-have to craft either an axe or a rifle and bullets first before you can use 
-the <b>melee</b> or<b>fire</b> buttons.
+have to craft either an axe or a rifle and bullets before you can use 
+the <b>melee</b> or <b>fire</b> buttons.
 
 If you don't have any weapons in your arsenal, jumping on a zombie's head
-is the only way to damage his health.
+is the only way to damage its health.
 
 ![combat](https://cloud.githubusercontent.com/assets/10332234/5574656/f23d9162-8f93-11e4-806a-d1a09b85ba0d.jpg)
 
@@ -52,3 +52,5 @@ Code
 
 The game is coded using Java and the LibGDX framework. It leverages the Android's touch capabilities and is built from the
 ground up with a touch-screen in mind.
+
+->![bob-sleeping](https://cloud.githubusercontent.com/assets/10332234/5578681/fb3f47c2-8ff9-11e4-8c21-b886b0c9346e.png)<-
