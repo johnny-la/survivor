@@ -27,7 +27,7 @@ must craft the necessary weapons first before using using the <b>melee</b> or
 If you don't have any weapons in your arsenal, jumping on a zombie's head
 is the only way to damage his health.
 
-![combat](http://cs.mcgill.ca/~jlucui/free_the_bob/FreeTheBob_Gameplay_01.png)
+![combat](http://cs.mcgill.ca/~jlucui/free_the_bob/FreeTheBob_Gameplay_01.jpg)
 
 ### Crafting
 The crafting menu, accessible from the backpack, allows the player to combine
@@ -35,14 +35,14 @@ his collected resources in order to build weapons. The survival guide in the
 backpack features a list of all crafting possibilities, along with the resources
 necessary to create them.
 
-![crafting-menu](http://cs.mcgill.ca/~jlucui/free_the_bob/FreeTheBob_Menus_03.png)
+![crafting-menu](http://cs.mcgill.ca/~jlucui/free_the_bob/FreeTheBob_Menus_03.jpg)
   
 ### Procedurally-Generated World
 
-The terrain in Free the Bob is procedurally-generated at run-time, updating dynamically as the player walks around the world.
-The worlds are created using a world seed which spawns objects and defines the terrain's geometry.  
+The terrain in Free the Bob is procedurally-generated at run-time, updating dynamically as the player walks around the terrain.
+The worlds are infinite and created using a world seed which spawns objects and defines the terrain's geometry.  
 
-![terrain-showcase](http://cs.mcgill.ca/~jlucui/free_the_bob/FreeTheBob_Gameplay_02.png)
+![terrain-showcase](http://cs.mcgill.ca/~jlucui/free_the_bob/FreeTheBob_Gameplay_02.jpg)
 
 ### Forest Creation Algorithm
 
