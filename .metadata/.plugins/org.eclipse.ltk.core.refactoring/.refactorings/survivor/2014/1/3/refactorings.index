@@ -1,0 +1,32 @@
+1389549442330	Rename field 'moonLightBoldRegion'
+1389562313884	Rename field 'clickButtonStyle'
+1389715430441	Delete element
+1389728645800	Copy compilation unit
+1389882067425	Rename local variable 'componentForEntity'
+1389884728793	Rename compilation unit 'Transform.java'
+1389885096036	Delete element
+1389909745147	Rename compilation unit 'System.java'
+1389963534192	Move compilation unit
+1389964702738	Encapsulate field 'width'
+1389964714120	Encapsulate field 'height'
+1389966212478	Encapsulate field 'position'
+1389967941917	Rename local variable 'c'
+1389971135700	Rename enum constant 'RIGHT'
+1389972435724	Rename type 'LayerDirection'
+1389972440750	Rename field 'layerDirection'
+1389981036244	Rename enum constant 'Right'
+1389981041660	Rename enum constant 'Left'
+1389990464097	Rename local variable 'x'
+1389990492693	Rename local variable 'i'
+1390044611533	Rename local variable 'seedOffset'
+1390044621688	Rename field 'seedOffset'
+1390044646461	Rename local variable 'seedOffset'
+1390047754236	Encapsulate field 'worldState'
+1390048326896	Rename type 'Level'
+1390049529362	Move compilation unit
+1390053712038	Rename type 'LevelLayer'
+1390054166623	Rename method 'getXCenter'
+1390073793421	Rename enum constant 'TERRAIN'
+1390073803699	Rename enum constant 'TERRAIN'
+1390074212751	Encapsulate field 'terrainCell'
+1390074628728	Encapsulate field 'velocity'

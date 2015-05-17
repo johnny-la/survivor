@@ -64,8 +64,10 @@ public class Survivor extends Game
 		soundManager = new SoundManager();
 		//Instantiates the PreferencesManager used to access and modify the player's preferences, such as music and sound volume.
 		preferencesManager = new PreferencesManager();
+		preferencesManager.setAmountProfiles(0);
 		//Creates the profile manager instance, used to manage the profiles used by the user. Parameter specifies how many profiles the manager has to load.
 		profileManager = new ProfileManager(preferencesManager.getAmountProfiles());
+		profileManager.deleteAllProfiles();
 		
 		//Creates a settings instance that will be used to save the player's profile. The passed ProfileManager will be used to save the profile to the hard drive.
 		settings = new Settings(profileManager);

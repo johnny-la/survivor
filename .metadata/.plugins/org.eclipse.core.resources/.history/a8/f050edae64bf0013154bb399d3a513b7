@@ -1,0 +1,131 @@
+package com.jonathan.survivor.screens;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.jonathan.survivor.Survivor;
+import com.jonathan.survivor.utils.SpriteUtils;
+
+public class CompanySplashScreen extends Screen
+{
+	private OrthographicCamera guiCamera;	//Stores the camera displaying the GUI (Splash Image).
+	
+	private int frameCount = 0;	//Holds the number of frames the game has been in this screen. Used to determine when the splash screen should start loading assets.
+	
+	/** Stores the amount of time the splash screen is shown before moving to the loading screen. */
+	private static final float TIME_SHOWN = 1.5f;
+	/** The amount of time it takes for the splash screen to fade out. */
+	private static final float FADE_TIME = 0.5f;
+	/** Stores the time elapsed since the splash screen started showing. */
+	private float timeElapsed;
+	
+	/** Creates a new splash screen which displays the name of the application's creators. Accepts the Survivor instance which controls
+	 *  this screen and calls its render() method. */
+	public CompanySplashScreen(Survivor game)
+	{
+		super(game);
+	}
+	
+	@Override
+	public void show() 
+	{
+		//Load the assets needed to display the CompanySplashScreen. This loads the splash screen image, along with the textures needed to draw
+		//the loading screen right after
+		assets.loadInitialAssets();
+		
+		//Creates a new GUI camera with a default width and height defined by the Screen superclass.
+		guiCamera = new OrthographicCamera(guiWidth, guiHeight);
+
+	}
+	
+	@Override
+	public void render(float deltaTime)
+	{
+		//Sets OpenGL to clear the screen with black.
+		Gdx.gl.glClearColor(0,0,0,1);
+		//Clears the screen
+		super.render(deltaTime);
+		
+		//Draws the splash screen and its various elements to the screen.
+		draw(deltaTime);
+		
+		//Updates the splash screen. Must be called after the render call. When switching to the loading screen, no more statements can be executed, and thus draw() can't be below.
+		update(deltaTime);
+	}
+	
+	/** Updates the widgets of the splash screen and its game logic before rendering them every frame. */
+	private void update(float deltaTime) 
+	{
+		//Increment the time elapsed since the splash screen started showing by deltaTime. This keeps track of when we should exit the screen.
+		timeElapsed += deltaTime;
+		
+		//If the splash screen has been shown for a time greater than the maximum time it should be shown, switch to the loading screen.
+		if(timeElapsed > TIME_SHOWN || game.DEBUG_MODE)
+		{
+			float alpha = (timeElapsed - TIME_SHOWN)/FADE_TIME;
+			assets.companyLogo.setColor(1,1,1,alpha);
+			//If the splash screen has finished fading 
+			if(timeElapsed > TIME_SHOWN + FADE_TIME)
+			{
+				//Switch to the loading screen.
+				game.setScreen(new LoadingScreen(game));
+				return;
+			}
+		}
+		
+		//Increments the amount of frames the user has passed in the splash screen.
+		frameCount++;
+		
+		//If this is the second time the update() method has been called, start loading assets. We can't load them on the first frame, or there would be a pause before the screen
+		//is first drawn.
+		if(frameCount == 2)
+		{
+			//Loads the assets that will be needed when the user switches to the loading screen. Certain elements, such as fonts and the player, need to be loaded.
+			assets.loadSplashScreenAssets();
+		}
+	}
+
+	/** Draws the splash screen and all of its widgets. */
+	private void draw(float deltaTime)
+	{
+		//Sets the batcher's projection matrix to the camera's (mandatory)
+		batcher.setProjectionMatrix(guiCamera.combined);
+		//Begin batching sprites.
+		batcher.begin();
+		
+		//Set the center position of the companyLogo sprite to (0,0) (center of the camera).
+		SpriteUtils.setPosition(assets.companyLogo, 0, 35);
+		SpriteUtils.setPosition(assets.mugishaLogo, 0, -40);
+		//Draw the companyLogo sprite.
+		assets.companyLogo.draw(batcher);
+		assets.mugishaLogo.draw(batcher);
+		
+		//Draw the sprites batched inside the batcher.
+		batcher.end();
+	}
+
+	@Override
+	public void pause() 
+	{
+	}
+
+	@Override
+	public void resume() 
+	{		
+	}
+	
+	@Override
+	public void resize(int width, int height)
+	{
+		//Update the super.guiWidth/Height variables
+		super.resize(width, height);
+		
+		//Update the viewport width and height of the GUI camera using the superclass variables guiWidth/Height. Inside super.resize(), these variables
+		//were re-computed so that the aspect ratio of the guiCamera would fit the new screen size. This prevents scaling more in one axis than another.
+		guiCamera.viewportWidth = guiWidth;
+		guiCamera.viewportHeight = guiHeight;
+		
+		//Update the GUI camera to apply size changes.
+		guiCamera.update();
+	}
+	
+}

@@ -1,0 +1,29 @@
+1391373198939	Rename field 'MIN_SPAWN_Y_VELOCITY'
+1391373261646	Rename field 'MAX_SPAWN_Y_VELOCITY'
+1391373302182	Rename field 'MIN_SPAWN_X_VELOCITY'
+1391373338676	Rename field 'MAX_SPAWN_X_VELOCITY'
+1391373753321	Rename field 'sprite'
+1391374993249	Rename field 'meleeSlot'
+1391378729086	Rename field 'itemObjects'
+1391383723891	Encapsulate field 'itemProbabilityMap'
+1391388373496	Encapsulate field 'itemAttachment'
+1391388447277	Rename field 'SLOT_NAME'
+1391388463246	Rename method 'setSlotName'
+1391388480436	Rename field 'slotName'
+1391388485842	Rename field 'attachmentName'
+1391388502408	Rename method 'getAttachmentName'
+1391388514689	Rename method 'setAttachmentName'
+1391389647785	Encapsulate field 'itemState'
+1391390089838	Rename enum constant 'IDLE'
+1391390221489	Rename field 'itemIdle'
+1391475953761	Delete element
+1391475954956	Delete element
+1391476036646	Delete element
+1391476968400	Delete element
+1391478793774	Rename field 'itemClick'
+1391478801033	Rename enum constant 'CLICK'
+1391549959110	Encapsulate field 'inventory'
+1391550186988	Encapsulate field 'inventory'
+1391603579598	Move file
+1391649350547	Rename compilation unit 'ItemPool.java'
+1391650035624	Move compilation units

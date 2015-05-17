@@ -1,0 +1,28 @@
+1390695804649	Rename field 'animState'
+1390697007600	Rename enum constant 'MELEE'
+1390697119161	Rename method 'meleeTree'
+1390697279940	Rename field 'playerMelee'
+1390697392607	Rename enum constant 'CHOP_TREE'
+1390697418013	Rename field 'playerChopTree'
+1390746833603	Rename enum constant 'HIT_TREE'
+1390746837826	Rename field 'playerHitTree'
+1390750523883	Encapsulate field 'range'
+1390750903328	Move compilation unit
+1390750911750	Move compilation units
+1390750972396	Encapsulate field 'meleeWeapon'
+1390751303327	Encapsulate field 'loadout'
+1390755120932	Encapsulate field 'settings'
+1390763963463	Move compilation units
+1390764319471	Encapsulate field 'objectId'
+1390765292611	Encapsulate field 'scavengedObjects'
+1390765481838	Rename field 'scavengedObjects'
+1390782843449	Encapsulate field 'item'
+1390824862694	Rename local variable 'layerObjectsString'
+1390910765555	Rename type 'ExplorationRenderer'
+1390910779127	Rename type 'HudRenderer'
+1390910813822	Rename field 'hudRenderer'
+1390910821092	Rename field 'explorationRenderer'
+1391022437589	Encapsulate field 'slotName'
+1391022474410	Encapsulate field 'attachmentName'
+1391174976114	Move compilation unit
+1391175436700	Rename method 'resumeGame'

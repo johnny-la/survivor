@@ -1,0 +1,21 @@
+package com.jonathan.survivor.managers;
+
+/**
+ * Manages the player's preferences, such as the last profile saved, and the volume of music and sounds.
+ */
+
+public class PreferencesManager 
+{
+	private static final String PREFS_NAME = "Survivor";
+	
+	private static final String PREFS_MUSIC_VOLUME = "M_Vol";
+	private static final String PREFS_SOUND_VOLUME = "S_Vol";
+	private static final String PREFS_LAST_PROFILE = "L_Prof"; //The last profile loaded by the player.
+	
+	/** Creates a default PreferencesManager. */
+	public PreferencesManager()
+	{
+	}
+	
+	
+}

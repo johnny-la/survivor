@@ -1,0 +1,12 @@
+1396188808799	Encapsulate field 'crosshair'
+1396189091385	Encapsulate field 'x1'
+1396189095015	Encapsulate field 'y1'
+1396189097966	Encapsulate field 'x2'
+1396189100963	Encapsulate field 'y2'
+1396189895515	Rename method 'updateCrosshairPoint'
+1396190311241	Encapsulate field 'range'
+1396190626546	Rename local variable 'range'
+1396228884791	Copy compilation unit
+1396296315201	Rename local variable 'bottomY'
+1396296400797	Rename local variable 'width'
+1396296407895	Rename local variable 'height'
