@@ -1,3 +1,5 @@
 .metdata/
 extensions/
 survivor-robovm/
+survivor-android/
+survivor-desktop/
