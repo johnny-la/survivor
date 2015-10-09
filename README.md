@@ -7,7 +7,7 @@ Free the Bob is a survival game built for Android devices. You play Bob, a gamer
 player, your task is to gather resources and craft weapons in order to survive in a forest infested by zombies. 
 
 ### Try it
-  * [Windows](http://cs.mcgill.ca/~jlucui/portfolio/dls/free_the_bob/FreeTheBob.jar)
+  <!--* [Windows](http://cs.mcgill.ca/~jlucui/portfolio/dls/free_the_bob/FreeTheBob.jar)-->
   * [Android](http://cs.mcgill.ca/~jlucui/portfolio/dls/free_the_bob/survivor-android.apk)
 
   
