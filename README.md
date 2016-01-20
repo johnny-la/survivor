@@ -9,8 +9,9 @@ player, your task is to gather resources and craft weapons in order to survive i
 ### Try it
   * [Windows/Mac/Linux](https://drive.google.com/uc?export=download&id=0B6MbXVer0CxbQ1VwYzJzeXIwMmc)
   * [Android](http://cs.mcgill.ca/~jlucui/portfolio/dls/free_the_bob/survivor-android.apk)
-
   
+#### [Gameplay Video](https://vimeo.com/152283359)
+
 Controls
 -----
   * <strong>Touch</strong> to interact with objects (Note: can't chop trees unless you craft an axe)
