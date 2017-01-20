@@ -4,7 +4,7 @@ Free the Bob
 ![freethebob-banner](https://cloud.githubusercontent.com/assets/10332234/5578811/04ddecd6-8ffd-11e4-81c4-e1f9c7883374.jpg)
 
 Free the Bob is a survival game built for Android devices. You play Bob, a gamer stuck in a virtual reality. As the
-player, your task is to gather resources and craft weapons in order to survive in a forest infested by zombies. 
+player, your task is to gather resources and craft weapons to survive in a zombie-infested forest. 
 
 ## Try it
   * [Windows/Mac/Linux](https://drive.google.com/uc?export=download&id=0B6MbXVer0CxbQ1VwYzJzeXIwMmc) (Must have Java installed)
